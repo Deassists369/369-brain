@@ -1,0 +1,7 @@
+test_skill.md
+.DS_Store
+*.env
+*.key
+*.token
+credentials/
+.claude/
