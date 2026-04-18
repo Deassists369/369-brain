@@ -4,6 +4,79 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 18-19 April 2026 — VEERABHADRA / Session Workflow Locked (Session 15)
+
+**Branch:** `main` (369-brain repo)
+
+### SESSION SUMMARY
+
+This session locked the complete session workflow — how we start, work, and end every session.
+The goal was to eliminate drift by establishing GitHub 369-brain as the single source of truth.
+
+### WHAT WAS BUILT
+
+**1. memory/session-workflow.md — CREATED**
+Complete session workflow documentation:
+- THE SINGLE SOURCE OF TRUTH — GitHub 369-brain is the only record
+- THE TWO REPOSITORIES — 369-brain (memory) vs deassists (code)
+- ONE SESSION = ONE CHAT — clean separation per working block
+- SESSION START — VEERABHADRA asks to read GitHub via MCP
+- SESSION END — non-negotiable brain commit
+- WHAT GETS SAVED WHERE — complete file map for all brain files
+- HOW TO DO BRAIN COMMIT FROM PORTAL — step-by-step instructions
+- GOLDEN RULES — 6 rules that must never be broken
+
+**2. VEERABHADRA.md — MODIFIED**
+Replaced THE SESSION RHYTHM section with:
+- Link to memory/session-workflow.md for full detail
+- THE COMPLETE DAILY LOOP — 8-step visual summary
+- SESSION START — 5 steps
+- SESSION END — NON-NEGOTIABLE — terminal prompt + git commands
+
+**3. CLAUDE.md — MODIFIED**
+Added new section at end: SESSION END — ALWAYS SAVE TO 369-BRAIN
+- AT END OF EVERY SESSION — RUN THIS (4 steps)
+- THE ONE RULE — 369-brain is the single destination
+
+**4. memory/decisions.md — MODIFIED**
+7 new decisions locked:
+- One session = one chat in VEERABHADRA project
+- 369-brain GitHub = single source of truth for all memory
+- No files stored in Claude Project
+- VEERABHADRA asks to read GitHub at every session start
+- VEERABHADRA flags SAVE THIS mid-session for important decisions
+- Git rules live in CLAUDE.md only — never duplicated elsewhere
+- Session end brain commit is non-negotiable
+
+### FILES CHANGED
+
+- `/Users/deassists369/deassists-workspace/369-brain/memory/session-workflow.md` — CREATED
+- `/Users/deassists369/deassists-workspace/369-brain/memory/decisions.md` — MODIFIED
+- `/Users/deassists369/deassists-workspace/369-brain/VEERABHADRA.md` — MODIFIED
+- `/Users/deassists369/deassists-workspace/369-brain/CLAUDE.md` — MODIFIED
+
+### COMMITS PUSHED
+
+- `2021037` — brain: lock session workflow — one source, two repos, two commits 18 Apr
+- `4a5f484` — brain: add save map and session end rule to both files 18 Apr
+
+### KEY DECISIONS
+
+- GitHub 369-brain is the single source of truth — no files in Claude Project
+- VEERABHADRA must ask to read GitHub at every session start
+- Session end brain commit is non-negotiable — only failure mode is skipping it
+- Git rules live in CLAUDE.md only — never duplicated in session-workflow.md
+
+### NEXT SESSION
+
+1. Start with "VEERABHADRA — [context]"
+2. VEERABHADRA reads from GitHub MCP
+3. Priority: Q Intelligence fields + CallLogModal OR questionnaire content
+
+**Brain:** `session-state.md`, `activity-log.md` updated
+
+---
+
 ## 18 April 2026 — VEERABHADRA / PM2/Build Cache Debugging (Session 13)
 
 **Branch:** `feature/portal-crm-phase1`

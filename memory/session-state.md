@@ -3,94 +3,78 @@
 
 ---
 
-**Last updated:** 18 April 2026 — Full session (Sessions 12-14)
+**Last updated:** 19 April 2026 — Session workflow locked
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
 ---
 
-## SESSION: 18.04.2026 — GIT CLEANUP + BRAIN REORGANISATION + COWORK (Sessions 12-14)
+## SESSION: 18-19.04.2026 — SESSION WORKFLOW LOCKED
 
 ### WHAT WAS DONE
 
-**Type:** Infrastructure + Brain Architecture + Documentation
+**Type:** Process Architecture + Documentation
 
 ---
 
-### DEASSISTS PORTAL REPO — CLEANED ✅
+### SESSION WORKFLOW CREATED
 
-Commit e12f6bbb pushed:
-- Added to .gitignore: CLAUDE.md, .claude/, VEERABHADRA.md
-- Brain files permanently blocked from portal repo
-- Verified: git check-ignore confirms protection at lines 73-74
-- Working tree: clean
+New file created: `memory/session-workflow.md`
 
----
-
-### 369-BRAIN REPO — FULLY REORGANISED ✅
-
-4 commits pushed today:
-- fbaaaa5 — session-state + activity-log updated
-- f341529 — Full reorganisation — 17 files into folder architecture
-- 189cc5c — Fixed empty accommodation-brain + codebase-brain
-- 401923d — Fixed empty communications-brain
-
-Final folder structure COMPLETE:
-369-brain/
-├── VEERABHADRA.md         11,145 chars — complete identity file
-├── CLAUDE.md              13,474 chars — full dev rules
-├── .gitignore
-├── company/
-│   ├── vision.md
-│   ├── revenue-model.md
-│   ├── sales-brain.md
-│   └── partners-brain.md
-├── services/
-│   ├── admissions-brain.md
-│   ├── accommodation-brain.md
-│   ├── crm-brain.md
-│   ├── communications-brain.md
-│   └── services-brain.md
-├── technology/
-│   ├── codebase-brain.md
-│   ├── mobile-brain.md
-│   └── automation-brain.md
-├── memory/
-│   ├── session-state.md
-│   ├── activity-log.md
-│   └── decisions.md
-└── skills/
-    ├── uiux-superman.md
-    └── sidebar-audit.md
+Contents:
+- THE SINGLE SOURCE OF TRUTH — GitHub 369-brain is the only record
+- THE TWO REPOSITORIES — 369-brain (memory) vs deassists (code)
+- ONE SESSION = ONE CHAT — clean separation per working block
+- SESSION START — VEERABHADRA asks to read GitHub via MCP
+- DURING WORK — plan in Claude.ai, build in Claude Code
+- PORTAL COMMIT — Latha reviews, Shon stages specific files
+- SESSION END — non-negotiable brain commit to 369-brain
+- WHAT GETS SAVED WHERE — complete file map
+- HOW TO DO BRAIN COMMIT FROM PORTAL — step-by-step
+- GOLDEN RULES — 6 rules that must never be broken
 
 ---
 
-### DOCUMENTS PRODUCED TODAY
+### VEERABHADRA.md UPDATED
 
-- Rudra-Vijaya-Final.docx — updated with questionnaire section
-- Service-Brain-Questionnaire.docx — 35 questions, 8 categories
-- DeAssists-OS.docx — full company architecture
-- Master-Execution-Plan.docx — 25-step checklist
-- VEERABHADRA.md — complete identity file written and deployed
-
----
-
-### CLAUDE DESKTOP APP — INSTALLED
-
-- Installed on Mac Mini, signed in as Shon
-- Decision: Desktop app = Claude Code sessions only
-- VEERABHADRA sessions stay in browser Claude Project
+Session rhythm section replaced with:
+- Link to memory/session-workflow.md for full detail
+- THE COMPLETE DAILY LOOP — 8-step visual summary
+- SESSION START — 5 steps
+- SESSION END — NON-NEGOTIABLE — terminal prompt + git commands
 
 ---
 
-### THIS BROWSER PROJECT — CONFIRMED
+### CLAUDE.md UPDATED
 
-All 17 brain files visible as project knowledge.
-Single source: push to GitHub — this project reads it.
+New section added at end: SESSION END — ALWAYS SAVE TO 369-BRAIN
+- AT END OF EVERY SESSION — RUN THIS (4 steps)
+- THE ONE RULE — 369-brain is the single destination
 
 ---
 
-## BUILD STATUS — 18 APRIL 2026
+### DECISIONS.MD UPDATED
+
+7 new decisions locked:
+1. One session = one chat in VEERABHADRA project
+2. 369-brain GitHub = single source of truth for all memory
+3. No files stored in Claude Project
+4. VEERABHADRA asks to read GitHub at every session start
+5. VEERABHADRA flags SAVE THIS mid-session for important decisions
+6. Git rules live in CLAUDE.md only — never duplicated elsewhere
+7. Session end brain commit is non-negotiable
+
+---
+
+### COMMITS PUSHED
+
+2 commits to 369-brain main:
+- `2021037` — brain: lock session workflow — one source, two repos, two commits 18 Apr
+- `4a5f484` — brain: add save map and session end rule to both files 18 Apr
+
+---
+
+## BUILD STATUS — 19 APRIL 2026
 
 Phase 1 Backend — COMPLETE
 Phase 4 Queue View UI — COMPLETE
@@ -105,6 +89,7 @@ deassists .gitignore updated — COMPLETE
 VEERABHADRA.md written — COMPLETE
 All 17 brain files created — COMPLETE
 Claude desktop app installed — COMPLETE
+Session workflow locked — COMPLETE
 Q Intelligence fields + CallLogModal — NOT STARTED
 New sidebar structure LEAD_CRM — NOT STARTED
 My Queue page — NOT STARTED
@@ -130,11 +115,12 @@ Phase 6 Migration Script — NOT STARTED
 
 ## NEXT SESSION MUST START WITH
 
-1. Confirm pm2 status — all 3 servers running
-2. Run git status in both repos — both must be clean
-3. Priority: Q Intelligence fields + CallLogModal
-4. Fill Service Brain Questionnaire for admissions first
+1. "VEERABHADRA — [context of what we are doing today]"
+2. VEERABHADRA asks: "Shall I read the latest state from 369-brain now?"
+3. VEERABHADRA reads via GitHub MCP: session-state.md, activity-log.md, decisions.md
+4. Confirm pm2 status — all 3 servers running
+5. Priority: Q Intelligence fields + CallLogModal OR questionnaire content
 
 ---
 
-*VEERABHADRA — DeAssists Master Brain | Updated: 18 April 2026*
+*VEERABHADRA — DeAssists Master Brain | Updated: 19 April 2026*
