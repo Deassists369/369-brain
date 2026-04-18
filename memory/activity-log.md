@@ -4,6 +4,40 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 18 April 2026 — VEERABHADRA / PM2/Build Cache Debugging (Session 13)
+
+**Branch:** `feature/portal-crm-phase1`
+
+### SESSION HIGHLIGHTS
+
+- **No code changes** — debugging session only
+- **Root cause:** Hard `kill -9` from early morning session corrupted `.next/build-manifest.json`
+- **PM2 restart loop:** cms process had 422 restarts, kept crashing on corrupted cache
+- **Port conflict:** EADDRINUSE on port 4002 due to restart storm
+
+### FIX APPLIED
+
+1. `pm2 stop all`
+2. `rm -rf apps/cms-next/.next`
+3. `pm2 start all`
+4. `pm2 reset cms` (reset restart counter)
+
+### ALL SERVICES VERIFIED
+
+- backend: port 8000 (returns 403 — auth working)
+- cms: port 4002 (returns HTML — portal working)
+- website: port 4001
+
+### PREVENTION RULE ESTABLISHED
+
+**Use `pm2 stop cms` instead of `kill -9`** to gracefully shut down Next.js.
+
+If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
+
+**Brain:** `session-state.md`, `activity-log.md` updated
+
+---
+
 ## 15 April 2026 — VEERABHADRA / CLAUDE.md + Compound Engineering Setup (Session 7)
 
 **Branch:** `feature/portal-crm-phase1` (clean, pushed)

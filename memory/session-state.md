@@ -2,11 +2,64 @@
 
 ---
 
-**Last updated:** 16 April 2026 — VEERABHADRA (Dashboard Cards Visual Redesign)
+**Last updated:** 18 April 2026 — VEERABHADRA (PM2/Build Cache Debugging)
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
 **Export / pointer:** `design/outputs/SESSION-STATE-UPDATE-07042026.md` — short mirror + link to this file’s **07.04.2026** section.
+
+---
+
+## SESSION: 18.04.2026 — PM2/BUILD CACHE DEBUGGING (Session 13)
+
+### WHAT WAS DONE TODAY
+
+**Branch:** `feature/portal-crm-phase1`
+
+#### Debugging Session — No Code Changes
+
+**Problem:** After 8-9 hours away (Mac on, screen off), portal wouldn’t start. Port 4002 conflict errors, PM2 restart loops.
+
+**Root Cause Identified:**
+- Hard `kill -9` from early morning session corrupted `.next/build-manifest.json`
+- File was truncated (incomplete JSON)
+- PM2 auto-restart kept crashing on corrupted cache → 422 restarts on cms process
+- EADDRINUSE errors from restart storm
+
+**Fix Applied:**
+1. `pm2 stop all`
+2. `rm -rf apps/cms-next/.next`
+3. `pm2 start all`
+4. `pm2 reset cms` (reset restart counter)
+
+**All Services Verified Running:**
+- backend: port 8000 (returns 403 — auth working)
+- cms: port 4002 (returns HTML — portal working)
+- website: port 4001
+
+### PREVENTION RULE ESTABLISHED
+
+**Use `pm2 stop cms` instead of `kill -9`** to gracefully shut down Next.js and avoid corrupting build cache.
+
+If things get stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
+
+### BUILD STATUS (as of 18 April 2026)
+
+| Phase | Status |
+|-------|--------|
+| Phase 1 Backend (6 lead files) | COMPLETE ✅ |
+| Phase 4 Queue View UI (7 files) | COMPLETE ✅ |
+| Phase 5A New Lead Form | COMPLETE ✅ |
+| Phase 5B Sales Dashboard | COMPLETE ✅ |
+| UIUX Superman — Sidebar + Avatar | COMPLETE ✅ |
+| Dashboard Cards Visual Redesign | COMPLETE ✅ |
+| Sidebar + Roles Update (Latha) | COMPLETE ✅ |
+| Q Intelligence fields | NOT STARTED |
+| New sidebar structure | NOT STARTED |
+
+### NEXT ACTION
+
+Continue CRM Phase 1 work — Q Intelligence fields or new sidebar structure.
 
 ---
 
