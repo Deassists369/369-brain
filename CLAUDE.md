@@ -501,3 +501,42 @@ LATHA RULE:
   If a diff contains more than 20 files — STOP.
   Something has gone wrong with staging.
   Come back to VEERABHADRA before pushing.
+
+---
+
+## SESSION END — ALWAYS SAVE TO 369-BRAIN
+
+No matter which repo Cursor is open in — deassists or 369-brain —
+brain files always go to one place only:
+~/deassists-workspace/369-brain
+
+### AT END OF EVERY SESSION — RUN THIS
+
+Step 1 — Switch to 369-brain regardless of current directory:
+cd ~/deassists-workspace/369-brain
+
+Step 2 — Update brain files:
+"Session ending.
+1. List all files created or modified today with full paths.
+2. Update memory/session-state.md — current build position, what was done, what is next.
+3. Update memory/activity-log.md — full session summary with date, branch, files, decisions.
+4. Update memory/decisions.md — any new decisions locked today.
+5. If any service, technology, company or skills brain file changed today — update those too.
+6. Show me every file that was updated."
+
+Step 3 — Stage and commit only brain files:
+git add memory/session-state.md
+git add memory/activity-log.md
+git add memory/decisions.md
+git add [any other brain file that changed today]
+git diff --staged --name-only
+git commit -m "brain: session close DD Mon — [what changed in one line]"
+git push origin main
+
+Step 4 — Switch back to portal if needed:
+cd ~/deassists
+
+### THE ONE RULE
+369-brain is the single destination for all session saves.
+No exceptions. No matter where you are working.
+Full save map: memory/session-workflow.md

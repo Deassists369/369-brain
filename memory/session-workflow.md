@@ -143,3 +143,108 @@ COMMIT1: Feature confirmed → portal commit → WhatsApp Latha
 END:     Terminal prompt → brain files updated
 COMMIT2: Brain commit to 369-brain → git push
 DONE:    Session permanently recorded. Start fresh tomorrow.
+
+---
+
+## WHAT GETS SAVED WHERE — COMPLETE MAP
+
+### FILES THAT LIVE IN 369-BRAIN REPO ONLY
+
+memory/session-state.md        — current build position, updated every session end
+memory/activity-log.md         — full session log, updated every session end  
+memory/decisions.md            — locked decisions, updated when new decision made
+memory/session-workflow.md     — this file, updated when workflow changes
+VEERABHADRA.md                 — master identity, updated at milestones
+CLAUDE.md                      — codebase rules for Claude Code, updated when rules change
+
+services/crm-brain.md          — updated when CRM knowledge or rules change
+services/admissions-brain.md   — updated when admissions knowledge changes
+services/accommodation-brain.md — updated when accommodation knowledge changes
+services/services-brain.md     — updated when other services knowledge changes
+services/communications-brain.md — updated when comms knowledge changes
+
+technology/codebase-brain.md   — updated when tech patterns or decisions change
+technology/mobile-brain.md     — updated when mobile decisions change
+technology/automation-brain.md — updated when automation decisions change
+
+company/vision.md              — updated when company direction changes
+company/revenue-model.md       — updated when revenue knowledge changes
+company/sales-brain.md         — updated when sales knowledge changes
+company/partners-brain.md      — updated when partner knowledge changes
+
+skills/sidebar-audit.md        — updated when audit skill rules change
+skills/uiux-superman.md        — updated when design skill rules change
+
+---
+
+### FILES THAT LIVE IN DEASSISTS PORTAL REPO ONLY
+
+apps/backend-nest/src/**       — all backend NestJS code
+apps/cms-next/pages/**         — all portal frontend pages
+apps/cms-next/components/**    — all portal frontend components
+apps/cms-next/styles/**        — design tokens, CSS
+libs/shared/**                 — shared enums, constants, helpers
+libs/shared-ui/**              — UI components, sidebar renderer
+next.config.js                 — proxy config
+Any .ts .tsx .js .json file that runs the portal
+
+---
+
+### THE COMPLETE SAVE MAP — ONE VIEW
+
+| What changed | Repo | Who stages | Who pushes |
+|---|---|---|---|
+| Portal code (.ts .tsx .js) | deassists | Shon (specific files) | Latha after review |
+| CLAUDE.md | 369-brain | Shon | Shon directly |
+| VEERABHADRA.md | 369-brain | Shon | Shon directly |
+| memory/session-state.md | 369-brain | Shon | Shon directly |
+| memory/activity-log.md | 369-brain | Shon | Shon directly |
+| memory/decisions.md | 369-brain | Shon | Shon directly |
+| memory/session-workflow.md | 369-brain | Shon | Shon directly |
+| Any services/*.md | 369-brain | Shon | Shon directly |
+| Any technology/*.md | 369-brain | Shon | Shon directly |
+| Any company/*.md | 369-brain | Shon | Shon directly |
+| Any skills/*.md | 369-brain | Shon | Shon directly |
+
+---
+
+### HOW TO DO THE BRAIN COMMIT WHEN CURSOR IS IN DEASSISTS PORTAL
+
+At session end — even if Cursor is open in deassists portal:
+
+Step 1 — Switch terminal to 369-brain:
+cd ~/deassists-workspace/369-brain
+
+Step 2 — Paste session end prompt:
+"Session ending.
+1. List all files created or modified today with full paths.
+2. Update memory/session-state.md — current build position, what was done, what is next.
+3. Update memory/activity-log.md — full session summary with date, branch, files, decisions.
+4. Update memory/decisions.md — any new decisions locked today.
+5. If any service, technology, company or skills brain file changed today — update those too.
+6. Show me every file that was updated."
+
+Step 3 — Review every file Claude Code updated.
+
+Step 4 — Stage only what changed:
+git add memory/session-state.md
+git add memory/activity-log.md
+git add memory/decisions.md
+git add [any other brain file that changed today]
+git diff --staged --name-only
+git commit -m "brain: session close DD Mon — [what changed in one line]"
+git push origin main
+
+Step 5 — Switch back to portal if needed:
+cd ~/deassists
+
+---
+
+### GOLDEN RULES — NEVER BREAK THESE
+
+1. Portal code → deassists repo → Latha reviews before push
+2. Everything else → 369-brain repo → Shon pushes directly
+3. CLAUDE.md lives in 369-brain only — never in deassists repo
+4. Never git add . in either repo — always name specific files
+5. Never mix files from both repos in one commit
+6. Brain commit happens every single session end — no exceptions
