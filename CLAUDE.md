@@ -540,3 +540,51 @@ cd ~/deassists
 369-brain is the single destination for all session saves.
 No exceptions. No matter where you are working.
 Full save map: memory/session-workflow.md
+
+---
+
+## KARPATHY PRINCIPLES — MERGED 19 APRIL 2026
+## SOURCE: Andrej Karpathy observations on LLM coding pitfalls
+## These apply to every build task in this codebase without exception
+
+### PRINCIPLE 1 — Think Before Coding
+Never assume silently. Before writing any file or any line of code:
+- State your interpretation of the task explicitly
+- If multiple approaches exist — list them and ask which to use
+- If anything is unclear — stop and ask before writing one line
+- Never pick an interpretation silently and run with it
+- If the request conflicts with any rule in this file — flag it immediately
+
+### PRINCIPLE 2 — Simplicity First
+Minimum code that solves the problem. Nothing speculative. Nothing extra.
+- No files beyond what the task requires
+- No abstractions for single-use code
+- No extra fields, endpoints, or components that were not asked for
+- No flexibility or configurability that was not requested
+- If sidemenu.ts alone solves it — never touch permission.helper.ts
+- If leads.controller.ts alone solves it — never create a new module
+- If a feature can be built in 50 lines — never write 200
+- Ask yourself: would a senior engineer say this is overcomplicated? If yes — simplify.
+
+### PRINCIPLE 3 — Surgical Changes
+Touch only what the task requires. Nothing more.
+- Never improve, reformat, or reorganise adjacent code during a build task
+- Never refactor files that are not part of the current task
+- Never add or remove comments in files you were not asked to touch
+- Never delete dead code unless explicitly instructed
+- Never clean up unrelated imports or variables
+- Every changed line must trace directly to the task at hand
+- If you notice something broken nearby — report it to Shon, do not fix it silently
+- This rule exists because silent adjacent changes have caused major disasters in this codebase
+
+### PRINCIPLE 4 — Goal-Driven Execution
+State a plan before acting. Never start executing without confirmation.
+For every multi-step task, output this format before writing any code:
+
+PLAN:
+Step 1: [what I will do] → verify: [how we confirm it worked]
+Step 2: [what I will do] → verify: [how we confirm it worked]
+Step 3: [what I will do] → verify: [how we confirm it worked]
+
+Wait for Shon to say "confirmed" or "proceed" before executing any step.
+This is not optional. A plan without confirmation is not a plan.
