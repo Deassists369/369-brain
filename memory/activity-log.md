@@ -4,6 +4,65 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 19 April 2026 — VEERABHADRA / Sales Output Engine + Karpathy + Workflow (Session 16)
+
+**Branch:** main (369-brain repo)
+
+### SESSION SUMMARY
+
+Full strategy and design session. No portal code written today.
+Three major things completed.
+
+### WHAT WAS BUILT
+
+**1. Session workflow tested and locked**
+Tested new session start. GitHub MCP not loading in chat.
+Decision: session start = attach session-state.md + activity-log.md 
+from GitHub via + button in chat input every session.
+This is now the permanent workflow. Documented in session-workflow.md.
+
+**2. Karpathy principles researched and merged into CLAUDE.md**
+Read Karpathy CLAUDE.md — 4 principles for better AI coding:
+Think Before Coding / Simplicity First / Surgical Changes / Goal-Driven Execution.
+Also read Karpathy LLM Wiki gist — MARP mentioned as one tool among many.
+Merged all 4 principles into our CLAUDE.md rewritten in DeAssists language.
+49 lines added. Commit bc2ad97 pushed to 369-brain.
+
+**3. Sales Output Engine designed and saved**
+Full Salesdocskill.md designed from scratch.
+8-step build process. Senior Creative Director persona.
+Web research mandatory. Claude native design + MARP export.
+PPT + PDF every output. 12-point quality gate.
+5 output template types. Full brand system encoded.
+Folder structure created: data / templates / inputs / outputs.
+Commit 578ed1f pushed to 369-brain.
+
+### FILES CHANGED
+
+- ~/deassists-workspace/369-brain/CLAUDE.md — Karpathy principles added
+- ~/deassists-workspace/369-brain/skills/sales-design/Salesdocskill.md — CREATED
+- ~/deassists-workspace/369-brain/skills/sales-design/data/ — CREATED
+- ~/deassists-workspace/369-brain/skills/sales-design/templates/ — CREATED
+- ~/deassists-workspace/369-brain/skills/sales-design/inputs/ — CREATED
+- ~/deassists-workspace/369-brain/skills/sales-design/outputs/ — CREATED
+
+### KEY DECISIONS
+
+- Session start = attach session-state.md + activity-log.md via + button — permanent
+- Salesdocskill.md is the Sales Output Engine — lives in skills/sales-design/
+- MARP for slide export — PPT + PDF both every time
+- Old brochures = content extraction only — never design reference
+- Web research mandatory on every sales output — no stale data ever
+
+### NEXT SESSION
+
+Priority options:
+A — Q Intelligence fields + CallLogModal (portal CRM build)
+B — Fill sales data files (universities, courses, services, accommodation)
+C — Install MARP + run first test output with Salesdocskill
+
+---
+
 ## 18-19 April 2026 — VEERABHADRA / Session Workflow Locked (Session 15)
 
 **Branch:** `main` (369-brain repo)

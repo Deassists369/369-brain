@@ -3,78 +3,56 @@
 
 ---
 
-**Last updated:** 19 April 2026 — Session workflow locked
+**Last updated:** 19 April 2026 — Sales Output Engine + Karpathy + Workflow
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
 ---
 
-## SESSION: 18-19.04.2026 — SESSION WORKFLOW LOCKED
+## SESSION: 19.04.2026 — VEERABHADRA / Sales Output Engine + Karpathy Principles + Workflow Test
 
 ### WHAT WAS DONE
 
-**Type:** Process Architecture + Documentation
+1. SESSION START TEST — PASSED
+   Tested new session start workflow. GitHub MCP not active.
+   Decision locked: session start = attach session-state.md + activity-log.md 
+   from GitHub via + button in chat input. Option 1 confirmed.
 
----
+2. KARPATHY CLAUDE.MD RESEARCHED
+   Read Karpathy CLAUDE.md (4 principles) and LLM Wiki gist.
+   MARP mentioned as one-line tool in LLM Wiki — not a dedicated file.
+   Decided to merge Karpathy principles into our CLAUDE.md.
 
-### SESSION WORKFLOW CREATED
+3. KARPATHY PRINCIPLES MERGED INTO CLAUDE.md
+   Added 49 lines to ~/deassists-workspace/369-brain/CLAUDE.md
+   4 principles added: Think Before Coding, Simplicity First, 
+   Surgical Changes, Goal-Driven Execution.
+   All written in DeAssists language with specific codebase examples.
+   Commit: bc2ad97 — pushed to 369-brain main.
 
-New file created: `memory/session-workflow.md`
+4. SALES OUTPUT ENGINE DESIGNED
+   Full Sales Intelligence + Design System designed.
+   Named: Salesdocskill.md
+   Location: ~/deassists-workspace/369-brain/skills/sales-design/Salesdocskill.md
+   Folder structure created:
+   - skills/sales-design/data/
+   - skills/sales-design/templates/
+   - skills/sales-design/inputs/
+   - skills/sales-design/outputs/
+   Commit: 578ed1f — pushed to 369-brain main.
+   Rename commit pending — Salesdocskill.md rename in progress.
 
-Contents:
-- THE SINGLE SOURCE OF TRUTH — GitHub 369-brain is the only record
-- THE TWO REPOSITORIES — 369-brain (memory) vs deassists (code)
-- ONE SESSION = ONE CHAT — clean separation per working block
-- SESSION START — VEERABHADRA asks to read GitHub via MCP
-- DURING WORK — plan in Claude.ai, build in Claude Code
-- PORTAL COMMIT — Latha reviews, Shon stages specific files
-- SESSION END — non-negotiable brain commit to 369-brain
-- WHAT GETS SAVED WHERE — complete file map
-- HOW TO DO BRAIN COMMIT FROM PORTAL — step-by-step
-- GOLDEN RULES — 6 rules that must never be broken
+5. SALESDOCSKILL CONTENT — WHAT IS INSIDE
+   - Identity: Senior Creative Director persona, 20+ years
+   - Input handling: old brochures, briefs, verbal, data dumps
+   - 8-step build process: read → interview → web research → plan → design → MARP → export → quality gate
+   - Brand system: Fraunces + Outfit, full colour tokens
+   - 5 output templates: partner proposal, agent onboarding, service brochure, accommodation, company overview
+   - 12-point quality gate
+   - MARP installation commands
+   - Full folder structure
 
----
-
-### VEERABHADRA.md UPDATED
-
-Session rhythm section replaced with:
-- Link to memory/session-workflow.md for full detail
-- THE COMPLETE DAILY LOOP — 8-step visual summary
-- SESSION START — 5 steps
-- SESSION END — NON-NEGOTIABLE — terminal prompt + git commands
-
----
-
-### CLAUDE.md UPDATED
-
-New section added at end: SESSION END — ALWAYS SAVE TO 369-BRAIN
-- AT END OF EVERY SESSION — RUN THIS (4 steps)
-- THE ONE RULE — 369-brain is the single destination
-
----
-
-### DECISIONS.MD UPDATED
-
-7 new decisions locked:
-1. One session = one chat in VEERABHADRA project
-2. 369-brain GitHub = single source of truth for all memory
-3. No files stored in Claude Project
-4. VEERABHADRA asks to read GitHub at every session start
-5. VEERABHADRA flags SAVE THIS mid-session for important decisions
-6. Git rules live in CLAUDE.md only — never duplicated elsewhere
-7. Session end brain commit is non-negotiable
-
----
-
-### COMMITS PUSHED
-
-2 commits to 369-brain main:
-- `2021037` — brain: lock session workflow — one source, two repos, two commits 18 Apr
-- `4a5f484` — brain: add save map and session end rule to both files 18 Apr
-
----
-
-## BUILD STATUS — 19 APRIL 2026
+### BUILD STATUS — 19 APRIL 2026
 
 Phase 1 Backend — COMPLETE
 Phase 4 Queue View UI — COMPLETE
@@ -84,42 +62,38 @@ CE + CLAUDE.md — COMPLETE
 UIUX Superman Sidebar + Avatar — COMPLETE
 Dashboard Cards Redesign — COMPLETE
 Git hygiene + security — COMPLETE
-deassists .gitignore updated — COMPLETE
-369-brain reorganised + pushed — COMPLETE
-VEERABHADRA.md written — COMPLETE
-All 17 brain files created — COMPLETE
-Claude desktop app installed — COMPLETE
 Session workflow locked — COMPLETE
+Karpathy principles merged into CLAUDE.md — COMPLETE
+Sales Output Engine Salesdocskill.md — COMPLETE
 Q Intelligence fields + CallLogModal — NOT STARTED
-New sidebar structure LEAD_CRM — NOT STARTED
+New sidebar LEAD_CRM + SALES_SETUP — NOT STARTED
 My Queue page — NOT STARTED
 Finance Section — NOT STARTED
 Phase 6 Migration Script — NOT STARTED
+MARP installation on Mac Mini — NOT STARTED
+Sales data files (universities, courses, services) — NOT STARTED
 
----
+### PENDING BLOCKERS
 
-## PENDING BLOCKERS
-
-- assigned_to enum EMPTY — Shon runs =UNIQUE(K2:K9999) on Sheets col K — HIGH
+- assigned_to enum EMPTY — Shon runs =UNIQUE(K2:K9999) on Sheets col K
 - JWT secrets rotation — Latha CRITICAL
 - 4 AWS ACL errors — Latha MEDIUM
 - Stripe write-back bug — Latha HIGH
 - Security guard bypass scope.guard.ts ~L79 — Latha HIGH
-- LEAD_CRM + SALES_SETUP roles not in codebase — next sidebar session MEDIUM
-- admissions-brain.md needs questionnaire content — HIGH
-- services-brain.md needs questionnaire content — HIGH
-- sales-brain.md needs questionnaire content — HIGH
-- partners-brain.md needs questionnaire content — HIGH
+- LEAD_CRM + SALES_SETUP roles not in codebase — next sidebar session
+- Sales data files need content — universities, courses, services, accommodation, agents
 
----
+### NEXT SESSION MUST START WITH
 
-## NEXT SESSION MUST START WITH
-
-1. "VEERABHADRA — [context of what we are doing today]"
-2. VEERABHADRA asks: "Shall I read the latest state from 369-brain now?"
-3. VEERABHADRA reads via GitHub MCP: session-state.md, activity-log.md, decisions.md
-4. Confirm pm2 status — all 3 servers running
-5. Priority: Q Intelligence fields + CallLogModal OR questionnaire content
+1. Open new chat in VEERABHADRA project
+2. Click + in chat input → attach from GitHub → select:
+   memory/session-state.md
+   memory/activity-log.md
+3. Say: "VEERABHADRA — [context of today]"
+4. Priority options:
+   A — Q Intelligence fields + CallLogModal (portal build)
+   B — Sales data files content (fill universities, courses, services)
+   C — MARP install + first test output using Salesdocskill
 
 ---
 

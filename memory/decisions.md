@@ -31,3 +31,9 @@ Never delete entries. Only append.
 | 18 Apr 2026 | VEERABHADRA flags SAVE THIS mid-session for important decisions | Nothing missed before session end commit |
 | 18 Apr 2026 | Git rules live in CLAUDE.md only — never duplicated elsewhere | One place to maintain rules eliminates drift |
 | 18 Apr 2026 | Session end brain commit is non-negotiable | Only failure mode is skipping this step |
+| 19 Apr 2026 | Session start = attach session-state.md + activity-log.md from GitHub via + button | Replaces GitHub MCP auto-read — more reliable |
+| 19 Apr 2026 | Salesdocskill.md is the Sales Output Engine skill | Named and saved to skills/sales-design/ |
+| 19 Apr 2026 | MARP for all slide exports — PPT + PDF both every time | Automatable, version controlled, consistent |
+| 19 Apr 2026 | Old brochures = content only, never design reference | We elevate — never reproduce |
+| 19 Apr 2026 | Web research mandatory on every Salesdocskill output | Stale data in proposals destroys credibility |
+| 19 Apr 2026 | Karpathy 4 principles merged into CLAUDE.md | Better AI coding discipline in every session |
