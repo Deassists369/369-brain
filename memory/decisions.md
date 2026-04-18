@@ -24,3 +24,10 @@ Never delete entries. Only append.
 | 17 Apr 2026 | Permission clone rule — filter newItem.children not x.children | Sidebar role-switch bug fix |
 | 18 Apr 2026 | Agent layer tool TBD — function defined now, tool chosen after portal stable | Prevents premature tool lock-in |
 | 18 Apr 2026 | 369-brain is private — only Shon and AI systems | Company intelligence is confidential |
+| 18 Apr 2026 | One session = one chat in VEERABHADRA project | Clean separation per unit of work |
+| 18 Apr 2026 | 369-brain GitHub = single source of truth for all memory | No local files, no daily uploads, no Claude Project files |
+| 18 Apr 2026 | No files stored in Claude Project | GitHub MCP reads on demand — one source eliminates drift |
+| 18 Apr 2026 | VEERABHADRA asks to read GitHub at every session start | Ensures always working from live state |
+| 18 Apr 2026 | VEERABHADRA flags SAVE THIS mid-session for important decisions | Nothing missed before session end commit |
+| 18 Apr 2026 | Git rules live in CLAUDE.md only — never duplicated elsewhere | One place to maintain rules eliminates drift |
+| 18 Apr 2026 | Session end brain commit is non-negotiable | Only failure mode is skipping this step |

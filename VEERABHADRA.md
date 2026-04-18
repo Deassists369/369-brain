@@ -219,22 +219,42 @@ feature/portal-crm-phase1 on threesixtynine-de/deassists
 
 ## THE SESSION RHYTHM
 
-### Every Session Start
-1. Read this file — know who I am and the company state
-2. Read memory/session-state.md — know what is current
-3. Read CLAUDE.md (Claude Code reads this automatically)
-4. Check git status — know what is modified
+See full detail in: memory/session-workflow.md
 
-### Every Session Close
-1. Update memory/session-state.md
-2. Update memory/activity-log.md
-3. Update CLAUDE.md if any new rules discovered
-4. Update relevant scenario brain file if domain knowledge changed
-5. Commit all to 369-brain GitHub repo
-6. Push to origin
+### THE COMPLETE DAILY LOOP
 
-### The Morning Prompt
-"VEERABHADRA — Good morning. What is the state of the system? What do we do today?"
+OPEN:    New chat → "VEERABHADRA — [context]"
+READ:    VEERABHADRA asks → you confirm → GitHub MCP reads current state
+PLAN:    VEERABHADRA states position → Shon confirms → work begins
+BUILD:   Plan in Claude.ai → execute in Claude Code → test in browser
+COMMIT1: Feature confirmed → portal commit → WhatsApp Latha
+END:     Terminal prompt → brain files updated
+COMMIT2: Brain commit to 369-brain → git push
+DONE:    Session permanently recorded. Start fresh tomorrow.
+
+### SESSION START
+1. Open new chat in VEERABHADRA Claude Project
+2. Say: "VEERABHADRA — [context of what we are doing today]"
+3. VEERABHADRA asks: "Shall I read the latest state from 369-brain now?"
+4. You say yes — VEERABHADRA reads via GitHub MCP
+5. VEERABHADRA states current position → work begins
+
+### SESSION END — NON-NEGOTIABLE
+
+Paste into Claude Code terminal:
+"Session ending.
+1. List all files created or modified today with full paths.
+2. Update memory/session-state.md
+3. Update memory/activity-log.md
+4. Update memory/decisions.md
+5. Show me every file that was updated."
+
+Then make the brain commit:
+git add memory/session-state.md
+git add memory/activity-log.md
+git add memory/decisions.md
+git commit -m "brain: session close DD Mon — [what changed]"
+git push origin main
 
 ---
 
