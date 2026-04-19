@@ -26,7 +26,7 @@ No code lives here. Only Shon and AI systems access this.
 
 Repository 2 — threesixtynine-de/deassists (portal)
 The actual codebase. NestJS, Next.js, shared libraries.
-Active branch: feature/portal-crm-phase1
+Active branch: feature/portal.shon369
 Latha reviews and commits here. Never mix with brain repo.
 
 ---

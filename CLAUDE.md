@@ -149,7 +149,7 @@ Old values are compromised until rotation is complete. HIGH priority.
 
 ## CURRENT BRANCH
 
-feature/portal-crm-phase1 — active build branch
+feature/portal.shon369 — active build branch
 Do NOT switch branches mid-session without Shon explicit instruction.
 
 ---
@@ -387,7 +387,7 @@ Files changed:
 1. [filename] — [one sentence what it does]
 2. [filename] — [one sentence what it does]
 What to check: [specific thing to verify in browser]
-Branch: feature/portal-crm-phase1
+Branch: feature/portal.shon369
 Safe to pull."
 
 ### RULE 9 — Check git status at the start of every session
