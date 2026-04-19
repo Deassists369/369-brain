@@ -4,6 +4,77 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 19 April 2026 — VEERABHADRA / Branch Reset + 5-Stage SOP + Change Log System (Session 17)
+
+**Branch:** feature/portal.shon369 (new clean branch from dev_v2)
+
+### SESSION SUMMARY
+
+Major reset session. Old branch feature/portal-crm-phase1 retired after reviewing all problems.
+New branch feature/portal.shon369 declared from dev_v2. Complete process discipline established.
+
+### WHAT WAS DONE
+
+**1. Old branch problems reviewed**
+Full review of all problems and solutions from feature/portal-crm-phase1.
+Complete build summary reviewed — 16 files added, 2 modified across 8 tasks.
+Decision: old branch retired. Fresh start with new discipline.
+
+**2. New branch declared**
+Branch feature/portal.shon369 created from dev_v2 (confirmed by Latha 19 April 2026).
+Reference branch for code migration: feature/portal-crm-phase1.
+No code committed yet — ready for Task 1.
+
+**3. 5-Stage SOP locked permanently**
+New standard operating procedure for all IT work:
+Stage 1 — Plan (VEERABHADRA writes full task plan)
+Stage 2 — Compare (verify file against reference branch)
+Stage 3 — Build (write file in Claude Code)
+Stage 4 — Document (add entry to branch change log before commit)
+Stage 5 — Commit (git add specific files only, never git add .)
+
+**4. IT Change Log SOP created**
+Permanent addition to all portal and IT work.
+Every branch has a BRANCH-CHANGE-LOG file.
+Every task gets an entry before commit.
+Every PR to Latha includes the change log.
+Saved to: memory/it-change-log-sop.md
+
+**5. Branch change log created**
+BRANCH-CHANGE-LOG-portal.shon369.md created for new branch.
+8 task templates pre-written for migration.
+Running summary table at bottom.
+Saved to: change-logs/BRANCH-CHANGE-LOG-portal.shon369.md
+
+**6. Code snapshot taken from old branch**
+19 files copied from feature/portal-crm-phase1 for line-by-line comparison.
+Saved to: code-snapshot/ folder in 369-brain.
+This is the reference for all migration tasks.
+
+### FILES CREATED
+
+- ~/deassists-workspace/369-brain/change-logs/ — new folder
+- ~/deassists-workspace/369-brain/change-logs/BRANCH-CHANGE-LOG-portal.shon369.md
+- ~/deassists-workspace/369-brain/memory/it-change-log-sop.md
+- ~/deassists-workspace/369-brain/code-snapshot/ — 19 reference files
+
+### KEY DECISIONS
+
+- feature/portal-crm-phase1 retired — no more commits to old branch
+- feature/portal.shon369 = new clean branch from dev_v2
+- 5-stage SOP = permanent standard for all IT work
+- IT Change Log SOP = every branch, every task, every PR
+- Code snapshot = reference for all migration tasks
+
+### CURRENT STATUS
+
+Branch: feature/portal.shon369
+Status: Ready for Task 1 (Design Tokens)
+Change log: BRANCH-CHANGE-LOG-portal.shon369.md ready
+Reference: code-snapshot/ files ready for comparison
+
+---
+
 ## 19 April 2026 — VEERABHADRA / Sales Output Engine + Karpathy + Workflow (Session 16)
 
 **Branch:** main (369-brain repo)
