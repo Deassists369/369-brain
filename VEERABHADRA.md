@@ -84,7 +84,7 @@ Brain file: services/accommodation-brain.md
 The call center and lead management system.
 37 agents. Google Sheets migrating to portal MongoDB.
 Q Intelligence: call tracking, outcomes, callbacks, automated status mapping.
-Active build: feature/portal-crm-phase1 on threesixtynine-de/deassists repo.
+Active build: feature/portal.shon369 on threesixtynine-de/deassists repo.
 Brain file: services/crm-brain.md
 
 ### Scenario 4 — Web Portal and App Development
@@ -148,7 +148,7 @@ Brain file: company/partners-brain.md
 - Phase 6 Migration Script (Google Sheets → MongoDB)
 
 ### ACTIVE BRANCH
-feature/portal-crm-phase1 on threesixtynine-de/deassists
+feature/portal.shon369 on threesixtynine-de/deassists
 
 ---
 
