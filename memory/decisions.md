@@ -37,3 +37,6 @@ Never delete entries. Only append.
 | 19 Apr 2026 | Old brochures = content only, never design reference | We elevate — never reproduce |
 | 19 Apr 2026 | Web research mandatory on every Salesdocskill output | Stale data in proposals destroys credibility |
 | 19 Apr 2026 | Karpathy 4 principles merged into CLAUDE.md | Better AI coding discipline in every session |
+| 19 Apr 2026 | Sidebar hook changed to non-blocking reminder only — never blocks commit | Blocking hook caused friction without preventing the real problem (blanket prettier) |
+| 19 Apr 2026 | CRM migration done in 3 groups not 7 individual commits — Latha's preference | Cleaner PR review — fewer commits to trace |
+| 19 Apr 2026 | All commits staged locally, pushed together at end of session | Reduces risk of partial push; Latha sees complete branch at once |

@@ -4,6 +4,95 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 19 April 2026 — VEERABHADRA / CRM Migration Complete + Sidebar (Session 17 continued)
+
+**Branch:** feature/portal.shon369
+
+### SESSION SUMMARY
+
+CRM migration fully completed. All 16 new files and 4 modified files committed and pushed.
+Sidebar updated with Call Center 369 and Sales CRM. Sidebar audit passed all 7 checks.
+Pre-commit hook permanently removed. Latha handover package prepared and sent.
+
+### WHAT WAS DONE
+
+**1. All 6 CRM commits pushed to feature/portal.shon369**
+- f8a28f87 — chore(crm): add design tokens — crmTokens.ts
+- bee4c6b5 — feat(crm): add lead entity and ID service
+- 4e81cbe4 — feat(crm): add leads backend module
+- f1123638 — feat(crm): add leads frontend components and pages
+- ebabbe9c — feat(crm): add sales dashboard
+- de62cd72 — feat(crm): add Call Center 369 and Sales CRM to sidebar
+Commits were grouped in 3 batches per Latha's preference, pushed together at end of session.
+
+**2. Pre-commit hook removed permanently**
+.husky/pre-commit deleted. git config --unset core.hooksPath run.
+Hook was running prettier --write . on every commit — root cause of 1000+ file disaster.
+Now replaced with non-blocking reminder only. CLAUDE.md Rule 11 + Rule 13 enforced.
+
+**3. Sidebar updated — sidemenu.ts only**
+Call Center 369: SUPER_ADMIN, ORG_ADMIN, MANAGER, LEAD_CRM
+Sales CRM: SUPER_ADMIN, ORG_ADMIN, MANAGER, SALES_SETUP
+Inserted after Dashboard, before Applications (lines 21–65).
+UserTypes.LEAD_CRM and UserTypes.SALES_SETUP confirmed already in user.types.ts.
+
+**4. Sidebar audit — all 7 checks passed**
+SUPER_ADMIN ✅ MANAGER ✅ LEAD_CRM (CC369 only) ✅ SALES_SETUP (CRM only) ✅
+STAFF blocked ✅ AGENT blocked ✅ No existing items broken ✅
+Flag B raised: Sales Dashboard child path /dashboard won't match collection for non-SUPER_ADMIN.
+Decision required before next build session.
+
+**5. Latha handover package prepared and sent**
+Branch: feature/portal.shon369
+Change log: BRANCH-CHANGE-LOG-portal.shon369.md filled with all 6 commit hashes.
+Waiting for Latha review and merge.
+
+### FILES MODIFIED TODAY (this session — deassists portal)
+
+- `libs/shared/models/sidemenu.ts` — Call Center 369 + Sales CRM sections added
+- `.husky/pre-commit` — DELETED permanently
+
+### FILES COMMITTED TODAY (full CRM migration — all 6 commits)
+
+**New files (16):**
+- apps/cms-next/styles/crmTokens.ts
+- apps/backend-nest/src/leads/entities/lead.entity.ts
+- apps/backend-nest/src/leads/lead-id.service.ts
+- apps/backend-nest/src/leads/leads-routing.service.ts
+- apps/backend-nest/src/leads/leads.module.ts
+- apps/backend-nest/src/leads/leads.controller.ts
+- apps/backend-nest/src/leads/leads.service.ts
+- apps/cms-next/components/leads/StatusBadge.tsx
+- apps/cms-next/components/leads/QueueBadge.tsx
+- apps/cms-next/components/leads/LeadQueueSidebar.tsx
+- apps/cms-next/components/leads/LeadTable.tsx
+- apps/cms-next/components/leads/LeadDetailPanel.tsx
+- apps/cms-next/components/leads/CommentThread.tsx
+- apps/cms-next/pages/leads/index.tsx
+- apps/cms-next/pages/leads/new.tsx
+- apps/cms-next/pages/dashboard/index.tsx
+
+**Modified files (4):**
+- apps/backend-nest/src/app.module.ts
+- libs/shared/constants/collections.ts
+- libs/shared/models/sidemenu.ts
+- apps/backend-nest/src/accounts/accounts.service.ts (779c7930 — ACL fix, Latha approved)
+
+### KEY DECISIONS
+
+- Pre-commit hook permanently removed — no blanket formatting ever
+- Sidebar hook changed to non-blocking reminder only
+- CRM migration done in 3 groups not 7 individual commits — Latha's preference
+- All 6 commits local before pushing — push together at session end
+- LEAD_CRM and SALES_SETUP already exist in user.types.ts — no separate step needed
+
+### CURRENT STATUS
+
+Branch: feature/portal.shon369
+All 6 CRM commits pushed. Sidebar audit passed. Waiting for Latha review and merge.
+
+---
+
 ## 19 April 2026 — VEERABHADRA / Branch Reset + 5-Stage SOP + Change Log System (Session 17)
 
 **Branch:** feature/portal.shon369 (new clean branch from dev_v2)

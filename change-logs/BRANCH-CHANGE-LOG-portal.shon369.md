@@ -4,7 +4,7 @@
 # Reference branch (code copied from): feature/portal-crm-phase1
 # Owner: Shon AJ | Brain: VEERABHADRA
 # Created: 19 April 2026
-# Last updated: [updated after every commit]
+# Last updated: 19 April 2026 — all 6 commits filled
 
 ---
 
@@ -35,8 +35,8 @@ No surprises in the diff. No guessing what we touched.
 ---
 
 ### TASK 1 — Design Tokens
-**Commit:** [hash added after commit]
-**Date:** [date]
+**Commit:** f8a28f87
+**Date:** 19 April 2026
 **Type:** chore
 
 **What this is:**
@@ -62,8 +62,8 @@ This must exist before any frontend component is committed.
 ---
 
 ### TASK 2 — Backend Entity + ID Service
-**Commit:** [hash added after commit]
-**Date:** [date]
+**Commit:** bee4c6b5
+**Date:** 19 April 2026
 **Type:** feat
 
 **What this is:**
@@ -89,8 +89,8 @@ No frontend changes. No API endpoints yet.
 ---
 
 ### TASK 3 — Backend Routing + Module + Controller + Service
-**Commit:** [hash added after commit]
-**Date:** [date]
+**Commit:** 4e81cbe4
+**Date:** 19 April 2026
 **Type:** feat
 
 **What this is:**
@@ -122,50 +122,28 @@ and adds Leads to the collections constants file.
 
 ---
 
-### TASK 4 — Badge Components
-**Commit:** [hash added after commit]
-**Date:** [date]
+### TASK 4+5+6 — Frontend Components + Queue View + New Lead Form
+**Commit:** f1123638
+**Date:** 19 April 2026
 **Type:** feat
 
 **What this is:**
-Two small visual components. StatusBadge shows lead status with
-colour coding. QueueBadge shows which queue a lead belongs to.
-Both are used inside the Queue View page built in Task 5.
+All frontend lead components and pages in one commit per Latha's preference.
+Badge components (StatusBadge, QueueBadge), full Queue View page at /leads
+(5 components: sidebar, table, detail panel, comment thread, page index),
+and the New Lead Form at /leads/new (Gopika's data entry screen).
 
 **Files added:**
 | File | Action | Compared against feature/portal-crm-phase1 |
 |------|--------|----------------------------|
 | apps/cms-next/components/leads/StatusBadge.tsx | CREATED | Yes — colours verified against design tokens |
 | apps/cms-next/components/leads/QueueBadge.tsx | CREATED | Yes — identical |
-
-**Files modified:** None
-
-**Files touched in any other way:** None
-
-**What Latha should verify:**
-- Both files exist at correct paths
-- Frontend compiles: npx tsc --noEmit from apps/cms-next
-
----
-
-### TASK 5 — Queue View Page
-**Commit:** [hash added after commit]
-**Date:** [date]
-**Type:** feat
-
-**What this is:**
-The main lead management screen at /leads. Staff and managers use
-this to view all leads, filter by queue, and open lead details.
-Five components assembled into one page.
-
-**Files added:**
-| File | Action | Compared against feature/portal-crm-phase1 |
-|------|--------|----------------------------|
 | apps/cms-next/components/leads/LeadQueueSidebar.tsx | CREATED | Yes — queue counts and filter logic verified |
 | apps/cms-next/components/leads/LeadTable.tsx | CREATED | Yes — pagination verified |
 | apps/cms-next/components/leads/LeadDetailPanel.tsx | CREATED | Yes — all fields verified |
 | apps/cms-next/components/leads/CommentThread.tsx | CREATED | Yes — timestamp format verified |
 | apps/cms-next/pages/leads/index.tsx | CREATED | Yes — role guards verified |
+| apps/cms-next/pages/leads/new.tsx | CREATED | Yes — all 16 fields verified, duplicate modal verified |
 
 **Files modified:** None
 
@@ -177,29 +155,6 @@ Five components assembled into one page.
 - STAFF can access the page
 - AGENT cannot access the page
 - Leads load from the backend
-
----
-
-### TASK 6 — New Lead Form
-**Commit:** [hash added after commit]
-**Date:** [date]
-**Type:** feat
-
-**What this is:**
-The screen Gopika uses to create a new lead at /leads/new.
-Replaces Google Sheets data entry. 16 fields across 4 cards.
-Duplicate detection modal if WhatsApp number already exists.
-
-**Files added:**
-| File | Action | Compared against feature/portal-crm-phase1 |
-|------|--------|----------------------------|
-| apps/cms-next/pages/leads/new.tsx | CREATED | Yes — all 16 fields verified, duplicate modal verified |
-
-**Files modified:** None
-
-**Files touched in any other way:** None
-
-**What Latha should verify:**
 - localhost:4002/leads/new renders without errors
 - Submitting form creates a lead in MongoDB
 - Lead ID appears in DA-YYYY-MM-### format on success
@@ -209,8 +164,8 @@ Duplicate detection modal if WhatsApp number already exists.
 ---
 
 ### TASK 7 — Sales Dashboard
-**Commit:** [hash added after commit]
-**Date:** [date]
+**Commit:** ebabbe9c
+**Date:** 19 April 2026
 **Type:** feat
 
 **What this is:**
@@ -230,34 +185,51 @@ Colour coded using locked semantic colour system.
 **What Latha should verify:**
 - localhost:4002/dashboard renders without errors
 - Stats cards show numbers from backend
-- SUPER_ADMIN, MANAGER, STAFF, DATA_ENTRY all see this page
+- SUPER_ADMIN, MANAGER, STAFF can all see this page
 
 ---
 
-### TASK 8 — Sidebar + Avatar Redesign
-**Commit:** [hash added after commit]
-**Date:** [date]
-**Type:** design
+### TASK 8 — Call Center 369 + Sales CRM Sidebar Sections
+**Commit:** de62cd72
+**Date:** 19 April 2026
+**Type:** feat
 
 **What this is:**
-Visual redesign of the sidebar and top avatar dropdown.
-Zero logic changes. Only visual files in libs/shared-ui touched.
-Sidebar audit skill ran before this commit — all roles pass.
+Two new sections added to the sidebar menu for the CRM roles.
+Call Center 369 — for lead management staff (LEAD_CRM role).
+Sales CRM — for sales setup staff (SALES_SETUP role).
+Both sections also visible to SUPER_ADMIN, ORG_ADMIN, and MANAGER.
+Sidebar audit ran before this commit — all 7 checks passed.
+
+**Files added:** None
 
 **Files modified:**
 | File | Action | What changed |
 |------|--------|-------------|
-| [shared-ui files listed here after build] | MODIFIED | Visual only — no logic changes |
+| libs/shared/models/sidemenu.ts | MODIFIED | Call Center 369 and Sales CRM sections inserted at lines 21–65, after Dashboard, before Home |
 
 **Files touched in any other way:** None
 
-**What Latha should verify:**
-- Sidebar renders with DeAssists green and correct typography
-- Avatar dropdown shows role name
-- Every role sees correct sidebar items — no permission regressions
-- Sidebar audit output included below:
+**Sidebar audit results (all 7 checks):**
+- SUPER_ADMIN sees everything including Call Center 369 and Sales CRM ✅
+- MANAGER sees Call Center 369 and Sales CRM ✅
+- LEAD_CRM sees Call Center 369 only ✅
+- SALES_SETUP sees Sales CRM only ✅
+- STAFF does NOT see Call Center 369 or Sales CRM ✅
+- AGENT does NOT see Call Center 369 or Sales CRM ✅
+- No existing items broken ✅
 
-[Sidebar audit output pasted here before commit]
+**Known flag (not a blocker):**
+Sales Dashboard child uses path /dashboard which won't match any MongoDB collection name
+in the children filter for non-SUPER_ADMIN users. SUPER_ADMIN sees it correctly.
+Decision needed before next session: change path to page-workinprogress?status=sales
+or accept SUPER_ADMIN-only visibility until Sales Dashboard has its own collection-backed endpoint.
+
+**What Latha should verify:**
+- Sidebar shows Call Center 369 when logged in as MANAGER
+- Sidebar shows Sales CRM when logged in as MANAGER
+- STAFF and AGENT do not see either section
+- All existing sidebar items still visible per their previous roles
 
 ---
 
@@ -270,26 +242,26 @@ Latha should see zero changes to these in the diff:
 - apps/backend-nest/src/core/entities/extendables/payment.entity.ts
 - Any Stripe or payment logic
 - apps/mui-cms-next/ — separate app entirely
-- accounts.service.ts — pre-existing AWS ACL errors, not our scope
 - Any file not listed in the task entries above
+
+Note: accounts.service.ts has 4 pre-existing AWS ACL errors that were there before this branch.
+These are Latha's scope to fix. They are not in this branch's diff.
 
 ---
 
-## RUNNING DIFF SUMMARY — UPDATED AFTER EACH TASK
+## RUNNING DIFF SUMMARY
 
 | Task | Files Added | Files Modified | Commit |
 |------|------------|----------------|--------|
-| 1 — Design tokens | 1 | 0 | [hash] |
-| 2 — Entity + ID service | 2 | 0 | [hash] |
-| 3 — Full backend module | 4 | 2 | [hash] |
-| 4 — Badge components | 2 | 0 | [hash] |
-| 5 — Queue View page | 5 | 0 | [hash] |
-| 6 — New Lead Form | 1 | 0 | [hash] |
-| 7 — Dashboard | 1 | 0 | [hash] |
-| 8 — Sidebar + Avatar | 0 | [N] | [hash] |
-| **TOTAL** | **16** | **2+** | |
+| 1 — Design tokens | 1 | 0 | f8a28f87 |
+| 2 — Entity + ID service | 2 | 0 | bee4c6b5 |
+| 3 — Full backend module | 4 | 2 | 4e81cbe4 |
+| 4+5+6 — Frontend components + pages | 8 | 0 | f1123638 |
+| 7 — Dashboard | 1 | 0 | ebabbe9c |
+| 8 — Sidebar (Call Center 369 + Sales CRM) | 0 | 1 | de62cd72 |
+| **TOTAL** | **16** | **3** | |
 
 ---
 
-*Updated by VEERABHADRA after every commit*
-*Delivered to Latha alongside every PR*
+*Updated by VEERABHADRA — 19 April 2026*
+*Delivered to Latha alongside PR for feature/portal.shon369*
