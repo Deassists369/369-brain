@@ -1,5 +1,7 @@
 # CLAUDE.md — DeAssists Codebase Intelligence
+
 # Read this before every session. No exceptions.
+
 # Last updated: 17 April 2026
 
 ---
@@ -50,12 +52,13 @@ libs/shared-ui/        UI components, layouts, sidebar renderer
 
 ### Frontend proxy
 
-- cms-next calls /api/v1/* which next.config.js rewrites to backend:8000
+- cms-next calls /api/v1/\* which next.config.js rewrites to backend:8000
 - Never hardcode localhost:8000 in frontend code
 
 ---
 
 ## SIDEBAR — TWO FILES, TWO DIFFERENT JOBS
+
 ## CORRECTED 17 Apr — previous version wrongly said menu lives in permission.helper.ts
 
 The sidebar uses TWO files. Never confuse them:
@@ -76,6 +79,7 @@ The sidebar is NOT a React component. It is a static config array filtered by ro
 ---
 
 ## PERMISSION HELPER — CLONE FILTER RULE (CRITICAL)
+
 ## ADDED 17 Apr — fix from commit af90417b was not documented
 
 Fixed: commit af90417b — 17 April 2026
@@ -84,7 +88,7 @@ In permission.helper.ts the children filter MUST run on newItem.children
 NEVER on x.children.
 
 CORRECT: newItem.children = newItem.children?.filter((child: any) => {
-WRONG:   newItem.children = x.children?.filter((child: any) => {
+WRONG: newItem.children = x.children?.filter((child: any) => {
 
 Why: newItem is a deep clone of x. x is the original SideMenu array.
 Filtering x.children permanently mutates the original array in memory.
@@ -106,6 +110,7 @@ CE must verify this position is correct after any edit to permission.helper.ts.
 ---
 
 ## NEXT.JS IMAGE RULE (CRITICAL)
+
 ## ADDED 17 Apr — fix from commit b67ce80f was not documented
 
 Fixed: commit b67ce80f — 17 April 2026
@@ -113,7 +118,7 @@ Fixed: commit b67ce80f — 17 April 2026
 All Next.js <Image> components for local images MUST have both width AND height props.
 
 CORRECT: <Image width={230} height={60} src={desImage} alt={'logo'} />
-WRONG:   <Image width={230} src={desImage} alt={'logo'} />
+WRONG: <Image width={230} src={desImage} alt={'logo'} />
 
 Without height, Next.js cannot calculate aspect ratio and renders the alt text string instead.
 This caused the sidebar logo to display as the word "logo" to every user.
@@ -121,14 +126,15 @@ This caused the sidebar logo to display as the word "logo" to every user.
 ---
 
 ## SECURITY — JWT SECRETS (ACTION STILL REQUIRED)
+
 ## ADDED 17 Apr — security fix from commit f5a9dc5c was not documented
 
 Fixed: commit f5a9dc5c — 17 April 2026
 
 apps/mui-cms-next/.env was committed to Git history and has been untracked.
 Two secrets were exposed:
-  NEXT_PUBLIC_JWT_SECRET
-  NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET
+NEXT_PUBLIC_JWT_SECRET
+NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET
 
 .env is now in .gitignore. NEVER commit any .env file to Git ever again.
 
@@ -155,25 +161,26 @@ Do NOT switch branches mid-session without Shon explicit instruction.
 ---
 
 ## BUILD STATUS — 17 APRIL 2026
+
 ## CORRECTED 17 Apr — removed duplicate 13 Apr block and 15 Apr block. One block only. Always update this one.
 
-| Area | Status |
-|------|--------|
-| Phase 1 Backend (6 lead files) | COMPLETE ✅ |
-| Phase 4 Queue View UI (7 files) | COMPLETE ✅ |
-| Phase 5A New Lead Form | COMPLETE ✅ |
-| Phase 5B Sales Dashboard | COMPLETE ✅ |
-| CE Installation + CLAUDE.md | COMPLETE ✅ |
-| UIUX Superman — Sidebar + Avatar | COMPLETE ✅ |
-| Role-Aware Avatar Dropdown | COMPLETE ✅ |
-| Dashboard Cleanup (Transactions removed) | COMPLETE ✅ |
-| Dashboard Cards Visual Redesign | COMPLETE ✅ |
-| Git hygiene + security audit (7 commits) | COMPLETE ✅ |
-| Q Intelligence fields + CallLogModal | NOT STARTED 🔴 |
-| New sidebar structure (LEAD_CRM role) | NOT STARTED 🔴 |
-| My Queue page | NOT STARTED 🔴 |
-| Finance Section (CardTransactions) | NOT STARTED 🔴 |
-| Phase 6 Migration Script | NOT STARTED 🔴 |
+| Area                                     | Status         |
+| ---------------------------------------- | -------------- |
+| Phase 1 Backend (6 lead files)           | COMPLETE ✅    |
+| Phase 4 Queue View UI (7 files)          | COMPLETE ✅    |
+| Phase 5A New Lead Form                   | COMPLETE ✅    |
+| Phase 5B Sales Dashboard                 | COMPLETE ✅    |
+| CE Installation + CLAUDE.md              | COMPLETE ✅    |
+| UIUX Superman — Sidebar + Avatar         | COMPLETE ✅    |
+| Role-Aware Avatar Dropdown               | COMPLETE ✅    |
+| Dashboard Cleanup (Transactions removed) | COMPLETE ✅    |
+| Dashboard Cards Visual Redesign          | COMPLETE ✅    |
+| Git hygiene + security audit (7 commits) | COMPLETE ✅    |
+| Q Intelligence fields + CallLogModal     | NOT STARTED 🔴 |
+| New sidebar structure (LEAD_CRM role)    | NOT STARTED 🔴 |
+| My Queue page                            | NOT STARTED 🔴 |
+| Finance Section (CardTransactions)       | NOT STARTED 🔴 |
+| Phase 6 Migration Script                 | NOT STARTED 🔴 |
 
 ---
 
@@ -195,29 +202,32 @@ Collection: leads (CollectionNames.Leads)
 Queue values: 369_CALL_CENTER | 369_CALL_CENTER_FU | BCBT_CALL_CENTER | BCBT_FOLLOW_UP | DON | ACCOMMODATION | SAJIR | UNROUTED
 
 ### Q Intelligence fields — to be added in next build session
+
 ## ADDED 17 Apr — field names locked here so Claude Code uses exact correct names when building
 
-call_attempts: number    — how many times this lead has been called
-last_called_at: Date     — timestamp of most recent call
-last_outcome: string     — no_answer | interested | not_now | converted | lost | wrong_lead
-callback_at: Date        — scheduled callback datetime (mandatory when outcome = interested or not_now)
-callback_note: string    — agent note about the callback
+call_attempts: number — how many times this lead has been called
+last_called_at: Date — timestamp of most recent call
+last_outcome: string — no_answer | interested | not_now | converted | lost | wrong_lead
+callback_at: Date — scheduled callback datetime (mandatory when outcome = interested or not_now)
+callback_note: string — agent note about the callback
 
 ---
 
 ## PM2 SERVERS (Mac Mini — do not restart unless something is broken)
 
-pm2 status      — check all 3 are running
-pm2 logs        — live logs
+pm2 status — check all 3 are running
+pm2 logs — live logs
 pm2 restart all — only if needed
 
 ---
 
 ## END OF SESSION — MANDATORY PROTOCOL
+
 ## UPDATED 17 Apr — added step 3: CLAUDE.md must be updated same session as any fix. Never later.
 
 When session ends, run in Claude Code terminal:
 "Session ending.
+
 1. List all files created or modified today with full paths.
 2. Update memory/session-state.md and memory/activity-log.md.
 3. If any bug was fixed or any new rule discovered today — add it to CLAUDE.md now before closing.
@@ -235,6 +245,7 @@ CLAUDE.md must be updated the same session any fix is made. Never later. Never n
 ### Sidebar Audit Skill (MANDATORY)
 
 Run BEFORE every commit touching:
+
 - libs/shared/models/sidemenu.ts
 - libs/shared/functions/permission.helper.ts
 - libs/shared/constants/user.types.ts
@@ -304,6 +315,7 @@ Never modify apps/mui-cms-next/ for portal changes.
 - NEVER use #F6F7F4 for pill or badge backgrounds
 
 ### Semantic colour language — LOCKED 16 April 2026
+
 ## ADDED 17 Apr — was missing from design system
 
 - Green (#1D7A45) = positive, active, total counts, constructive actions
@@ -337,40 +349,48 @@ Never modify apps/mui-cms-next/ for portal changes.
 These rules are permanent. Never break them.
 
 ### RULE 1 — Never use git add .
+
 Always name specific files only.
 CORRECT: git add apps/cms-next/components/Cards/CardTeamMembers.tsx
 WRONG: git add .
 
 ### RULE 2 — Always verify staged files before committing
+
 Run this before every single commit:
 git diff --staged --name-only
 Read every file on that list. If anything unintended is there — remove it:
 git restore --staged [filename]
 
 ### RULE 3 — Never run Prettier on the whole codebase
+
 CORRECT: npx prettier --write [specific file only]
 WRONG: npx prettier --write .
 WRONG: npx prettier --write apps/
 The 06e81ce8 commit was a 1000+ file disaster caused by blanket Prettier. Never again.
 
 ### RULE 4 — Never push without Latha on a call
+
 Build locally. Test locally. Commit locally.
 Do not push until Latha is on a call and has reviewed the diff.
 She is a reviewer, not a tester. Testing is our job before it reaches her.
 
 ### RULE 5 — Always test at localhost:4002 before committing
+
 Every feature must be visually verified in the browser before any commit.
 Check every role that should see the feature. Check nothing else broke.
 
 ### RULE 6 — One feature = one commit
+
 Do not bundle unrelated changes into one commit.
 One thing built → one thing committed → one clean message.
 
 ### RULE 7 — Commit message format
+
 Always use this format:
 type(area): what it does in plain English
 
 Types: fix / design / feat / chore / style / security
+
 ## UPDATED 17 Apr — added security type
 
 Examples:
@@ -380,26 +400,31 @@ feat(leads): add call log endpoint POST /leads/:id/call-log
 security(env): untrack .env file — JWT secrets removed from Git
 
 ### RULE 8 — Latha handover message before every push
+
 Send this on WhatsApp before pushing:
 
 "Latha — pushing now.
 Files changed:
+
 1. [filename] — [one sentence what it does]
 2. [filename] — [one sentence what it does]
-What to check: [specific thing to verify in browser]
-Branch: feature/portal.shon369
-Safe to pull."
+   What to check: [specific thing to verify in browser]
+   Branch: feature/portal.shon369
+   Safe to pull."
 
 ### RULE 9 — Check git status at the start of every session
+
 Before writing a single line of code, run:
 git status
 Understand every file sitting modified before touching anything.
 
 ### RULE 10 — Never commit the deassists submodule
+
 The deassists submodule will always show as modified. Ignore it.
 Never stage it. Never commit it.
 
 ### RULE 11 — Pre-commit hook is permanently removed
+
 ## ADDED 17 Apr — documents removal from commit be7aef2e
 
 Removed: commit be7aef2e — 17 April 2026
@@ -408,12 +433,21 @@ This caused the 1000+ file formatting disaster (commit 06e81ce8).
 Deleted permanently. NEVER reinstall it or any blanket formatting hook.
 
 ### RULE 12 — CLAUDE.md is local only — never commit to Git
+
 ## ADDED 17 Apr — documents decision from commit be7aef2e
 
 Untracked: commit be7aef2e — 17 April 2026
 CLAUDE.md is a local tool file for Claude Code on the Mac Mini.
 Latha does not need it. It must never appear in her diff.
 It is now in .gitignore. Keep it there forever.
+
+### RULE 13 — Never run Prettier under any circumstance
+
+Never run npx prettier on any file for any reason.
+Never format files that are not part of the current task.
+This applies even if the file looks unformatted.
+If Prettier output appears anywhere — run git restore . immediately.
+Every prompt must start with "Read CLAUDE.md first" — this is what loads all rules.
 
 ---
 
@@ -437,14 +471,14 @@ It is now in .gitignore. Keep it there forever.
 
 ## ROLE VISIBILITY — WHAT EACH ROLE SEES
 
-SUPER_ADMIN  → everything
-MANAGER      → Dashboard, Call Center 369, Sales CRM, Services, Applications, Settings
-ORG_ADMIN    → Dashboard, Call Center 369, Sales CRM, Services, Applications, Settings
-STAFF        → Dashboard + Applications ONLY — zero settings, zero user management
-AGENT        → Services (/service/* paths only) + Applications — never admin paths
-LEAD_CRM     → Call Center 369 ONLY — nothing else (role to be added)
-SALES_SETUP  → Sales CRM ONLY — nothing else (role to be added)
-USER         → Student items ONLY — zero admin items ever
+SUPER_ADMIN → everything
+MANAGER → Dashboard, Call Center 369, Sales CRM, Services, Applications, Settings
+ORG_ADMIN → Dashboard, Call Center 369, Sales CRM, Services, Applications, Settings
+STAFF → Dashboard + Applications ONLY — zero settings, zero user management
+AGENT → Services (/service/\* paths only) + Applications — never admin paths
+LEAD_CRM → Call Center 369 ONLY — nothing else (role to be added)
+SALES_SETUP → Sales CRM ONLY — nothing else (role to be added)
+USER → Student items ONLY — zero admin items ever
 
 Parent permissionLevel MUST always equal union of ALL child role arrays.
 If a child is visible to MANAGER but parent excludes MANAGER — entire section hidden.
@@ -474,33 +508,33 @@ Run sidebar audit after adding → pm2 restart backend → fresh login test per 
 ## FILES AND FOLDERS THAT MUST NEVER BE COMMITTED TO GIT
 
 TOOL FOLDERS — NEVER COMMIT:
-  docs/superpowers/
-  .superpowers/
-  .cursor/
-  .compound-engineering/
-  previews/
-  specs/
-  plans/
-  tmp/
+docs/superpowers/
+.superpowers/
+.cursor/
+.compound-engineering/
+previews/
+specs/
+plans/
+tmp/
 
 FILES — NEVER COMMIT:
-  CLAUDE.md              ← local only — untracked 17 April 2026
-  *.local.yaml
-  .env (any directory)
-  env-format.env
-  Any *.html prototype or preview file
-  Any file in docs/superpowers/previews/
+CLAUDE.md ← local only — untracked 17 April 2026
+_.local.yaml
+.env (any directory)
+env-format.env
+Any _.html prototype or preview file
+Any file in docs/superpowers/previews/
 
 BEFORE EVERY COMMIT — RUN THIS CHECK:
-  git diff --staged --name-only
-  Read every file on that list.
-  If ANY tool folder or .env file appears — do NOT commit.
-  Remove from staging: git restore --staged [filename]
+git diff --staged --name-only
+Read every file on that list.
+If ANY tool folder or .env file appears — do NOT commit.
+Remove from staging: git restore --staged [filename]
 
 LATHA RULE:
-  If a diff contains more than 20 files — STOP.
-  Something has gone wrong with staging.
-  Come back to VEERABHADRA before pushing.
+If a diff contains more than 20 files — STOP.
+Something has gone wrong with staging.
+Come back to VEERABHADRA before pushing.
 
 ---
 
@@ -517,6 +551,7 @@ cd ~/deassists-workspace/369-brain
 
 Step 2 — Update brain files:
 "Session ending.
+
 1. List all files created or modified today with full paths.
 2. Update memory/session-state.md — current build position, what was done, what is next.
 3. Update memory/activity-log.md — full session summary with date, branch, files, decisions.
@@ -537,6 +572,7 @@ Step 4 — Switch back to portal if needed:
 cd ~/deassists
 
 ### THE ONE RULE
+
 369-brain is the single destination for all session saves.
 No exceptions. No matter where you are working.
 Full save map: memory/session-workflow.md
@@ -544,11 +580,15 @@ Full save map: memory/session-workflow.md
 ---
 
 ## KARPATHY PRINCIPLES — MERGED 19 APRIL 2026
+
 ## SOURCE: Andrej Karpathy observations on LLM coding pitfalls
+
 ## These apply to every build task in this codebase without exception
 
 ### PRINCIPLE 1 — Think Before Coding
+
 Never assume silently. Before writing any file or any line of code:
+
 - State your interpretation of the task explicitly
 - If multiple approaches exist — list them and ask which to use
 - If anything is unclear — stop and ask before writing one line
@@ -556,7 +596,9 @@ Never assume silently. Before writing any file or any line of code:
 - If the request conflicts with any rule in this file — flag it immediately
 
 ### PRINCIPLE 2 — Simplicity First
+
 Minimum code that solves the problem. Nothing speculative. Nothing extra.
+
 - No files beyond what the task requires
 - No abstractions for single-use code
 - No extra fields, endpoints, or components that were not asked for
@@ -567,7 +609,9 @@ Minimum code that solves the problem. Nothing speculative. Nothing extra.
 - Ask yourself: would a senior engineer say this is overcomplicated? If yes — simplify.
 
 ### PRINCIPLE 3 — Surgical Changes
+
 Touch only what the task requires. Nothing more.
+
 - Never improve, reformat, or reorganise adjacent code during a build task
 - Never refactor files that are not part of the current task
 - Never add or remove comments in files you were not asked to touch
@@ -578,6 +622,7 @@ Touch only what the task requires. Nothing more.
 - This rule exists because silent adjacent changes have caused major disasters in this codebase
 
 ### PRINCIPLE 4 — Goal-Driven Execution
+
 State a plan before acting. Never start executing without confirmation.
 For every multi-step task, output this format before writing any code:
 
