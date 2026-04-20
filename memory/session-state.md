@@ -3,79 +3,66 @@
 
 ---
 
-**Last updated:** 19 April 2026 — Session 17 continued — CRM migration complete + sidebar added
+**Last updated:** 19 April 2026 — Final session close — CRM Phase 1 squashed + pushed
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
 ---
 
-## SESSION: 19.04.2026 — Session 17 continued — CRM Migration Complete
+## SESSION: 19.04.2026 — Final Close — CRM Phase 1 One Clean Commit
 
 ### WHAT WAS DONE
 
-1. CRM MIGRATION — ALL 6 COMMITS PUSHED
+1. ALL 7 CRM COMMITS SQUASHED INTO ONE CLEAN COMMIT
    Branch: feature/portal.shon369
-   All 16 new files and 4 modified files migrated from feature/portal-crm-phase1.
-   All 6 commits pushed successfully. Branch is ahead of origin by 7 commits total.
+   All 22 files (16 new + 6 modified) squashed into a single commit.
+   Force pushed to GitHub.
 
-   Commit f8a28f87 — Design tokens (crmTokens.ts)
-   Commit bee4c6b5 — Lead entity + ID service
-   Commit 4e81cbe4 — Full leads backend module (4 new + 2 modified)
-   Commit f1123638 — Leads frontend components and pages (8 new files)
-   Commit ebabbe9c — Sales dashboard
-   Commit de62cd72 — Call Center 369 + Sales CRM added to sidebar
+   Commit: 26d8957e
+   Message: feat(crm): CRM Phase 1 complete — leads management system
+   Files: 22 total — backend module, frontend components, sidebar, design tokens
 
-2. SIDEBAR UPDATED — sidemenu.ts
-   Call Center 369 section added — permissionLevel: SUPER_ADMIN, ORG_ADMIN, MANAGER, LEAD_CRM
-   Children: All Leads (/leads), + Add Lead (/leads/new)
-   Sales CRM section added — permissionLevel: SUPER_ADMIN, ORG_ADMIN, MANAGER, SALES_SETUP
-   Children: Sales Dashboard (/dashboard)
-   Both sections inserted after Dashboard, before Applications.
+2. RULE 14 LOCKED IN CLAUDE.md
+   One phase = one commit. Always confirm with Shon before committing.
+   Never multiple commits for the same feature or phase.
+   Locked permanently.
 
-3. SIDEBAR AUDIT — ALL 7 CHECKS PASSED
-   SUPER_ADMIN — sees everything including both new sections ✅
-   MANAGER — sees Call Center 369 and Sales CRM ✅
-   LEAD_CRM — sees Call Center 369 only ✅
-   SALES_SETUP — sees Sales CRM only ✅
-   STAFF — does not see either new section ✅
-   AGENT — does not see either new section ✅
-   No existing items broken ✅
+3. LATHA HANDOVER — WAITING FOR REVIEW
+   Branch: feature/portal.shon369
+   One clean commit: 26d8957e
+   Waiting for Latha to review and merge to dev_v2.
 
-4. PRE-COMMIT HOOK REMOVED
-   .husky/pre-commit deleted permanently.
-   git config --unset core.hooksPath run.
-   Root cause of 1000+ file prettier disaster — permanently banned per CLAUDE.md Rule 11.
+### BUILD STATUS — 19 APRIL 2026 (FINAL)
 
-5. LATHA HANDOVER PREPARED
-   Waiting for Latha to review and merge feature/portal.shon369 → dev_v2.
-
-### BUILD STATUS — 19 APRIL 2026
-
-Phase 1 Backend — COMPLETE ✅ (commit 4e81cbe4)
-Phase 4 Queue View UI — COMPLETE ✅ (commit f1123638)
-Phase 5A New Lead Form — COMPLETE ✅ (commit f1123638)
-Phase 5B Sales Dashboard — COMPLETE ✅ (commit ebabbe9c)
-Design Tokens — COMPLETE ✅ (commit f8a28f87)
-Sidebar — Call Center 369 + Sales CRM — COMPLETE ✅ (commit de62cd72)
-CE + CLAUDE.md — COMPLETE ✅
-UIUX Superman Sidebar + Avatar — COMPLETE ✅
-Dashboard Cards Redesign — COMPLETE ✅
-Git hygiene + security — COMPLETE ✅
-Session workflow locked — COMPLETE ✅
-Karpathy principles merged into CLAUDE.md — COMPLETE ✅
-Sales Output Engine Salesdocskill.md — COMPLETE ✅
-Pre-commit hook removed — COMPLETE ✅ (19 Apr)
-Q Intelligence fields + CallLogModal — NOT STARTED 🔴
-My Queue page — NOT STARTED 🔴
-Finance Section — NOT STARTED 🔴
-Phase 6 Migration Script — NOT STARTED 🔴
-MARP installation on Mac Mini — NOT STARTED 🔴
-Sales data files (universities, courses, services) — NOT STARTED 🔴
+| Area                                     | Status         |
+| ---------------------------------------- | -------------- |
+| Phase 1 Backend (6 lead files)           | COMPLETE ✅    |
+| Phase 4 Queue View UI (7 files)          | COMPLETE ✅    |
+| Phase 5A New Lead Form                   | COMPLETE ✅    |
+| Phase 5B Sales Dashboard                 | COMPLETE ✅    |
+| Design Tokens (crmTokens.ts)             | COMPLETE ✅    |
+| Sidebar — Call Center 369 + Sales CRM   | COMPLETE ✅    |
+| CE Installation + CLAUDE.md              | COMPLETE ✅    |
+| UIUX Superman — Sidebar + Avatar         | COMPLETE ✅    |
+| Role-Aware Avatar Dropdown               | COMPLETE ✅    |
+| Dashboard Cards Visual Redesign          | COMPLETE ✅    |
+| Git hygiene + security audit             | COMPLETE ✅    |
+| Karpathy principles merged into CLAUDE.md | COMPLETE ✅   |
+| Pre-commit hook removed                  | COMPLETE ✅    |
+| Rule 14 locked (one phase one commit)    | COMPLETE ✅    |
+| Q Intelligence fields + CallLogModal     | NOT STARTED 🔴 |
+| New sidebar structure (LEAD_CRM role)    | NOT STARTED 🔴 |
+| My Queue page                            | NOT STARTED 🔴 |
+| Finance Section (CardTransactions)       | NOT STARTED 🔴 |
+| Phase 6 Migration Script                 | NOT STARTED 🔴 |
+| UIUX redesign                            | NOT STARTED 🔴 |
+| MARP installation on Mac Mini            | NOT STARTED 🔴 |
+| Sales data files (universities, courses) | NOT STARTED 🔴 |
 
 ### PENDING BLOCKERS
 
 - JWT secrets rotation — Latha CRITICAL
-- 4 AWS ACL errors in accounts.service.ts — Latha MEDIUM (pre-existing, not our scope)
+- 4 AWS ACL errors in accounts.service.ts — Latha MEDIUM (pre-existing)
 - Stripe write-back bug — Latha HIGH
 - Security guard bypass scope.guard.ts ~L79 — Latha HIGH
 - assigned_to enum EMPTY — Shon runs =UNIQUE(K2:K9999) on Sheets col K
@@ -88,12 +75,12 @@ Sales data files (universities, courses, services) — NOT STARTED 🔴
    memory/session-state.md
    memory/activity-log.md
 3. Confirm Latha has merged feature/portal.shon369 → dev_v2
-4. If merged — close this migration branch chapter
+4. If merged — close this chapter, pull dev_v2 as new base
 5. Priority options:
    A — Q Intelligence fields + CallLogModal (portal build)
-   B — Fix Sales Dashboard child path issue (Flag B from sidebar audit)
-   C — Sales data files content
+   B — UIUX redesign (new visual pass)
+   C — Fix Sales Dashboard child path issue (Flag B from sidebar audit)
 
 ---
 
-*VEERABHADRA — DeAssists Master Brain | Updated: 19 April 2026*
+*VEERABHADRA — DeAssists Master Brain | Updated: 19 April 2026 — Final close*

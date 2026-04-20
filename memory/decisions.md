@@ -40,3 +40,6 @@ Never delete entries. Only append.
 | 19 Apr 2026 | Sidebar hook changed to non-blocking reminder only — never blocks commit | Blocking hook caused friction without preventing the real problem (blanket prettier) |
 | 19 Apr 2026 | CRM migration done in 3 groups not 7 individual commits — Latha's preference | Cleaner PR review — fewer commits to trace |
 | 19 Apr 2026 | All commits staged locally, pushed together at end of session | Reduces risk of partial push; Latha sees complete branch at once |
+| 19 Apr 2026 | One commit per phase — Rule 14 locked permanently in CLAUDE.md | 7 commits for one feature is noise — one phase one commit is the permanent standard |
+| 19 Apr 2026 | Always confirm feature complete before committing — ask Shon first | Incomplete work committed = wasted Latha review cycles |
+| 19 Apr 2026 | Stage freely, commit only when done | git add = staging = safe; git commit = locking = only when 100% complete and tested |
