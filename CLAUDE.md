@@ -192,6 +192,8 @@ Do NOT switch branches mid-session without Shon explicit instruction.
 4. Security guard bypass at scope.guard.ts ~L79 — fix before production
 5. JWT secrets must be rotated by Latha on live server — HIGH priority (see Security section)
 6. LEAD_CRM + SALES_SETUP roles not yet in codebase
+7. GRAPH NOTE: permission.helper.ts fix is the highest risk change in Phase 2.
+   Schedule with Latha present. All other Phase 2 changes are isolated and safe to build independently.
 
 ---
 
@@ -765,3 +767,53 @@ The protocol adapts to the situation:
 - New build: all 8 steps in full
 - Bug fix: steps 1-3 are critical — find ALL locations first
 - Small change: minimum steps 1, 2, 4, 7 always
+
+---
+
+## GRAPHIFY RISK REGISTRY — LOCKED 22 APRIL 2026
+
+## ADDED 22 Apr — based on knowledge graph analysis of the full codebase
+
+Based on knowledge graph analysis of the full deassists codebase.
+Check this before touching any file.
+
+MAXIMUM RISK (Latha must be present):
+  permission.helper.ts — Community 6, coupled to AccountsController (63 edges)
+  AccountsController — 63 edges, most connected file in project
+  AccountsService — 57 edges, core auth system
+
+HIGH RISK (test all frontend after changing):
+  leads.controller.ts — API contract change breaks useCustomQuery (54 edges)
+  Any endpoint URL or response shape change
+
+MEDIUM RISK (sidebar audit mandatory):
+  sidemenu.ts — sidebar audit skill must pass before commit
+  user.types.ts — role changes affect every page
+
+LOW RISK (build freely):
+  lead.entity.ts — Community 363, fully isolated
+  leads.service.ts — near zero connections
+  leads.module.ts — Community 362, fully isolated
+
+ZERO RISK (new files):
+  lead.constants.ts — new file, no existing connections
+  Any new component file not yet imported anywhere
+
+### RULE 19 — AccountsController is untouchable
+
+Never modify without Latha present. 63 edges.
+
+### RULE 20 — permission.helper.ts needs Latha present
+
+Community 6 — coupled to AccountsController.
+Sidebar audit + all roles tested + Latha on call before push.
+
+### RULE 21 — API contract changes need frontend audit
+
+Changing any CRM endpoint requires checking all useCustomQuery
+and useCustomMutation calls in frontend pages.
+
+### RULE 22 — CRM entity and service are safe to build freely
+
+lead.entity.ts and leads.service.ts are isolated communities.
+No cross-community edges detected.
