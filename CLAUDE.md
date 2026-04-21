@@ -491,25 +491,32 @@ This applies even if the file looks unformatted.
 If Prettier output appears anywhere — run git restore . immediately.
 Every prompt must start with "Read CLAUDE.md first" — this is what loads all rules.
 
-### RULE 14 — One phase = one commit. Always confirm before committing.
+### RULE 14 — One phase = one commit. Never commit until the full setup is complete.
 
-## ADDED 19 Apr
+## UPDATED 22 Apr — strengthened from original 19 Apr version
 
-Before making ANY commit — always ask Shon this question first:
-"Is this feature/phase complete and fully tested in the browser?"
+We build everything locally first.
+We stage freely using git add during the build.
+We NEVER run git commit until Shon explicitly says:
+"This is complete — commit now."
 
-If Shon says YES → commit and push.
-If Shon says NO → stage the files only. Never commit incomplete work.
+Full setup means every single item below is done:
+  ✅ All new files created
+  ✅ All bugs fixed
+  ✅ All roles tested in browser
+  ✅ Sidebar audit passed
+  ✅ Browser verified at localhost:4002
+  ✅ Shon confirms complete
 
-git add = staging = safe, can always be undone
-git commit = locking it = only when feature is 100% complete and tested
+Only after ALL items above:
+  ONE git commit
+  ONE git push
+  ONE graphify update
 
-One feature or phase = exactly one commit. Never multiple commits for the same feature.
-A complete phase (backend + frontend + sidebar) goes in one single commit.
-
-Examples:
-CORRECT: feat(crm): CRM Phase 1 complete — leads management system
-WRONG: 6 separate commits for the same feature
+If Claude Code attempts to commit before Shon confirms:
+  Stop immediately.
+  Do not proceed.
+  Ask Shon first.
 
 The only exception: hotfixes approved by Latha get their own commit.
 
