@@ -4,6 +4,65 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 22 April 2026 — Full Setup + Brain Lock Session
+
+**Branch:** feature/portal.shon369 (no portal code committed)
+
+### What Was Done
+
+1. **Graphify fully installed and configured**
+   - Knowledge graph: 1771 files, 3983 nodes, 3827 edges
+   - Output moved to `369-brain/graphify-out/`
+   - `graphify-out/` added to `.gitignore` in both repos
+   - CLAUDE.md updated with full graphify commit checklist
+
+2. **Full CRM code audit completed**
+   - 12 files read and audited — score: 4.5 / 10
+   - 5 bugs documented in session-state.md
+
+3. **Full permission system audit**
+   - All 10 roles mapped — 7 correct, 3 broken
+   - Root cause confirmed: `/dashboard` never matches any collection
+   - Module-level mutable state confirmed as production bug
+
+4. **Risk registry built from graphify graph**
+   - God nodes identified: `AccountsController` (63 edges) highest in project
+   - `permission.helper.ts` confirmed as Community 6 — maximum risk
+   - CRM entity and service confirmed as isolated — safe to build freely
+
+5. **Architecture decisions locked and saved**
+   - LEAD_CRM and SALES_SETUP removed as Types
+   - Call Center and Sales Setup = database Roles
+   - Any Type + Call Center role = CRM access
+   - New sidebar: Sales Dashboard → Call Center 369 children
+   - Sales CRM children: Sales Setup placeholder only
+
+6. **Zero Mistakes Protocol locked in CLAUDE.md**
+   - Applies to all tasks: new builds AND bug fixes
+   - Bug fixes are MORE dangerous than new builds — rule documented
+
+7. **Rules 15–22 locked permanently in CLAUDE.md**
+   - Rule 19: AccountsController untouchable
+   - Rule 20: permission.helper.ts needs Latha present
+   - Rule 21: API contract changes need frontend audit
+   - Rule 22: CRM entity and service safe to build freely
+
+8. **Rule 14 updated — tester ready standard**
+   - Only commit when ready for qa.deassists.com
+   - Stage freely during build — never commit until Shon says ready
+   - The question before every commit: "Is this ready for the tester right now?"
+
+### Key Decisions Locked Today
+
+- Graphify lives in 369-brain — never in portal repo
+- Commit only when tester-ready — not before
+- `permission.helper.ts` = maximum risk — Latha must be present
+- CRM entity and service = safe to build without Latha
+- Phase A (low risk) builds first
+- Phase B (permission system) with Latha present only
+
+---
+
 ## 22 April 2026 — Graphify + Permission Audit + Role Architecture
 
 **Branch:** feature/portal.shon369 (no portal code changed)

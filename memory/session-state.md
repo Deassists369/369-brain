@@ -3,159 +3,138 @@
 
 ---
 
-**Last updated:** 22 April 2026 — 3-day sync: audit + role decisions + graphify
+**Last updated:** 22 April 2026 — Session close
 
 **Brain root:** `~/deassists-workspace/369-brain/`
-
----
-
-## SESSION HISTORY — 20–22 APRIL 2026
-
-### 20 APRIL 2026 — QA Testing + Sales Intelligence PRD
-
-- Latha pushed CRM Phase 1 to QA — qa.deassists.com
-- Kingston tested — network error found (pm2 restart needed)
-- Root cause: Kingston was logged into Arden org, not DeAssists
-- Tester guide created and sent to Kingston
-- LATHA-SERVICES-FIELD-ADDITIONS.docx created
-- DEASSISTS-SALES-INTELLIGENCE-MASTER-PRD.docx created
-- Decision locked: Shon + VEERABHADRA do UIUX redesign — not Latha
-
-### 21 APRIL 2026 — Full CRM Code Audit + Rules Locked
-
-- 12 CRM files audited, senior dev analysis
-- Audit score: 4.5 / 10 — foundation correct, 3 critical bugs found
-- Rules 15–18 locked in CLAUDE.md
-- Architecture decisions locked (see below)
-
-### 22 APRIL 2026 — Graphify + Permission Audit + Role Architecture
-
-- Graphify installed — knowledge graph built
-  * 1771 files, 3983 nodes, 3827 edges, 1366 communities
-  * Location: ~/deassists/graphify-out/
-  * Cursor integration installed, PreToolUse hook registered
-- Full permission system audit completed
-- Role architecture confirmed by Shon
 
 ---
 
 ## CURRENT BUILD STATE
 
 **Branch:** feature/portal.shon369
-**Commit pushed:** 26d8957e — feat(crm): CRM Phase 1 complete
-**Status:** Waiting for Latha to merge to dev_v2
-
-### BUILD STATUS TABLE
-
-| Area                                      | Status         |
-| ----------------------------------------- | -------------- |
-| Phase 1 Backend (6 lead files)            | COMPLETE ✅    |
-| Phase 4 Queue View UI (7 files)           | COMPLETE ✅    |
-| Phase 5A New Lead Form                    | COMPLETE ✅    |
-| Phase 5B Sales Dashboard                  | COMPLETE ✅    |
-| Design Tokens (crmTokens.ts)              | COMPLETE ✅    |
-| Sidebar — Call Center 369 + Sales CRM    | COMPLETE ✅    |
-| CE Installation + CLAUDE.md               | COMPLETE ✅    |
-| UIUX Superman — Sidebar + Avatar          | COMPLETE ✅    |
-| Role-Aware Avatar Dropdown                | COMPLETE ✅    |
-| Dashboard Cards Visual Redesign           | COMPLETE ✅    |
-| Git hygiene + security audit              | COMPLETE ✅    |
-| Karpathy principles merged into CLAUDE.md | COMPLETE ✅    |
-| Pre-commit hook removed                   | COMPLETE ✅    |
-| Rule 14 locked (one phase one commit)     | COMPLETE ✅    |
-| Rules 15–18 locked (code standards)      | COMPLETE ✅    |
-| Graphify installed + indexed              | COMPLETE ✅    |
-| lead.constants.ts                         | NOT STARTED 🔴 |
-| Fix BUG 1: queue name mismatch            | NOT STARTED 🔴 |
-| Fix BUG 2: status 'Completed' invalid     | NOT STARTED 🔴 |
-| Fix BUG 3: initial comment dropped        | NOT STARTED 🔴 |
-| Permission system — role-based access     | NOT STARTED 🔴 |
-| Q Intelligence fields + CallLogModal      | NOT STARTED 🔴 |
-| My Queue page                             | NOT STARTED 🔴 |
-| Finance Section (CardTransactions)        | NOT STARTED 🔴 |
-| Phase 6 Migration Script                  | NOT STARTED 🔴 |
-| UIUX redesign                             | NOT STARTED 🔴 |
-| MARP installation on Mac Mini             | NOT STARTED 🔴 |
-| Sales data files (universities, courses)  | NOT STARTED 🔴 |
+**Last commit to portal:** 26d8957e — feat(crm): CRM Phase 1 complete
+**Status:** Staged files only — no new portal commits yet
 
 ---
 
-## ARCHITECTURE DECISIONS LOCKED
+## WHAT WAS COMPLETED TODAY (22 Apr)
 
-### Role Architecture (confirmed by Shon 22 Apr)
+1. **Graphify installed and knowledge graph built**
+   - 1771 files, 3983 nodes, 3827 edges, 1366 communities
+   - Moved output to `~/deassists-workspace/369-brain/graphify-out/`
+   - Cursor and Claude Code integration complete
+   - Full graphify commit checklist added to CLAUDE.md
 
-- Any user Type + **Call Center** role = CRM access (Call Center 369 section visible)
-- Any user Type + **Sales Setup** role = Sales CRM access (Sales CRM section visible)
-- SUPER_ADMIN and MANAGER bypass role check — visible by Type alone
-- No new hiring categories needed — lean and flexible approach
-- LEAD_CRM and SALES_SETUP REMOVED as user Types (replaced by role-based access)
+2. **Full CRM code audit** — 12 files — score 4.5 / 10
 
-### Sidebar Restructure (locked 21 Apr)
+3. **Full permission system audit** — all roles mapped
 
-- Sales Dashboard moves to **Call Center 369** children (agents need dashboard in same section)
-- Sales CRM children: **Sales Setup** placeholder only
-- SidebarRole enum approach — no hardcoded role name strings anywhere
+4. **Full risk registry built** from graphify graph analysis
 
-### lead.constants.ts (to be created)
+5. **Role architecture finalised:**
+   - LEAD_CRM and SALES_SETUP removed as user Types
+   - Call Center and Sales Setup = database Roles
+   - Any Type + role = CRM access
 
-Single source of truth for all CRM string values:
-- LeadStatus, LeadQueue, LeadSource, LeadService
-- CallOutcome, SidebarRole, CRM_ALLOWED_ROLES
+6. **Zero Mistakes Protocol locked** in CLAUDE.md
+
+7. **Rules 15–22 locked permanently** in CLAUDE.md
+
+8. **Rule 14 updated** — tester ready standard:
+   - Only commit when ready for qa.deassists.com
+   - Stage freely during build
+   - One commit when Shon says "ready for tester"
 
 ---
 
 ## CRITICAL BUGS — MUST FIX BEFORE PHASE 2
 
-**BUG 1 — Queue name mismatch (CRITICAL — data bug live now)**
-Entity enum: `'369_MAIN'`, `'BCBT'`, `'ACCOMMODATION'`, `'UNROUTED'`
-getQueueCounts() looks for: `'369_CALL_CENTER'`, `'369_CALL_CENTER_FU'`, `'BCBT_CALL_CENTER'` etc.
-Result: all queue counts show 0 — queue sidebar is entirely broken
-Fix: create LeadQueue enum, align across entity + service + dashboard
+**BUG 1 — Queue name mismatch (CRITICAL)**
+Entity uses `'369_MAIN'`, service looks for `'369_CALL_CENTER'`
+Result: all queue counts = 0
+Files: `lead.entity.ts`, `leads.service.ts`, `leads-routing.service.ts`, `dashboard/index.tsx`
 
-**BUG 2 — Status 'Completed' does not exist in entity enum (CRITICAL)**
-Entity allows: `'Converted'` — convert() sets: `'Completed'` — getStats() filters: `{ $ne: 'Completed' }`
-Result: convert endpoint broken, stats counts wrong, converted leads stay in active view
-Fix: replace `'Completed'` with `'Converted'` everywhere using LeadStatus enum
+**BUG 2 — Status 'Completed' does not exist (CRITICAL)**
+`convert()` sets `'Completed'`, entity only allows `'Converted'`
+Result: converts fail silently, stats wrong
+Files: `leads.service.ts`, `dashboard/index.tsx`
 
 **BUG 3 — Initial comment silently dropped**
-Frontend sends: `initial_comment` — backend create() ignores it (not on entity)
-Result: agent notes never saved to database, zero error shown
-Fix: handle `initial_comment` in create() — push as first comment if present
+Frontend sends `initial_comment`, backend ignores it
+Result: agent notes never saved to database
+Files: `leads.service.ts`
 
-**BUG 4 — permission.helper.ts module-level mutable state (CRITICAL)**
-`permittedMenu` declared at module level — mutated every call
-Result: concurrent requests corrupt each other's sidebar data
-Fix: declare permittedMenu inside exclusivePermission() function
+**BUG 4 — Module-level mutable state in permission.helper.ts (CRITICAL)**
+`hasCourseListPermission` and `hasEverBeenRestricted` are module-level
+Result: cross-request contamination in production
+Files: `permission.helper.ts`
 
-**BUG 5 — /dashboard path never matches any collection (SALES DASHBOARD INVISIBLE)**
-Child filter Gate 2 requires path to match a collection name
-`/dashboard` matches nothing → Sales Dashboard invisible to MANAGER even when parent is visible
-Fix: add path bypass for `/dashboard` in child filter
+**BUG 5 — /dashboard path never matches any collection**
+MANAGER, ORG_ADMIN cannot see Sales Dashboard child
+Result: Sales Dashboard invisible to non-SUPER_ADMIN roles
+Files: `permission.helper.ts`, `sidemenu.ts`
+
+---
+
+## GRAPHIFY RISK REGISTRY
+
+| Risk | Files | Notes |
+|---|---|---|
+| MAXIMUM | `permission.helper.ts` | Community 6 — coupled to AccountsController (63 edges) — Latha must be present |
+| HIGH | `leads.controller.ts` | API contract change breaks useCustomQuery (54 edges) |
+| MEDIUM | `sidemenu.ts`, `user.types.ts` | Sidebar audit mandatory |
+| LOW | `lead.entity.ts`, `leads.service.ts`, `leads.module.ts` | Isolated communities |
+| ZERO | `lead.constants.ts` | New file — no existing connections |
+
+---
+
+## BUILD PLAN — NEXT SESSION
+
+### Phase A — Safe, build freely, no Latha needed
+
+| Step | Task | Risk |
+|---|---|---|
+| A1 | Create `lead.constants.ts` — LeadStatus, LeadQueue, LeadSource, LeadService, CallOutcome, SidebarRole, CRM_ALLOWED_ROLES | ZERO |
+| A2 | Fix Bug 1: align queue names using LeadQueue enum | LOW |
+| A3 | Fix Bug 2: replace `'Completed'` → `'Converted'` using LeadStatus enum | LOW |
+| A4 | Fix Bug 3: handle `initial_comment` in `create()` | LOW |
+| A5 | Fix Bug 4: move module-level state inside `exclusivePermission()` | MEDIUM |
+
+### Phase B — Latha must be present
+
+| Step | Task | Risk |
+|---|---|---|
+| B1 | Remove LEAD_CRM and SALES_SETUP as Types from `user.types.ts` | MEDIUM |
+| B2 | Add SidebarRole enum + fix `permission.helper.ts` role-based access | MAXIMUM |
+| B3 | Update `sidemenu.ts` — new sidebar structure | MEDIUM |
+
+### Phase C — After A and B pass local testing
+
+- ONE commit when Shon says ready for tester
+- Push to GitHub — Latha deploys to qa.deassists.com
+- Kingston tests on qa.deassists.com
 
 ---
 
 ## PENDING BLOCKERS
 
 - JWT secrets rotation — Latha CRITICAL
-- 4 AWS ACL errors in accounts.service.ts — Latha MEDIUM (pre-existing)
+- 4 AWS ACL errors in accounts.service.ts — Latha MEDIUM
 - Stripe write-back bug — Latha HIGH
 - Security guard bypass scope.guard.ts ~L79 — Latha HIGH
 - assigned_to enum EMPTY — Shon runs =UNIQUE(K2:K9999) on Sheets col K
-- Latha needs to create **Call Center** and **Sales Setup** Roles in portal before testing
+- Latha must create **Call Center** and **Sales Setup** Roles in portal before testing
 
 ---
 
 ## NEXT SESSION MUST START WITH
 
-1. Open new chat in VEERABHADRA project
-2. Attach memory/session-state.md + memory/activity-log.md from GitHub
-3. Confirm Latha has merged feature/portal.shon369 → dev_v2
-4. Priority order for Phase 2:
-   A — Create lead.constants.ts + fix 3 critical bugs (BUG 1, 2, 3)
-   B — Fix permission system (BUG 4, 5) + role-based access
-   C — Q Intelligence fields + CallLogModal
-   D — UIUX redesign pass
+1. Type `/graphify .` in agent panel
+2. Attach `memory/session-state.md` + `memory/activity-log.md` from GitHub
+3. Run Zero Mistakes Protocol — steps 1–3 before writing any code
+4. Begin Phase A — stage only, never commit
+5. Shon confirms each step before moving to the next
 
 ---
 
-*VEERABHADRA — DeAssists Master Brain | Updated: 22 April 2026 — 3-day sync complete*
+*VEERABHADRA — DeAssists Master Brain | Updated: 22 April 2026 — Session close*
