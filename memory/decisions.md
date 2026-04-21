@@ -49,3 +49,11 @@ Never delete entries. Only append.
 | 21 Apr 2026 | lead.constants.ts to be created with LeadStatus, LeadQueue, LeadSource, CallOutcome enums | Three critical bugs traced to mismatched queue/status strings across entity, service, dashboard |
 | 21 Apr 2026 | CRM_ROLES constant to replace repeated role arrays across all CRM controller endpoints | Same roles array copy-pasted in every @Roles() decorator — one change point needed |
 | 21 Apr 2026 | Code audit score 4.5/10 — 3 critical bugs must be fixed before Phase 2 starts | BUG 1: queue mismatch (all counts = 0), BUG 2: status 'Completed' invalid, BUG 3: initial comment lost |
+| 20 Apr 2026 | UIUX redesign done by Shon + VEERABHADRA — not Latha | Latha builds backend, we build UI — cleaner division of labour |
+| 20 Apr 2026 | Call Center and Sales Setup needed as database Roles | Enable role-based CRM access without creating new user Types |
+| 21 Apr 2026 | Sales Dashboard moves to Call Center 369 children | Agents working in call center need dashboard in same section |
+| 21 Apr 2026 | SidebarRole enum in lead.constants.ts — no magic strings | Matches existing enum patterns; magic strings in sidemenu.ts will break silently |
+| 21 Apr 2026 | lead.constants.ts enums: LeadStatus, LeadQueue, LeadSource, LeadService, CallOutcome, SidebarRole, CRM_ALLOWED_ROLES | Single source of truth for all CRM string values — eliminates 3 critical bugs caused by string drift |
+| 21 Apr 2026 | Any user Type + Call Center role = CRM access | Lean approach — no new hiring categories needed, roles assignable to any Type |
+| 22 Apr 2026 | Graphify installed as permanent Claude Code skill | 71x fewer tokens per codebase query — knowledge graph replaces manual file reads |
+| 22 Apr 2026 | Rebuild graph after every phase commit: /opt/homebrew/bin/graphify update . | Always keep graph current — stale graph gives wrong answers |

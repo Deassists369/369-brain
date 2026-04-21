@@ -4,6 +4,54 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 22 April 2026 — Graphify + Permission Audit + Role Architecture
+
+**Branch:** feature/portal.shon369 (no portal code changed)
+
+- Graphify installed: 1771 files, 3983 nodes, 3827 edges, 1366 communities
+- Cursor integration installed, PreToolUse hook registered
+- Full permission system audit completed
+- BUG 4 confirmed: module-level mutable state in permission.helper.ts (concurrent corruption)
+- BUG 5 confirmed: /dashboard path never matches any collection → Sales Dashboard invisible to MANAGER
+- Root cause of Sales Dashboard invisible: Gate 2 collection match fails for non-collection paths
+- Role architecture finalised with Shon: any Type + Call Center role = CRM access
+- Confirmed lean approach: no new hiring categories, roles assignable to any Type
+- LEAD_CRM and SALES_SETUP confirmed for removal as Types
+- Graphify usage rules added to CLAUDE.md under TOOLS AND SETUP
+
+---
+
+## 21 April 2026 — Full CRM Code Audit + Rules Locked
+
+**Branch:** feature/portal.shon369 (no portal code changed)
+
+- 12 CRM files audited by senior dev analysis
+- Audit score: 4.5/10 — foundation correct, 3 critical bugs found
+- Bug 1: Queue name mismatch — all counts show 0 (entity vs service string mismatch)
+- Bug 2: 'Completed' status invalid — entity uses 'Converted', service sets 'Completed'
+- Bug 3: Initial comment silently dropped — frontend sends, backend ignores
+- Rules 15–18 locked in CLAUDE.md (enums, read-before-write, minimal changes, no behaviour change)
+- lead.constants.ts architecture decided: LeadStatus, LeadQueue, LeadSource, LeadService, CallOutcome, SidebarRole, CRM_ALLOWED_ROLES
+- LEAD_CRM and SALES_SETUP to be removed as Types — replaced by role-based access
+- Sales Dashboard moves to Call Center 369 children
+- SidebarRole enum approach locked — no magic strings
+
+---
+
+## 20 April 2026 — QA Testing + Sales Intelligence PRD
+
+**Branch:** feature/portal.shon369 (no portal code changed)
+
+- CRM Phase 1 pushed to qa.deassists.com by Latha
+- Kingston tested — network error found (pm2 restart needed)
+- Root cause: Kingston logged into Arden org, not DeAssists
+- Tester guide created and sent to Kingston
+- LATHA-SERVICES-FIELD-ADDITIONS.docx created
+- DEASSISTS-SALES-INTELLIGENCE-MASTER-PRD.docx created
+- Decision locked: Shon + VEERABHADRA do UIUX redesign — not Latha
+
+---
+
 ## 21 April 2026 — VEERABHADRA / Full CRM Phase 1 Code Audit + Brain Update
 
 **Branch:** feature/portal.shon369 (audit only — no portal code changed)

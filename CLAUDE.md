@@ -496,15 +496,18 @@ The only exception: hotfixes approved by Latha get their own commit.
 ## ADDED 21 Apr — from CRM audit finding
 
 Every repeated string value must be an enum.
-Never use magic strings. If a value appears in more than one file — it belongs in a shared enum.
-Location for lead enums: libs/shared/constants/lead.constants.ts
+Never use magic strings in any file.
+If a value appears in more than one file — it belongs in a shared enum.
+Lead enums location: libs/shared/constants/lead.constants.ts
 
-Enums required before Phase 2 starts:
+Required enums before Phase 2 starts:
 - LeadStatus — 'New' | 'Follow Up' | 'Called 1' | 'Called 2' | 'Called 3' | 'Converted' | 'Lost'
-- LeadQueue — '369_MAIN' | 'BCBT' | 'ACCOMMODATION' | 'UNROUTED' (aligned across all files)
+- LeadQueue — '369_MAIN' | 'BCBT' | 'ACCOMMODATION' | 'UNROUTED' (aligned across entity, service, dashboard)
 - LeadSource — 'Partner' | 'Portal' | 'WhatsApp' | 'Instagram' | 'Phone' | 'Other'
+- LeadService — service line enum (BCBT, 369, Accommodation etc)
 - CallOutcome — 'no_answer' | 'interested' | 'not_now' | 'wrong_lead' | 'converted' | 'lost'
-- CRM_ROLES constant — replace repeated role arrays across all CRM controller endpoints
+- SidebarRole — 'Call Center' | 'Sales Setup' — no magic strings in sidemenu.ts or permission.helper.ts
+- CRM_ALLOWED_ROLES — replace repeated role arrays across all CRM controller endpoints
 
 ### RULE 16 — Read before writing
 
