@@ -520,6 +520,30 @@ If Claude Code attempts to commit before Shon confirms:
 
 The only exception: hotfixes approved by Latha get their own commit.
 
+## THE COMMIT STANDARD — TESTER READY
+
+## ADDED 22 Apr
+
+We only commit when the code is ready for the tester on qa.deassists.com.
+
+This means:
+  - Tested locally at localhost:4002 ✅
+  - Every role works correctly ✅
+  - Sidebar audit passed ✅
+  - No broken pages or errors ✅
+  - Shon confirms: "this is ready for tester" ✅
+
+If it is not ready for the tester — we do NOT commit.
+We only stage using git add and keep building.
+
+Staging = safe, local, reversible
+Committing = locking for Latha and the tester
+
+The question before every commit:
+"Is this ready to be tested on qa.deassists.com right now?"
+If YES → commit
+If NO → stage only, keep building
+
 ---
 
 ## CODE STANDARDS — LOCKED 21 APRIL 2026
