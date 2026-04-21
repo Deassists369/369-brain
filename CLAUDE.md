@@ -226,14 +226,38 @@ pm2 restart all — only if needed
 ## ADDED 22 Apr — graphify installed and indexed
 
 After every commit:
-  cd ~/deassists && /opt/homebrew/bin/graphify update .
+  cd ~/deassists && /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/
 
 Start of every session in agent panel:
   /graphify .
 
-Location: ~/deassists/graphify-out/
+Location: ~/deassists-workspace/369-brain/graphify-out/
 Built: 22 April 2026
 Files: 1771 | Nodes: 3983 | Edges: 3827
+
+Graph lives in 369-brain — never inside the deassists portal repo.
+VEERABHADRA reads GRAPH_REPORT.md from here every session.
+
+### GRAPHIFY — UPDATE RULE (MANDATORY)
+
+## ADDED 22 Apr
+
+After EVERY commit to the deassists portal — run this immediately:
+
+  cd ~/deassists && /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/
+
+This is NOT optional. The knowledge graph must always match the current code.
+If the graph is stale — Claude Code gives wrong answers about the codebase.
+
+THE COMMIT CHECKLIST — in this exact order:
+  1. git add [specific files]
+  2. git diff --staged --name-only
+  3. git commit -m "type(area): description"
+  4. git push origin feature/portal.shon369
+  5. /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/   ← ALWAYS LAST
+
+At start of every Claude Code session — type in agent panel:
+  /graphify .
 
 ---
 
