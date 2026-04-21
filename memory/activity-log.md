@@ -4,6 +4,45 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 21 April 2026 — VEERABHADRA / Full CRM Phase 1 Code Audit + Brain Update
+
+**Branch:** feature/portal.shon369 (audit only — no portal code changed)
+
+### What Happened
+
+1. FULL CRM AUDIT — 12 FILES READ AND ANALYSED
+   Senior dev analysis of every file created or modified in Phase 1.
+   Files covered: user.types.ts, collections.ts, sidemenu.ts, permission.helper.ts,
+   lead.entity.ts, leads-routing.service.ts, leads.controller.ts, leads.service.ts,
+   leads/index.tsx, leads/new.tsx, dashboard/index.tsx, crmTokens.ts.
+
+2. THREE CRITICAL BUGS FOUND
+   BUG 1: Queue name mismatch — entity uses '369_MAIN', getQueueCounts() searches '369_CALL_CENTER'.
+          All queue counts show 0. Sidebar badge is broken live.
+   BUG 2: Status 'Completed' does not exist in entity enum. convert() sets 'Completed',
+          getStats() filters on 'Completed'. Converts may fail silently. Stats are wrong.
+   BUG 3: Frontend sends initial_comment in create payload. Backend ignores it.
+          Initial notes are silently dropped and never saved to database.
+
+3. SHARED ENUM ARCHITECTURE DECIDED
+   lead.constants.ts to be created: LeadStatus, LeadQueue, LeadSource, CallOutcome enums.
+   SidebarRoles enum to be created in libs/shared/constants/.
+   CRM_ROLES constant to replace repeated role arrays in every controller endpoint.
+
+4. CODE STANDARDS LOCKED IN CLAUDE.md
+   Rules 15–18 added: Enums non-negotiable, Read before writing,
+   Minimal changes only, Never change behaviour only organisation.
+
+5. BRAIN FULLY UPDATED
+   session-state.md: 3 critical bugs documented with full detail.
+   decisions.md: 7 new decisions added.
+   activity-log.md: this entry.
+
+**Audit score:** 4.5 / 10 — foundation exists but 3 critical bugs + widespread magic strings
+**No portal code changed in this session.**
+
+---
+
 ## 19 April 2026 — VEERABHADRA / Final Session Close — CRM Phase 1 Squashed + Pushed
 
 **Branch:** feature/portal.shon369

@@ -3,7 +3,7 @@
 
 ---
 
-**Last updated:** 19 April 2026 — Final session close — CRM Phase 1 squashed + pushed
+**Last updated:** 21 April 2026 — Full CRM code audit complete — 3 critical bugs found
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
@@ -59,6 +59,27 @@
 | MARP installation on Mac Mini            | NOT STARTED 🔴 |
 | Sales data files (universities, courses) | NOT STARTED 🔴 |
 
+### CRITICAL BUGS FOUND — MUST FIX BEFORE PHASE 2
+
+**BUG 1 — Queue name mismatch (CRITICAL — data bug live now)**
+Entity enum: `'369_MAIN'`, `'BCBT'`, `'ACCOMMODATION'`, `'UNROUTED'`
+getQueueCounts() looks for: `'369_CALL_CENTER'`, `'369_CALL_CENTER_FU'`, `'BCBT_CALL_CENTER'`, `'BCBT_FOLLOW_UP'`, `'DON'`, `'ACCOMMODATION'`, `'SAJIR'`, `'UNROUTED'`
+Result: all queue counts show 0 — queue sidebar is entirely broken
+Fix: align queue names across entity, routing service, service, dashboard
+
+**BUG 2 — Status 'Completed' does not exist in entity enum (CRITICAL)**
+Entity allows: `'New'`, `'Follow Up'`, `'Called 1'`, `'Called 2'`, `'Called 3'`, `'Converted'`, `'Lost'`
+convert() sets: `status: 'Completed'` — invalid value, Mongoose validation will reject silently
+getStats() filters: `{ $ne: 'Completed' }` — wrong filter, stats include converted/lost leads
+Result: convert endpoint broken, stats counts wrong, converted leads stay in active view
+Fix: replace `'Completed'` with `'Converted'` everywhere — align entity + service
+
+**BUG 3 — Initial comment silently dropped**
+Frontend sends: `initial_comment` in create payload
+Backend create() does: spreads `...dto` — no `initial_comment` field on Lead entity
+Result: initial notes typed by agents are never saved to the database, zero error shown
+Fix: handle `initial_comment` in create() — push it as first comment if present
+
 ### PENDING BLOCKERS
 
 - JWT secrets rotation — Latha CRITICAL
@@ -83,4 +104,4 @@
 
 ---
 
-*VEERABHADRA — DeAssists Master Brain | Updated: 19 April 2026 — Final close*
+*VEERABHADRA — DeAssists Master Brain | Updated: 21 April 2026 — CRM audit complete, 3 critical bugs locked*

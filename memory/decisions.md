@@ -43,3 +43,9 @@ Never delete entries. Only append.
 | 19 Apr 2026 | One commit per phase — Rule 14 locked permanently in CLAUDE.md | 7 commits for one feature is noise — one phase one commit is the permanent standard |
 | 19 Apr 2026 | Always confirm feature complete before committing — ask Shon first | Incomplete work committed = wasted Latha review cycles |
 | 19 Apr 2026 | Stage freely, commit only when done | git add = staging = safe; git commit = locking = only when 100% complete and tested |
+| 21 Apr 2026 | LEAD_CRM and SALES_SETUP removed as user Types — replaced by role-based access | Type-based sidebar access was too coarse; database Roles give finer control without code deploys |
+| 21 Apr 2026 | Call Center and Sales Setup will be database Roles assignable to any user Type | Any user Type (Staff, Agent etc) can be a Call Center agent — role assignment, not code change |
+| 21 Apr 2026 | SidebarRoles enum to be created in libs/shared/constants/ — no magic strings | Magic role name strings spread across sidemenu.ts and permission.helper.ts will break silently |
+| 21 Apr 2026 | lead.constants.ts to be created with LeadStatus, LeadQueue, LeadSource, CallOutcome enums | Three critical bugs traced to mismatched queue/status strings across entity, service, dashboard |
+| 21 Apr 2026 | CRM_ROLES constant to replace repeated role arrays across all CRM controller endpoints | Same roles array copy-pasted in every @Roles() decorator — one change point needed |
+| 21 Apr 2026 | Code audit score 4.5/10 — 3 critical bugs must be fixed before Phase 2 starts | BUG 1: queue mismatch (all counts = 0), BUG 2: status 'Completed' invalid, BUG 3: initial comment lost |

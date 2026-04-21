@@ -449,6 +449,69 @@ This applies even if the file looks unformatted.
 If Prettier output appears anywhere — run git restore . immediately.
 Every prompt must start with "Read CLAUDE.md first" — this is what loads all rules.
 
+### RULE 14 — One phase = one commit. Always confirm before committing.
+
+## ADDED 19 Apr
+
+Before making ANY commit — always ask Shon this question first:
+"Is this feature/phase complete and fully tested in the browser?"
+
+If Shon says YES → commit and push.
+If Shon says NO → stage the files only. Never commit incomplete work.
+
+git add = staging = safe, can always be undone
+git commit = locking it = only when feature is 100% complete and tested
+
+One feature or phase = exactly one commit. Never multiple commits for the same feature.
+A complete phase (backend + frontend + sidebar) goes in one single commit.
+
+Examples:
+CORRECT: feat(crm): CRM Phase 1 complete — leads management system
+WRONG: 6 separate commits for the same feature
+
+The only exception: hotfixes approved by Latha get their own commit.
+
+---
+
+## CODE STANDARDS — LOCKED 21 APRIL 2026
+
+### RULE 15 — Enums are non-negotiable
+
+## ADDED 21 Apr — from CRM audit finding
+
+Every repeated string value must be an enum.
+Never use magic strings. If a value appears in more than one file — it belongs in a shared enum.
+Location for lead enums: libs/shared/constants/lead.constants.ts
+
+Enums required before Phase 2 starts:
+- LeadStatus — 'New' | 'Follow Up' | 'Called 1' | 'Called 2' | 'Called 3' | 'Converted' | 'Lost'
+- LeadQueue — '369_MAIN' | 'BCBT' | 'ACCOMMODATION' | 'UNROUTED' (aligned across all files)
+- LeadSource — 'Partner' | 'Portal' | 'WhatsApp' | 'Instagram' | 'Phone' | 'Other'
+- CallOutcome — 'no_answer' | 'interested' | 'not_now' | 'wrong_lead' | 'converted' | 'lost'
+- CRM_ROLES constant — replace repeated role arrays across all CRM controller endpoints
+
+### RULE 16 — Read before writing
+
+## ADDED 21 Apr — from CRM audit finding
+
+Before writing any new file — read the existing files in that domain.
+Match the patterns already in use.
+Do not introduce new patterns unless the existing ones are broken.
+
+### RULE 17 — Minimal changes only
+
+## ADDED 21 Apr — from CRM audit finding
+
+Fix only what is broken. Do not refactor working code in the same commit as a bug fix.
+One concern per commit.
+
+### RULE 18 — Never change behaviour, only organisation
+
+## ADDED 21 Apr — from CRM audit finding
+
+Extracting strings to enums, moving components to shared files, extracting constants — these are organisation changes.
+They must never change what the code does.
+
 ---
 
 ## BACKEND RULES
