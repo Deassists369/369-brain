@@ -739,3 +739,29 @@ Step 3: [what I will do] → verify: [how we confirm it worked]
 
 Wait for Shon to say "confirmed" or "proceed" before executing any step.
 This is not optional. A plan without confirmation is not a plan.
+
+---
+
+## ZERO MISTAKES PROTOCOL — ADDED 22 APRIL 2026
+
+## ADDED 22 Apr — applies to every task, every size
+
+### WHEN THIS PROTOCOL RUNS
+
+Every single time. No exceptions. This applies to:
+- New feature builds
+- Bug fixes
+- Small changes
+- Permission fixes
+- Sidebar changes
+- Any file touch at all
+
+Bug fixes are MORE dangerous than new builds because
+existing code already depends on the broken files.
+Fix one place without reading all places = bug still exists
+somewhere else.
+
+The protocol adapts to the situation:
+- New build: all 8 steps in full
+- Bug fix: steps 1-3 are critical — find ALL locations first
+- Small change: minimum steps 1, 2, 4, 7 always
