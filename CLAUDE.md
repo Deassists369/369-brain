@@ -213,11 +213,27 @@ callback_note: string — agent note about the callback
 
 ---
 
-## PM2 SERVERS (Mac Mini — do not restart unless something is broken)
+## TOOLS AND SETUP
+
+### PM2 SERVERS (Mac Mini — do not restart unless something is broken)
 
 pm2 status — check all 3 are running
 pm2 logs — live logs
 pm2 restart all — only if needed
+
+### GRAPHIFY — KNOWLEDGE GRAPH
+
+## ADDED 22 Apr — graphify installed and indexed
+
+After every commit:
+  cd ~/deassists && /opt/homebrew/bin/graphify update .
+
+Start of every session in agent panel:
+  /graphify .
+
+Location: ~/deassists/graphify-out/
+Built: 22 April 2026
+Files: 1771 | Nodes: 3983 | Edges: 3827
 
 ---
 
