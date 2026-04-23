@@ -848,3 +848,17 @@ and useCustomMutation calls in frontend pages.
 
 lead.entity.ts and leads.service.ts are isolated communities.
 No cross-community edges detected.
+
+### RULE 23 — Always check git diff before committing any brain file
+
+## ADDED 23 Apr — after silent deletion incident in VEERABHADRA.md
+
+Before committing ANY file in 369-brain — run:
+git diff --staged [filename]
+Read every single deleted line before committing.
+If any rule, section, or content was removed without explanation — DO NOT commit.
+Restore the deleted content first. Then commit.
+
+This applies to: VEERABHADRA.md, CLAUDE.md, all memory/ files, all brain files.
+Silent deletions by Claude Code have caused data loss before — 22 April 2026.
+Prevention is mandatory. No exceptions.
