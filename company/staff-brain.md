@@ -6,6 +6,14 @@
 
 ## WHERE WE STAND — APRIL 2026
 
+**AGENT type = external sub-agents only**
+  Zero internal data access
+  Zero CRM access
+
+**DeAssists call center team = Type TEAM_LEAD**
+  Assigned Call Center role for CRM sidebar access
+  Can be promoted to MANAGER over time
+
 DeAssists is a real, operating business with two offices, a proven delivery
 record, and a clear technology-first growth plan.
 
@@ -192,7 +200,8 @@ into the 369 Leads Tracker. Backup for Lenin on applications. General
 operations support. Currently working primarily in Google Sheets — portal
 migration is Phase 6 priority.
 
-**Portal role:** AGENT
+**Portal role:** TEAM_LEAD
+**CRM access:** Assign Call Center role in portal
 
 ---
 
@@ -204,7 +213,8 @@ First contact, qualification, and follow-up for all BCBT leads. Shares
 program and fee information from approved reference sheets. Follows up until
 green signal from student or agent. Logs leads in BCBT tracker.
 
-**Portal role:** AGENT
+**Portal role:** TEAM_LEAD
+**CRM access:** Assign Call Center role in portal
 
 ---
 
@@ -215,7 +225,8 @@ green signal from student or agent. Logs leads in BCBT tracker.
 Dual role: handles BCBT leads in the call center alongside Anandhu, and
 manages BCBT and XU applications alongside Santosh.
 
-**Portal role:** AGENT with application access
+**Portal role:** TEAM_LEAD
+**CRM access:** Assign Call Center role in portal
 
 ---
 
@@ -227,7 +238,8 @@ First contact, qualification, and follow-up for all leads except BCBT.
 Commission-based, not fixed salary. Finance/payment confirmation support
 as applicable. Performance tracked per conversion.
 
-**Portal role:** AGENT
+**Portal role:** TEAM_LEAD
+**CRM access:** Assign Call Center role in portal
 
 ---
 
