@@ -125,11 +125,14 @@ Files: `permission.helper.ts`, `sidemenu.ts`
 
 ## NEXT SESSION MUST START WITH
 
-1. Type `/graphify .` in agent panel
-2. Attach `memory/session-state.md` + `memory/activity-log.md` from GitHub
+1. Attach `memory/session-state.md` + `memory/activity-log.md` from GitHub
+2. Graphify knowledge graph is now in git — VEERABHADRA reads directly from repo (no /graphify . needed)
 3. Run Zero Mistakes Protocol — steps 1–3 before writing any code
 4. Begin Phase A — stage only, never commit
 5. Shon confirms each step before moving to the next
+
+Note: Graphify committed to 369-brain on 23 April 2026 (commit bdae182).
+Smart workflow: always rebuild after portal commits, only commit if graph changed.
 
 ---
 

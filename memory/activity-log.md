@@ -4,9 +4,35 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
-## 23 April 2026 — Staff Brain + Rule 23 Session
+## 23 April 2026 — Graphify Git Workflow + Staff Brain + Rule 23 Session
 
 **Branch:** feature/portal.shon369 (no portal code committed)
+
+### Graphify Moved to Git (commit bdae182)
+
+1. **Graphify output committed to 369-brain**
+   - 1775 files, 85,360 insertions
+   - Commit: bdae182 — brain: include graphify knowledge graph + all brain files for AI access
+   - Location: ~/deassists-workspace/369-brain/graphify-out/
+   - Stats: 3983 nodes | 3827 edges | 1366 communities
+
+2. **Smart rebuild workflow implemented**
+   - Always rebuild graphify after ANY portal commit (cheap operation)
+   - Only commit to git IF the graph actually changed (git diff --quiet detects this)
+   - No judgment calls needed about what's "major" — git handles detection
+   - VEERABHADRA can now read knowledge graph directly from GitHub via MCP
+
+3. **Files updated with new workflow**
+   - CLAUDE.md — GRAPHIFY section rewritten with smart workflow
+   - memory/session-state.md — removed /graphify . from session start
+   - memory/session-workflow.md — added smart graphify to SESSION END
+   - memory/activity-log.md — this entry
+
+4. **graphify-out/ removed from .gitignore**
+   - Was: `graphify-out/` in .gitignore (never commit)
+   - Now: committed to git, updated via smart workflow
+
+---
 
 ### What Was Done
 

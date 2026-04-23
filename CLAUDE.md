@@ -225,41 +225,49 @@ pm2 restart all — only if needed
 
 ### GRAPHIFY — KNOWLEDGE GRAPH
 
-## ADDED 22 Apr — graphify installed and indexed
-
-After every commit:
-  cd ~/deassists && /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/
-
-Start of every session in agent panel:
-  /graphify .
+## UPDATED 23 Apr — graphify now in git with smart rebuild workflow
 
 Location: ~/deassists-workspace/369-brain/graphify-out/
-Built: 22 April 2026
-Files: 1771 | Nodes: 3983 | Edges: 3827
+GitHub: threesixtynine-de/369-brain (committed 23 April 2026 — bdae182)
+Stats: 1771 files | 3983 nodes | 3827 edges | 1366 communities
 
-Graph lives in 369-brain — never inside the deassists portal repo.
-VEERABHADRA reads GRAPH_REPORT.md from here every session.
+Graph lives in 369-brain git repo — never inside the deassists portal repo.
+VEERABHADRA can read GRAPH_REPORT.md directly from GitHub via MCP.
+No need to run /graphify . at session start — graph is always available in repo.
 
-### GRAPHIFY — UPDATE RULE (MANDATORY)
+### GRAPHIFY — SMART UPDATE WORKFLOW (MANDATORY)
 
-## ADDED 22 Apr
+## UPDATED 23 Apr — always rebuild, commit only if changed
 
-After EVERY commit to the deassists portal — run this immediately:
+After ANY portal commit — run this script:
 
-  cd ~/deassists && /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/
+```bash
+# Step 1: Always rebuild graphify (cheap operation)
+cd ~/deassists && /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/
 
-This is NOT optional. The knowledge graph must always match the current code.
-If the graph is stale — Claude Code gives wrong answers about the codebase.
+# Step 2: Only commit to git IF the graph changed
+cd ~/deassists-workspace/369-brain
+if git diff --quiet graphify-out/; then
+  echo "Knowledge graph unchanged - no commit needed"
+else
+  git add graphify-out/
+  git commit -m "brain: update knowledge graph after portal changes"
+  git push origin main
+fi
+```
 
-THE COMMIT CHECKLIST — in this exact order:
+Why this works:
+- Rebuild is fast (~10 seconds) — always safe to run
+- git diff --quiet detects actual changes — no judgment calls needed
+- Only commits when graph actually changed — keeps git history clean
+- VEERABHADRA always has current graph in GitHub
+
+THE PORTAL COMMIT CHECKLIST — in this exact order:
   1. git add [specific files]
   2. git diff --staged --name-only
   3. git commit -m "type(area): description"
   4. git push origin feature/portal.shon369
-  5. /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/   ← ALWAYS LAST
-
-At start of every Claude Code session — type in agent panel:
-  /graphify .
+  5. Run smart graphify workflow above
 
 ---
 

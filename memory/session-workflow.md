@@ -98,7 +98,24 @@ Step 1 — Paste this into Claude Code terminal:
 
 Review what Claude Code shows you before committing.
 
-Step 2 — Brain commit:
+Step 2 — If any portal code was committed this session, run smart graphify workflow:
+
+```bash
+# Always rebuild graphify after portal commits
+cd ~/deassists && /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/
+
+# Only commit to git IF the graph changed
+cd ~/deassists-workspace/369-brain
+if git diff --quiet graphify-out/; then
+  echo "Knowledge graph unchanged - no commit needed"
+else
+  git add graphify-out/
+  git commit -m "brain: update knowledge graph after portal changes"
+  git push origin main
+fi
+```
+
+Step 3 — Brain commit:
 
 cd ~/deassists-workspace/369-brain
 git add memory/session-state.md
