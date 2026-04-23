@@ -225,49 +225,41 @@ pm2 restart all — only if needed
 
 ### GRAPHIFY — KNOWLEDGE GRAPH
 
-## UPDATED 23 Apr — graphify now in git with smart rebuild workflow
+## ADDED 22 Apr — graphify installed and indexed
+
+After every commit:
+  cd ~/deassists && /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/
+
+Start of every session in agent panel:
+  /graphify .
 
 Location: ~/deassists-workspace/369-brain/graphify-out/
-GitHub: threesixtynine-de/369-brain (committed 23 April 2026 — bdae182)
-Stats: 1771 files | 3983 nodes | 3827 edges | 1366 communities
+Built: 22 April 2026
+Files: 1771 | Nodes: 3983 | Edges: 3827
 
-Graph lives in 369-brain git repo — never inside the deassists portal repo.
-VEERABHADRA can read GRAPH_REPORT.md directly from GitHub via MCP.
-No need to run /graphify . at session start — graph is always available in repo.
+Graph lives in 369-brain — never inside the deassists portal repo.
+VEERABHADRA reads GRAPH_REPORT.md from here every session.
 
-### GRAPHIFY — SMART UPDATE WORKFLOW (MANDATORY)
+### GRAPHIFY — UPDATE RULE (MANDATORY)
 
-## UPDATED 23 Apr — always rebuild, commit only if changed
+## ADDED 22 Apr
 
-After ANY portal commit — run this script:
+After EVERY commit to the deassists portal — run this immediately:
 
-```bash
-# Step 1: Always rebuild graphify (cheap operation)
-cd ~/deassists && /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/
+  cd ~/deassists && /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/
 
-# Step 2: Only commit to git IF the graph changed
-cd ~/deassists-workspace/369-brain
-if git diff --quiet graphify-out/; then
-  echo "Knowledge graph unchanged - no commit needed"
-else
-  git add graphify-out/
-  git commit -m "brain: update knowledge graph after portal changes"
-  git push origin main
-fi
-```
+This is NOT optional. The knowledge graph must always match the current code.
+If the graph is stale — Claude Code gives wrong answers about the codebase.
 
-Why this works:
-- Rebuild is fast (~10 seconds) — always safe to run
-- git diff --quiet detects actual changes — no judgment calls needed
-- Only commits when graph actually changed — keeps git history clean
-- VEERABHADRA always has current graph in GitHub
-
-THE PORTAL COMMIT CHECKLIST — in this exact order:
+THE COMMIT CHECKLIST — in this exact order:
   1. git add [specific files]
   2. git diff --staged --name-only
   3. git commit -m "type(area): description"
   4. git push origin feature/portal.shon369
-  5. Run smart graphify workflow above
+  5. /opt/homebrew/bin/graphify update . --output ~/deassists-workspace/369-brain/graphify-out/   ← ALWAYS LAST
+
+At start of every Claude Code session — type in agent panel:
+  /graphify .
 
 ---
 
@@ -598,6 +590,33 @@ They must never change what the code does.
 
 ---
 
+## CRM AND SALES SETUP — BUILD RULES (LOCKED 23 APRIL 2026)
+
+These rules apply specifically to the CRM and Sales Setup feature build.
+
+WHAT WE NEVER CHANGE:
+  Existing role permissions — what current roles see stays the same
+  Existing sidebar logic — current rules stay intact
+  Existing API endpoints — no contract changes
+  Existing routing rules — leads-routing.service.ts logic untouched
+  Existing page access — no role loses access they currently have
+
+WHAT WE ONLY DO:
+  Fix bugs in leads.service.ts — broken behaviour not logic change
+  Add lead.constants.ts — new file only
+  Add requiredRole to sidebar items — new concept on top of existing
+  Call Center role gives CRM access to whoever is assigned it
+  Sales Setup role gives Sales CRM access to whoever is assigned it
+  No role → sees nothing new → everything stays the same
+
+THE ONE TEST:
+  Before touching any CRM or Sales file ask:
+  "Does this change what someone currently sees or does?"
+  If YES → stop, ask Shon
+  If NO → proceed
+
+---
+
 ## BACKEND RULES
 
 - Every list endpoint must have pagination — never return unlimited records
@@ -856,17 +875,3 @@ and useCustomMutation calls in frontend pages.
 
 lead.entity.ts and leads.service.ts are isolated communities.
 No cross-community edges detected.
-
-### RULE 23 — Always check git diff before committing any brain file
-
-## ADDED 23 Apr — after silent deletion incident in VEERABHADRA.md
-
-Before committing ANY file in 369-brain — run:
-git diff --staged [filename]
-Read every single deleted line before committing.
-If any rule, section, or content was removed without explanation — DO NOT commit.
-Restore the deleted content first. Then commit.
-
-This applies to: VEERABHADRA.md, CLAUDE.md, all memory/ files, all brain files.
-Silent deletions by Claude Code have caused data loss before — 22 April 2026.
-Prevention is mandatory. No exceptions.
