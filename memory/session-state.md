@@ -3,7 +3,7 @@
 
 ---
 
-**Last updated:** 22 April 2026 — Session close
+**Last updated:** 24 April 2026 — Session close
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
@@ -12,67 +12,87 @@
 ## CURRENT BUILD STATE
 
 **Branch:** feature/portal.shon369
-**Last commit to portal:** 26d8957e — feat(crm): CRM Phase 1 complete
-**Status:** Staged files only — no new portal commits yet
+**Last commit to portal:** d6f47912 — fix(crm): Phase 1 complete — enum architecture + bug fixes + role-based access
+**Status:** COMMITTED — 11 files — Phase 1 fix complete
 
 ---
 
-## WHAT WAS COMPLETED TODAY (22 Apr)
+## PENDING BLOCKER — ACTIVE
 
-1. **Graphify installed and knowledge graph built**
-   - 1771 files, 3983 nodes, 3827 edges, 1366 communities
-   - Moved output to `~/deassists-workspace/369-brain/graphify-out/`
-   - Cursor and Claude Code integration complete
-   - Full graphify commit checklist added to CLAUDE.md
+**Google OAuth signin broken locally**
+Latha's recent commits require `NEXT_PUBLIC_GOOGLE_CLIENT_ID` in local `.env`
+Local signin page is broken until this value is added
+Waiting for Latha to provide the value
 
-2. **Full CRM code audit** — 12 files — score 4.5 / 10
-
-3. **Full permission system audit** — all roles mapped
-
-4. **Full risk registry built** from graphify graph analysis
-
-5. **Role architecture finalised:**
-   - LEAD_CRM and SALES_SETUP removed as user Types
-   - Call Center and Sales Setup = database Roles
-   - Any Type + role = CRM access
-
-6. **Zero Mistakes Protocol locked** in CLAUDE.md
-
-7. **Rules 15–22 locked permanently** in CLAUDE.md
-
-8. **Rule 14 updated** — tester ready standard:
-   - Only commit when ready for qa.deassists.com
-   - Stage freely during build
-   - One commit when Shon says "ready for tester"
+**Next steps:**
+1. Get `NEXT_PUBLIC_GOOGLE_CLIENT_ID` from Latha
+2. Add to local `.env` — test signin locally
+3. Kingston tests on qa.deassists.com after Latha merges the branch
 
 ---
 
-## CRITICAL BUGS — MUST FIX BEFORE PHASE 2
+## WHAT WAS COMPLETED (23–24 Apr)
 
-**BUG 1 — Queue name mismatch (CRITICAL)**
-Entity uses `'369_MAIN'`, service looks for `'369_CALL_CENTER'`
-Result: all queue counts = 0
-Files: `lead.entity.ts`, `leads.service.ts`, `leads-routing.service.ts`, `dashboard/index.tsx`
+1. **Phase 1 CRM fix — COMPLETE AND COMMITTED**
+   - Commit: `d6f47912`
+   - Branch: `feature/portal.shon369`
+   - 11 files — browser tested by Shon before commit
 
-**BUG 2 — Status 'Completed' does not exist (CRITICAL)**
-`convert()` sets `'Completed'`, entity only allows `'Converted'`
-Result: converts fail silently, stats wrong
-Files: `leads.service.ts`, `dashboard/index.tsx`
+2. **A1 — `lead.constants.ts` created**
+   - LeadStatus, LeadQueue, LeadSource, LeadService, CallOutcome, SidebarRole enums
 
-**BUG 3 — Initial comment silently dropped**
-Frontend sends `initial_comment`, backend ignores it
-Result: agent notes never saved to database
-Files: `leads.service.ts`
+3. **A2 — Queue name mismatch fixed**
+   - `getQueueCounts()` and `getStats()` now use `LeadQueue` enum
 
-**BUG 4 — Module-level mutable state in permission.helper.ts (CRITICAL)**
-`hasCourseListPermission` and `hasEverBeenRestricted` are module-level
-Result: cross-request contamination in production
-Files: `permission.helper.ts`
+4. **A3 — `Completed` → `Converted` fixed**
+   - `convert()` uses `LeadStatus.Converted`
 
-**BUG 5 — /dashboard path never matches any collection**
-MANAGER, ORG_ADMIN cannot see Sales Dashboard child
-Result: Sales Dashboard invisible to non-SUPER_ADMIN roles
-Files: `permission.helper.ts`, `sidemenu.ts`
+5. **A4 — Initial comment silently dropped — fixed**
+   - `create()` calls `addComment()` when `initial_comment` present
+
+6. **A5 — LEAD_CRM and SALES_SETUP removed from ALLOWED_ROLES**
+   - All 3 frontend pages cleaned
+
+7. **A6 — Module-level mutable state fixed**
+   - `hasCourseListPermission` and `hasEverBeenRestricted` moved inside `exclusivePermission()`
+
+8. **B1 — LEAD_CRM and SALES_SETUP removed from `user.types.ts`**
+
+9. **B2 — `requiredRole` field added to `permission.interface.ts`**
+
+10. **B3 — `permission.helper.ts` updated**
+    - `rolePermitted` check for parent visibility
+    - Collection bypass for children with no collection match
+
+11. **B4 — `sidemenu.ts` restructured**
+    - Sales Dashboard moved to Call Center 369 children
+    - Sales Setup placeholder added to Sales CRM children
+    - `requiredRole: SidebarRole.CallCenter` and `SidebarRole.SalesSetup` added
+
+12. **Staff brain corrected**
+    - Gopika, Anandhu, Midhun, Stalin → Portal role: `TEAM_LEAD`
+    - CRM access: Assign Call Center role in portal
+    - AGENT type clarified: external sub-agents only, zero CRM access
+
+13. **Two lead creation bugs fixed**
+    - `date` always set by backend (`new Date()`) — never relies on frontend
+    - `last_outcome` `default: null` removed — no longer conflicts with enum validation
+
+---
+
+## CRITICAL BUGS — STATUS
+
+All 5 Phase 1 bugs FIXED in commit d6f47912.
+
+~~BUG 1~~ ✅ Queue name mismatch — fixed (A2)
+~~BUG 2~~ ✅ Status 'Completed' — fixed (A3)
+~~BUG 3~~ ✅ Initial comment dropped — fixed (A4)
+~~BUG 4~~ ✅ Module-level mutable state — fixed (A6)
+~~BUG 5~~ ✅ /dashboard path bypass — fixed (B3)
+
+**ADDITIONAL BUGS FOUND AND FIXED (23 Apr)**
+~~BUG 6~~ ✅ `date` required — backend now always sets `new Date()`
+~~BUG 7~~ ✅ `last_outcome: null` invalid enum — `default: null` removed from entity
 
 ---
 
@@ -174,12 +194,12 @@ CRM configuration panel — TBD with Shon
 
 ## NEXT SESSION MUST START WITH
 
-1. Type `/graphify .` in agent panel
-2. Attach `memory/session-state.md` + `memory/activity-log.md` from GitHub
-3. Run Zero Mistakes Protocol — steps 1–3 before writing any code
-4. Begin Phase A — stage only, never commit
-5. Shon confirms each step before moving to the next
+1. Get `NEXT_PUBLIC_GOOGLE_CLIENT_ID` from Latha — add to local `.env`
+2. Test signin locally — confirm portal loads correctly
+3. Latha merges `feature/portal.shon369` → dev_v2
+4. Kingston tests on qa.deassists.com
+5. Begin Phase 2 — Q Intelligence fields + CallLogModal
 
 ---
 
-*VEERABHADRA — DeAssists Master Brain | Updated: 22 April 2026 — Session close*
+*VEERABHADRA — DeAssists Master Brain | Updated: 24 April 2026 — Session close*

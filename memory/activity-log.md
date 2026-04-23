@@ -4,83 +4,69 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
-## 23 April 2026 — Graphify Git Workflow + Staff Brain + Rule 23 Session
+## 24 April 2026 — Phase 1 CRM Fix — Complete and Committed
 
-**Branch:** feature/portal.shon369 (no portal code committed)
-
-### Graphify Moved to Git (commit bdae182)
-
-1. **Graphify output committed to 369-brain**
-   - 1775 files, 85,360 insertions
-   - Commit: bdae182 — brain: include graphify knowledge graph + all brain files for AI access
-   - Location: ~/deassists-workspace/369-brain/graphify-out/
-   - Stats: 3983 nodes | 3827 edges | 1366 communities
-
-2. **Smart rebuild workflow implemented**
-   - Always rebuild graphify after ANY portal commit (cheap operation)
-   - Only commit to git IF the graph actually changed (git diff --quiet detects this)
-   - No judgment calls needed about what's "major" — git handles detection
-   - VEERABHADRA can now read knowledge graph directly from GitHub via MCP
-
-3. **Files updated with new workflow**
-   - CLAUDE.md — GRAPHIFY section rewritten with smart workflow
-   - memory/session-state.md — removed /graphify . from session start
-   - memory/session-workflow.md — added smart graphify to SESSION END
-   - memory/activity-log.md — this entry
-
-4. **graphify-out/ removed from .gitignore**
-   - Was: `graphify-out/` in .gitignore (never commit)
-   - Now: committed to git, updated via smart workflow
-
----
+**Branch:** feature/portal.shon369
+**Commit:** d6f47912 — fix(crm): Phase 1 complete — enum architecture + bug fixes + role-based access
+**Files committed:** 11
 
 ### What Was Done
 
-1. **staff-brain.md created**
-   - Full team documented: 12 people, 2 offices (Germany + India)
-   - Germany: Shon AJ (CEO), Sajir (intern), Amala (intern)
-   - India: Latha, Don, Sruthi, Santosh, Lenin, Gopika, Anandhu, Midhun, Stalin
-   - Portal roles mapped for each team member
-   - Escalation paths documented
-   - Systems migration status (369 Tracker → Portal CRM)
-   - 7 known gaps documented with fix plans
-   - Growth path: NOW → NEXT → AFTER THAT → VISION
+1. **A1 — `lead.constants.ts` created**
+   LeadStatus, LeadQueue, LeadSource, LeadService, CallOutcome, SidebarRole enums
+   lives in `libs/shared/constants/lead.constants.ts`
 
-2. **VEERABHADRA.md updated**
-   - Full team reference added
-   - Rule 23 strengthened
+2. **A2 — Queue name mismatch fixed**
+   `getQueueCounts()` and `getStats()` now use `LeadQueue` enum values
+   Replaced hardcoded `'369_CALL_CENTER'` with correct `LeadQueue.Main369 = '369_MAIN'`
 
-3. **CLAUDE.md Rule 23 added**
-   - git diff --staged [filename] mandatory before any brain file commit
-   - Read every deleted line before committing
-   - If any content removed without explanation — DO NOT commit
-   - Triggered by silent deletion incident on 22 April 2026
+3. **A3 — Status 'Completed' → 'Converted' fixed**
+   `convert()` uses `LeadStatus.Converted` — no more silent schema validation failures
 
-### Files Created
+4. **A4 — Initial comment silently dropped — fixed**
+   `create()` now calls `addComment()` after lead creation when `initial_comment` is present
 
-- `~/deassists-workspace/369-brain/company/staff-brain.md` — 353 lines
+5. **A5 — LEAD_CRM and SALES_SETUP removed from ALLOWED_ROLES**
+   All 3 frontend pages cleaned: `dashboard/index.tsx`, `leads/index.tsx`, `leads/new.tsx`
 
-### Files Modified
+6. **A6 — Module-level mutable state fixed**
+   `hasCourseListPermission` and `hasEverBeenRestricted` moved inside `exclusivePermission()`
 
-- `~/deassists-workspace/369-brain/VEERABHADRA.md` — +82/-17 lines
-- `~/deassists-workspace/369-brain/CLAUDE.md` — +14 lines (Rule 23)
+7. **B1 — LEAD_CRM and SALES_SETUP removed from `user.types.ts`**
+   Enum values and UserTypesMapping entries both removed
 
-### Commits Pushed to 369-brain
+8. **B2 — `requiredRole?: string` added to `permission.interface.ts`**
 
-- `22ba7b0` — brain: add staff-brain — full team, offices, escalation, systems 23 Apr
-- `e7c8cc2` — brain: update VEERABHADRA — full team added + Rule 23 strengthened 23 Apr
-- `a0efccf` — brain: Rule 23 added — git diff mandatory before brain commit 23 Apr
+9. **B3 — `permission.helper.ts` updated**
+   `rolePermitted` check: parent visible if user has matching role name
+   Collection bypass: children with no collection match shown if parent permitted
 
-### Key Decisions Locked
+10. **B4 — `sidemenu.ts` restructured**
+    Sales Dashboard → Call Center 369 children (no permissionLevel)
+    Sales Setup placeholder → Sales CRM children (no permissionLevel)
+    `requiredRole: SidebarRole.CallCenter` and `SidebarRole.SalesSetup` added to parents
 
-- Rule 23: git diff --staged mandatory before any brain file commit
-- Staff documentation now complete — all 12 team members documented
-- Silent deletion prevention is now a permanent rule
+11. **leads.controller.ts — TEAM_LEAD added to all @Roles() decorators**
+    LEAD_CRM replaced with STAFF, TEAM_LEAD added alongside STAFF on every endpoint
 
-### Portal Status
+12. **Two lead creation bugs found and fixed post-commit**
+    BUG 6: `date` required — backend always sets `new Date()` (never relies on frontend)
+    BUG 7: `last_outcome: null` invalid — `default: null` removed from entity
 
-No portal code changed. Branch feature/portal.shon369 unchanged.
-Next: Phase A bug fixes (lead.constants.ts, queue alignment, status fix).
+13. **staff-brain.md corrected**
+    Gopika, Anandhu, Midhun, Stalin → Portal role: TEAM_LEAD (was AGENT)
+    AGENT type = external sub-agents only, zero CRM access — clarified at top
+
+### Blocker Identified
+
+Local signin broken — Latha's Google OAuth commits require `NEXT_PUBLIC_GOOGLE_CLIENT_ID`
+Not in local `.env`. Waiting for Latha to provide value.
+
+### Next
+
+- Get `NEXT_PUBLIC_GOOGLE_CLIENT_ID` from Latha
+- Test locally → Latha merges → Kingston QA on qa.deassists.com
+- Phase 2: Q Intelligence fields + CallLogModal
 
 ---
 
