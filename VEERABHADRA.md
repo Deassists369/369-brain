@@ -215,20 +215,6 @@ feature/portal.shon369 on threesixtynine-de/deassists
 - Mac Mini M4: permanent company server (Tailscale IP: 100.125.115.8)
 - PM2: manages all 3 servers — never use kill -9
 
-## BRANCH FLOW — LOCKED
-
-feature branch  ← Shon + VEERABHADRA build here
-      ↓ Latha reviews and merges
-dev_v2          ← development branch
-      ↓ Latha merges
-qa              ← QA branch → qa.deassists.com (testers verify here)
-      ↓ Latha merges after QA passes
-develop         ← production branch → live portal for all staff
-
-Rule: We never push directly to dev_v2, qa, or develop.
-Rule: Testers always test on qa.deassists.com — never on localhost.
-Rule: Test requirements always reference qa.deassists.com.
-
 ---
 
 ## THE SESSION RHYTHM
