@@ -3,7 +3,7 @@
 
 ---
 
-**Last updated:** 23 April 2026 — Session close
+**Last updated:** 22 April 2026 — Session close
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
@@ -13,33 +13,37 @@
 
 **Branch:** feature/portal.shon369
 **Last commit to portal:** 26d8957e — feat(crm): CRM Phase 1 complete
-**Status:** No new portal commits — brain and documentation session only
+**Status:** Staged files only — no new portal commits yet
 
 ---
 
-## WHAT WAS COMPLETED TODAY (23 Apr)
+## WHAT WAS COMPLETED TODAY (22 Apr)
 
-1. **staff-brain.md created**
-   - Full team documented: 12 people across 2 offices
-   - Germany office: Shon AJ (CEO), Sajir (intern), Amala (intern)
-   - India office: Latha, Don, Sruthi, Santosh, Lenin, Gopika, Anandhu, Midhun, Stalin
-   - Escalation paths documented
-   - Systems and migration status documented
-   - Known gaps and growth path documented
+1. **Graphify installed and knowledge graph built**
+   - 1771 files, 3983 nodes, 3827 edges, 1366 communities
+   - Moved output to `~/deassists-workspace/369-brain/graphify-out/`
+   - Cursor and Claude Code integration complete
+   - Full graphify commit checklist added to CLAUDE.md
 
-2. **VEERABHADRA.md updated**
-   - Full team reference added
-   - Rule 23 strengthened
+2. **Full CRM code audit** — 12 files — score 4.5 / 10
 
-3. **CLAUDE.md Rule 23 added**
-   - git diff --staged mandatory before any brain file commit
-   - Prevents silent deletions (incident 22 April 2026)
-   - Applies to all 369-brain files
+3. **Full permission system audit** — all roles mapped
 
-4. **3 commits pushed to 369-brain**
-   - 22ba7b0 — staff-brain created
-   - e7c8cc2 — VEERABHADRA updated
-   - a0efccf — Rule 23 added
+4. **Full risk registry built** from graphify graph analysis
+
+5. **Role architecture finalised:**
+   - LEAD_CRM and SALES_SETUP removed as user Types
+   - Call Center and Sales Setup = database Roles
+   - Any Type + role = CRM access
+
+6. **Zero Mistakes Protocol locked** in CLAUDE.md
+
+7. **Rules 15–22 locked permanently** in CLAUDE.md
+
+8. **Rule 14 updated** — tester ready standard:
+   - Only commit when ready for qa.deassists.com
+   - Stage freely during build
+   - One commit when Shon says "ready for tester"
 
 ---
 
@@ -84,7 +88,52 @@ Files: `permission.helper.ts`, `sidemenu.ts`
 
 ---
 
-## BUILD PLAN — NEXT SESSION
+## FINALISED BUILD PLAN — LOCKED 23 APRIL 2026
+
+### PHASE 1 — Foundation + Permissions + Roles (ONE COMMIT)
+
+All items below must be complete and tested before the single Phase 1 commit.
+
+| Step | Task |
+|---|---|
+| A1 | `lead.constants.ts` created — LeadStatus, LeadQueue, LeadSource, LeadService, CallOutcome, SidebarRole, CRM_ALLOWED_ROLES |
+| A2 | Queue name mismatch fixed — entity, service, routing service, dashboard all aligned |
+| A3 | `'Completed'` → `'Converted'` fixed everywhere using LeadStatus enum |
+| A4 | Initial comment silently dropped — fixed in `create()` |
+| A5 | `CRM_ALLOWED_ROLES` imported everywhere it is used |
+| A6 | Module-level mutable state fixed — moved inside `exclusivePermission()` |
+| B1 | LEAD_CRM and SALES_SETUP removed as Types from `user.types.ts` |
+| B2 | SidebarRole enum + `requiredRole` field added to sidemenu items |
+| B3 | `/dashboard` path bypass fixed in `permission.helper.ts` |
+| B4 | `sidemenu.ts` updated — Sales Dashboard to Call Center 369, Sales Setup placeholder in Sales CRM |
+| B5 | Sidebar audit passed for all roles |
+| C1 | **Call Center** role created in portal by Latha |
+| C2 | **Sales Setup** role created in portal by Latha |
+| C3 | Roles assigned to test users — Kingston + test agents |
+
+→ **ONE commit when everything above is done and tested locally**
+→ ONE push → ONE graphify update
+
+### PHASE 2 — Q Intelligence (ONE COMMIT)
+
+Q Intelligence fields + CallLogModal
+call_attempts, last_called_at, last_outcome, callback_at, callback_note
+
+### PHASE 3 — My Queue page (ONE COMMIT)
+
+Agent's personal queue view — filtered by assigned_to
+
+### PHASE 4 — Sales Support panel (ONE COMMIT)
+
+Sales support functionality — TBD with Shon
+
+### PHASE 5 — Config panel (ONE COMMIT)
+
+CRM configuration panel — TBD with Shon
+
+---
+
+## PREVIOUS BUILD PLAN (superseded 23 Apr)
 
 ### Phase A — Safe, build freely, no Latha needed
 
@@ -125,15 +174,12 @@ Files: `permission.helper.ts`, `sidemenu.ts`
 
 ## NEXT SESSION MUST START WITH
 
-1. Attach `memory/session-state.md` + `memory/activity-log.md` from GitHub
-2. Graphify knowledge graph is now in git — VEERABHADRA reads directly from repo (no /graphify . needed)
+1. Type `/graphify .` in agent panel
+2. Attach `memory/session-state.md` + `memory/activity-log.md` from GitHub
 3. Run Zero Mistakes Protocol — steps 1–3 before writing any code
 4. Begin Phase A — stage only, never commit
 5. Shon confirms each step before moving to the next
 
-Note: Graphify committed to 369-brain on 23 April 2026 (commit bdae182).
-Smart workflow: always rebuild after portal commits, only commit if graph changed.
-
 ---
 
-*VEERABHADRA — DeAssists Master Brain | Updated: 23 April 2026 — Session close*
+*VEERABHADRA — DeAssists Master Brain | Updated: 22 April 2026 — Session close*
