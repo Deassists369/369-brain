@@ -5,6 +5,3 @@ test_skill.md
 *.token
 credentials/
 .claude/
-
-# Graphify output — rebuilt automatically, never commit
-graphify-out/

@@ -1,0 +1,1 @@
+{"nodes": [{"id": "apps_cms_next_wdyr_js", "label": "wdyr.js", "file_type": "code", "source_file": "apps/cms-next/wdyr.js", "source_location": "L1"}], "edges": [{"source": "apps_cms_next_wdyr_js", "target": "react", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "apps/cms-next/wdyr.js", "source_location": "L1", "weight": 1.0}], "raw_calls": []}
