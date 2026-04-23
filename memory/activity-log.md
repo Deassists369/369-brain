@@ -4,6 +4,60 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 23 April 2026 — Staff Brain + Rule 23 Session
+
+**Branch:** feature/portal.shon369 (no portal code committed)
+
+### What Was Done
+
+1. **staff-brain.md created**
+   - Full team documented: 12 people, 2 offices (Germany + India)
+   - Germany: Shon AJ (CEO), Sajir (intern), Amala (intern)
+   - India: Latha, Don, Sruthi, Santosh, Lenin, Gopika, Anandhu, Midhun, Stalin
+   - Portal roles mapped for each team member
+   - Escalation paths documented
+   - Systems migration status (369 Tracker → Portal CRM)
+   - 7 known gaps documented with fix plans
+   - Growth path: NOW → NEXT → AFTER THAT → VISION
+
+2. **VEERABHADRA.md updated**
+   - Full team reference added
+   - Rule 23 strengthened
+
+3. **CLAUDE.md Rule 23 added**
+   - git diff --staged [filename] mandatory before any brain file commit
+   - Read every deleted line before committing
+   - If any content removed without explanation — DO NOT commit
+   - Triggered by silent deletion incident on 22 April 2026
+
+### Files Created
+
+- `~/deassists-workspace/369-brain/company/staff-brain.md` — 353 lines
+
+### Files Modified
+
+- `~/deassists-workspace/369-brain/VEERABHADRA.md` — +82/-17 lines
+- `~/deassists-workspace/369-brain/CLAUDE.md` — +14 lines (Rule 23)
+
+### Commits Pushed to 369-brain
+
+- `22ba7b0` — brain: add staff-brain — full team, offices, escalation, systems 23 Apr
+- `e7c8cc2` — brain: update VEERABHADRA — full team added + Rule 23 strengthened 23 Apr
+- `a0efccf` — brain: Rule 23 added — git diff mandatory before brain commit 23 Apr
+
+### Key Decisions Locked
+
+- Rule 23: git diff --staged mandatory before any brain file commit
+- Staff documentation now complete — all 12 team members documented
+- Silent deletion prevention is now a permanent rule
+
+### Portal Status
+
+No portal code changed. Branch feature/portal.shon369 unchanged.
+Next: Phase A bug fixes (lead.constants.ts, queue alignment, status fix).
+
+---
+
 ## 22 April 2026 — Full Setup + Brain Lock Session
 
 **Branch:** feature/portal.shon369 (no portal code committed)

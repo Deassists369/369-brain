@@ -57,3 +57,5 @@ Never delete entries. Only append.
 | 21 Apr 2026 | Any user Type + Call Center role = CRM access | Lean approach — no new hiring categories needed, roles assignable to any Type |
 | 22 Apr 2026 | Graphify installed as permanent Claude Code skill | 71x fewer tokens per codebase query — knowledge graph replaces manual file reads |
 | 22 Apr 2026 | Rebuild graph after every phase commit: /opt/homebrew/bin/graphify update . | Always keep graph current — stale graph gives wrong answers |
+| 23 Apr 2026 | Rule 23: git diff --staged mandatory before any brain file commit | Silent deletion incident 22 Apr — Claude Code deleted content without warning |
+| 23 Apr 2026 | staff-brain.md is the team documentation source of truth | All 12 team members, offices, escalation paths, systems documented in one file |

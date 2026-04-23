@@ -3,7 +3,7 @@
 
 ---
 
-**Last updated:** 22 April 2026 — Session close
+**Last updated:** 23 April 2026 — Session close
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
@@ -13,37 +13,33 @@
 
 **Branch:** feature/portal.shon369
 **Last commit to portal:** 26d8957e — feat(crm): CRM Phase 1 complete
-**Status:** Staged files only — no new portal commits yet
+**Status:** No new portal commits — brain and documentation session only
 
 ---
 
-## WHAT WAS COMPLETED TODAY (22 Apr)
+## WHAT WAS COMPLETED TODAY (23 Apr)
 
-1. **Graphify installed and knowledge graph built**
-   - 1771 files, 3983 nodes, 3827 edges, 1366 communities
-   - Moved output to `~/deassists-workspace/369-brain/graphify-out/`
-   - Cursor and Claude Code integration complete
-   - Full graphify commit checklist added to CLAUDE.md
+1. **staff-brain.md created**
+   - Full team documented: 12 people across 2 offices
+   - Germany office: Shon AJ (CEO), Sajir (intern), Amala (intern)
+   - India office: Latha, Don, Sruthi, Santosh, Lenin, Gopika, Anandhu, Midhun, Stalin
+   - Escalation paths documented
+   - Systems and migration status documented
+   - Known gaps and growth path documented
 
-2. **Full CRM code audit** — 12 files — score 4.5 / 10
+2. **VEERABHADRA.md updated**
+   - Full team reference added
+   - Rule 23 strengthened
 
-3. **Full permission system audit** — all roles mapped
+3. **CLAUDE.md Rule 23 added**
+   - git diff --staged mandatory before any brain file commit
+   - Prevents silent deletions (incident 22 April 2026)
+   - Applies to all 369-brain files
 
-4. **Full risk registry built** from graphify graph analysis
-
-5. **Role architecture finalised:**
-   - LEAD_CRM and SALES_SETUP removed as user Types
-   - Call Center and Sales Setup = database Roles
-   - Any Type + role = CRM access
-
-6. **Zero Mistakes Protocol locked** in CLAUDE.md
-
-7. **Rules 15–22 locked permanently** in CLAUDE.md
-
-8. **Rule 14 updated** — tester ready standard:
-   - Only commit when ready for qa.deassists.com
-   - Stage freely during build
-   - One commit when Shon says "ready for tester"
+4. **3 commits pushed to 369-brain**
+   - 22ba7b0 — staff-brain created
+   - e7c8cc2 — VEERABHADRA updated
+   - a0efccf — Rule 23 added
 
 ---
 
@@ -137,4 +133,4 @@ Files: `permission.helper.ts`, `sidemenu.ts`
 
 ---
 
-*VEERABHADRA — DeAssists Master Brain | Updated: 22 April 2026 — Session close*
+*VEERABHADRA — DeAssists Master Brain | Updated: 23 April 2026 — Session close*
