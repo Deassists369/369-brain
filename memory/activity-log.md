@@ -4,6 +4,87 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 24 April 2026 — Session Close (Final) — All Fixes Pushed
+
+**Branch:** feature/portal.shon369
+
+### Commits Pushed Today
+
+| Hash | Message |
+|------|---------|
+| `d6f47912` | fix(crm): Phase 1 complete — enum architecture + bug fixes + role-based access (11 files) |
+| `dffced7d` | chore: update pnpm lockfile + gitignore |
+| `856a9f25` | fix(theme): MUI colour error — replace raw RGB strings with hex in palette |
+
+### What Is Working
+
+- Phase 1 CRM all fixes complete and pushed ✅
+- MUI user edit page crash fixed (`customColors.main/light/dark` now hex, not raw RGB) ✅
+- Call Center and Sales Setup roles created in portal ✅
+- Roles assigned to Shon AJ account ✅
+
+### Blocker — Local Only
+
+Latha's auth changes cause logout after user save on local dev.
+This is a local `.env` issue — QA will work correctly.
+No code change needed. Waiting for Latha to merge and deploy to QA.
+
+### Next
+
+1. Latha merges `feature/portal.shon369` → `dev_v2`
+2. Kingston tests on `qa-portal.deassists.com`
+3. Fix any issues found in testing
+4. Phase 2 — Q Intelligence
+
+---
+
+## 24 April 2026 — Phase 1 CRM Fix Complete + Pushed
+
+**Branch:** feature/portal.shon369
+
+### What Was Done
+
+1. **Phase 1 CRM fix — all 11 files committed and pushed**
+   - `d6f47912` — fix(crm): Phase 1 complete — enum architecture + bug fixes + role-based access
+   - Lead saves correctly with `date` auto-set by backend
+   - Queue counts working — dashboard shows real numbers
+   - Initial notes saved correctly
+   - Sidebar audit passed all 9 checks
+   - Sales Dashboard in Call Center 369 section
+   - Role-based access working for Call Center + Sales Setup roles
+
+2. **Additional lead creation bugs found and fixed**
+   - BUG 6: `date` required — backend now always sets `new Date()`
+   - BUG 7: `last_outcome: null` invalid — `default: null` removed from entity
+
+3. **Staff brain corrected**
+   - Gopika, Anandhu, Midhun, Stalin → TEAM_LEAD (was AGENT)
+   - AGENT type = external sub-agents only — locked permanently in staff-brain.md
+
+4. **pnpm lockfile committed after package install**
+   - `dffced7d` — chore: update pnpm lockfile + gitignore
+   - `@react-oauth/google 0.13.5` added (Latha's Google OAuth work)
+
+5. **Latha's 38 commits merged in**
+   - Google OAuth added to signin page
+   - Requires `NEXT_PUBLIC_GOOGLE_CLIENT_ID` in local `.env`
+   - Local development blocked until Latha provides value
+   - QA unaffected
+
+6. **Graphify updated after commit**
+   - 1772 files, 3984 nodes, 3828 edges
+   - Saved to `369-brain/graphify-out/`
+
+### Key Decisions Locked Today
+
+- TEAM_LEAD = DeAssists call center team (Anandhu, Midhun, Stalin, Gopika)
+- AGENT = external sub-agents only — zero internal data access — permanent
+- `lead.constants.ts` = single source of truth for all CRM enum values
+- Phase 1 code quality score: 4.5/10 → approximately 7/10
+- Call Center role = assign to any Type for CRM sidebar access
+
+---
+
 ## 24 April 2026 — Phase 1 CRM Fix — Complete and Committed
 
 **Branch:** feature/portal.shon369
