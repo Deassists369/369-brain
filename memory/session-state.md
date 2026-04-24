@@ -3,7 +3,7 @@
 
 ---
 
-**Last updated:** 24 April 2026 — Session close (final)
+**Last updated:** 24 April 2026 — Session close (final, Rules 24–26 locked)
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
@@ -18,7 +18,9 @@
 **Commits pushed today:**
 - `d6f47912` — fix(crm): Phase 1 complete — enum architecture + bug fixes + role-based access (11 files)
 - `dffced7d` — chore: update pnpm lockfile + gitignore
+- `eb716e2b` — chore: revert pnpm-lock.yaml — lockfile reverted, Latha owns this file
 - `856a9f25` — fix(theme): MUI colour error — replace raw RGB strings with hex in palette
+- `e370bb1f` — chore: add Rule 26 — package.json needs Latha approval (CLAUDE.md)
 
 ---
 
@@ -59,11 +61,10 @@
 
 ---
 
-## BLOCKER — LOCAL DEVELOPMENT ONLY
+## LOCAL DEVELOPMENT — STATUS
 
-Latha's auth changes cause user to be logged out after saving a user record.
-This is a local `.env` issue — QA (`qa.deassists.com`) will work correctly.
-**Waiting for Latha to merge `feature/portal.shon369` → `dev_v2` and deploy.**
+**Login:** Working locally ✅ (was blocked earlier this session — now resolved)
+**Logout-on-save bug:** Latha's auth changes cause logout after saving a user record — local `.env` issue only. QA (`qa.deassists.com`) unaffected. Waiting for Latha to merge `feature/portal.shon369` → `dev_v2` and deploy.
 
 ---
 
@@ -130,4 +131,16 @@ CRM configuration panel — TBD with Shon
 
 ---
 
-*VEERABHADRA — DeAssists Master Brain | Updated: 24 April 2026 — Session close (final)*
+## CLAUDE.md RULES — LOCKED 24 APRIL 2026
+
+| Rule | Description |
+|------|-------------|
+| Rule 24 | NEVER commit `pnpm-lock.yaml` — Latha owns it |
+| Rule 25 | Never commit `.gitignore` without Latha approval |
+| Rule 26 | Any `package.json` change requires Latha approval before commit |
+
+Both portal (`deassists`) and brain (`369-brain`) CLAUDE.md updated and committed.
+
+---
+
+*VEERABHADRA — DeAssists Master Brain | Updated: 24 April 2026 — Session close (final, Rules 24–26 locked)*
