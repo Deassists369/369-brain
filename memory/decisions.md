@@ -57,5 +57,8 @@ Never delete entries. Only append.
 | 21 Apr 2026 | Any user Type + Call Center role = CRM access | Lean approach — no new hiring categories needed, roles assignable to any Type |
 | 22 Apr 2026 | Graphify installed as permanent Claude Code skill | 71x fewer tokens per codebase query — knowledge graph replaces manual file reads |
 | 22 Apr 2026 | Rebuild graph after every phase commit: /opt/homebrew/bin/graphify update . | Always keep graph current — stale graph gives wrong answers |
-| 23 Apr 2026 | Rule 23: git diff --staged mandatory before any brain file commit | Silent deletion incident 22 Apr — Claude Code deleted content without warning |
-| 23 Apr 2026 | staff-brain.md is the team documentation source of truth | All 12 team members, offices, escalation paths, systems documented in one file |
+| 24 Apr 2026 | TEAM_LEAD is the call center team Type — Anandhu, Midhun, Stalin, Gopika | Corrected from AGENT; TEAM_LEAD gets API access and CRM sidebar via Call Center role |
+| 24 Apr 2026 | AGENT = external sub-agents only — zero internal portal access ever | AGENT type is reserved for sub-agent partners; DeAssists staff must never be assigned AGENT |
+| 24 Apr 2026 | `lead.constants.ts` is single source of truth for all CRM enum values — import from here always | Eliminates queue/status string drift that caused 3 critical Phase 1 bugs |
+| 24 Apr 2026 | Phase 1 CRM fix complete — code quality score improved from 4.5/10 to approximately 7/10 | All 5 original bugs fixed + 2 additional lead creation bugs fixed |
+| 24 Apr 2026 | Three-layer access audit rule locked as Rule 27 in CLAUDE.md | Portal has three separate access systems — Sidebar + Page guard + Data permission — all three must be tested for every feature; discovered when TEAM_LEAD got Access Denied on /leads despite having the sidebar role |

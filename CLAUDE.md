@@ -932,3 +932,43 @@ Committing the package.json change is not.
 If package.json appears in git diff --staged — remove it:
   git restore --staged package.json
 Get Latha's approval first, then re-stage and commit.
+
+---
+
+## CRM ACCESS AUDIT — ADDED 24 APRIL 2026
+
+### RULE 27 — Three-layer access audit — mandatory for every CRM page
+
+## ADDED 24 Apr — discovered when TEAM_LEAD got Access Denied on /leads
+
+Every CRM page has THREE separate access layers.
+All three must be audited and tested before any feature is declared complete.
+
+LAYER 1 — SIDEBAR VISIBILITY
+  File: libs/shared/models/sidemenu.ts → requiredRole check
+  File: libs/shared/functions/permission.helper.ts → rolePermitted check
+  Question: Who sees the sidebar item?
+
+LAYER 2 — PAGE GUARD
+  File: ALLOWED_ROLES array inside each page file
+  Question: Who can visit the URL?
+  Must include ALL Types that should have access — as appropriate per page:
+    UserTypes.SUPER_ADMIN
+    UserTypes.ORG_ADMIN
+    UserTypes.MANAGER
+    UserTypes.TEAM_LEAD
+    UserTypes.STAFF
+  Audit this array every time a new role is added to the system.
+
+LAYER 3 — DATA PERMISSION
+  Mechanism: useCustomQuery requires the collection role assigned in the database
+  Question: Who can fetch the actual data?
+  This is entirely separate from UserType and ALLOWED_ROLES.
+  The test account must have the Leads (or relevant) collection role assigned.
+  Never assume SUPER_ADMIN bypasses data permissions — it does not.
+
+A feature is NOT complete until all three layers are confirmed working.
+Checklist before any CRM feature commit:
+  ✅ Sidebar item visible for the correct roles
+  ✅ Page loads (no Access Denied) for the correct Types
+  ✅ Data returns (no empty table) for the test account
