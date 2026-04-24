@@ -2,7 +2,7 @@
 
 # Read this before every session. No exceptions.
 
-# Last updated: 17 April 2026
+# Last updated: 24 April 2026
 
 ---
 
@@ -875,3 +875,60 @@ and useCustomMutation calls in frontend pages.
 
 lead.entity.ts and leads.service.ts are isolated communities.
 No cross-community edges detected.
+
+---
+
+## GIT HYGIENE RULES — ADDED 24 APRIL 2026
+
+### RULE 24 — NEVER commit pnpm-lock.yaml
+
+## ADDED 24 Apr — Latha owns the lockfile
+
+NEVER stage or commit pnpm-lock.yaml. Ever.
+Latha owns and manages the lockfile. It is her responsibility.
+
+CORRECT: pnpm install (runs locally — never stage the output)
+WRONG: git add pnpm-lock.yaml
+WRONG: git add . (catches pnpm-lock.yaml by accident — this is why Rule 1 exists)
+
+If pnpm-lock.yaml appears in git status as modified — ignore it.
+If it appears in git diff --staged — remove it immediately:
+  git restore --staged pnpm-lock.yaml
+
+### RULE 25 — Never commit .gitignore without Latha's approval
+
+## ADDED 24 Apr — shared config file ownership
+
+.gitignore is a shared infrastructure file that affects every developer.
+Never modify or commit .gitignore without coordinating with Latha first.
+
+Same rule applies to all shared config files:
+  .gitignore
+  .eslintrc / .eslintignore
+  tsconfig*.json (root level)
+  nx.json
+  workspace.json
+  pnpm-workspace.yaml
+
+If a config file is not owned by a single feature — it requires Latha approval before commit.
+
+### RULE 26 — package.json needs Latha approval
+
+## ADDED 24 Apr — dependency ownership
+
+Any change to any package.json in the monorepo requires explicit approval from Latha before committing.
+
+This includes:
+  root package.json
+  apps/backend-nest/package.json
+  apps/cms-next/package.json
+  any other package.json in apps/ or libs/
+
+Adding, removing, or upgrading any dependency = Latha must approve before commit.
+
+Installing locally with pnpm install is fine.
+Committing the package.json change is not.
+
+If package.json appears in git diff --staged — remove it:
+  git restore --staged package.json
+Get Latha's approval first, then re-stage and commit.
