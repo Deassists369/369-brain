@@ -4,6 +4,57 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 25 April 2026 — Session Close — Environment Fix + SidebarRole Enum
+
+**Branch:** feature/portal.shon369
+
+### What Was Done
+
+1. **cms-next .env.local symlink created**
+   - `ln -s ~/deassists/.env ~/deassists/apps/cms-next/.env.local`
+   - Google OAuth now loads correctly
+   - Login working at localhost:4002
+
+2. **SidebarRole enum added to lead.constants.ts**
+   - Backend compile error: sidemenu.ts was importing SidebarRole before it existed
+   - Added enum with `CallCenter = 'Call Center'` and `SalesSetup = 'Sales Setup'`
+   - Backend now compiles and runs successfully
+
+3. **PM2 servers verified**
+   - Backend: port 8000, PID 37079, online
+   - CMS: port 4002, loading env from .env.local symlink
+   - Both compiling successfully
+
+### Files Modified Today
+
+| File | Change |
+|------|--------|
+| `libs/shared/constants/lead.constants.ts` | SidebarRole enum appended |
+| `apps/cms-next/.env.local` | Symlink created to root .env |
+
+### Staged Files (Not Committed)
+
+All previous fixes remain staged, waiting for single commit:
+- `apps/cms-next/components/leads/LeadTable.tsx` — data?.data?.data fix
+- `apps/cms-next/components/leads/LeadQueueSidebar.tsx` — queue shape fix
+- `apps/cms-next/components/leads/LeadDetailPanel.tsx` — tab switching
+- `apps/cms-next/pages/leads/index.tsx` — enum imports
+- `apps/cms-next/pages/leads/new.tsx` — enum imports
+- `apps/cms-next/pages/dashboard/index.tsx` — enum imports
+- `apps/backend-nest/src/leads/leads.service.ts` — empty string validation
+- `libs/shared/constants/lead.constants.ts` — all enums + SidebarRole
+- `CLAUDE.md` — Rules 0, 23, 27, 28
+
+### Next Session
+
+1. Fix hardcoded values in new.tsx and dashboard/index.tsx
+2. Verify Comments tab in browser
+3. Browser test all roles
+4. Sidebar audit
+5. One single commit for everything
+
+---
+
 ## 24 April 2026 — Session Close (Final) — All Fixes Pushed
 
 **Branch:** feature/portal.shon369

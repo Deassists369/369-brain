@@ -390,6 +390,36 @@ Never modify apps/mui-cms-next/ for portal changes.
 
 These rules are permanent. Never break them.
 
+### RULE 0 — Always verify before adding or changing any rule
+
+Before adding OR modifying any rule in CLAUDE.md:
+
+STEP 1 — Get the full list:
+  Run: grep "### RULE" CLAUDE.md
+  Read every rule number and title completely.
+
+STEP 2 — Check for duplicates:
+  Does a rule already exist that covers this topic?
+  If YES — report to Shon before doing anything.
+  Never silently overwrite or modify an existing rule.
+
+STEP 3 — Check for conflicts:
+  Does the new rule contradict or overlap with any existing rule?
+  If YES — report to Shon before doing anything.
+
+STEP 4 — Confirm the number:
+  Find the correct next available number — never assume.
+  If a gap exists (e.g. no Rule 23) — flag it to Shon first.
+  Never use a number that already exists.
+
+STEP 5 — Wait for Shon confirmation:
+  State: "Proposed Rule N — [title]. No duplicate found. 
+  No conflict found. Confirm to proceed?"
+  Only add the rule after Shon says yes.
+
+This applies every session, every time, without exception.
+No rule is added or changed without completing all 5 steps first.
+
 ### RULE 1 — Never use git add .
 
 Always name specific files only.
@@ -876,6 +906,15 @@ and useCustomMutation calls in frontend pages.
 lead.entity.ts and leads.service.ts are isolated communities.
 No cross-community edges detected.
 
+### RULE 23 — git diff mandatory before any brain file commit
+
+Before committing any file in 369-brain run:
+  git diff --staged [filename]
+Read every line including deletions.
+If any content was deleted without explicit reason — DO NOT commit.
+Silent deletions have caused data loss before (22 April 2026).
+This rule is permanent.
+
 ---
 
 ## GIT HYGIENE RULES — ADDED 24 APRIL 2026
@@ -972,3 +1011,27 @@ Checklist before any CRM feature commit:
   ✅ Sidebar item visible for the correct roles
   ✅ Page loads (no Access Denied) for the correct Types
   ✅ Data returns (no empty table) for the test account
+
+### RULE 28 — Constants file is a hard gate
+
+Before any frontend component or backend file uses a status, queue,
+source, service, or outcome value — the enum must exist in
+lead.constants.ts first.
+
+NEVER hardcode strings like 'New', '369_MAIN', 'Partner',
+'Private University' in any component, page, or service file.
+
+ALWAYS import from libs/shared/constants/lead.constants.ts:
+  import { LeadStatus, LeadQueue, LeadSource, LeadService, CallOutcome }
+    from '@shared/constants/lead.constants';
+
+The gate:
+  Need a lead value in a component?
+  → Does lead.constants.ts exist? If NO — build it first.
+  → Is the value in an enum? If NO — add it to the enum first.
+  → Only then write the component.
+
+Verification before every CRM commit:
+  grep -r "369_MAIN\|BCBT\|Follow Up\|Called 1\|Private University" \
+    apps/cms-next/components/leads/ apps/cms-next/pages/leads/
+  Any result = hardcoded string = do not commit.

@@ -62,3 +62,5 @@ Never delete entries. Only append.
 | 24 Apr 2026 | `lead.constants.ts` is single source of truth for all CRM enum values — import from here always | Eliminates queue/status string drift that caused 3 critical Phase 1 bugs |
 | 24 Apr 2026 | Phase 1 CRM fix complete — code quality score improved from 4.5/10 to approximately 7/10 | All 5 original bugs fixed + 2 additional lead creation bugs fixed |
 | 24 Apr 2026 | Three-layer access audit rule locked as Rule 27 in CLAUDE.md | Portal has three separate access systems — Sidebar + Page guard + Data permission — all three must be tested for every feature; discovered when TEAM_LEAD got Access Denied on /leads despite having the sidebar role |
+| 25 Apr 2026 | cms-next .env.local symlink to root .env | Google OAuth requires env vars — symlink allows Next.js to read from single source |
+| 25 Apr 2026 | SidebarRole enum added to lead.constants.ts | sidemenu.ts was importing SidebarRole before it existed — backend compile error fixed |
