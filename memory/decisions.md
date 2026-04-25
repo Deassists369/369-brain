@@ -67,3 +67,5 @@ Never delete entries. Only append.
 | 25 Apr 2026 | Navigation guard pattern: isDirty + guardedAction + pendingAction | Protects against data loss on queue clicks, lead row clicks, and route changes |
 | 25 Apr 2026 | Country code required with +91 default | India is primary market — sensible default prevents blank country codes |
 | 25 Apr 2026 | Phase 1 CRM complete — b0d2fdc4 | 8 files, enum architecture, navigation guard, UI polish — ready for Latha merge |
+| 25 Apr 2026 | npm run build:all mandatory before every commit | Latha requirement — tsc --noEmit alone misses Nx build errors across monorepo |
+| 25 Apr 2026 | Server startup always requires all 3 commands — cms:serve, website:serve, backend:serve | Prevents partial startup issues |
