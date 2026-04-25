@@ -64,3 +64,6 @@ Never delete entries. Only append.
 | 24 Apr 2026 | Three-layer access audit rule locked as Rule 27 in CLAUDE.md | Portal has three separate access systems — Sidebar + Page guard + Data permission — all three must be tested for every feature; discovered when TEAM_LEAD got Access Denied on /leads despite having the sidebar role |
 | 25 Apr 2026 | cms-next .env.local symlink to root .env | Google OAuth requires env vars — symlink allows Next.js to read from single source |
 | 25 Apr 2026 | SidebarRole enum added to lead.constants.ts | sidemenu.ts was importing SidebarRole before it existed — backend compile error fixed |
+| 25 Apr 2026 | Navigation guard pattern: isDirty + guardedAction + pendingAction | Protects against data loss on queue clicks, lead row clicks, and route changes |
+| 25 Apr 2026 | Country code required with +91 default | India is primary market — sensible default prevents blank country codes |
+| 25 Apr 2026 | Phase 1 CRM complete — b0d2fdc4 | 8 files, enum architecture, navigation guard, UI polish — ready for Latha merge |

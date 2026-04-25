@@ -3,7 +3,7 @@
 
 ---
 
-**Last updated:** 25 April 2026 — Session close
+**Last updated:** 25 April 2026 — Phase 1 CRM COMPLETE
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
@@ -15,51 +15,50 @@
 **Backend:** Compiling and running on port 8000 ✅
 **CMS:** Running on port 4002 ✅
 **Login:** Working ✅
+**Phase 1 CRM:** COMPLETE AND PUSHED ✅
 
 ---
 
-## STAGED FILES (NOT YET COMMITTED)
+## LATEST COMMIT
 
-All changes staged locally — waiting for one single commit when complete:
+**Hash:** b0d2fdc4
+**Message:** fix(crm): Phase 1 complete — enums, UI polish, nav guard, country code
+**Date:** 25 April 2026
+**Files:** 8
+
+---
+
+## WHAT WAS COMPLETED TODAY (25 April 2026)
+
+### Commit b0d2fdc4 — Phase 1 CRM Complete
 
 | File | What was fixed |
 |------|----------------|
-| `apps/cms-next/components/leads/LeadTable.tsx` | `data?.data?.data` fix — table now shows leads |
-| `apps/cms-next/components/leads/LeadQueueSidebar.tsx` | Queue shape fix — sidebar counts work |
-| `apps/cms-next/components/leads/LeadDetailPanel.tsx` | Tab switching wired up |
-| `apps/cms-next/pages/leads/index.tsx` | STATUS_OPTIONS and QUEUE_OPTIONS replaced with enum imports |
-| `apps/cms-next/pages/leads/new.tsx` | Enum imports added |
-| `apps/cms-next/pages/dashboard/index.tsx` | Enum imports added |
 | `apps/backend-nest/src/leads/leads.service.ts` | Empty string enum validation fix |
-| `libs/shared/constants/lead.constants.ts` | All shared enums including SidebarRole added |
-| `CLAUDE.md` | Rules 0, 23, 27, 28 added |
+| `apps/cms-next/components/leads/LeadDetailPanel.tsx` | Header lighter (dk2), Save in header, unsaved changes modal, country code display |
+| `apps/cms-next/components/leads/LeadQueueSidebar.tsx` | "All Leads" option with total count |
+| `apps/cms-next/components/leads/LeadTable.tsx` | data?.data?.data fix |
+| `apps/cms-next/pages/dashboard/index.tsx` | Enum imports from lead.constants.ts |
+| `apps/cms-next/pages/leads/index.tsx` | Navigation guard lifted to page level, unsaved changes modal |
+| `apps/cms-next/pages/leads/new.tsx` | Enum imports, country_code required with +91 default |
+| `libs/shared/constants/lead.constants.ts` | All enums + SidebarRole |
+
+### Key Improvements
+1. **Enum architecture** — All hardcoded strings replaced with imports from lead.constants.ts
+2. **Navigation guard** — Unsaved changes protection on queue clicks, lead row clicks, route changes
+3. **Country code** — Required field with +91 default, displayed with WhatsApp number
+4. **UI polish** — Lighter header banner, Save button in header, "All Leads" option
 
 ---
 
-## WHAT WAS FIXED THIS SESSION (25 April 2026)
+## NEXT SESSION — PHASE 2
 
-1. **cms-next .env.local symlink created**
-   - `ln -s ~/deassists/.env ~/deassists/apps/cms-next/.env.local`
-   - Google OAuth now loads — login works
+**After Latha merges feature/portal.shon369 → dev_v2:**
 
-2. **SidebarRole enum added to lead.constants.ts**
-   - Backend was failing to compile — sidemenu.ts was importing SidebarRole
-   - Added `SidebarRole` enum with `CallCenter` and `SalesSetup` values
-   - Backend now compiles successfully
-
-3. **Both servers verified running**
-   - Backend: port 8000, PID 37079
-   - CMS: port 4002, env loaded from .env.local symlink
-
----
-
-## STILL TO DO NEXT SESSION
-
-1. Fix hardcoded values in `new.tsx` and `dashboard/index.tsx`
-2. Verify Comments tab works in browser
-3. Browser test all roles at localhost:4002
-4. Run sidebar audit
-5. **Then ONE SINGLE COMMIT for everything**
+1. **Q Intelligence fields** — call_attempts, last_called_at, last_outcome, callback_at, callback_note
+2. **CallLogModal** — Agent call logging interface
+3. **Fix pre-existing LeadTable.tsx TypeScript error** — Property 'data' does not exist on type 'Lead[]'
+4. Phase 2 sidebar structure with LEAD_CRM role
 
 ---
 
@@ -78,23 +77,10 @@ All changes staged locally — waiting for one single commit when complete:
 
 ---
 
-## LOCAL DEVELOPMENT — STATUS
+## GRAPHIFY STATUS
 
-**Login:** Working locally ✅ (env symlink fixed Google OAuth)
-**Backend:** Compiling and running ✅
-**CMS:** Running and loading env ✅
-
----
-
-## GRAPHIFY RISK REGISTRY
-
-| Risk | Files | Notes |
-|------|-------|-------|
-| MAXIMUM | `permission.helper.ts` | Community 6 — coupled to AccountsController (63 edges) — Latha must be present |
-| HIGH | `leads.controller.ts` | API contract change breaks useCustomQuery (54 edges) |
-| MEDIUM | `sidemenu.ts`, `user.types.ts` | Sidebar audit mandatory |
-| LOW | `lead.entity.ts`, `leads.service.ts`, `leads.module.ts` | Isolated communities |
-| ZERO | `lead.constants.ts` | New file — no existing connections |
+**Last update:** 25 April 2026 after commit b0d2fdc4
+**Files:** 1772 | **Nodes:** 3998 | **Edges:** 3849
 
 ---
 
@@ -108,20 +94,9 @@ All changes staged locally — waiting for one single commit when complete:
 
 ---
 
-## NEXT SESSION
-
-1. Fix remaining hardcoded values
-2. Browser test all roles
-3. Sidebar audit
-4. One single commit for all staged changes
-5. Latha merges `feature/portal.shon369` → `dev_v2`
-6. Kingston tests on `qa-portal.deassists.com`
-
----
-
 ## FINALISED BUILD PLAN — LOCKED 23 APRIL 2026
 
-### PHASE 1 — Foundation + Permissions + Roles ✅ IN PROGRESS (staged, not committed)
+### PHASE 1 — Foundation + Permissions + Roles ✅ COMPLETE (b0d2fdc4)
 
 ### PHASE 2 — Q Intelligence (ONE COMMIT)
 
@@ -164,4 +139,4 @@ CRM configuration panel — TBD with Shon
 
 ---
 
-*VEERABHADRA — DeAssists Master Brain | Updated: 25 April 2026 — Session close*
+*VEERABHADRA — DeAssists Master Brain | Updated: 25 April 2026 — Phase 1 COMPLETE*

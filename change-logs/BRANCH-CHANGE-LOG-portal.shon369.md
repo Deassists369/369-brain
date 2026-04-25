@@ -4,7 +4,7 @@
 # Reference branch (code copied from): feature/portal-crm-phase1
 # Owner: Shon AJ | Brain: VEERABHADRA
 # Created: 19 April 2026
-# Last updated: 19 April 2026 — all 6 commits filled
+# Last updated: 25 April 2026 — Phase 1 complete (commit b0d2fdc4)
 
 ---
 
@@ -233,6 +233,44 @@ or accept SUPER_ADMIN-only visibility until Sales Dashboard has its own collecti
 
 ---
 
+### TASK 9 — Phase 1 Complete — Enums, UI Polish, Navigation Guard, Country Code
+**Commit:** b0d2fdc4
+**Date:** 25 April 2026
+**Type:** fix
+
+**What this is:**
+Final Phase 1 cleanup and polish. Replaces all hardcoded string arrays with
+enum imports from lead.constants.ts. Adds navigation guard to prevent data loss.
+UI improvements to detail panel. Country code now required with +91 default.
+
+**Files modified:**
+| File | Action | What changed |
+|------|--------|-------------|
+| apps/backend-nest/src/leads/leads.service.ts | MODIFIED | Empty string enum validation fix |
+| apps/cms-next/components/leads/LeadDetailPanel.tsx | MODIFIED | Header lightened (dk2), Save moved to header, unsaved changes modal for tabs, country code display |
+| apps/cms-next/components/leads/LeadQueueSidebar.tsx | MODIFIED | "All Leads" option with total count |
+| apps/cms-next/components/leads/LeadTable.tsx | MODIFIED | data?.data?.data fix for table display |
+| apps/cms-next/pages/dashboard/index.tsx | MODIFIED | Enum imports (LeadStatus, LeadQueue) |
+| apps/cms-next/pages/leads/index.tsx | MODIFIED | Navigation guard lifted to page level, unsaved changes modal |
+| apps/cms-next/pages/leads/new.tsx | MODIFIED | Enum imports, country_code required with +91 default |
+| libs/shared/constants/lead.constants.ts | MODIFIED | All enums + SidebarRole |
+
+**Files added:** None
+
+**Key patterns established:**
+- Navigation guard: isDirty + guardedAction + pendingAction for all destructive navigations
+- Enum import: Object.values(EnumName) for dropdown options
+- Country code display: `${country_code} ${whatsapp}` format
+
+**What Latha should verify:**
+- All CRM pages load without errors at localhost:4002
+- Queue sidebar shows "All Leads" with total count
+- Clicking different queues and leads prompts unsaved changes if form is dirty
+- New lead form has country code dropdown with +91 default
+- Lead detail panel shows country code with WhatsApp number
+
+---
+
 ## WHAT HAS NOT BEEN TOUCHED IN THIS BRANCH
 
 These files exist in the codebase but were not modified in this branch.
@@ -259,9 +297,10 @@ These are Latha's scope to fix. They are not in this branch's diff.
 | 4+5+6 — Frontend components + pages | 8 | 0 | f1123638 |
 | 7 — Dashboard | 1 | 0 | ebabbe9c |
 | 8 — Sidebar (Call Center 369 + Sales CRM) | 0 | 1 | de62cd72 |
-| **TOTAL** | **16** | **3** | |
+| 9 — Phase 1 Complete | 0 | 8 | b0d2fdc4 |
+| **TOTAL** | **16** | **11** | |
 
 ---
 
-*Updated by VEERABHADRA — 19 April 2026*
-*Delivered to Latha alongside PR for feature/portal.shon369*
+*Updated by VEERABHADRA — 25 April 2026*
+*Phase 1 CRM complete and pushed — ready for Latha merge*

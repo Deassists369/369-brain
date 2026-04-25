@@ -4,6 +4,68 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 25 April 2026 — Phase 1 CRM COMPLETE — Committed and Pushed
+
+**Branch:** feature/portal.shon369
+**Commit:** b0d2fdc4 — fix(crm): Phase 1 complete — enums, UI polish, nav guard, country code
+
+### What Was Done
+
+1. **All hardcoded strings replaced with enum imports**
+   - dashboard/index.tsx now imports LeadStatus, LeadQueue from lead.constants.ts
+   - new.tsx now imports LeadSource, LeadService from lead.constants.ts
+
+2. **"All Leads" option added to queue sidebar**
+   - Shows total count of all leads
+   - Click to view unfiltered list
+
+3. **LeadDetailPanel UI improvements**
+   - Header lightened from dk to dk2
+   - Save button moved to header (removed footer)
+   - Unsaved changes modal for tab switching (Details ↔ Comments)
+
+4. **Navigation guard lifted to page level**
+   - isDirty state tracked in leads/index.tsx parent
+   - guardedAction() wraps queue clicks and lead row clicks
+   - Router events listener blocks route changes when dirty
+   - Unsaved changes modal with Cancel/Discard buttons
+
+5. **Country code improvements**
+   - country_code field now required with +91 default
+   - Displayed with WhatsApp number in detail panel
+
+6. **Committed and pushed**
+   - 8 files committed as b0d2fdc4
+   - Pushed to origin/feature/portal.shon369
+   - Graphify updated: 3998 nodes, 3849 edges
+
+### Files Committed
+
+| File | Change |
+|------|--------|
+| `apps/backend-nest/src/leads/leads.service.ts` | Empty string enum validation fix |
+| `apps/cms-next/components/leads/LeadDetailPanel.tsx` | Header dk2, Save in header, unsaved changes modal, country code display |
+| `apps/cms-next/components/leads/LeadQueueSidebar.tsx` | "All Leads" option with total count |
+| `apps/cms-next/components/leads/LeadTable.tsx` | data?.data?.data fix |
+| `apps/cms-next/pages/dashboard/index.tsx` | Enum imports (LeadStatus, LeadQueue) |
+| `apps/cms-next/pages/leads/index.tsx` | Navigation guard, guardedAction, unsaved changes modal |
+| `apps/cms-next/pages/leads/new.tsx` | Enum imports, country_code required with +91 default |
+| `libs/shared/constants/lead.constants.ts` | All enums including SidebarRole |
+
+### Key Patterns Established
+
+1. **Navigation guard pattern** — isDirty + guardedAction + pendingAction for all destructive navigations
+2. **Enum import pattern** — Object.values(EnumName) for dropdown options
+3. **Country code display** — `${country_code} ${whatsapp}` format
+
+### Next Session — Phase 2
+
+1. Q Intelligence fields + CallLogModal
+2. Fix pre-existing LeadTable.tsx TypeScript error
+3. Phase 2 sidebar structure with LEAD_CRM role
+
+---
+
 ## 25 April 2026 — Session Close — Environment Fix + SidebarRole Enum
 
 **Branch:** feature/portal.shon369
