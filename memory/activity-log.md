@@ -4,6 +4,17 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 25 April 2026 — Evening — Build fix + Rule additions + Planning
+
+- LeadTable.tsx merge conflict with Latha resolved — build:all now passing all 4 projects
+- Rule 29 added: npm run build:all mandatory before every commit
+- Rule 30 added: all 3 servers must start together
+- Q Intelligence planned for next session — 2 files, zero backend changes
+- CLAUDE.md rethink planned — file over 1000 lines, needs restructure in separate session
+- Session closed in planning mode
+
+---
+
 ## 25 April 2026 — Phase 1 CRM COMPLETE — Committed and Pushed
 
 **Branch:** feature/portal.shon369

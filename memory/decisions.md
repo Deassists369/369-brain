@@ -69,3 +69,6 @@ Never delete entries. Only append.
 | 25 Apr 2026 | Phase 1 CRM complete — b0d2fdc4 | 8 files, enum architecture, navigation guard, UI polish — ready for Latha merge |
 | 25 Apr 2026 | npm run build:all mandatory before every commit | Latha requirement — tsc --noEmit alone misses Nx build errors across monorepo |
 | 25 Apr 2026 | Server startup always requires all 3 commands — cms:serve, website:serve, backend:serve | Prevents partial startup issues |
+| 25 Apr 2026 | LeadTable useCustomQuery<any> — merge resolved with Latha | Both fixes merged, build passing, leads table working |
+| 25 Apr 2026 | Q Intelligence builds in next session — CallLogModal + LeadDetailPanel only | Backend already complete from Phase 1 |
+| 25 Apr 2026 | CLAUDE.md rethink scheduled — separate session | File over 1000 lines, token cost too high per session |

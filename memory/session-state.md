@@ -9,6 +9,25 @@
 
 ---
 
+## NEXT SESSION: Q Intelligence (Phase 2)
+
+- CallLogModal — new component
+- LeadDetailPanel — add Log Call button + call summary block
+- Backend endpoint already exists: POST /leads/:id/call-log
+- Zero backend changes needed
+- Two files only: CallLogModal.tsx (new) + LeadDetailPanel.tsx (modified)
+- Wait for Latha to merge feature/portal.shon369 first OR build in parallel — decision for next session
+
+---
+
+## WAITING FOR
+
+- Latha merge: feature/portal.shon369 → dev_v2
+- Kingston QA on qa-portal.deassists.com
+- Latha's UIUX + sidebar + finance branch to pull
+
+---
+
 ## CURRENT BUILD STATE
 
 **Branch:** feature/portal.shon369
