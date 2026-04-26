@@ -1035,3 +1035,37 @@ Verification before every CRM commit:
   grep -r "369_MAIN\|BCBT\|Follow Up\|Called 1\|Private University" \
     apps/cms-next/components/leads/ apps/cms-next/pages/leads/
   Any result = hardcoded string = do not commit.
+
+### RULE 29 — Run full build before every commit
+
+## ADDED 25 Apr — Latha requirement
+
+Before every commit run this from the monorepo root:
+  npm run build:all
+
+All three projects must build with zero errors before any commit is made.
+If any project fails — fix the error first. Never commit a failed build.
+
+npx tsc --noEmit alone is NOT sufficient.
+It only checks TypeScript types — it misses Nx build errors across the monorepo.
+
+The correct pre-commit checklist is now:
+  1. npm run build:all — all projects pass ✅
+  2. Browser test at localhost:4002 ✅
+  3. Sidebar audit if permissions touched ✅
+  4. git add [specific files]
+  5. git diff --staged --name-only
+  6. git commit
+
+### RULE 30 — Server startup commands — always these three
+
+## ADDED 25 Apr — Shon requirement
+
+When starting the portal for any session, run all three:
+  npm run cms:serve
+  npm run website:serve
+  npm run backend:serve
+
+Never start only one or two. All three must be running.
+pm2 manages these automatically on Mac Mini — this rule applies
+when starting manually or after a crash recovery.
