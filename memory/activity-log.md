@@ -4,6 +4,73 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 26-27 April 2026 — EAGLESKILL v2 Installation + Mode 0 Baseline + Prototype Creation
+
+**Branch:** feature/portal.shon369 (portal) | main (369-brain)
+
+### Commits Pushed to 369-brain
+
+| Hash | Message | Stats |
+|------|---------|-------|
+| `c3cd751` | brain: add Rule 29 — npm run build:all required before commits | Rule addition |
+| `ffce36a` | brain: install EAGLESKILL v2 — prototype-to-production bridge skill | 5 files, 1358 insertions |
+| `a2af80d` | brain: add prototype — deassists platform HTML prototype | 5659 insertions |
+
+### EAGLESKILL v2 Installed
+
+Full prototype-to-production bridge skill installed at `skills/eagleskill/`:
+
+| File | Purpose |
+|------|---------|
+| `EAGLESKILL.md` | Master skill file — 5 modes (0-4) from baseline to production |
+| `mode-1-prototype-analysis/README.md` | HTML prototype → structured data extraction |
+| `mode-2-plan-generation/README.md` | Spec → implementation plan generation |
+| `mode-3-code-generation/README.md` | Plan → production code with CE patterns |
+| `mode-4-verification/README.md` | Implementation → verification against spec |
+
+### Mode 0 Baseline Executed
+
+Full codebase analysis completed:
+
+- **Backend files read:** 179 TypeScript files
+- **Frontend files read:** 209 TypeScript files
+- **Output:** `skills/eagleskill/eagle-baseline-system-readout.md` (574 lines, 19KB)
+
+Key findings documented:
+- Q Intelligence fields already exist in `lead.entity.ts` — Phase 2 is frontend-only
+- Security bypass confirmed at `scope.guard.ts` ~L79 (`if (!model) return true`)
+- `leads.service.ts` `logCall()` has full auto-status state machine
+- `user.types.ts` and `lead.constants.ts` final state confirmed
+- Risk registry from graphify analysis documented
+
+### Prototype Created
+
+**File:** `design/outputs/deassists-platform.html`
+**Size:** 353KB, 5659 lines
+**Scope:** Full DeAssists platform HTML prototype
+
+### Architectural Decisions Locked
+
+1. Phase 2 CRM is frontend-only — backend Q Intelligence fields already exist
+2. EAGLESKILL Mode 0 baseline is the entry point for all future builds
+3. Prototype lives in 369-brain `design/outputs/` — never in portal repo
+4. Rule 29 locked: `npm run build:all` mandatory before every commit
+
+### Portal State (Unchanged)
+
+- **Unstaged:** `accounts.service.ts` — ACL type annotation fix (`string` → `ObjectCannedACL`)
+- **No portal commits this session** — work focused on brain infrastructure
+
+### Next Session
+
+Phase 2 CRM — Q Intelligence (frontend-only):
+1. CallLogModal — new component
+2. LeadDetailPanel — add Log Call button + call summary block
+3. Backend endpoint already exists: POST /leads/:id/call-log
+4. Zero backend changes needed
+
+---
+
 ## 25 April 2026 — Evening — Build fix + Rule additions + Planning
 
 - LeadTable.tsx merge conflict with Latha resolved — build:all now passing all 4 projects

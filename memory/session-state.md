@@ -3,7 +3,7 @@
 
 ---
 
-**Last updated:** 25 April 2026 — Phase 1 CRM COMPLETE
+**Last updated:** 27 April 2026 — Session close (no portal changes)
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
