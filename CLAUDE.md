@@ -39,10 +39,20 @@ libs/shared-ui/        UI components, layouts, sidebar renderer
 
 ### Auth pattern (cms-next frontend)
 
-- ALWAYS: import { getCookie } from 'cookies-next'
-- ALWAYS: const token = getCookie('token')
-- ALWAYS: headers: { Authorization: `Bearer ${token}` }
+The axios client (libs/shared/config/axios-client.ts) calls getCookie('token') internally
+and attaches the Bearer token to every request automatically.
+
+Do NOT call getCookie('token') in components to build Authorization headers manually.
+
+CORRECT: use useCustomQuery, useCustomQueryV2, useCustomMutationV2, or useCustomDelete
+  from @deassists/react-query — all requests go through the axios client automatically.
+
+WRONG: import { getCookie } from 'cookies-next' in a component, then manually set
+  headers: { Authorization: `Bearer ${token}` } on a raw fetch() call.
+
+- NEVER use raw fetch() with manual auth headers in any new component
 - NEVER use session cookies or context for auth
+- The axios client handles: base URL per environment, Bearer token, 401 refresh
 
 ### NestJS controller route order — CRITICAL
 
@@ -1084,5 +1094,3 @@ f) NEVER manually handle auth tokens. The axios client at libs/shared/config/axi
 g) Search the codebase (grep) for existing utilities before creating new ones
 h) First file of any new feature gets Latha review before building the rest
 i) Test on QA URL, not just localhost, before marking complete
-
-NOTE: The "Auth pattern (cms-next frontend)" section above documents the OLD raw-fetch pattern. For all CRM/leads pages — use React Query hooks only (Rule 31e/f). Raw fetch + getCookie is correct ONLY for pages that have not yet been migrated to hooks.
