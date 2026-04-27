@@ -9,12 +9,18 @@
 
 ---
 
-## CRM Phase 1 Status: CODE FIX APPLIED 27 Apr 2026
-- Fixed new.tsx: raw fetch → useCustomMutationV2
-- Fixed dashboard/index.tsx: raw fetch → useCustomQueryV2
-- Audited 4 other components: already correct
-- Awaiting QA redeployment and Latha verification
-Remaining blockers: assigned_to enum hardcoded, Stripe write-back, scope.guard bypass, JWT rotation
+## CRM Phase 1 Status: FULLY REFACTORED 27 Apr 2026
+- Commit 656f7ef0: raw fetch → React Query hooks (new.tsx, dashboard)
+- Commit 49121b19: created leads.ts query file + refactored all 6 CRM components to named hooks
+- Pattern now matches account.ts/model.ts (Latha's reference)
+- Build passes (npm run build:all verified)
+- Awaiting Latha QA verification
+Remaining items:
+- assigned_to: hardcoded ['DON','Riya','Meena','Stalin'] in new.tsx — needs dynamic agent list from backend (entity has enum:[])
+- country_codes: hardcoded 8 codes in new.tsx — switch to react-phone-input-2 (matches Signup.tsx pattern)
+- Stripe write-back bug (Latha)
+- scope.guard bypass (Latha)
+- JWT rotation (Latha)
 
 ---
 

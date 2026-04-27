@@ -1089,7 +1089,7 @@ a) Find the closest existing working feature in the codebase
 b) Trace its data flow end-to-end: component → hook → API client → backend → response → UI update
 c) Note every import, every hook, every utility used
 d) Copy that exact pattern for your new code
-e) NEVER use raw fetch(). Use the project's hooks: useCustomQuery, useCustomQueryV2, useCustomMutationV2, useCustomDelete from @deassists/react-query
+e) NEVER use inline useCustomQuery/useCustomMutationV2 with raw URLs in components. Create a dedicated query file in libs/react-query/queries/{module}.ts with named hooks following the account.ts/model.ts pattern. Components import named hooks only.
 f) NEVER manually handle auth tokens. The axios client at libs/shared/config/axios-client.ts handles auth automatically
 g) Search the codebase (grep) for existing utilities before creating new ones
 h) First file of any new feature gets Latha review before building the rest

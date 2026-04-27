@@ -4,15 +4,15 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
-## 27 April 2026 — CRM Phase 1 QA Fix
-- Latha reported 404 errors on QA deployment (qa-portal.deassists.com)
-- Root cause: new.tsx and dashboard/index.tsx used raw fetch('/api/v1/leads') instead of React Query hooks
-- Raw fetch hits frontend URL in QA (404), axios client handles backend URL correctly
-- Fixed 2 files, audited 4 others (already correct)
-- Lesson: Always trace existing patterns before writing new code. This project has useCustomQuery, useCustomMutationV2, axios client with auto auth — we bypassed all of it
-- Rule 31 added to CLAUDE.md to prevent recurrence (Rule 30 was already taken — server startup commands)
-- Decision locked in decisions.md
-- Commit: e67089df — fix: replace raw fetch with useCustomMutationV2/useCustomQueryV2 — fixes QA 404s
+## 27 April 2026 — CRM Phase 1 QA Fix (Complete)
+- Latha reported 404 errors + wrong API patterns on QA deployment
+- Root cause 1: new.tsx and dashboard/index.tsx used raw fetch() — 404 in QA
+- Root cause 2: All CRM components used inline useCustomQuery/useCustomMutationV2 with raw URLs instead of creating a dedicated query file with named hooks (project pattern: every module has a file in libs/react-query/queries/)
+- Fix round 1 (commit 656f7ef0): Replaced raw fetch with hooks in new.tsx and dashboard
+- Fix round 2 (commit 49121b19): Created libs/react-query/queries/leads.ts with 7 named hooks (useLeadsList, useLeadDetails, useLeadQueues, useLeadStats, useCreateLead, useUpdateLead, useAddLeadComment). Refactored all 6 CRM components to import named hooks. Added LEADS to endpoints.enum.ts. 9 files changed, +81/-44
+- Total: 2 commits, 10 files changed, pattern now matches account.ts/model.ts
+- Remaining: assigned_to hardcoded (needs backend dynamic endpoint), country_codes hardcoded (switch to react-phone-input-2)
+- Lesson: On a running project, dont just use the right hooks — organize them the way the project organizes them. Every module gets a dedicated query file with named hooks.
 
 ---
 

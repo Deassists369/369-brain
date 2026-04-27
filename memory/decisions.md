@@ -73,15 +73,15 @@ Never delete entries. Only append.
 | 25 Apr 2026 | Q Intelligence builds in next session — CallLogModal + LeadDetailPanel only | Backend already complete from Phase 1 |
 | 25 Apr 2026 | CLAUDE.md rethink scheduled — separate session | File over 1000 lines, token cost too high per session |
 
-## 27 April 2026 — API Pattern Discipline (LOCKED)
-Context: CRM Phase 1 deployed to QA, 404 errors. Root cause: raw fetch() instead of project's axios client + React Query hooks.
-Decision: All new code MUST use existing project patterns.
-- Use useCustomQuery/useCustomQueryV2 for GET requests
-- Use useCustomMutationV2 for POST/PUT requests
-- Use useCustomDelete for DELETE requests
-- All hooks go through axios client (libs/shared/config/axios-client.ts) which handles: base URL per environment, auth token, 401 refresh
-- Leads uses custom controller at /v1/leads (NOT generic /v1/model/leads)
-- For generic collections, use model hooks from libs/react-query/src/queries/model.ts
-- NEVER raw fetch(), NEVER manual getCookie for auth
+## 27 April 2026 — API Pattern Discipline (LOCKED) (Updated after second Latha review)
+Context: CRM Phase 1 failed QA twice. First: raw fetch(). Second: inline hooks without dedicated query file.
+Decision: All new module code MUST follow the project's full API pattern:
+1. Create a dedicated query file in libs/react-query/queries/{module}.ts
+2. Define named hooks (useModuleList, useModuleDetails, useCreateModule, etc.)
+3. Use Endpoints enum from @constants/endpoints.enum.ts for base URLs
+4. Import useCustomQuery/useCustomQueryV2/useCustomMutationV2 from ../src/index
+5. Export all hooks and re-export from queries/index.ts
+6. Components import ONLY named hooks — never inline useCustomQuery with raw URLs
+7. Reference files: account.ts (auth), model.ts (generic CRUD), leads.ts (custom controller)
 Locked by: Shon AJ
-Trigger: Latha QA failure report
+Trigger: Two rounds of Latha feedback 27 Apr 2026
