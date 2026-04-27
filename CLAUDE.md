@@ -1069,3 +1069,20 @@ When starting the portal for any session, run all three:
 Never start only one or two. All three must be running.
 pm2 manages these automatically on Mac Mini — this rule applies
 when starting manually or after a crash recovery.
+
+### RULE 31 — Trace Before You Build (added 27 Apr 2026 after QA failure)
+
+## ADDED 27 Apr — after raw fetch() caused 404 errors on QA for Latha/Kingston
+
+Before writing ANY new component or feature:
+a) Find the closest existing working feature in the codebase
+b) Trace its data flow end-to-end: component → hook → API client → backend → response → UI update
+c) Note every import, every hook, every utility used
+d) Copy that exact pattern for your new code
+e) NEVER use raw fetch(). Use the project's hooks: useCustomQuery, useCustomQueryV2, useCustomMutationV2, useCustomDelete from @deassists/react-query
+f) NEVER manually handle auth tokens. The axios client at libs/shared/config/axios-client.ts handles auth automatically
+g) Search the codebase (grep) for existing utilities before creating new ones
+h) First file of any new feature gets Latha review before building the rest
+i) Test on QA URL, not just localhost, before marking complete
+
+NOTE: The "Auth pattern (cms-next frontend)" section above documents the OLD raw-fetch pattern. For all CRM/leads pages — use React Query hooks only (Rule 31e/f). Raw fetch + getCookie is correct ONLY for pages that have not yet been migrated to hooks.

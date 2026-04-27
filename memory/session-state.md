@@ -3,9 +3,18 @@
 
 ---
 
-**Last updated:** 27 April 2026 — Session close (no portal changes)
+**Last updated:** 27 April 2026 — QA Fix Applied
 
 **Brain root:** `~/deassists-workspace/369-brain/`
+
+---
+
+## CRM Phase 1 Status: CODE FIX APPLIED 27 Apr 2026
+- Fixed new.tsx: raw fetch → useCustomMutationV2
+- Fixed dashboard/index.tsx: raw fetch → useCustomQueryV2
+- Audited 4 other components: already correct
+- Awaiting QA redeployment and Latha verification
+Remaining blockers: assigned_to enum hardcoded, Stripe write-back, scope.guard bypass, JWT rotation
 
 ---
 
@@ -22,6 +31,7 @@
 
 ## WAITING FOR
 
+- Latha QA verification of QA fix (e67089df)
 - Latha merge: feature/portal.shon369 → dev_v2
 - Kingston QA on qa-portal.deassists.com
 - Latha's UIUX + sidebar + finance branch to pull

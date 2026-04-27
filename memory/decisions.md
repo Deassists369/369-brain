@@ -72,3 +72,16 @@ Never delete entries. Only append.
 | 25 Apr 2026 | LeadTable useCustomQuery<any> — merge resolved with Latha | Both fixes merged, build passing, leads table working |
 | 25 Apr 2026 | Q Intelligence builds in next session — CallLogModal + LeadDetailPanel only | Backend already complete from Phase 1 |
 | 25 Apr 2026 | CLAUDE.md rethink scheduled — separate session | File over 1000 lines, token cost too high per session |
+
+## 27 April 2026 — API Pattern Discipline (LOCKED)
+Context: CRM Phase 1 deployed to QA, 404 errors. Root cause: raw fetch() instead of project's axios client + React Query hooks.
+Decision: All new code MUST use existing project patterns.
+- Use useCustomQuery/useCustomQueryV2 for GET requests
+- Use useCustomMutationV2 for POST/PUT requests
+- Use useCustomDelete for DELETE requests
+- All hooks go through axios client (libs/shared/config/axios-client.ts) which handles: base URL per environment, auth token, 401 refresh
+- Leads uses custom controller at /v1/leads (NOT generic /v1/model/leads)
+- For generic collections, use model hooks from libs/react-query/src/queries/model.ts
+- NEVER raw fetch(), NEVER manual getCookie for auth
+Locked by: Shon AJ
+Trigger: Latha QA failure report

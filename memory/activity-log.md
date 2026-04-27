@@ -4,6 +4,18 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 27 April 2026 — CRM Phase 1 QA Fix
+- Latha reported 404 errors on QA deployment (qa-portal.deassists.com)
+- Root cause: new.tsx and dashboard/index.tsx used raw fetch('/api/v1/leads') instead of React Query hooks
+- Raw fetch hits frontend URL in QA (404), axios client handles backend URL correctly
+- Fixed 2 files, audited 4 others (already correct)
+- Lesson: Always trace existing patterns before writing new code. This project has useCustomQuery, useCustomMutationV2, axios client with auto auth — we bypassed all of it
+- Rule 31 added to CLAUDE.md to prevent recurrence (Rule 30 was already taken — server startup commands)
+- Decision locked in decisions.md
+- Commit: e67089df — fix: replace raw fetch with useCustomMutationV2/useCustomQueryV2 — fixes QA 404s
+
+---
+
 ## 26-27 April 2026 — EAGLESKILL v2 Installation + Mode 0 Baseline + Prototype Creation
 
 **Branch:** feature/portal.shon369 (portal) | main (369-brain)

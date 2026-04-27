@@ -132,6 +132,17 @@ EAGLE:
   - NEVER runs git commands beyond `git status` and `git log --oneline`
   - NEVER modifies any file
 
+### API Architecture Pattern Map (MANDATORY)
+Before any feature work, Mode 0 must identify and document:
+a) API Client: Where is it? How does base URL resolve per environment?
+b) Available Hooks: List all query/mutation/delete hooks with their import paths
+c) Auth Handling: How do tokens attach to requests? Auto-refresh?
+d) Reusable Fetchers: Generic collection hooks vs custom endpoint hooks
+e) One Traced Example: Pick one working feature, trace button click → hook → API → response → UI
+f) Environment Config: What env vars exist? How do local/QA/prod differ?
+Output: API Pattern Reference section in baseline report
+Purpose: No developer (human or AI) writes code without knowing HOW this project calls APIs
+
 Output: ONE comprehensive baseline document
   Path: 369-brain/skills/eagleskill/eagle-baseline-system-readout.md
 
