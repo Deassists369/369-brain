@@ -162,15 +162,7 @@ CRM configuration panel — TBD with Shon
 
 ## CLAUDE.md RULES — LOCKED
 
-| Rule | Description |
-|------|-------------|
-| Rule 0 | Always verify before adding or changing any rule |
-| Rule 23 | git diff mandatory before any brain file commit |
-| Rule 24 | NEVER commit `pnpm-lock.yaml` — Latha owns it |
-| Rule 25 | Never commit `.gitignore` without Latha approval |
-| Rule 26 | Any `package.json` change requires Latha approval before commit |
-| Rule 27 | Three-layer access audit — mandatory for every CRM page |
-| Rule 28 | Constants file is a hard gate — enums must exist before use |
+> Locked rules → see memory/decisions.md (single source of truth, dated and append-only).
 
 ---
 
