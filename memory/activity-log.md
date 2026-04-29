@@ -3,35 +3,10 @@
 Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
-# MEMORY/ACTIVITY-LOG.MD — APPEND THIS ENTRY
-# Date: 29 April 2026
-# Context: EAGLE v2.1 lock session
-
-═══════════════════════════════════════════════════════════════════
-INSTRUCTIONS — DO NOT COMMIT THIS FILE AS-IS
-═══════════════════════════════════════════════════════════════════
-
-This file is NOT meant to be committed. It contains text you should
-APPEND to the existing memory/activity-log.md file.
-
-How to apply:
-  1. Open `369-brain/memory/activity-log.md` in GitHub web editor (pencil icon)
-  2. Determine where new entries belong:
-     - If activity-log uses NEWEST-AT-TOP (reverse chronological):
-       paste the entry RIGHT AFTER the file's header, BEFORE the most
-       recent existing entry
-     - If activity-log uses OLDEST-AT-TOP (chronological):
-       paste the entry at the very END of the file
-     - Check existing entries to determine which convention is in use
-  3. Commit with the message at the bottom
-
-═══════════════════════════════════════════════════════════════════
-THE ENTRY TO APPEND — COPY EVERYTHING BETWEEN THE LINES
-═══════════════════════════════════════════════════════════════════
 
 ## 29 April 2026 — EAGLE v2.1 Lock Session
 
-**Duration:** ~6 hours (afternoon to early evening)
+**Duration:** ~7 hours (afternoon to early evening)
 **Participants:** Shon AJ, VEERABHADRA (Claude.ai chat)
 **Context:** Full design pass on EAGLE skill — v2.0 → v2.1 upgrade
 
@@ -63,19 +38,20 @@ Three artifacts produced in chat as downloadable files:
   10 dated locks for memory/decisions.md
 - EAGLESKILL.md v2.1 (1,172 lines) — universal pattern only
 - eagleskill-config.md (440 lines) — DeAssists-specific config
+- README.md (322 lines) — folder structure & file conventions
 
 **3. GitHub commits (afternoon and evening):**
-- Commit: `brain: add EAGLE v2.1 decision audit — 16 locked decisions for review`
-- Commit: `brain: archive EAGLESKILL v2.0 to historical reference` (intent;
-  actual result: v2.0 file got renamed but content was overwritten with v2.1)
-- Commit: `brain: lock EAGLESKILL v2.1` (intent; actual result: file was
-  created with config content by mistake)
-- Commit: `brain: delete misnamed EAGLESKILL-v2.0-2026-04-26.md`
-  (cleanup: removed file with wrong content under wrong name)
-- Commit: `brain: rename EAGLESKILL.md to eagleskill-config.md`
-  (cleanup: gave correct name to file with config content)
-- Commit: `brain: lock EAGLESKILL v2.1 — universal pattern (1,172 lines)`
-  (final: created proper EAGLESKILL.md with correct v2.1 content)
+
+Successful commits:
+- `brain: add EAGLE v2.1 decision audit — 16 locked decisions for review`
+- `brain: delete misnamed EAGLESKILL-v2.0-2026-04-26.md` (cleanup)
+- `brain: rename EAGLESKILL.md to eagleskill-config.md` (cleanup)
+- `brain: lock EAGLESKILL v2.1 — universal pattern (1,172 lines)`
+- `brain: add README.md at skills/eagleskill/ — folder structure & file conventions`
+- 4 deletes for old subfolder readmes (replaced by single root README)
+- `brain: lock 10 EAGLE v2.1 design decisions in memory/decisions.md`
+- `brain: refresh session-state.md after EAGLE v2.1 lock`
+- This activity-log entry
 
 ### Files created or modified
 
@@ -84,12 +60,22 @@ NEW:
   369-brain/skills/eagleskill/eagle-v2.1-decision-audit-2026-04-29.md
   369-brain/skills/eagleskill/EAGLESKILL.md (v2.1, 1,172 lines)
   369-brain/skills/eagleskill/eagleskill-config.md (440 lines)
+  369-brain/skills/eagleskill/README.md (322 lines)
 
 MODIFIED:
-  (memory files updated in same commit batch as this log entry)
+  369-brain/memory/decisions.md (10 dated locks appended)
+  369-brain/memory/session-state.md (full refresh)
+  369-brain/memory/activity-log.md (this entry)
+
+DELETED:
+  369-brain/skills/eagleskill/reports/eagleskill-reports-readme.md
+  369-brain/skills/eagleskill/plans/eagleskill-plans-readme.md
+  369-brain/skills/eagleskill/previews/eagleskill-previews-readme.md
+  369-brain/skills/eagleskill/exec-logs/eagleskill-execlogs-readme.md
+  (Replaced by single root README.md with cleaner navigation)
 
 LOST (accepted):
-  369-brain/skills/eagleskill/EAGLESKILL.md (v2.0 content) —
+  369-brain/skills/eagleskill/EAGLESKILL.md (v2.0 content, 1,048 lines) —
   superseded by v2.1; not preserved as archive due to GitHub web editor
   rename confusion. v2.0 → v2.1 evolution documented in Decision Audit.
 ```
@@ -111,21 +97,26 @@ LOST (accepted):
 4. Sectioned drafting (offered for v2.1 file) was abandoned in favor of
    one-shot file production. For documents this size where decisions
    are pre-locked via audit, one-shot is cleaner than sectioned review.
+
+5. Single-file delivery (full merged content as artifact) was faster
+   than append-snippets when the underlying file was non-trivial.
+   Used successfully for decisions.md, session-state.md, and this log.
 ```
 
 ### What's next
 
 ```
-- Brain hygiene: replace 4 v2.0 subfolder readmes with one root README.md
 - Mac Mini: git pull, fresh Claude Code session, run Mode 0 re-run with
   v2.1, produce fresh baseline dated 29 April
 - Begin Task 1 (crmTokens.ts) as v2.1 dogfood
+- Cross-reference pass deferred (check CLAUDE.md, VEERABHADRA.md,
+  THE-DEASSISTS-OS.md for stale v2.0 references)
 ```
 
 ### Energy at end of session
 
 ```
-6 hours of focused architecture work. Quality stayed high throughout
+7 hours of focused architecture work. Quality stayed high throughout
 because of one-question-at-a-time pacing. End-of-session signal: file
 production worked correctly on first attempt; review fatigue was visible
 during commit sequence (the rename/create confusion happened during
@@ -136,22 +127,7 @@ fresh next morning. Today we pushed through and recovered cleanly, but
 the recovery itself cost time.
 ```
 
-═══════════════════════════════════════════════════════════════════
-COMMIT DETAILS
-═══════════════════════════════════════════════════════════════════
-
-Commit summary:
-brain: log 29 April EAGLE v2.1 lock session in activity-log
-
-Description (optional):
-Records the 6-hour design session that produced EAGLE v2.1.
-
-Captures:
-- 16 design decisions locked
-- 3 artifacts produced (audit, skill v2.1, config)
-- 6 commits to GitHub (3 successful + 3 cleanup commits)
-- v2.0 archive lost during commit sequence — accepted, documented in audit
-- Lessons learned for future long sessions
+---
 
 ## 28 April 2026 — Brain Restructure (Complete)
 
@@ -775,37 +751,6 @@ Branch: feature/portal.shon369
 Change log: BRANCH-CHANGE-LOG-portal.shon369.md filled with all 6 commit hashes.
 Waiting for Latha review and merge.
 
-### FILES MODIFIED TODAY (this session — deassists portal)
-
-- `libs/shared/models/sidemenu.ts` — Call Center 369 + Sales CRM sections added
-- `.husky/pre-commit` — DELETED permanently
-
-### FILES COMMITTED TODAY (full CRM migration — all 6 commits)
-
-**New files (16):**
-- apps/cms-next/styles/crmTokens.ts
-- apps/backend-nest/src/leads/entities/lead.entity.ts
-- apps/backend-nest/src/leads/lead-id.service.ts
-- apps/backend-nest/src/leads/leads-routing.service.ts
-- apps/backend-nest/src/leads/leads.module.ts
-- apps/backend-nest/src/leads/leads.controller.ts
-- apps/backend-nest/src/leads/leads.service.ts
-- apps/cms-next/components/leads/StatusBadge.tsx
-- apps/cms-next/components/leads/QueueBadge.tsx
-- apps/cms-next/components/leads/LeadQueueSidebar.tsx
-- apps/cms-next/components/leads/LeadTable.tsx
-- apps/cms-next/components/leads/LeadDetailPanel.tsx
-- apps/cms-next/components/leads/CommentThread.tsx
-- apps/cms-next/pages/leads/index.tsx
-- apps/cms-next/pages/leads/new.tsx
-- apps/cms-next/pages/dashboard/index.tsx
-
-**Modified files (4):**
-- apps/backend-nest/src/app.module.ts
-- libs/shared/constants/collections.ts
-- libs/shared/models/sidemenu.ts
-- apps/backend-nest/src/accounts/accounts.service.ts (779c7930 — ACL fix, Latha approved)
-
 ### KEY DECISIONS
 
 - Pre-commit hook permanently removed — no blanket formatting ever
@@ -1203,6 +1148,8 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `369-brain/memory/session-state.md` — **07.04.2026** block at top; optional export copy: `design/outputs/SESSION-STATE-UPDATE-07042026.md`  
 
+---
+
 ## 06 April 2026 — VEERABHADRA / MCP Sector 12 — **12-sector alignment complete** (Shon)
 
 **COMPLETED**
@@ -1210,11 +1157,15 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - **`369-brain/memory/mcp-sector-12.md`** — what MCP is, current vs future connections, daily ops impact, priority checklist (GitHub, Gmail, Drive, Sheets, custom Portal MCP), MCP + OpenClaw loop  
 - **Milestone:** full **12-sector** brain alignment set for DeAssists (Sectors 01–12)
 
+---
+
 ## 06 April 2026 — VEERABHADRA / Storage & connections Sector 11 (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/storage-connections-sector-11.md`** — master storage map (Atlas, S3, Sheets legacy, Drive, Gmail, Cursor workspaces, Mac Mini), live vs to-build connections, end-to-end lead→intelligence map, data ownership, GDPR notes, phase checklists; **Sector 12 — MCP** next
+
+---
 
 ## 06 April 2026 — VEERABHADRA / Shon control layer Sector 10 (Shon)
 
@@ -1222,17 +1173,23 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 - **`369-brain/memory/shon-control-layer-sector-10.md`** — CEO interaction model (Paperclip primary, WhatsApp alerts, Claude for thinking), daily rhythm, what Shon stops doing manually, phased build of control layer, **filter rules** for what reaches Shon; **Sector 11 — Storage & system connections** next
 
+---
+
 ## 06 April 2026 — VEERABHADRA / Paperclip Sector 09 (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/paperclip-sector-09.md`** — Paperclip as company OS (organise/track/govern, not think/execute), CEO dashboard outline, Phase 1–2 governance scope, OpenClaw **under** Paperclip, full operating model table, Phase 0–3 timeline (**~Apr 10** Mac Mini + OpenClaw), standing rules, **Sector 10 — Shon control layer** next
 
+---
+
 ## 06 April 2026 — VEERABHADRA / OpenClaw Sector 08 — CORE MODEL (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/openclaw-sector-08.md`** — **Three Layer Model + CEO** locked: Claude (intelligence), OpenClaw (Mac Mini M4 execution), Paperclip (company OS), Shon (CEO); flow Shon → Claude → OpenClaw → Paperclip → Shon; **no layer skipped**
+
+---
 
 ## 06 April 2026 — VEERABHADRA / BUILDERS = Shon + Claude (final lock)
 
@@ -1245,11 +1202,15 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `session-state.md`, `automation-sector-07.md`, `company-structure-sector-01.md`, `workspace-guide.md`, `portal.md`, `portal-sector-04.md`, `mobile-sector-05.md`, `developer-BRAIN.md`, `mobile-app.md`
 
+---
+
 ## 06 April 2026 — VEERABHADRA / Automation Sector 07 full document (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/automation-sector-07.md`** — locked **5-phase** build order (portal CRM → sales → data → connections → automation); **Phase 1** breakdown: `leads` schema, `leads-routing.service.ts` rules, `lead-id.service.ts`, `/v1/leads` API, queue UI, entry form, ALL LEADS migration, verification checklist
+
+---
 
 ## 06 April 2026 — VEERABHADRA / Documentation Sector 06 full document (Shon)
 
@@ -1257,11 +1218,15 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 - **`369-brain/memory/documentation-sector-06.md`** — AI brain vs operational knowledge gap, current inventory, **DeAssists Operations Guide** as top gap, target two-type architecture + bridge, P1–P3 staff doc backlog, ownership/Kaizen rules; **Sector 07 — Automation** next
 
+---
+
 ## 06 April 2026 — VEERABHADRA / Mobile App Sector 05 full document (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/mobile-sector-05.md`** — Expo RN + same NestJS/Mongo, locked design + MVP/nav, `deassists-rn.zip` handoff, **06 Apr reality** (API/Swagger/Postman, Latha↔mobile gap), **locked build order** (portal CRM first), risks + next-step checklists; **Sector 06 — Documentation** next
+
+---
 
 ## 06 April 2026 — VEERABHADRA / Web Portal Sector 04 full document (Shon / Latha codebase)
 
@@ -1269,17 +1234,23 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 - **`369-brain/memory/portal-sector-04.md`** — full alignment from **dev_v2**: monorepo apps/libs, stack, 8 roles, 20 modules / schemas / state machine, website + cms-next surfaces, `.env` issues, **critical security/payment bugs**, operational **island** diagram, honest ~55% status, **P1–P5** build order, git log; **Sector 05 — Mobile App** next
 
+---
+
 ## 06 April 2026 — VEERABHADRA / Sales Support Sector 03 full document (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/sales-support-sector-03.md`** — full alignment: sales support definition, current agent reality, **locked single CMS → 3 views** (public / sales / admin), two conversion flows, 369 Private De Assists + handoff gaps, preserve vs improve, Phase 1–2 build checklists, **Sector 04 — Web Portal** next
 
+---
+
 ## 06 April 2026 — VEERABHADRA / CRM Sector 02 full document (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/crm-sector-02.md`** — full Sector 02 alignment: current Sheets CRM, tabs, 7 routing rules, daily usage (Gopika / call center), working vs painful, portal must-not-break + improvements, Phase 1 MVP checklist, scripts, **Sector 03 — Sales Support** next
+
+---
 
 ## 06 April 2026 — VEERABHADRA / Company Structure Sector 01 (brain alignment)
 
@@ -1289,6 +1260,8 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - **Next:** Sector 02 — CRM (document Sheets heart before portal CRM build)
 
 **Brain:** `session-state.md` pointer added
+
+---
 
 ## 05 April 2026 — VEERABHADRA / Auth mobile preview in repo
 
@@ -1300,6 +1273,8 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `session-state.md`, `mobile-app.md` updated
 
+---
+
 ## 05 April 2026 — VEERABHADRA / Final locked prototype in repo (public pages)
 
 **COMPLETED**
@@ -1309,6 +1284,8 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - **Synced to repo:** `design/outputs/deassists-mobile-prototype.html` (~550KB)
 
 **Brain:** `session-state.md`, `mobile-app.md` updated (scope + paths)
+
+---
 
 ## 05 April 2026 — VEERABHADRA / Mobile App Sprint + Latha Handoff
 
@@ -1336,6 +1313,8 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `session-state.md`, `mobile-app.md` updated
 
+---
+
 ## 05 April 2026 — VEERABHADRA / Mobile HTML Shot 2 (canonical locked)
 
 **COMPLETED**
@@ -1348,6 +1327,8 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `session-state.md`, `mobile-app.md` updated
 
+---
+
 ## 05 April 2026 — VEERABHADRA / Mobile HTML v2 (Shot 1)
 
 **COMPLETED**
@@ -1358,6 +1339,8 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 **HANDOFF:** **Latha** — JSX conversion (v2 reference) — *superseded by Shot 2 canonical (`deassists-mobile-shot2.html`)*
 
 **Brain:** `session-state.md`, `mobile-app.md` updated
+
+---
 
 ## 04 April 2026 — VEERABHADRA / Mobile App HTML Reference Build (full session)
 
@@ -1380,6 +1363,8 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `session-state.md` + `mobile-app.md` updated
 
+---
+
 ## 03 April 2026 — SYSTEM-LOGIC.md v2.0 update (Shon approved)
 - Version header updated to v2.0
 - Column order updated to v3.0 layout (D=Agent Name, E=Full Name etc.)
@@ -1389,6 +1374,8 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - Changelog entry added
 - All changes Shon-approved
 
+---
+
 ## 03 April 2026 — Brain batch: workspace-guide, CRM v3 memory, Paperclip, mobile, portal
 
 - **Created** `369-brain/memory/workspace-guide.md` — two workspaces (brain vs code), paths, tokens, conflict-check rule.
@@ -1397,9 +1384,13 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - **Replaced** `369-brain/memory/mobile-app.md` — Product Brain v7 public screens, design rules, data needs.
 - **Replaced** `369-brain/memory/portal.md` — Product Brain (stack, dev servers, Latha build status, 5 modules, Excel→web).
 
+---
+
 ## 03 April 2026 — memory/portal.md (Portal & Product architecture)
 
 - Canonical **Portal & Product — Complete Architecture** in `369-brain/memory/portal.md`: five Excel→web modules, connected data flow (Lead→Student→Service→Archive→commission), build phases 1–6, AI automation layer (VEERABHADRA / OpenClaw / Paperclip / WATI), locked staff access levels, Shon learning protocol, VEERABHADRA↔Latha and mobile dev coordination, locked tech stack (Next.js nx, NestJS, MongoDB, JWT, pnpm, S3).
+
+---
 
 ## 03 April 2026 — VEERABHADRA / CRM v2.0 Deployment
 
@@ -1411,6 +1402,8 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - Issue: queue tabs empty after Sync Now — source typo validation conflict
 - Recovery in progress: recoverFromAuditLog running from ALL LEADS
 - Brain fully intact in Cursor: 42 files confirmed
+
+---
 
 ## 1 April 2026 — VEERABHADRA / Code.gs v5 + CRM full redesign session
 
