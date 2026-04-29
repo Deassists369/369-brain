@@ -1,175 +1,221 @@
-# DeAssists OS — Current State
-**Maintained by:** VEERABHADRA
+# SESSION STATE
+# DeAssists Portal Build — Current Position
+# Last updated: 29 April 2026 (after EAGLE v2.1 lock session)
+# Maintained by: VEERABHADRA + Shon
+
+═══════════════════════════════════════════════════════════════════
+INSTRUCTIONS — REPLACE THE FULL FILE WITH THIS CONTENT
+═══════════════════════════════════════════════════════════════════
+
+This file gets fully rewritten each session. Open
+`369-brain/memory/session-state.md` in GitHub web editor, select all
+existing content, delete it, paste this new version, commit.
+
+Commit summary:
+  brain: refresh session-state.md after EAGLE v2.1 lock
+
+═══════════════════════════════════════════════════════════════════
+
+# CURRENT STATE
+
+**Active branch:** `feature/portal.shon369` (clean, created 19 April 2026)
+**Last activity:** EAGLE v2.1 lock session — 29 April 2026
+**Build position:** v2.1 installed, awaiting Mac Mini Mode 0 re-run, then Task 1 dogfood
+**Energy:** End-of-day session, full day of architecture work completed
 
 ---
 
-**Last updated:** 28 April 2026 — Brain Restructure Complete
+## WHAT JUST HAPPENED — 29 APRIL SESSION
 
-**Brain root:** `~/deassists-workspace/369-brain/`
+A focused 6-hour design session produced **EAGLE v2.1**, a major upgrade
+to the prototype-to-production bridge skill. Key outputs:
 
----
+1. **Decision Audit** — 16 design decisions locked, internal-consistency
+   checked, committed at:
+   `369-brain/skills/eagleskill/eagle-v2.1-decision-audit-2026-04-29.md`
 
-## CRM Phase 1 Status: COMPLETE — Awaiting Latha Merge
-- All QA fixes applied (commits 656f7ef0 + 49121b19)
-- Pattern matches account.ts/model.ts
-- Build passes (npm run build:all verified)
+2. **EAGLESKILL.md v2.1** — universal pattern (1,172 lines), portable
+   across projects, committed at:
+   `369-brain/skills/eagleskill/EAGLESKILL.md`
 
-## Brain Restructure: COMPLETE 28 Apr 2026
-- CLAUDE.md reduced from 1062 → 126 lines (skill selector + tier system)
-- 6 reference files created in patterns/ and project/
-- 4 superseded files archived (VEERABHADRA-MASTER-CONTEXT, DAILY-OPERATIONS-GUIDE, MASTER-STATE-19Apr2026, session-workflow)
-- THE-DEASSISTS-OS.md added (1451 lines — foundational playbook)
-- decisions.md is now single source of truth for all locked rules
+3. **eagleskill-config.md** — DeAssists-specific configuration (440 lines),
+   committed at:
+   `369-brain/skills/eagleskill/eagleskill-config.md`
 
-Remaining items (unchanged):
-- assigned_to: hardcoded in new.tsx — needs backend dynamic endpoint
-- country_codes: hardcoded — switch to react-phone-input-2
-- Stripe write-back bug (Latha)
-- scope.guard bypass (Latha)
-- JWT rotation (Latha)
+4. **VEERABHADRA charter v2.0** (committed earlier in week) — three-stage
+   trajectory framing, dual mission (IT + business)
 
----
+5. **Brain restructure** (committed earlier in week) — CLAUDE.md slimmed
+   to 126 lines, patterns/ and project/ folders created, 4 superseded
+   files archived.
 
-## NEXT SESSION: Q Intelligence (Phase 2)
-
-- CallLogModal — new component
-- LeadDetailPanel — add Log Call button + call summary block
-- Backend endpoint already exists: POST /leads/:id/call-log
-- Zero backend changes needed
-- Two files only: CallLogModal.tsx (new) + LeadDetailPanel.tsx (modified)
-- Wait for Latha to merge feature/portal.shon369 first OR build in parallel — decision for next session
+The v2.0 EAGLESKILL.md content was lost during the rename sequence
+(GitHub web editor confusion). The Decision Audit captures what changed
+between v2.0 and v2.1, so the intellectual evolution is preserved even
+though the literal v2.0 text is gone.
 
 ---
 
-## WAITING FOR
+## WHAT'S CONFIRMED LIVE
 
-- Latha QA verification of QA fix (e67089df)
-- Latha merge: feature/portal.shon369 → dev_v2
-- Kingston QA on qa-portal.deassists.com
-- Latha's UIUX + sidebar + finance branch to pull
-
----
-
-## CURRENT BUILD STATE
-
-**Branch:** feature/portal.shon369
-**Backend:** Compiling and running on port 8000 ✅
-**CMS:** Running on port 4002 ✅
-**Login:** Working ✅
-**Phase 1 CRM:** COMPLETE AND PUSHED ✅
-
----
-
-## LATEST COMMIT
-
-**Hash:** b0d2fdc4
-**Message:** fix(crm): Phase 1 complete — enums, UI polish, nav guard, country code
-**Date:** 25 April 2026
-**Files:** 8
+```
+GitHub state — 369-brain (verified 29 April):
+  CLAUDE.md (126 lines, lean router)
+  VEERABHADRA.md (charter v2.0, 219 lines)
+  THE-DEASSISTS-OS.md (1,451 lines, foundational)
+  patterns/ — api, git-workflow, permission patterns
+  project/ — architecture, design-system, never-touch
+  memory/ — decisions, session-state, activity-log, it-change-log-sop
+  prototypes/deassists-platform.html (current prototype)
+  skills/eagleskill/EAGLESKILL.md (v2.1 universal pattern)
+  skills/eagleskill/eagleskill-config.md (DeAssists config)
+  skills/eagleskill/eagle-baseline-system-readout.md (26 April baseline — STALE)
+  skills/eagleskill/eagle-v2.1-decision-audit-2026-04-29.md (audit)
+  skills/eagleskill/{exec-logs,plans,previews,reports}/ (subfolders with v2.0 readmes — TO REPLACE)
+  archive/ (4 superseded files)
+```
 
 ---
 
-## WHAT WAS COMPLETED TODAY (25 April 2026)
+## WHAT'S NEXT — IN ORDER
 
-### Commit b0d2fdc4 — Phase 1 CRM Complete
+### IMMEDIATE (next 1-2 sessions)
 
-| File | What was fixed |
-|------|----------------|
-| `apps/backend-nest/src/leads/leads.service.ts` | Empty string enum validation fix |
-| `apps/cms-next/components/leads/LeadDetailPanel.tsx` | Header lighter (dk2), Save in header, unsaved changes modal, country code display |
-| `apps/cms-next/components/leads/LeadQueueSidebar.tsx` | "All Leads" option with total count |
-| `apps/cms-next/components/leads/LeadTable.tsx` | data?.data?.data fix |
-| `apps/cms-next/pages/dashboard/index.tsx` | Enum imports from lead.constants.ts |
-| `apps/cms-next/pages/leads/index.tsx` | Navigation guard lifted to page level, unsaved changes modal |
-| `apps/cms-next/pages/leads/new.tsx` | Enum imports, country_code required with +91 default |
-| `libs/shared/constants/lead.constants.ts` | All enums + SidebarRole |
+```
+1. Replace 4 v2.0 subfolder readmes with one root README.md at 
+   skills/eagleskill/ — for v2.1 consistency and easier maintenance.
 
-### Key Improvements
-1. **Enum architecture** — All hardcoded strings replaced with imports from lead.constants.ts
-2. **Navigation guard** — Unsaved changes protection on queue clicks, lead row clicks, route changes
-3. **Country code** — Required field with +91 default, displayed with WhatsApp number
-4. **UI polish** — Lighter header banner, Save button in header, "All Leads" option
+2. Mac Mini fresh Claude Code session:
+   git pull origin main          # Sync new v2.1 files locally
+   Verify EAGLESKILL.md and eagleskill-config.md exist
+   Start fresh session, invoke: "Run eagleskill — Mode 0 — comprehensive
+                                  system read"
+   This produces a fresh baseline dated 29 April, replacing the stale
+   26 April baseline.
+   The old baseline gets renamed to eagle-baseline-system-readout-2026-04-26.md
+   (kept for history, not deleted).
 
----
+3. Begin Task 1 (crmTokens.ts) as the EAGLE v2.1 dogfood test:
+   - Mode 1 reconciliation (will likely converge in 1 round — small task)
+   - Mode 2 spec + working HTML
+   - Mode 3 execute (probably single-stage — one file)
+   - Stage 5 Latha handover
 
-## NEXT SESSION — PHASE 2
+4. If Task 1 reveals v2.1 issues → trigger Mode 4 Postmortem,
+   producing v2.1 patches or learning that informs v2.2.
+```
 
-**After Latha merges feature/portal.shon369 → dev_v2:**
+### NEAR-TERM (next 1-2 weeks)
 
-1. **Q Intelligence fields** — call_attempts, last_called_at, last_outcome, callback_at, callback_note
-2. **CallLogModal** — Agent call logging interface
-3. **Fix pre-existing LeadTable.tsx TypeScript error** — Property 'data' does not exist on type 'Lead[]'
-4. Phase 2 sidebar structure with LEAD_CRM role
+```
+5. Tasks 2-8 of the migration sequence on feature/portal.shon369 branch
+   (remaining 7 tasks after crmTokens.ts).
 
----
+6. Phase 4 Queue View UI — the next major capability after migration tasks
+   are complete. This will be the first CAPABILITY-mode task (vs the
+   migration tasks which are MIGRATION-mode).
+```
 
-## TEAM ROLES — CONFIRMED AND LOCKED
+### LATER (next month)
 
-| Type | Who | Portal Access |
-|------|-----|---------------|
-| SUPER_ADMIN | Shon, Latha | Everything |
-| MANAGER | Don, Sruthi, Santosh | Full portal access |
-| TEAM_LEAD | Anandhu, Midhun, Stalin, Gopika | CRM access via Call Center role |
-| AGENT | External sub-agents ONLY | Zero internal portal access — ever |
+```
+7. Phase 6 — Sheets-to-MongoDB migration. EAGLE explicitly excludes data
+   migrations; a separate skill TBD for this.
 
-**Role assignments:**
-- Call Center role → assign to TEAM_LEAD for CRM sidebar access
-- Sales Setup role → assign to anyone for Sales CRM access
-
----
-
-## GRAPHIFY STATUS
-
-**Last update:** 25 April 2026 after commit b0d2fdc4
-**Files:** 1772 | **Nodes:** 3998 | **Edges:** 3849
+8. Postmortem patterns — once we have 2-3 Mode 4 postmortems, look for
+   recurring themes that should inform v2.2.
+```
 
 ---
 
-## PENDING BLOCKERS
+## ACTIVE BLOCKERS — UNCHANGED FROM PREVIOUS SESSION
 
-- JWT secrets rotation — Latha CRITICAL
-- 4 AWS ACL errors in `accounts.service.ts` — Latha MEDIUM
-- Stripe write-back bug — Latha HIGH
-- Security guard bypass `scope.guard.ts` ~L79 — Latha HIGH
-- `assigned_to` enum EMPTY — Shon runs `=UNIQUE(K2:K9999)` on Sheets col K
+```
+1. JWT secrets must be rotated by Latha
+   NEXT_PUBLIC_JWT_SECRET and NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET
+   exposed in Git history. CRITICAL — pre-existing.
 
----
+2. 4 AWS ACL TypeScript errors in accounts.service.ts
+   Latha to fix. Pre-existing, MEDIUM priority.
 
-## FINALISED BUILD PLAN — LOCKED 23 APRIL 2026
+3. Stripe write-back bug
+   Payment status never saved to MongoDB. Latha to fix before
+   production. HIGH priority.
 
-### PHASE 1 — Foundation + Permissions + Roles ✅ COMPLETE (b0d2fdc4)
+4. Security guard bypass at scope.guard.ts ~L79
+   Latha to fix before production. HIGH priority.
 
-### PHASE 2 — Q Intelligence (ONE COMMIT)
-
-Q Intelligence fields + CallLogModal
-`call_attempts`, `last_called_at`, `last_outcome`, `callback_at`, `callback_note`
-
-### PHASE 3 — My Queue page (ONE COMMIT)
-
-Agent's personal queue view — filtered by `assigned_to`
-
-### PHASE 4 — Sales Support panel (ONE COMMIT)
-
-Sales support functionality — TBD with Shon
-
-### PHASE 5 — Config panel (ONE COMMIT)
-
-CRM configuration panel — TBD with Shon
+5. assigned_to enum EMPTY
+   Needs 37 agent names from Google Sheets col K (=UNIQUE(K2:K9999)).
+   Shon to populate. HIGH priority.
+```
 
 ---
 
-## PORTAL SETUP — COMPLETE
+## OPEN QUESTIONS FOR LATER SESSIONS
 
-- **Call Center** role created in portal ✅
-- **Sales Setup** role created in portal ✅
-- Roles assigned to Shon AJ account ✅
+```
+- Plugin behaviour validation: when Task 1 invokes /brainstorming,
+  /writing-plans, /security-review, /subagent-driven-development —
+  do they behave as the v2.1 Decision 10 mapping predicts? First
+  postmortem signal candidate.
+
+- Reconciliation loop convergence: Task 1 is too small to test the
+  loop. First medium capability (Phase 4 Queue View?) will reveal
+  whether typical loops converge in 1-2 rounds (good) or 4-6 (concerning).
+
+- v2.0 readme replacement: do we want to delete 4 subfolder readmes
+  and create one root README.md, or update each individually? Decision
+  pending.
+
+- Cross-reference quality: do other brain files reference EAGLESKILL
+  in ways that need updating now that the 5-mode structure replaces
+  the 4-mode one? Quick scan TBD.
+```
 
 ---
 
-## CLAUDE.md RULES — LOCKED
+## MAC MINI STATE (as of 29 April)
 
-> Locked rules → see memory/decisions.md (single source of truth, dated and append-only).
+```
+Server: Mac Mini M4, always-on, Tailscale 100.125.115.8
+pm2: backend (port 8000), cms-next (port 4002), website (port 4001)
+Claude Code: v2.1.101
+Tools installed: GitHub Desktop, Cursor, Tailscale
+Local clones:
+  ~/deassists-workspace/369-brain/   (mirrors github.com/Deassists369/369-brain)
+  ~/deassists-workspace/deassists/   (mirrors github.com/Deassists369/deassists,
+                                       feature/portal.shon369 branch)
+Last successful pm2 restart: stable
+Last fetched git state: from web editor commits today; Mac Mini local
+clones need `git pull` before next Claude Code session.
+```
 
 ---
 
-*VEERABHADRA — DeAssists Master Brain | Updated: 25 April 2026 — Phase 1 COMPLETE*
+## SESSION RHYTHM REMINDERS
+
+```
+- End-of-session protocol: when Shon says "stop for today", remind him
+  to paste the standard prompt into Claude Code:
+  
+  "Session ending. 1. List all files created/modified today with full
+   paths. 2. Update memory/session-state.md and memory/activity-log.md.
+   3. Show me what was updated."
+  
+  Then bring the output to VEERABHADRA.
+
+- 5-Stage SOP: Plan → Build → Verify → Commit → Latha Handover.
+  EAGLE plugs into Stages 1-2 only.
+
+- Two-repo discipline: 369-brain and deassists never mix in a commit.
+
+- Append-only: memory/decisions.md is append-only. Never modify
+  existing rows.
+```
+
+---
+
+*Session state — 29 April 2026, end of EAGLE v2.1 lock session*
+*Next session triggers: Mac Mini Mode 0 re-run, then Task 1 dogfood*
+*Energy budget: full session today; resume with morning energy tomorrow*
