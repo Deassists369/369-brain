@@ -42,7 +42,7 @@ BRAIN REPOSITORY:
   Who commits: Shon directly (no review needed)
 
 PRODUCTION REPOSITORY:
-  Local path:  ~/deassists-workspace/deassists/
+  Local path:  ~/deassists/
   GitHub:      github.com/Deassists369/deassists (private)
   Active branch: feature/portal.shon369
   Integration branch: dev_v2
@@ -62,7 +62,7 @@ PRODUCTION REPOSITORY:
 ## PRODUCTION CODEBASE STRUCTURE
 
 ```
-~/deassists-workspace/deassists/
+~/deassists/
 ├── apps/
 │   ├── backend-nest/        NestJS API, port 8000
 │   ├── cms-next/            Staff portal, port 4002
@@ -362,6 +362,8 @@ here for quick reference):
 
 2. 4 AWS ACL TypeScript errors in accounts.service.ts
    Latha to fix. Pre-existing, MEDIUM priority.
+   Note: Shon stashed a partial fix for ObjectCannedACL type
+   on 29 April (stash@{0} on feature/portal.shon369).
 
 3. Stripe write-back bug
    Payment status never saved to MongoDB.
@@ -427,6 +429,9 @@ For DeAssists specifically, Mode 0 should be re-run when:
 
 ```
 v1.0 — 29 April 2026 — initial config, paired with EAGLESKILL.md v2.1
+v1.1 — 29 April 2026 — corrected production codebase root path
+                       (~/deassists-workspace/deassists/ → ~/deassists/)
+                       to match actual Mac Mini layout
 ```
 
 ---
