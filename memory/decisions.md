@@ -1,6 +1,6 @@
 # DeAssists — Locked Decisions
 # Owner: Shon AJ | Brain: VEERABHADRA
-# Updated: 18 April 2026
+# Updated: 29 April 2026
 
 Every locked decision is recorded here with date and reason.
 Never delete entries. Only append.
@@ -73,6 +73,18 @@ Never delete entries. Only append.
 | 25 Apr 2026 | LeadTable useCustomQuery<any> — merge resolved with Latha | Both fixes merged, build passing, leads table working |
 | 25 Apr 2026 | Q Intelligence builds in next session — CallLogModal + LeadDetailPanel only | Backend already complete from Phase 1 |
 | 25 Apr 2026 | CLAUDE.md rethink scheduled — separate session | File over 1000 lines, token cost too high per session |
+| 29 Apr 2026 | EAGLE has 5 modes (Baseline / Reconcile / Spec / Execute / Postmortem); Mode 4 Postmortem is new in v2.1 | Self-improvement loop — bugs in EAGLE-built work trigger skill updates rather than ad-hoc fixes |
+| 29 Apr 2026 | EAGLE is portable to other projects — universal pattern in EAGLESKILL.md, project config in eagleskill-config.md | Pattern is the asset; configuration is the deployment detail |
+| 29 Apr 2026 | One prototype = one capability = one commit to Latha (supersedes "one task = one commit") | Capability completion is the right unit of review, not artificial task boundaries |
+| 29 Apr 2026 | Mode 1 reconciliation loop has no artificial cap but five mechanisms detect oscillation (sequential thinking, convergence delta, soft signal at Round 3, escalation at Round 5, brainstorming on recurring issues) | Hard caps cause artificial ship-it pressure; smart awareness prevents stuck loops without urgency |
+| 29 Apr 2026 | One issue → one element/enum/constant → corrected → tested individually → next issue (no batched corrections) | Cause-and-effect isolation; same discipline as Phase 1 enum architecture |
+| 29 Apr 2026 | Matched-test rule for corrections — 4 categories: naming/constants (file re-read), schema/types (build:all), visual/UX (browser preview), integration/runtime (localhost as role) | Right-sizes verification cost to actual change risk |
+| 29 Apr 2026 | EAGLE may invoke any plugin (superpowers, ce, built-ins) for thinking/planning/brainstorming, but plugins forbidden in Mode 3 Execute: /ce:work, /superpowers:execute-plan, /dispatching-parallel-agents | Supersedes 6 Apr lock with precise formulation; plugins are tools, EAGLE is the discipline |
+| 29 Apr 2026 | Mode 3 Execute writes code in risk-ordered stages (pure additions → isolated new files → wiring/integration); EAGLE judges stage count based on capability | Smaller surface per stage, faster diagnosis when something breaks, natural test points at stage boundaries |
+| 29 Apr 2026 | Stage reports produced always — even for one-stage tiny capabilities | Consistency over speed; skipping creates exception culture that grows over time |
+| 29 Apr 2026 | Mode 1 declares MIGRATION vs CAPABILITY at start; migration = production wins ties, capability = prototype leads | Makes the v2.0 "explicit override" first-class; supports both migration tasks and prototype-led capability work |
+
+---
 
 ## 27 April 2026 — API Pattern Discipline (LOCKED) (Updated after second Latha review)
 Context: CRM Phase 1 failed QA twice. First: raw fetch(). Second: inline hooks without dedicated query file.
@@ -86,55 +98,3 @@ Decision: All new module code MUST follow the project's full API pattern:
 7. Reference files: account.ts (auth), model.ts (generic CRUD), leads.ts (custom controller)
 Locked by: Shon AJ
 Trigger: Two rounds of Latha feedback 27 Apr 2026
-# MEMORY/DECISIONS.MD — APPEND THESE 10 ROWS
-# Date: 29 April 2026
-# Context: EAGLE v2.1 lock session
-
-═══════════════════════════════════════════════════════════════════
-INSTRUCTIONS — DO NOT COMMIT THIS FILE AS-IS
-═══════════════════════════════════════════════════════════════════
-
-This file is NOT meant to be committed. It contains text you should
-APPEND to the existing memory/decisions.md file.
-
-How to apply:
-  1. Open `369-brain/memory/decisions.md` in GitHub web editor (pencil icon)
-  2. Scroll to the END of the existing decisions table
-  3. Find the LAST row of the table (most recent entry before today)
-  4. After that row, paste the 10 rows below
-  5. Do NOT modify any existing rows — append-only is a locked rule
-  6. Commit with the message provided at the bottom
-
-═══════════════════════════════════════════════════════════════════
-THE 10 ROWS TO APPEND — COPY EVERYTHING BETWEEN THE LINES
-═══════════════════════════════════════════════════════════════════
-
-| 29 Apr 2026 | EAGLE has 5 modes (Baseline / Reconcile / Spec / Execute / Postmortem); Mode 4 Postmortem is new in v2.1 | Self-improvement loop — bugs in EAGLE-built work trigger skill updates rather than ad-hoc fixes |
-| 29 Apr 2026 | EAGLE is portable to other projects — universal pattern in EAGLESKILL.md, project config in eagleskill-config.md | Pattern is the asset; configuration is the deployment detail |
-| 29 Apr 2026 | One prototype = one capability = one commit to Latha (supersedes "one task = one commit") | Capability completion is the right unit of review, not artificial task boundaries |
-| 29 Apr 2026 | Mode 1 reconciliation loop has no artificial cap but five mechanisms detect oscillation (sequential thinking, convergence delta, soft signal at Round 3, escalation at Round 5, brainstorming on recurring issues) | Hard caps cause artificial ship-it pressure; smart awareness prevents stuck loops without urgency |
-| 29 Apr 2026 | One issue → one element/enum/constant → corrected → tested individually → next issue (no batched corrections) | Cause-and-effect isolation; same discipline as Phase 1 enum architecture |
-| 29 Apr 2026 | Matched-test rule for corrections — 4 categories: naming/constants (file re-read), schema/types (build:all), visual/UX (browser preview), integration/runtime (localhost as role) | Right-sizes verification cost to actual change risk |
-| 29 Apr 2026 | EAGLE may invoke any plugin (superpowers, ce, built-ins) for thinking/planning/brainstorming, but plugins forbidden in Mode 3 Execute: /ce:work, /superpowers:execute-plan, /dispatching-parallel-agents | Supersedes 6 Apr lock with precise formulation; plugins are tools, EAGLE is the discipline |
-| 29 Apr 2026 | Mode 3 Execute writes code in risk-ordered stages (pure additions → isolated new files → wiring/integration); EAGLE judges stage count based on capability | Smaller surface per stage, faster diagnosis when something breaks, natural test points at stage boundaries |
-| 29 Apr 2026 | Stage reports produced always — even for one-stage tiny capabilities | Consistency over speed; skipping creates exception culture that grows over time |
-| 29 Apr 2026 | Mode 1 declares MIGRATION vs CAPABILITY at start; migration = production wins ties, capability = prototype leads | Makes the v2.0 "explicit override" first-class; supports both migration tasks and prototype-led capability work |
-
-═══════════════════════════════════════════════════════════════════
-COMMIT DETAILS
-═══════════════════════════════════════════════════════════════════
-
-Commit summary:
-brain: lock 10 EAGLE v2.1 design decisions in memory/decisions.md
-
-Description (optional):
-Appends 10 dated locks captured during the 29 April EAGLE v2.0 → v2.1
-design session. Each lock traces to a specific decision in the Decision
-Audit (eagle-v2.1-decision-audit-2026-04-29.md, Section 3).
-
-Append-only: no existing rows modified.
-
-These locks supersede earlier ambiguous formulations:
-- 29 Apr plugin lock supersedes 6 Apr "CE Codex delegation OFF"
-- 29 Apr "one prototype = one commit" supersedes "one task = one commit"
-- 29 Apr 5-mode structure replaces v2.0's 4-mode structure
