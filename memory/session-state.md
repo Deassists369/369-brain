@@ -3,21 +3,27 @@
 
 ---
 
-**Last updated:** 27 April 2026 — QA Fix Applied
+**Last updated:** 28 April 2026 — Brain Restructure Complete
 
 **Brain root:** `~/deassists-workspace/369-brain/`
 
 ---
 
-## CRM Phase 1 Status: FULLY REFACTORED 27 Apr 2026
-- Commit 656f7ef0: raw fetch → React Query hooks (new.tsx, dashboard)
-- Commit 49121b19: created leads.ts query file + refactored all 6 CRM components to named hooks
-- Pattern now matches account.ts/model.ts (Latha's reference)
+## CRM Phase 1 Status: COMPLETE — Awaiting Latha Merge
+- All QA fixes applied (commits 656f7ef0 + 49121b19)
+- Pattern matches account.ts/model.ts
 - Build passes (npm run build:all verified)
-- Awaiting Latha QA verification
-Remaining items:
-- assigned_to: hardcoded ['DON','Riya','Meena','Stalin'] in new.tsx — needs dynamic agent list from backend (entity has enum:[])
-- country_codes: hardcoded 8 codes in new.tsx — switch to react-phone-input-2 (matches Signup.tsx pattern)
+
+## Brain Restructure: COMPLETE 28 Apr 2026
+- CLAUDE.md reduced from 1062 → 126 lines (skill selector + tier system)
+- 6 reference files created in patterns/ and project/
+- 4 superseded files archived (VEERABHADRA-MASTER-CONTEXT, DAILY-OPERATIONS-GUIDE, MASTER-STATE-19Apr2026, session-workflow)
+- THE-DEASSISTS-OS.md added (1451 lines — foundational playbook)
+- decisions.md is now single source of truth for all locked rules
+
+Remaining items (unchanged):
+- assigned_to: hardcoded in new.tsx — needs backend dynamic endpoint
+- country_codes: hardcoded — switch to react-phone-input-2
 - Stripe write-back bug (Latha)
 - scope.guard bypass (Latha)
 - JWT rotation (Latha)

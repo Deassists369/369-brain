@@ -4,6 +4,47 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 28 April 2026 — Brain Restructure (Complete)
+
+**Session focus:** Reduce CLAUDE.md token cost, create modular reference files, archive superseded docs
+
+### Commits Pushed to 369-brain
+
+| Hash | Message |
+|------|---------|
+| `c5c99d3` | brain: upgrade CLAUDE.md — skill selector, tier system, structured prompt format |
+| `e509ad1` | brain: add 6 pattern + project reference files |
+| `dd5f63f` | brain: reconcile decisions.md + simplify session-state.md + archive 4 superseded files |
+| `c8c6fa7` | brain: add THE-DEASSISTS-OS.md — foundational understanding and operations playbook (v1.0) |
+
+### Files Created
+- `patterns/api-patterns.md` — 4-layer API chain, reference table, leads module hooks
+- `patterns/git-workflow.md` — commit sequence, message format, absolute rules
+- `patterns/permission-patterns.md` — sidebar two-file system, three-layer access model
+- `project/architecture.md` — monorepo structure, where new code goes
+- `project/design-system.md` — crmTokens, typography, colours, 4 data states
+- `project/never-touch.md` — files to avoid by category
+- `THE-DEASSISTS-OS.md` — 1451-line foundational playbook (v1.0)
+
+### Files Modified
+- `CLAUDE.md` — reduced from 1062 → 126 lines; now references pattern/project files
+- `memory/decisions.md` — added constants-as-gate entry (25 Apr)
+- `memory/session-state.md` — rules table replaced with pointer to decisions.md
+
+### Files Archived (git mv to archive/)
+- `VEERABHADRA-MASTER-CONTEXT.md`
+- `memory/DAILY-OPERATIONS-GUIDE.md`
+- `memory/MASTER-STATE-19Apr2026.md`
+- `memory/session-workflow.md`
+
+### Result
+- CLAUDE.md token cost reduced ~90%
+- Single source of truth for rules: decisions.md (append-only)
+- Task-specific loading: read only the pattern/project file relevant to current task
+- Stale docs archived with history preserved
+
+---
+
 ## 27 April 2026 — CRM Phase 1 QA Fix (Complete)
 - Latha reported 404 errors + wrong API patterns on QA deployment
 - Root cause 1: new.tsx and dashboard/index.tsx used raw fetch() — 404 in QA
