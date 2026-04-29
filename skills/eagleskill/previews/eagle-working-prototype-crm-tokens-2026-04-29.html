@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EAGLE — crmTokens.ts Preview — 29 Apr 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── PRODUCTION (current) values ── */
+.theme-old {
+  --g:#1D7A45; --gl:#2a9458; --gx:#e8f5ee; --gxx:#d0ecda;
+  --dk:#0d1a10; --am:#c47b00; --aml:#fff8ee; --amx:#fff0d0;
+  --cr:#F6F7F4; --cd:#edeee9; --wh:#ffffff;
+  --t1:#1a1a1a; --t2:#4a4a4a; --t3:#888888; --t4:#bbbbbb;
+  --bd:#e5e5e0;
+  --red:#c62828; --redl:#fef2f2; --redd:#fee2e2;
+  --blu:#1565c0; --blul:#e8f0fd;
+  --pur:#6a1b9a; --purl:#f3e5f5;
+  --gcv:#ecfdf5; --gcvt:#065f46;
+  --r1:6px; --r2:10px; --r3:14px;
+  --s1:0 1px 3px rgba(0,0,0,.08);
+  --s2:0 4px 16px rgba(0,0,0,.10);
+  --s3:0 8px 32px rgba(0,0,0,.16);
+}
+
+/* ── PROTOTYPE (new) values ── */
+.theme-new {
+  --g:#1D7A45; --gl:#27964F; --gx:#EAF5EE; --gxx:#c5e8d1;
+  --dk:#0d1a10; --am:#F59E0B; --aml:#FFF8EE; --amx:#FDE9B0;
+  --cr:#F6F7F4; --cd:#edeee9; --wh:#ffffff;
+  --t1:#0D1A10; --t2:#364039; --t3:#6E7F72; --t4:#B0BDB4;
+  --bd:#E1EBE3;
+  --red:#EF4444; --redl:#fef2f2; --redd:#fee2e2;
+  --blu:#3B82F6; --blul:#e8f0fd;
+  --pur:#6d28d9; --purl:#f5f3ff;
+  --gcv:#ecfdf5; --gcvt:#065f46;
+  --r1:8px; --r2:10px; --r3:12px;
+  --s1:0 1px 3px rgba(0,0,0,0.06);
+  --s2:0 4px 18px rgba(0,0,0,0.08);
+  --s3:0 10px 36px rgba(0,0,0,0.11);
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: #f0f2f0;
+  color: #1a1a1a;
+  font-size: 13px;
+  min-height: 100vh;
+}
+
+/* ── STICKY HEADER ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: #0d1a10; color: white;
+  padding: 12px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-title { font-size: 13px; font-weight: 500; opacity: 0.85; letter-spacing: 0.02em; }
+.header-title strong { color: #27964F; font-weight: 600; }
+.toggle-wrap { display: flex; gap: 4px; background: rgba(255,255,255,0.1); border-radius: 8px; padding: 3px; }
+.toggle-btn {
+  padding: 6px 16px; border: none; border-radius: 6px; font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s;
+  background: transparent; color: rgba(255,255,255,0.6);
+}
+.toggle-btn.active { background: white; color: #0d1a10; }
+
+/* ── PAGE SHELL ── */
+.page { max-width: 900px; margin: 0 auto; padding: 28px 24px 60px; }
+
+/* ── SECTION ── */
+.section { margin-bottom: 36px; }
+.section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #888; margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0dc;
+}
+
+/* ── SWATCH GRID ── */
+.swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+.swatch-card {
+  background: white; border: 1px solid #e5e5e0; border-radius: 8px;
+  overflow: hidden; position: relative;
+}
+.swatch-card.changed::after {
+  content: 'changed'; position: absolute; top: 6px; right: 6px;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  background: #0d1a10; color: white; padding: 2px 6px; border-radius: 4px;
+}
+.swatch-card.added::after {
+  content: 'new'; position: absolute; top: 6px; right: 6px;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  background: #1D7A45; color: white; padding: 2px 6px; border-radius: 4px;
+}
+.swatch-pair { display: flex; height: 52px; }
+.swatch-half { flex: 1; }
+.swatch-info { padding: 8px 10px 10px; }
+.swatch-name { font-size: 12px; font-weight: 600; color: #1a1a1a; margin-bottom: 2px; }
+.swatch-values { font-size: 11px; color: #888; }
+.swatch-values span { display: inline-block; }
+.swatch-values .old-val { text-decoration: line-through; opacity: 0.6; margin-right: 4px; }
+.swatch-values .new-val { color: #1D7A45; font-weight: 500; }
+.swatch-values .only-val { }
+
+/* Swatch colors — static for comparison, not themed */
+.sw-gl-old  { background: #2a9458; }
+.sw-gl-new  { background: #27964F; }
+.sw-gx-old  { background: #e8f5ee; }
+.sw-gx-new  { background: #EAF5EE; }
+.sw-gxx-old { background: #d0ecda; }
+.sw-gxx-new { background: #c5e8d1; }
+.sw-am-old  { background: #c47b00; }
+.sw-am-new  { background: #F59E0B; }
+.sw-amx-old { background: #fff0d0; }
+.sw-amx-new { background: #FDE9B0; }
+.sw-t1-old  { background: #1a1a1a; }
+.sw-t1-new  { background: #0D1A10; }
+.sw-t2-old  { background: #4a4a4a; }
+.sw-t2-new  { background: #364039; }
+.sw-t3-old  { background: #888888; }
+.sw-t3-new  { background: #6E7F72; }
+.sw-t4-old  { background: #bbbbbb; }
+.sw-t4-new  { background: #B0BDB4; }
+.sw-bd-old  { background: #e5e5e0; }
+.sw-bd-new  { background: #E1EBE3; }
+.sw-red-old { background: #c62828; }
+.sw-red-new { background: #EF4444; }
+.sw-blu-old { background: #1565c0; }
+.sw-blu-new { background: #3B82F6; }
+.sw-pur-old { background: #6a1b9a; }
+.sw-pur-new { background: #6d28d9; }
+.sw-purl-old{ background: #f3e5f5; }
+.sw-purl-new{ background: #f5f3ff; }
+.sw-gold    { background: #b45309; }
+.sw-goldl   { background: #fffbeb; }
+.sw-gcv     { background: #ecfdf5; }
+.sw-gcvt    { background: #065f46; }
+.sw-redd    { background: #fee2e2; }
+
+/* ── LIVE PREVIEW PANEL ── */
+.preview-panel {
+  background: var(--cr); border: 1px solid var(--bd); border-radius: 10px;
+  padding: 20px; display: flex; flex-direction: column; gap: 16px;
+}
+
+/* Badges */
+.badge-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.01em;
+}
+.b-new       { background: var(--gx);   color: var(--g); }
+.b-followup  { background: var(--amx);  color: var(--am); }
+.b-called    { background: var(--blul); color: var(--blu); }
+.b-converted { background: var(--gcv);  color: var(--gcvt); }
+.b-lost      { background: var(--redl); color: var(--red); }
+.b-amber-count { background: var(--amx); color: var(--am); font-size: 11px; font-weight: 600; padding: 2px 8px; }
+.b-hot-count   { background: var(--redd); color: var(--red); font-size: 11px; font-weight: 600; padding: 2px 8px; }
+
+/* Buttons */
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn {
+  height: 34px; padding: 0 16px; border: none; border-radius: var(--r1);
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-p  { background: var(--g);  color: white; }
+.btn-ph { background: var(--gl); color: white; }
+.btn-s  { background: var(--wh); color: var(--t2); border: 1px solid var(--bd); }
+.btn-d  { background: var(--red); color: white; }
+.btn-am { background: var(--am); color: white; }
+
+/* Card */
+.sample-card {
+  background: var(--wh); border: 1px solid var(--bd); border-radius: var(--r2);
+  box-shadow: var(--s1); padding: 14px 16px;
+}
+.card-title { font-size: 14px; font-weight: 600; color: var(--t1); margin-bottom: 4px; }
+.card-sub   { font-size: 12px; color: var(--t3); line-height: 1.5; }
+.card-meta  { font-size: 11px; color: var(--t4); margin-top: 8px; }
+
+/* Sidebar mock */
+.sidebar-mock {
+  background: var(--wh); border: 1px solid var(--bd); border-radius: var(--r2);
+  padding: 8px 0; width: 200px;
+}
+.sb-item {
+  padding: 7px 14px; display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--t2); border-left: 2px solid transparent;
+  cursor: pointer;
+}
+.sb-item.active {
+  color: var(--g); font-weight: 500;
+  border-left-color: var(--g); background: var(--gx);
+}
+.sb-item .sb-count {
+  margin-left: auto; font-size: 10px; font-weight: 600; padding: 1px 7px;
+  border-radius: 10px; background: var(--amx); color: var(--am);
+}
+
+/* Typography */
+.typo-block { display: flex; flex-direction: column; gap: 6px; }
+.typo-t1 { font-size: 20px; font-weight: 600; color: var(--t1); }
+.typo-t2 { font-size: 14px; color: var(--t2); }
+.typo-t3 { font-size: 13px; color: var(--t3); }
+.typo-t4 { font-size: 12px; color: var(--t4); }
+
+/* Radius comparison */
+.radius-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+.radius-box {
+  width: 80px; height: 40px; background: var(--g);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 11px; font-weight: 500;
+}
+.shadow-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.shadow-box {
+  width: 100px; height: 52px; background: var(--wh); border: 1px solid var(--bd);
+  border-radius: var(--r2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--t3);
+}
+.s-s1 { box-shadow: var(--s1); }
+.s-s2 { box-shadow: var(--s2); }
+.s-s3 { box-shadow: var(--s3); }
+
+/* Note box */
+.note {
+  background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
+  padding: 12px 14px; font-size: 12px; color: #92400e; line-height: 1.6;
+}
+.note strong { font-weight: 600; }
+
+/* Two-col layout */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-title">EAGLE v2.1 — <strong>crmTokens.ts</strong> — 29 Apr 2026 — Mode 2 Working Preview</span>
+  <div class="toggle-wrap">
+    <button class="toggle-btn active" id="btn-old" onclick="setTheme('old')">Current Production</button>
+    <button class="toggle-btn" id="btn-new" onclick="setTheme('new')">After Update</button>
+  </div>
+</div>
+
+<div class="page" id="preview-root">
+
+  <!-- ── COLOUR SWATCHES ── -->
+  <div class="section">
+    <div class="section-label">Updated tokens — old value (left half) / new value (right half)</div>
+    <div class="swatch-grid">
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-am-old"></div><div class="swatch-half sw-am-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">am — Amber</div>
+          <div class="swatch-values"><span class="old-val">#c47b00</span><span class="new-val">#F59E0B</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-red-old"></div><div class="swatch-half sw-red-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">red — Error red</div>
+          <div class="swatch-values"><span class="old-val">#c62828</span><span class="new-val">#EF4444</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-blu-old"></div><div class="swatch-half sw-blu-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">blu — Accent blue</div>
+          <div class="swatch-values"><span class="old-val">#1565c0</span><span class="new-val">#3B82F6</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-t1-old"></div><div class="swatch-half sw-t1-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">t1 — Primary text</div>
+          <div class="swatch-values"><span class="old-val">#1a1a1a</span><span class="new-val">#0D1A10</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-t2-old"></div><div class="swatch-half sw-t2-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">t2 — Secondary text</div>
+          <div class="swatch-values"><span class="old-val">#4a4a4a</span><span class="new-val">#364039</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-t3-old"></div><div class="swatch-half sw-t3-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">t3 — Muted text</div>
+          <div class="swatch-values"><span class="old-val">#888888</span><span class="new-val">#6E7F72</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-gl-old"></div><div class="swatch-half sw-gl-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">gl — Green hover</div>
+          <div class="swatch-values"><span class="old-val">#2a9458</span><span class="new-val">#27964F</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-bd-old"></div><div class="swatch-half sw-bd-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">bd — Border</div>
+          <div class="swatch-values"><span class="old-val">#e5e5e0</span><span class="new-val">#E1EBE3</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-pur-old"></div><div class="swatch-half sw-pur-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">pur — Purple</div>
+          <div class="swatch-values"><span class="old-val">#6a1b9a</span><span class="new-val">#6d28d9</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-t4-old"></div><div class="swatch-half sw-t4-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">t4 — Disabled text</div>
+          <div class="swatch-values"><span class="old-val">#bbbbbb</span><span class="new-val">#B0BDB4</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-amx-old"></div><div class="swatch-half sw-amx-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">amx — Amber extra light</div>
+          <div class="swatch-values"><span class="old-val">#fff0d0</span><span class="new-val">#FDE9B0</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card changed">
+        <div class="swatch-pair"><div class="swatch-half sw-purl-old"></div><div class="swatch-half sw-purl-new"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">purl — Purple light</div>
+          <div class="swatch-values"><span class="old-val">#f3e5f5</span><span class="new-val">#f5f3ff</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card added">
+        <div class="swatch-pair"><div class="swatch-half sw-gold"></div><div class="swatch-half sw-goldl"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">gold / goldl</div>
+          <div class="swatch-values"><span class="only-val">#b45309 / #fffbeb</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card added">
+        <div class="swatch-pair"><div class="swatch-half sw-gcvt"></div><div class="swatch-half sw-gcv"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">gcv / gcvt — Converted</div>
+          <div class="swatch-values"><span class="only-val">#ecfdf5 bg / #065f46 text</span></div>
+        </div>
+      </div>
+
+      <div class="swatch-card added">
+        <div class="swatch-pair"><div class="swatch-half sw-redd" style="flex:1"></div></div>
+        <div class="swatch-info">
+          <div class="swatch-name">redd — Red tint</div>
+          <div class="swatch-values"><span class="only-val">#fee2e2</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── LIVE COMPONENT PREVIEW ── -->
+  <div class="section">
+    <div class="section-label">Live component preview — toggles with theme</div>
+    <div class="preview-panel theme-old" id="live-panel">
+
+      <!-- Status badges -->
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Status badges</div>
+        <div class="badge-row">
+          <span class="badge b-new">New</span>
+          <span class="badge b-followup">Follow Up</span>
+          <span class="badge b-called">Called 1</span>
+          <span class="badge b-called">Called 2</span>
+          <span class="badge b-called">Called 3</span>
+          <span class="badge b-converted">Converted</span>
+          <span class="badge b-lost">Lost</span>
+        </div>
+      </div>
+
+      <!-- Queue count badges -->
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Queue count badges</div>
+        <div class="badge-row">
+          <span class="badge b-amber-count">12</span>
+          <span style="font-size:12px;color:#888">warm count (amx/am)</span>
+          &nbsp;&nbsp;
+          <span class="badge b-hot-count">3</span>
+          <span style="font-size:12px;color:#888">hot count (redd/red)</span>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Buttons</div>
+        <div class="btn-row">
+          <button class="btn btn-p">+ Add Lead</button>
+          <button class="btn btn-ph">Hover state</button>
+          <button class="btn btn-s">Cancel</button>
+          <button class="btn btn-d">Delete</button>
+          <button class="btn btn-am">⚠ Warning</button>
+        </div>
+      </div>
+
+      <!-- Card + sidebar -->
+      <div class="two-col">
+        <div class="sample-card">
+          <div class="card-title">Rahul Sharma</div>
+          <div class="card-sub">Private University · BSc CS · BSBI Berlin</div>
+          <div style="margin-top:8px"><span class="badge b-followup">Follow Up</span></div>
+          <div class="card-meta">Last called: Yesterday 4:30 PM · 2 attempts</div>
+        </div>
+        <div class="sidebar-mock">
+          <div class="sb-item">Dashboard</div>
+          <div class="sb-item active">All Leads <span class="sb-count">12</span></div>
+          <div class="sb-item">+ Add Lead</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── TYPOGRAPHY ── -->
+  <div class="section">
+    <div class="section-label">Typography — Outfit · t1 / t2 / t3 / t4 (live)</div>
+    <div class="preview-panel theme-old" id="typo-panel">
+      <div class="typo-block">
+        <div class="typo-t1">Call Centre Dashboard — Lead Management</div>
+        <div class="typo-t2">Showing 47 leads across 3 queues · filtered by today</div>
+        <div class="typo-t3">Last synced 2 minutes ago · auto-refresh every 30s</div>
+        <div class="typo-t4">Build 5c04ec56 · feature/portal.shon369</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BORDER RADIUS ── -->
+  <div class="section">
+    <div class="section-label">Border radius — r1 and r3 (live)</div>
+    <div class="preview-panel theme-old" id="radius-panel">
+      <div class="radius-row">
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:6px">r1 — buttons &amp; chips</div>
+          <div class="radius-box" style="border-radius:var(--r1)">r1</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:6px">r2 — cards (unchanged)</div>
+          <div class="radius-box" style="border-radius:var(--r2)">r2</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:6px">r3 — modals</div>
+          <div class="radius-box" style="border-radius:var(--r3)">r3</div>
+        </div>
+        <div style="margin-left:24px">
+          <div style="font-size:11px;color:#888;margin-bottom:6px;text-align:center">Old → New</div>
+          <div style="font-size:12px;color:#555;line-height:1.8">
+            r1: 6px → <strong>8px</strong><br>
+            r2: 10px (no change)<br>
+            r3: 14px → <strong>12px</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SHADOWS ── -->
+  <div class="section">
+    <div class="section-label">Shadows — lighter opacity across all three (live)</div>
+    <div class="preview-panel theme-old" id="shadow-panel">
+      <div class="shadow-row">
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:10px">s1 — card</div>
+          <div class="shadow-box s-s1">s1</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:10px">s2 — hover</div>
+          <div class="shadow-box s-s2">s2</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:10px">s3 — modal</div>
+          <div class="shadow-box s-s3">s3</div>
+        </div>
+        <div style="margin-left:20px">
+          <div style="font-size:11px;color:#888;margin-bottom:6px">Opacity change</div>
+          <div style="font-size:12px;color:#555;line-height:1.8">
+            s1: .08 → <strong>.06</strong><br>
+            s2: .10 → <strong>.08</strong><br>
+            s3: .16 → <strong>.11</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DOWNSTREAM IMPACT NOTE ── -->
+  <div class="section">
+    <div class="note">
+      <strong>Downstream impact after update (cannot be fixed in this PR — add-only rule):</strong><br>
+      After <code>crmTokens.red</code> changes from #c62828 to #EF4444, the <code>statusBadgeColors.Lost.color</code>
+      still hardcodes <code>'#c62828'</code>. Two reds will coexist in the portal.
+      <br>The Lost badge above uses <code>var(--red)</code> (new value) — components that import
+      <code>statusBadgeColors</code> directly will still show the old dark red until a
+      separate cleanup task updates those hardcoded values to reference crmTokens tokens.
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  function setTheme(t) {
+    const oldCls = 'theme-old', newCls = 'theme-new';
+    const panels = document.querySelectorAll('#live-panel, #typo-panel, #radius-panel, #shadow-panel');
+    panels.forEach(p => {
+      p.classList.remove(oldCls, newCls);
+      p.classList.add(t === 'old' ? oldCls : newCls);
+    });
+    document.getElementById('btn-old').classList.toggle('active', t === 'old');
+    document.getElementById('btn-new').classList.toggle('active', t === 'new');
+  }
+</script>
+</body>
+</html>
