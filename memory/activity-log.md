@@ -3,6 +3,155 @@
 Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
+# MEMORY/ACTIVITY-LOG.MD — APPEND THIS ENTRY
+# Date: 29 April 2026
+# Context: EAGLE v2.1 lock session
+
+═══════════════════════════════════════════════════════════════════
+INSTRUCTIONS — DO NOT COMMIT THIS FILE AS-IS
+═══════════════════════════════════════════════════════════════════
+
+This file is NOT meant to be committed. It contains text you should
+APPEND to the existing memory/activity-log.md file.
+
+How to apply:
+  1. Open `369-brain/memory/activity-log.md` in GitHub web editor (pencil icon)
+  2. Determine where new entries belong:
+     - If activity-log uses NEWEST-AT-TOP (reverse chronological):
+       paste the entry RIGHT AFTER the file's header, BEFORE the most
+       recent existing entry
+     - If activity-log uses OLDEST-AT-TOP (chronological):
+       paste the entry at the very END of the file
+     - Check existing entries to determine which convention is in use
+  3. Commit with the message at the bottom
+
+═══════════════════════════════════════════════════════════════════
+THE ENTRY TO APPEND — COPY EVERYTHING BETWEEN THE LINES
+═══════════════════════════════════════════════════════════════════
+
+## 29 April 2026 — EAGLE v2.1 Lock Session
+
+**Duration:** ~6 hours (afternoon to early evening)
+**Participants:** Shon AJ, VEERABHADRA (Claude.ai chat)
+**Context:** Full design pass on EAGLE skill — v2.0 → v2.1 upgrade
+
+### What was done
+
+Three categories of work:
+
+**1. Design conversation (~5 hours):**
+Working through 16 design decisions one at a time via tappable popup
+questions. Each decision pushed back on, stress-tested, and resolved
+deliberately. Key locks include:
+- 5-mode structure replaces v2.0's 4-mode (added Postmortem)
+- Self-improvement loop via Mode 4
+- Portability (universal pattern + project config separation)
+- One prototype = one capability = one commit to Latha
+- Iterative reconciliation loop with 5 oscillation-detection mechanisms
+- One-issue-at-a-time correction discipline
+- Matched-test rule (4 categories)
+- Skill activation table (sequential thinking + brainstorming per stage)
+- Plugin discipline (forbid /ce:work, /superpowers:execute-plan,
+  /dispatching-parallel-agents in Mode 3)
+- Three-tier required reading
+- Risk-ordered staged execution with always-produced stage reports
+- MIGRATION vs CAPABILITY mode declaration at start of every Mode 1
+
+**2. Document production (~1 hour):**
+Three artifacts produced in chat as downloadable files:
+- Decision Audit (553 lines) — all 16 decisions, cross-consistency check,
+  10 dated locks for memory/decisions.md
+- EAGLESKILL.md v2.1 (1,172 lines) — universal pattern only
+- eagleskill-config.md (440 lines) — DeAssists-specific config
+
+**3. GitHub commits (afternoon and evening):**
+- Commit: `brain: add EAGLE v2.1 decision audit — 16 locked decisions for review`
+- Commit: `brain: archive EAGLESKILL v2.0 to historical reference` (intent;
+  actual result: v2.0 file got renamed but content was overwritten with v2.1)
+- Commit: `brain: lock EAGLESKILL v2.1` (intent; actual result: file was
+  created with config content by mistake)
+- Commit: `brain: delete misnamed EAGLESKILL-v2.0-2026-04-26.md`
+  (cleanup: removed file with wrong content under wrong name)
+- Commit: `brain: rename EAGLESKILL.md to eagleskill-config.md`
+  (cleanup: gave correct name to file with config content)
+- Commit: `brain: lock EAGLESKILL v2.1 — universal pattern (1,172 lines)`
+  (final: created proper EAGLESKILL.md with correct v2.1 content)
+
+### Files created or modified
+
+```
+NEW:
+  369-brain/skills/eagleskill/eagle-v2.1-decision-audit-2026-04-29.md
+  369-brain/skills/eagleskill/EAGLESKILL.md (v2.1, 1,172 lines)
+  369-brain/skills/eagleskill/eagleskill-config.md (440 lines)
+
+MODIFIED:
+  (memory files updated in same commit batch as this log entry)
+
+LOST (accepted):
+  369-brain/skills/eagleskill/EAGLESKILL.md (v2.0 content) —
+  superseded by v2.1; not preserved as archive due to GitHub web editor
+  rename confusion. v2.0 → v2.1 evolution documented in Decision Audit.
+```
+
+### What was learned
+
+```
+1. GitHub web editor renames are unreliable when followed by content
+   replacement. Better pattern: rename first as separate commit, then
+   create new file as second commit.
+
+2. The audit-before-draft discipline (produce Decision Audit, review,
+   then draft v2.1) caught zero contradictions but built confidence
+   that the design was internally consistent.
+
+3. One-popup-question-at-a-time pace was the right cadence for this
+   session. Each decision got proper attention; no rubber-stamping.
+
+4. Sectioned drafting (offered for v2.1 file) was abandoned in favor of
+   one-shot file production. For documents this size where decisions
+   are pre-locked via audit, one-shot is cleaner than sectioned review.
+```
+
+### What's next
+
+```
+- Brain hygiene: replace 4 v2.0 subfolder readmes with one root README.md
+- Mac Mini: git pull, fresh Claude Code session, run Mode 0 re-run with
+  v2.1, produce fresh baseline dated 29 April
+- Begin Task 1 (crmTokens.ts) as v2.1 dogfood
+```
+
+### Energy at end of session
+
+```
+6 hours of focused architecture work. Quality stayed high throughout
+because of one-question-at-a-time pacing. End-of-session signal: file
+production worked correctly on first attempt; review fatigue was visible
+during commit sequence (the rename/create confusion happened during
+hours 5-6).
+
+Lesson for future long sessions: stop file commits at hour 5; resume
+fresh next morning. Today we pushed through and recovered cleanly, but
+the recovery itself cost time.
+```
+
+═══════════════════════════════════════════════════════════════════
+COMMIT DETAILS
+═══════════════════════════════════════════════════════════════════
+
+Commit summary:
+brain: log 29 April EAGLE v2.1 lock session in activity-log
+
+Description (optional):
+Records the 6-hour design session that produced EAGLE v2.1.
+
+Captures:
+- 16 design decisions locked
+- 3 artifacts produced (audit, skill v2.1, config)
+- 6 commits to GitHub (3 successful + 3 cleanup commits)
+- v2.0 archive lost during commit sequence — accepted, documented in audit
+- Lessons learned for future long sessions
 
 ## 28 April 2026 — Brain Restructure (Complete)
 
