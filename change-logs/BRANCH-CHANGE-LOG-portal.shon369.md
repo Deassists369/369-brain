@@ -304,3 +304,61 @@ These are Latha's scope to fix. They are not in this branch's diff.
 
 *Updated by VEERABHADRA — 25 April 2026*
 *Phase 1 CRM complete and pushed — ready for Latha merge*
+
+---
+
+## Task 1 — crmTokens.ts
+Date: 30 April 2026
+Branch: feature/portal.shon369
+Mode: CAPABILITY
+Status: DONE — on disk, pending final commit with all migration tasks
+
+### What changed
+File: apps/cms-next/styles/crmTokens.ts
+
+12 values updated to match prototype skill values:
+  am:  #c47b00 → #F59E0B  (amber — brighter, Tailwind standard)
+  t1:  #1a1a1a → #0d1a10  (primary text — green-tinted dark)
+  t2:  #4a4a4a → #1a3d26  (secondary text — green-tinted)
+  t3:  #888888 → #4a7c59  (tertiary text — green-tinted)
+  bd:  #e5e5e0 → #E1EBE3  (border — green-tinted)
+  r1:  6px     → 8px      (border radius — slightly rounder)
+  r3:  14px    → 12px     (border radius — slightly tighter)
+  red: #c62828 → #EF4444  (red — Tailwind standard)
+  blu: #1565c0 → #3B82F6  (blue — Tailwind standard)
+
+Plus 3 statusBadgeColors updated to reference new token values:
+  Follow Up badge color: #c47b00 → #F59E0B
+  Called 1/2/3 badge color: #1565c0 → #3B82F6
+  Lost badge color: #c62828 → #EF4444
+
+### Why
+EAGLE v2.1 Task 1. Prototype skill values approved by Shon.
+Visual improvements only. Zero logic change. Zero risk.
+Semantic colour language preserved:
+  Green = positive, active
+  Amber = needs attention (now brighter)
+  Grey = done, quiet
+  Red = destructive only (now Tailwind standard)
+
+### What was NOT changed
+All token names unchanged.
+All component logic unchanged.
+No new files created.
+No API changes.
+No permission changes.
+
+### Security
+CLEAR — pure constants file, no user input,
+no API calls, no authentication.
+
+### Test
+npm run build:all passed for cms-next and website-next.
+backend-nest failure is pre-existing Blocker 2 (Latha).
+Visual check: amber badges brighter, borders green-tinted.
+
+### Latha notes
+This file commits together with all 8 migration tasks
+in one PR. Do not merge until all 8 tasks are done.
+Pre-existing backend error (accounts.service.ts:1276)
+is NOT introduced by this change.
