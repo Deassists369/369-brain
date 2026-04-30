@@ -129,6 +129,80 @@ the recovery itself cost time.
 
 ---
 
+## 30 April 2026 — Brain Architecture + Boot Sequence Test
+
+**Duration:** Two sessions (earlier + evening)
+**Participants:** Shon AJ, VEERABHADRA, Claude Code
+
+### What was done
+
+**Session 1 (earlier):**
+- EAGLE Mode 0 fresh baseline run
+- EAGLE Mode 1 full prototype inventory (434 lines)
+- crmTokens.ts token sync (12 values updated)
+- Task 1 change log entry written
+- decisions.md updated with 12 new 30 Apr entries
+- New brain architecture files received from VEERABHADRA:
+  - CLAUDE.md (mission control, boot sequence)
+  - CODING-CONSTITUTION.md (all coding rules)
+  - PRD.md (full requirements)
+  - feature-registry.md (build order)
+  - vision.md (company vision)
+
+**Session 2 (evening):**
+- Boot sequence test — followed new CLAUDE.md protocol
+- Session lock system verified (IDLE → OPEN → IDLE)
+- All tier 1 files loaded successfully
+- feature-registry.md task lookup working
+- Session close protocol executed
+
+### Files created or modified
+
+```
+369-brain (committed):
+  skills/eagleskill/eagle-baseline-system-readout.md (5c318b5)
+  skills/eagleskill/reports/eagle-report-round-1-full-inventory-2026-04-29.md (2abba6d)
+  change-logs/BRANCH-CHANGE-LOG-portal.shon369.md (3e35885)
+  memory/decisions.md (12 rows appended)
+  memory/session-state.md (this session)
+  memory/activity-log.md (this entry)
+  memory/session-lock.md (IDLE)
+
+Portal (uncommitted, pending PR):
+  apps/cms-next/styles/crmTokens.ts
+```
+
+### Key decisions locked (12 total)
+
+- Hardcoding rule final form
+- DeAssists = full 5-layer Education ERP SaaS
+- UserTypes enum permanently locked at 10
+- BCBT September 2026 hard deadline
+- AI-first design principle
+- Universal Lead Capture Form architecture
+- Tool workflow: VEERABHADRA → Claude Code → Cursor → GitHub Desktop → Latha
+- Session integrity system (session-lock.md)
+- Architecture before prototype rule
+- DeAssists ecosystem model
+- Brain file update rule (read before write)
+- One file at a time discipline
+
+### What's next
+
+```
+1. Phase 1 Constants — add missing enums to lead.constants.ts:
+   ServiceCategory, LeadScoreBand, PartnershipTier, ProgrammeLevel,
+   StudentType, AssetType, FeeStatus, EnrollmentStatus,
+   SidebarRole.Finance, SidebarRole.Vendor
+
+2. Phase 2A Q Intelligence:
+   useLogCall hook, CallLogModal, Q Intelligence block
+
+3. Commit crmTokens.ts with portal PR when ready
+```
+
+---
+
 ## 28 April 2026 — Brain Restructure (Complete)
 
 **Session focus:** Reduce CLAUDE.md token cost, create modular reference files, archive superseded docs
