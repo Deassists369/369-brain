@@ -83,6 +83,18 @@ Never delete entries. Only append.
 | 29 Apr 2026 | Mode 3 Execute writes code in risk-ordered stages (pure additions → isolated new files → wiring/integration); EAGLE judges stage count based on capability | Smaller surface per stage, faster diagnosis when something breaks, natural test points at stage boundaries |
 | 29 Apr 2026 | Stage reports produced always — even for one-stage tiny capabilities | Consistency over speed; skipping creates exception culture that grows over time |
 | 29 Apr 2026 | Mode 1 declares MIGRATION vs CAPABILITY at start; migration = production wins ties, capability = prototype leads | Makes the v2.0 "explicit override" first-class; supports both migration tasks and prototype-led capability work |
+| 30 Apr 2026 | Hardcoding rule final form — never hardcode any value that appears more than once, could change, or represents a business concept. Constants, enums and tokens must exist before any component references them. | Prevents silent failures and string drift |
+| 30 Apr 2026 | DeAssists is a full Education ERP SaaS platform — five layers: Student Portal, Lead and Sales, Finance, SMS + LMS, Tax and Compliance. Every architectural decision must support all five layers without a rebuild. | Full ERP vision locked |
+| 30 Apr 2026 | UserTypes enum is permanently locked at 10 types. Never add new UserTypes to solve operational problems. All granularity via database roles and AI agents. Goal: run full university ERP with minimum human staff. | Prevents code bloat and org chart in code |
+| 30 Apr 2026 | BCBT University is already a live tenant today. Target: full ERP MVP live for BCBT September 2026 intake. BCBT is the proof of concept for all future university sales. | September 2026 hard deadline |
+| 30 Apr 2026 | AI-first design principle — every workflow designed for AI execution. Every repetitive task gets an AI agent. Humans handle exceptions only. Design so AI can do it tomorrow without a rebuild. | Minimal staff model locked |
+| 30 Apr 2026 | Universal Lead Capture Form — single embeddable form on any platform. Must work for DeAssists AND BCBT. Every submission creates a live CRM lead automatically. Zero manual entry. | Lead capture architecture locked |
+| 30 Apr 2026 | Tool workflow locked — VEERABHADRA thinks and plans, Claude Code reads and saves brain files, Cursor Agent writes portal code, GitHub Desktop commits, Latha reviews PR. Never mix these roles. | Permanent tool division |
+| 30 Apr 2026 | Session integrity system — session-lock.md controls whether a new session can start. STATUS: BUSY means blocked. STATUS: OPEN means safe. Session-end protocol is mandatory. Applies to humans and AI agents equally. | Prevents concurrent sessions and data corruption |
+| 30 Apr 2026 | Architecture before prototype rule — for every new layer: understand fully, architecture document, prototype, UI/UX review, finalise, then build. Never build before understanding. | Applied to SMS, LMS, Finance, DATEV |
+| 30 Apr 2026 | DeAssists ecosystem model — every expat service can plug in as a module. Shell stays the same. Ecosystem grows through configuration not code. | Ecosystem architecture locked |
+| 30 Apr 2026 | Brain file update rule — before Claude Code touches any existing brain file it must fetch and read it first, then work, then save. Never overwrite without reading. | Prevents brain file corruption |
+| 30 Apr 2026 | One file at a time discipline — produce one file, review in VEERABHADRA, approve, save via terminal, confirm line count, then next file. Never batch without review. | Quality gate for brain files |
 
 ---
 
