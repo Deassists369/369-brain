@@ -1,1451 +1,1045 @@
 # THE DEASSISTS OPERATING SYSTEM
-
-**Complete Understanding & Operations Playbook**
-**For:** Shon AJ (CEO) · VEERABHADRA (Master Brain) · Claude Code / Cursor Agent (Hands) · Latha (Code Reviewer & Committer)
-**Owner:** Shon AJ · Three Sixty Nine GmbH · Berlin
-**Version:** 1.0 · **Date:** 28 April 2026
-**Status:** Foundational reference — read at the start of every new chat or session
-**Save to:** `369-brain/THE-DEASSISTS-OS.md`
+## Version 2.0 | Owner: Shon AJ | Brain: VEERABHADRA
+### The founding document of a company built by one founder and AI.
 
 ---
 
-## TABLE OF CONTENTS
+# PREAMBLE — WHY THIS FILE EXISTS
 
-1. Why this document exists
-2. What we are building (business + ERP vision)
-3. The system — conceptually (how leads, customers, partners, staff connect)
-4. The system — technically (repos, branches, code shape)
-5. The people and roles
-6. The 3 file spaces and how they sync
-7. The new workflow — prototype-first
-8. EAGLE skill — current state and proposed v2.1 update
-9. The prompt discipline — Layer 1 of mistake-prevention
-10. Daily operations — session start, middle, end
-11. Locked decisions — the 100% locks (synthesized)
-12. Commit discipline
-13. What to check before writing any code
-14. The larger picture — DeAssists as ERP
-15. Right-now priorities
-16. **THE MASTER PROMPT** (paste-ready for Cursor / Claude Code)
-17. Honest risks, gaps, open questions
-18. Appendix A — File map (every brain file, what it's for)
-19. Appendix B — Glossary
-20. Appendix C — The 5-stage SOP, visualised
+This is not a manual. This is not documentation.
+This is the operating system of a company.
 
----
+Every AI agent that touches this project reads this file.
+Every human who joins this project reads this file.
+Every decision made in this company traces back to this file.
 
-## 1. WHY THIS DOCUMENT EXISTS
+It was written by VEERABHADRA — the AI master brain
+of Shon AJ, CEO of Three Sixty Nine GmbH, Berlin.
+It was approved by Shon.
+It is the founding document of DeAssists ERP.
 
-In the last 48 hours, the DeAssists brain went through a remap. CLAUDE.md was reduced from 1,062 lines to 126. Six new pattern and project files were added. Four superseded files were archived. Rules were consolidated into `memory/decisions.md`. The mistake-prevention strategy was diagnosed (the VEERABHADRA → Claude Code handoff was leaking improvisation) and a three-layer fix was locked: structured prompts (Layer 1), lean accurate docs (Layer 2), and the EAGLE gate system (Layer 3).
+If you are an AI agent — follow every instruction precisely.
+If you are Shon — this is your north star.
+If you are a new team member — read this before touching anything.
+If you are an investor or partner — this tells you exactly
+what is being built and why it will work.
 
-But none of that work matters if the next Cursor or Claude Code session opens without context. The agent will read CLAUDE.md, find the router, follow it, and still — without an alignment document like this one — fail to understand *why* the rules exist, how the workflow has shifted, or what the bigger picture is.
-
-This document is the alignment. It is for:
-
-- **The next Cursor / Claude Code session** — it inherits everything by reading this once.
-- **You, Shon** — a single place to come back to when something feels confused.
-- **Latha** — a way to understand what is happening above the code without needing a live call.
-- **Future me (VEERABHADRA in a fresh chat)** — context that doesn't have to be rebuilt from scratch.
-
-It is honest. Where things are working, I will say so. Where things are still broken or unclear, I will name it. Nothing is hidden behind reassuring language.
+Currency: verified via git log — not by any date in this file.
+Evolution: this file grows as the company grows.
+Never shrinks. Never loses its principles.
 
 ---
 
-## 2. WHAT WE ARE BUILDING
+# BOOK 1 — THE SOUL
 
-### 2.1 DeAssists today — the operator
+## 1.1 The Problem We Solve
 
-DeAssists is a vertically integrated services business for international students and expats moving to Germany. We do the work end-to-end. We are not a marketplace. We are not a directory. We are the operator who takes a person from "I am thinking about Germany" to "I am living in Germany with my paperwork sorted."
+Every year hundreds of thousands of students
+leave India, Nigeria, Pakistan, Bangladesh
+and move to Germany for university.
 
-The revenue is concentrated:
+They face:
 
-- **University admissions — ~90% of revenue.** 19 partner universities. The Course Finder is the entry point. Lead → call centre → application coordinator → enrolment.
-- **Accommodation — ~10% of revenue.** Direct service.
-- **Other services (blocked account, visa, insurance, APS, legal, Ausbildung, jobs, post-landing) — currently redirected to partners.** No revenue today; they're brand surface area for the future.
+  Confusion about which university accepts them
+  Fear about blocked accounts, visa, insurance
+  Loneliness navigating a foreign system alone
+  Agents who take fees and disappear
+  No single trusted partner for the full journey
 
-The operations are run by people:
+DeAssists solves this.
+We take a student from
+"I am thinking about Germany"
+to
+"I am living in Germany with my life sorted."
 
-- Shon (CEO, all decisions)
-- Don (Senior Manager, university partnerships)
-- Sruthi (BDMS, university coordination)
-- Santosh (Application Lead, escalations)
-- Anandhu, Midhun, Stalin (Call Centre)
-- Gopika (Operations, Data Entry)
-- Lenin (Applications, non-BCBT)
-- Sajir, Amala (Germany interns)
+We do not redirect. We do not refer.
+We do the work. End to end.
 
-All staffed via Three Sixty Nine GmbH, Berlin.
+## 1.2 The Vision
 
-### 2.2 DeAssists tomorrow — the platform / ERP
+DeAssists is building the operating system
+for expat services and university education globally.
 
-The shape of DeAssists in 12 to 24 months is fundamentally different from today, and every architectural choice has to support both shapes simultaneously.
+TODAY:
+  Vertically integrated expat services operator.
+  Germany. Students. 19 partner universities.
+  90% revenue from admissions.
+  10% from accommodation.
+  Human-led. AI-assisted.
 
-**Tomorrow, DeAssists is a multi-tenant platform.** Service providers (BCBT for blocked accounts, accommodation providers, visa partners, insurance partners, jobs partners, future expat services) plug into the same portal. They log in. They see only their own pipeline. They cooperate inside the system while DeAssists runs the operations layer above them.
+2026:
+  Full ERP platform.
+  BCBT University runs on our system.
+  Call center runs inside the portal.
+  Zero Google Sheets dependency.
+  AI handles all routine operations.
 
-**Eventually, DeAssists is sellable globally.** The same engine — lead intake, application portal, partner dashboards, staff operations, automation — should work for expat services in any country. The German specificity is in the data and the partners, not in the platform.
+2027:
+  Multi-tenant SaaS.
+  10 universities on the platform.
+  Each sees only their own data.
+  DeAssists runs the operations layer above all.
+  AI agents handle 80% of routine work.
 
-This is why we call it an **ERP**, not a CRM. A CRM is a sales tool. An ERP is the company. DeAssists is becoming the company-shaped software that runs the company. Sales is one module. Lead management is one module. Application processing is one module. Partner coordination is one module. Operations is one module. Finance, eventually, is one module. They share a spine.
+2029:
+  50+ universities globally.
+  Expat services in multiple countries.
+  Minimal human staff per tenant.
+  The platform sells itself.
+  DeAssists is the infrastructure of
+  international education services.
 
-### 2.3 The dual-mode principle (locked 26 April 2026)
+## 1.3 The Seven Principles
+### These never change. Everything else can evolve.
 
-> **Every architectural decision must support two modes simultaneously: operator today, platform tomorrow.**
+PRINCIPLE 1 — THE STUDENT IS THE NORTH STAR
 
-Concretely this means:
+  Every decision is judged by one question:
+  Does this make the student journey better?
+  If yes — build it.
+  If no — question it.
+  If unsure — ask Shon.
 
-- Every UI pattern (Sales Guide, role gates, service tagging, ServiceCategory enum) must be reusable across service contexts. A pattern designed only for university admissions will need to be rebuilt when accommodation gets the same treatment. Designed correctly, it works for both.
-- The prototype must demo both modes — internal DeAssists staff view AND external partner view (BCBT admin, accommodation provider). A service-context switcher at the top, same shell, scoped data.
-- Without dual-mode demonstrable, the platform pitch does not work. Investors and partners need to see it, not be told about it.
+PRINCIPLE 2 — AI DOES THE REPETITIVE, HUMANS DO THE MEANINGFUL
 
-### 2.4 Revenue model — explicitly stated
+  We do not automate to remove humans.
+  We automate so humans focus on what matters.
+  Relationships. Judgement. Strategy. Care.
+  An agent handles the form.
+  A human handles the fear.
 
-```
-Today:
-  90% — University admissions (19 partners)
-  10% — Accommodation
-   0% — All other services (redirected, no revenue)
+PRINCIPLE 3 — BUILD FOR 50, PROVE WITH ONE
 
-Tomorrow:
-  Diversified across all services as partners onboard
-  Plus platform fees from service providers
-  Plus operations fees on shared customers
-```
+  Every feature works for any university,
+  any expat services company, any country.
+  We prove it at BCBT first.
+  Then we show the world.
+  Never hardcode DeAssists-specific logic.
+  Always configurable per tenant.
 
-The 90% revenue concentration is a fact and also a risk. Every product decision should ask: "Does this help admissions hold?" before "Does this expand to accommodation?"
+PRINCIPLE 4 — THE SYSTEM MUST WORK FOR A NON-DEVELOPER
 
----
+  If Shon cannot understand a decision — it is wrong.
+  If an agent cannot execute without a developer — it is wrong.
+  Simplicity is not a compromise. It is the design goal.
+  Every tool, every process, every rule
+  must be operable by a non-technical founder.
 
-## 3. THE SYSTEM — CONCEPTUALLY
+PRINCIPLE 5 — PROTOTYPE BEFORE YOU BUILD
 
-### 3.1 The three customer-facing layers
+  Every feature starts as a visual prototype.
+  Shon approves the prototype.
+  Then and only then does code get written.
+  The prototype is the contract.
+  No prototype — no code. Ever.
 
-DeAssists has three frontends. They share the same backend.
+PRINCIPLE 6 — CONSTANTS BEFORE COMPONENTS
 
-```
-                       ┌───────────────────────────────┐
-                       │   ONE NestJS BACKEND          │
-                       │   (Mac Mini :8000)            │
-                       │   MongoDB Atlas (EU)          │
-                       │   AWS S3                      │
-                       └───────────────────────────────┘
-                                ▲       ▲       ▲
-                                │       │       │
-              ┌─────────────────┘       │       └─────────────────┐
-              │                         │                         │
-   ┌──────────┴──────────┐   ┌──────────┴──────────┐   ┌──────────┴──────────┐
-   │  PUBLIC WEBSITE     │   │  STAFF / PARTNER    │   │  MOBILE APP         │
-   │  website-next       │   │  CMS PORTAL         │   │  React Native       │
-   │  port 4001          │   │  cms-next           │   │  (separate dev)     │
-   │  Lead capture,      │   │  port 4002          │   │  Customer-facing    │
-   │  Course Finder,     │   │  Staff operations,  │   │  applications,      │
-   │  marketing pages    │   │  partner views,     │   │  documents, support │
-   │                     │   │  CRM, dashboards    │   │                     │
-   └─────────────────────┘   └─────────────────────┘   └─────────────────────┘
-```
+  A value that appears twice is hardcoded once too many.
+  An enum must exist before any component references it.
+  Architecture decisions made in code cannot be reversed.
+  Think first. Spec second. Build third. Ship fourth.
 
-All three speak to the same NestJS backend. Schema changes ripple to all three. **This is why API contract changes are a stop-and-ask trigger in EAGLE** — the mobile app can break silently if you change a field name.
+PRINCIPLE 7 — ONE SPINE, MANY MODULES
 
-### 3.2 How leads enter the system today
-
-Today, leads enter through a hybrid system. The portal handles application collection after conversion, but the CRM itself still runs partly on Google Sheets / Excel-style operational workflows.
-
-```
-Lead source (Instagram ad, Course Finder, referral, partner)
-    │
-    ▼
-Google Sheets "369 Master LEAD CRM" (current operational system)
-    │
-    ▼
-Call centre (Anandhu, Midhun, Stalin, Gopika) — qualifies, calls, converts
-    │
-    ▼ (after conversion)
-DeAssists Portal (cms-next) — application collection, document upload
-    │
-    ▼
-Application coordinator (Lenin, Santosh) — processes
-    │
-    ▼
-Partner submission, enrolment, customer in Germany
-```
-
-Sheets is **temporary**. It is the system of record for new leads while the portal CRM is being built up to replace it. We do not invest in extending Sheets. We invest in moving the workflow into cms-next.
-
-### 3.3 How leads will enter the system tomorrow
-
-```
-Lead source
-    │
-    ▼
-DeAssists Portal CRM (cms-next) — direct intake, queue routing
-    │
-    ▼
-Call centre works inside the portal — never opens a sheet
-    │
-    ▼
-Conversion routes the same lead to applications without re-entry
-    │
-    ▼
-Customer sees their own application status in the mobile app
-    │
-    ▼
-Partner sees their own pipeline in the partner view of cms-next
-```
-
-The same lead record exists once and is enriched as it moves through stages. There is no re-entry, no copy-paste between systems, no "send the customer file to BCBT by email." The portal is the system.
-
-### 3.4 The customer journey (across the system)
-
-A real student moving to Germany touches DeAssists like this:
-
-1. Sees Instagram ad or types `deassists.com` — lands on **website-next**.
-2. Uses Course Finder, fills lead form — record created in CRM (Sheets today, cms-next tomorrow).
-3. Receives WhatsApp / call from call centre (Anandhu, Midhun, Stalin) — stored in CRM.
-4. Converts (decides to use DeAssists) — lead moves to applications queue.
-5. Downloads mobile app, signs in — sees their dashboard, document vault, application status.
-6. Application coordinator (Lenin) requests documents through portal — student uploads via mobile app.
-7. Coordinator submits to university partner — partner sees the application in their partner view of cms-next.
-8. University responds — coordinator updates status — student sees update in mobile app.
-9. Acceptance — DeAssists supports onboarding (BCBT blocked account, visa, accommodation, insurance — each handled by the relevant team or partner inside the portal).
-10. Student lands in Germany — post-landing services tracked in portal — relationship continues.
-
-Every step generates data that lives in the same backend. The portal is where the work happens. The website is where they enter. The mobile app is where they see their journey.
-
-### 3.5 The partner journey (BCBT and others)
-
-A partner like BCBT sees DeAssists like this (tomorrow):
-
-1. Logs into cms-next with partner credentials.
-2. Sees only their own pipeline — DeAssists customers who need BCBT services.
-3. Sees a Sales Guide tailored to their context — same UI pattern as DeAssists internal Sales Guide, scoped data.
-4. Updates application status as they process.
-5. DeAssists staff see the partner's updates in real time.
-
-This is the dual-mode principle made concrete. Same shell. Scoped data. Service-context switcher at the top.
-
-### 3.6 The staff journey
-
-Different staff see different things based on their **Type** (Staff, Agent, Customer, etc.) and their **Role** (database-assigned, e.g. Call Centre, Sales Setup):
-
-- **Gopika (Type: TEAM_LEAD, Role: Operations)** — sees lead entry forms, queues, data correction tools.
-- **Anandhu (Type: TEAM_LEAD, Role: Call Centre)** — sees the call queue, lead detail panel, call log modal, comment thread.
-- **Don (Type: MANAGER)** — sees dashboards across teams, partner relationships, escalations.
-- **Latha (Type: SUPER_ADMIN)** — sees everything, including admin controls.
-
-This is the **three-layer access audit** rule (Rule 27): Sidebar visibility + Page guard + Data permission must all align for every feature. Skip a layer and someone gets access denied with the sidebar item visible — or worse, sees a page they shouldn't.
-
-### 3.7 The connections summary
-
-| Connection | How it works today | How it works tomorrow |
-|---|---|---|
-| Website → CRM | Form posts to Sheets via Apps Script | Direct API to cms-next CRM |
-| CRM → Application portal | Manual handover after conversion | Same record progresses through stages |
-| Application portal → Mobile app | Same backend, mobile reads via API | Unchanged |
-| Application portal → Partner view | Doesn't exist yet | Same shell, role-scoped data |
-| Application portal → Operations dashboards | Phase 4 Queue View UI in build | Live for all roles |
-| All systems → Backend | One NestJS, one MongoDB | Unchanged |
+  Every service, every university, every country
+  connects to the same backend spine.
+  The spine never changes fundamentally.
+  The modules grow around it.
+  This is how we scale without rebuilding.
 
 ---
 
-## 4. THE SYSTEM — TECHNICALLY
+# BOOK 2 — THE COMPANY
 
-### 4.1 The two repositories
+## 2.1 What DeAssists Does Today
 
-DeAssists lives in **two GitHub repositories**, owned by `Deassists369`. They never mix.
+SERVICE                STATUS        REVENUE
+University Admissions  LIVE          ~90%
+  19 partner universities
+  Private + public
+  Lead → call center → application → enrolment
 
-| Repo | URL | What lives here | Who commits |
-|---|---|---|---|
-| **369-brain** | `Deassists369/369-brain` (public) | All brain files, SOPs, decisions, session logs, prototypes, code snapshots, skills, CLAUDE.md, this document | Shon directly |
-| **deassists** | `Deassists369/deassists` (private) | Portal code only — NestJS backend, Next.js frontends, shared libs, mobile API | Latha after review |
+Accommodation          LIVE          ~10%
+  Direct service
+  Germany student housing
 
-**The locked rule:** never commit brain files to the deassists repo. Never commit portal code to 369-brain. Never mix files from both repos in one commit. Ever. This rule exists because brain files contain sensitive intelligence (revenue numbers, staff names, decision history) that Latha and external code reviewers should never see. It also exists because portal code commits should be reviewable in isolation by Latha without 600 lines of brain noise.
+Blocked Account        LIVE (BCBT)   Partner
+  BCBT handles the service
+  DeAssists coordinates
 
-### 4.2 The three machines and where each repo lives
+Visa                   REDIRECT      Future
+Insurance              REDIRECT      Future
+APS Documentation      REDIRECT      Future
+Ausbildung             REDIRECT      Future
+Jobs                   REDIRECT      Future
+Post-landing           REDIRECT      Future
+Legal                  REDIRECT      Future
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                     GITHUB (single source of truth)                 │
-│   ┌─────────────────────┐         ┌─────────────────────────────┐   │
-│   │   369-brain         │         │   deassists                 │   │
-│   │   (public, brain)   │         │   (private, code)           │   │
-│   └─────────────────────┘         └─────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
-              ▲                    ▲                    ▲
-              │                    │                    │
-              │ git push/pull      │ git push/pull      │ git push/pull
-              │                    │                    │
-   ┌──────────┴──────────┐  ┌──────┴───────┐   ┌────────┴──────────┐
-   │   Mac Mini M4       │  │   ThinkPad   │   │   Latha's machine │
-   │   (company server)  │  │   (Shon)     │   │   (Windows, Node) │
-   │                     │  │              │   │                   │
-   │   ~/deassists-      │  │   Read-only  │   │   Has deassists/  │
-   │   workspace/        │  │   browsing,  │   │   only.           │
-   │                     │  │   tests, no  │   │                   │
-   │   ├── 369-brain/    │  │   commits.   │   │   Latha NEVER     │
-   │   └── deassists/    │  │              │   │   sees 369-brain. │
-   │                     │  │              │   │                   │
-   │   Cursor + Claude   │  │              │   │   GitHub Desktop, │
-   │   Code run here.    │  │              │   │   pnpm install,   │
-   │   pm2 runs all 3    │  │              │   │   Node 22, build, │
-   │   servers (8000,    │  │              │   │   review, commit. │
-   │   4001, 4002).      │  │              │   │                   │
-   └─────────────────────┘  └──────────────┘   └───────────────────┘
-```
+## 2.2 The Team
 
-**Critical:** there is no shared filesystem between machines. Sync only happens through GitHub. If you edit a brain file on Mac Mini and don't push, Latha and ThinkPad will not see it. If you commit code on Latha's machine and don't push, Mac Mini will not see it.
+ROLE              PERSON        PORTAL ACCESS
+CEO               Shon AJ       SUPER_ADMIN
+Lead Developer    Latha         SUPER_ADMIN
+Senior Manager    Don           MANAGER
+BDMS / Coord      Sruthi        MANAGER
+Application Lead  Santosh       MANAGER
+Call Center       Anandhu       TEAM_LEAD
+Call Center       Midhun        TEAM_LEAD
+Call Center       Stalin        TEAM_LEAD
+Operations        Gopika        TEAM_LEAD
+Applications      Lenin         AGENT
+Germany Intern    Sajir         AGENT
+Germany Intern    Amala         AGENT
 
-### 4.3 The sync model (when things sync, when they don't)
+The team model is a template.
+Every expat services company that uses this platform
+will have a similar structure.
+The platform is designed so this team
+never needs to grow significantly.
+AI agents handle scale.
+Humans handle strategy and relationships.
 
-| Action | What syncs | What doesn't | How to verify |
-|---|---|---|---|
-| Edit brain file in Cursor on Mac Mini | Nothing yet | GitHub | `git status` |
-| Run `git add` + `git commit` | Local repo only | GitHub | `git log` shows commit, `git status` shows "ahead by 1" |
-| Run `git push origin main` | GitHub now matches | Other machines | Refresh `github.com/Deassists369/369-brain` |
-| Other machines run `git pull` | Their local now matches | — | `git log` |
-| **THIS Claude.ai project (where VEERABHADRA lives)** | Reads from Project Files (manual upload by Shon) | NOT live-synced to GitHub | What you uploaded last is what I see |
+## 2.3 The Customer Journey
 
-**Important fact about THIS chat:** the project files I see (Salesdocskill.md, EAGLESKILL.md, VEERABHADRA-MASTER-CONTEXT.md, etc.) are **manually uploaded snapshots**. They do not auto-sync from GitHub. If you commit a change to GitHub but don't re-upload the file to the Claude project, I am reading a stale version. This is a **known limitation** and a **known gap** — see section 17.
+STAGE 1 — DISCOVERY
+  Student sees Instagram ad or visits deassists.com
+  Lands on website-next (public site, port 4001)
+  Uses Course Finder
+  Fills lead capture form
 
-### 4.4 The branch model (in deassists repo)
+STAGE 2 — LEAD (Sheets today, Portal tomorrow)
+  Record created in CRM
+  Auto-routed to correct queue
+  AI Lead Router assigns to call center agent
 
-```
-main                          ← what's deployed (production)
-  │
-  └─ dev_v2                   ← integration branch (Latha merges to)
-       │
-       ├─ feature/portal.shon369   ← clean migration branch (current active)
-       │   (Shon + Claude Code build here, Latha reviews PRs)
-       │
-       └─ feature/portal-crm-phase1  ← RETIRED (snapshotted to 369-brain/code-snapshot/)
-```
+STAGE 3 — QUALIFICATION
+  Anandhu, Midhun, or Stalin calls
+  Explains programmes, fees, eligibility
+  Logs every call outcome in portal
+  AI Follow-up Bot sends reminders
 
-The active branch is `feature/portal.shon369`. It was created clean from `dev_v2` on 19 April after the previous branch accumulated too much risky change (the 1,100-file Prettier disaster among others). All new work happens here, one task per commit, until the 8 migration tasks are done — then it merges to `dev_v2`, then to `main`.
+STAGE 4 — CONVERSION
+  Student decides to use DeAssists
+  Lead converts to application
+  Same record — enriched, not duplicated
 
-In **369-brain**, the only branch is `main`. Brain files don't have a feature-branch model.
+STAGE 5 — APPLICATION
+  Student downloads mobile app
+  Uploads documents
+  AI Doc Checker flags missing items
+  Lenin or Santosh coordinates with university
 
-### 4.5 The 4-layer API chain (locked, no exceptions)
+STAGE 6 — OFFER AND PAYMENT
+  University responds with offer
+  DeAssists guides fee payment
+  Status updated — student sees in mobile app
+  BCBT blocked account if needed
 
-Every API call in cms-next goes through exactly four layers. Skipping any layer is a violation that gets caught at code review.
+STAGE 7 — ARRIVAL AND POST-LANDING
+  Student lands in Germany
+  Sajir or Amala supports on-ground
+  All services tracked in portal
+  Relationship continues
 
-```
-Component  →  Named Hook  →  Core Hook  →  Axios Client  →  Backend
-   │               │             │              │
-   │               │             │              └── libs/shared/config/axios-client.ts
-   │               │             │                  Handles auth automatically.
-   │               │             │                  Calls getCookie internally.
-   │               │             │
-   │               │             └── useCustomQueryV2 / useCustomMutationV2 / useCustomDelete
-   │               │
-   │               └── lives in libs/react-query/queries/{module}.ts
-   │                   Example: useLeadsList, useCreateLead, useLogCall
-   │
-   └── Imports ONLY named hooks — never raw fetch, never inline useCustomQuery
-```
+## 2.4 The Partner Journey (BCBT model)
 
-**Why this exists:** twice in Phase 1, code went to QA with raw `fetch()` or inline `useCustomQuery` and broke silently because auth wasn't handled. The 4-layer chain is the fix. Anti-patterns are blocked by pre-commit grep:
+BCBT logs into cms-next with ORG credentials
+Sees only their own student pipeline
+Manages blocked accounts inside the portal
+Updates application status in real time
+DeAssists staff see partner updates instantly
+Same shell — scoped data — dual mode working
 
-- `await fetch(` in components/ or pages/ — blocked
-- `getCookie` in components/ or pages/ — blocked (only the axios client should call it)
-- `Authorization.*Bearer` set manually in components — blocked
+This is the wrapper model. Already live.
+BCBT is the proof. The next university is the sale.
 
-Full reference: `369-brain/patterns/api-patterns.md`.
+## 2.5 The Five ERP Layers
 
-### 4.6 The constants and enums discipline (no hardcoding, ever)
+LAYER 1 — STUDENT PORTAL         LIVE TODAY
+  Applications, documents, status tracking
+  Student self-service
+  Staff application management
+  BCBT scoped view working
 
-Every value that appears in more than one place — every status, every queue name, every role string, every endpoint — must live in a constants file. Hardcoded strings are the root cause of the three Phase 1 bugs (queue mismatch, status 'Completed' invalid, initial comment lost).
+LAYER 2 — LEAD AND SALES         BUILDING NOW
+  Full CRM replacing Google Sheets
+  Call center inside portal
+  Sales Guide with course finder
+  Universal lead capture form
+  Commission tracking
 
-The enums live in `libs/shared/constants/`:
+LAYER 3 — FINANCE                NEXT (early 2027)
+  Fee tracking and reconciliation
+  Commission management
+  Invoice generation
+  DATEV integration foundation
+  Built for BCBT and Accommodation first
 
-- `endpoints.enum.ts` — every API path
-- `lead.constants.ts` — `LeadStatus`, `LeadQueue`, `LeadSource`, `LeadService`, `CallOutcome`, `SidebarRole`, `CRM_ALLOWED_ROLES`
+LAYER 4 — SMS AND LMS            FUTURE (BCBT first)
+  Student Management System
+  Attendance, timetables, exams
+  Learning Management System
+  Course content, assessments, certificates
+  Target: BCBT September 2026 intake
 
-**Rule:** if a value appears in two places, it is hardcoded too many times. Move it to a constants file before you write the second usage. EAGLE refuses to commit code with hardcoded values, even in tests, even in seed data, even "just for now."
-
-### 4.7 The add-only rule (locked, EAGLESKILL v2)
-
-> **EAGLE — and any agent working on cms-next — adds capability. It does not reshape what exists.**
-
-Concretely:
-
-| Allowed | Forbidden |
-|---|---|
-| Add new files | Modify the body of any existing function |
-| Add new fields (backward-compatible, optional, defaulted) | Change the signature of any existing function |
-| Add new permissions (additive only) | Rename any existing variable, function, class, type, file |
-| Add new routes, endpoints, components, pages | Refactor any existing pattern, even if it looks suboptimal |
-| Add new tokens, constants, enums | Remove any existing field, route, component, capability |
-| Wire new components into existing pages by adding render calls | Restructure existing logic, even when "improving" it |
-| | Modify existing tests |
-| | "Clean up" any existing code as a side effect of a task |
-
-**When a task seems to require modifying existing logic:** EAGLE refuses, cites the rule, and bounces back to VEERABHADRA chat for discussion. EAGLE has no authority to relax this rule.
-
-This is the rule that prevents the Prettier disaster from happening again.
-
-### 4.8 Production wins ties (default — see section 8 for the new exception)
-
-When the prototype shows behaviour X and cms-next currently does behaviour Y, the default action is:
-
-> **PROTOTYPE WAS WRONG. UPDATE PROTOTYPE TO MATCH PRODUCTION.**
-
-Production is what works for real users. Prototype is what was sketched in a chat. Production has earned its place.
-
-This default has an explicit override (see section 8.3) for the new prototype-first workflow. The override is deliberate, documented in `memory/decisions.md`, and approved by Shon before EAGLE proceeds.
+LAYER 5 — TAX AND COMPLIANCE     FUTURE
+  DATEV integration
+  German tax compliance
+  Per-tenant financial reporting
+  Audit trail for all transactions
 
 ---
 
-## 5. THE PEOPLE AND ROLES
+# BOOK 3 — THE SYSTEM
 
-### 5.1 Shon AJ — CEO
+## 3.1 The Two Repositories — Never Mix
 
-All decisions. Tests everything. Directs VEERABHADRA. Never commits to deassists directly. Commits to 369-brain freely. Approves with the exact phrase `approved` / `not approved` / `I have a doubt: [...]` when working with EAGLE. Does not write code.
+369-BRAIN (company brain)
+  Path:    ~/deassists-workspace/369-brain/
+  GitHub:  github.com/Deassists369/369-brain
+  Branch:  main only
+  Who commits: Shon directly, AI agents
+  Contains: memory, skills, patterns,
+            vision, PRD, decisions, prototypes
+  Latha NEVER sees this repo.
 
-Shon is also the learner. This whole system exists in a way a non-developer can drive it. That shapes every choice — the prompts have to be clear, the decisions have to be visible, the failures have to be reversible.
+DEASSISTS PORTAL (production code)
+  Path:    ~/deassists-workspace/deassists/
+  GitHub:  github.com/Deassists369/deassists
+  Branch:  feature/portal.shon369 (active)
+  Who commits: GitHub Desktop, Latha reviews
+  Contains: Next.js, NestJS, shared libs
+  Shon NEVER commits here directly.
 
-### 5.2 Latha — Code Reviewer & Sole Committer (deassists repo)
+HARD STOP: Never mix in one commit. Ever.
+HARD STOP: Never git add . or git add -A
+HARD STOP: Never commit to main or dev_v2 directly
 
-Reviews **all** code before it lands in `dev_v2`. Commits to GitHub on the deassists repo. Merges feature branches. Role: SUPER_ADMIN. Windows machine, Node 22. **Never sees 369-brain.** Never receives brain files. Never reviews change logs that contain brain content.
+## 3.2 The Three Applications
 
-Build flow: VEERABHADRA plans → Claude Code builds → Shon tests → Latha reviews → Latha commits.
+cms-next      Port 4002    Staff and partner portal
+              PRIMARY — all portal work happens here
 
-Latha is the gatekeeper. Nothing reaches `dev_v2` without her approval. That does not change. Ever.
+backend-nest  Port 8000    NestJS API
+              Serves cms-next, website-next, mobile
 
-### 5.3 VEERABHADRA — Master Brain (this Claude.ai chat)
+website-next  Port 4001    Public site
+              Course Finder, marketing, lead capture
 
-The persistent strategic and operational intelligence of DeAssists. Lives in this Claude.ai project. Plans every feature. Writes every prompt. Brainstorms with Shon. Holds the company memory through the Project Files and the userMemories context.
+mui-cms-next  SEPARATE APP — NEVER TOUCH
 
-What VEERABHADRA does:
-- Translates strategy into execution
-- Drafts the structured prompts that go to Claude Code
-- Reads brain files (uploaded to the project) and synthesizes
-- Surfaces locked decisions before they get re-discussed
-- Connects today's work to the larger ERP picture
-- Brainstorms prototypes with Shon (new in v1.0 — see section 7)
+## 3.3 The AI Agent Hierarchy
 
-What VEERABHADRA does NOT do:
-- Write production code (that's Claude Code)
-- Push to GitHub (no direct git access from this chat)
-- Make architectural decisions on Shon's behalf (always surfaces options)
-- Auto-update brain files on the Mac Mini
+LEVEL 0 — VEERABHADRA (claude.ai)
+  Master brain. Plans everything.
+  Approves all decisions.
+  Never touches files directly.
+  Drafts all prototypes and prompts.
 
-### 5.4 Claude Code — the Hands (Mac Mini, terminal-based)
+LEVEL 1 — EXECUTION AGENTS (Mac Mini)
+  Claude Code, Cursor Agent, or any future AI tool.
+  Reads brain files. Writes code. Commits brain.
+  Never commits portal code directly.
+  Never merges branches.
+  Follows CLAUDE.md boot sequence exactly.
 
-The agent that actually edits files on the Mac Mini. Runs inside Cursor's terminal. Reads CLAUDE.md and the pattern/project files. Receives the structured prompt from Shon (composed by VEERABHADRA). Edits files. Runs `git add` on specific files (never `git add .`). Asks for permission on every command.
+LEVEL 2 — TASK AGENTS (future, 2026-2027)
+  Lead Router      Routes leads automatically
+  Follow-up Bot    Sends reminders
+  Doc Checker      Flags missing documents
+  Status Updater   Updates on triggers
+  Fee Reconciler   Matches payments
+  Report Builder   Generates reports
+  Each agent is single-purpose.
+  Each agent writes OPEN/IDLE to session-lock.
+  Each agent has a heartbeat every 15 minutes.
 
-Claude Code is **stateless across sessions.** Each session starts fresh. It re-reads CLAUDE.md every time. The only persistent context is what's in the brain files on disk and what Shon pastes into the prompt.
+LEVEL 3 — ORCHESTRATOR (future, 2027+)
+  Coordinates Level 2 agents.
+  Alerts Shon for exceptions only.
+  This becomes OpenClaw.
 
-Claude Code can do file work that VEERABHADRA cannot — view, edit, search, run scripts, run git commands. But it has no business sense, no decision authority, no memory between sessions.
+LEVEL 4 — CEO LAYER (future, 2027+)
+  Aggregates all operations.
+  Single dashboard for Shon.
+  This becomes Paperclip.
 
-### 5.5 Cursor Agent — alternative Hands (also Mac Mini)
+## 3.4 The Session Integrity System
 
-Cursor has its own native agent (Cmd+I). Also Claude-powered. Same identity discipline applies. Same rules apply. The choice between Claude Code (terminal) and Cursor Agent (chat panel inside Cursor) is mostly ergonomic. For this project we have been using Claude Code in the terminal because:
+Every session — human or agent — follows this:
 
-- The discipline of explicit approval on every command is enforced by Claude Code's permission prompts
-- It's easier to copy-paste long structured prompts into the terminal
-- It outputs are clearer to follow
+START:
+  Read memory/session-lock.md
+  STATUS: IDLE → write OPEN, proceed
+  STATUS: OPEN → hard stop, alert Shon
+  File missing → treat as OPEN, hard stop
 
-Cursor Agent is fine for quick edits and questions. For anything that touches multiple files or commits, **use Claude Code in the terminal.**
+DURING:
+  AI agents update LAST_HEARTBEAT every 15 min
+  Human sessions update session-state when task completes
 
-### 5.6 EAGLE — the Bridge Skill
+END:
+  Update session-state.md
+  Append activity-log.md
+  Commit brain files
+  Write STATUS: IDLE to session-lock.md
+  This is the FINAL step. Always.
+  Cannot be skipped. Cannot be combined.
+  Without IDLE — next session is blocked.
 
-The discipline layer between prototype and cms-next. Lives at `369-brain/skills/eagleskill/EAGLESKILL.md`. Currently version 2.0, dated 26 April. Operates in four modes:
+## 3.5 The Feature Build Process
+### Every single feature. Every single time.
 
-- **Mode 0 — Comprehensive baseline read** (multi-hour, runs once when EAGLE deploys, produces `eagle-baseline-system-readout.md` — already done 26 April)
-- **Mode 1 — Per-task gap report** (read-only, what's missing in cms-next for a given feature)
-- **Mode 2 — Plan** (read-only, files to create, prototype updates needed)
-- **Mode 2.5 — Preview** (HTML preview Shon reviews before any code is written)
-- **Mode 3 — Execute** (only after explicit `approved` phrase)
+STEP 1 — IDEA IN VEERABHADRA CHAT
+  Shon describes feature in plain English.
+  VEERABHADRA asks clarifying questions.
+  Decision: is this MIGRATION or CAPABILITY?
 
-EAGLE refuses to modify existing logic. EAGLE refuses to skip Mode 0. EAGLE refuses to skip preview. EAGLE refuses anything except the three approval phrases.
+  MIGRATION = feature exists in production,
+              needs syncing or improving
+  CAPABILITY = new feature, does not exist yet
 
-**Proposed v2.1 update is in section 8.**
+STEP 2 — PROTOTYPE IN CLAUDE.AI
+  VEERABHADRA builds HTML prototype as artifact.
+  Shon reviews. Iterates. Approves.
+  No prototype approval = no proceeding.
+  The prototype is the contract.
 
-### 5.7 The specialist skills
+STEP 3 — PROTOTYPE TO BRAIN
+  Approved prototype saved to:
+  369-brain/prototypes/[feature-name].html
+  Committed and pushed to 369-brain/main.
 
-| Skill | When to use | What it does |
-|---|---|---|
-| **EAGLESKILL** | Any prototype ↔ production reconciliation, any new feature add to cms-next | Four-mode discipline, add-only enforcement, HTML preview |
-| **deassists-sidebar-audit** | Any change to `sidemenu.ts`, `permission.helper.ts`, `user.types.ts` | Verifies every role still sees correct sidebar items, runs both static config check and runtime permission helper check |
-| **uiux-superman** | Visual redesign of an existing cms-next page (no logic change) | 10-year SaaS designer persona, reads full code, design interview, HTML preview, section-by-section implementation, zero logic changes |
-| **Salesdocskill** | Sales materials, partner proposals, pitch decks | Senior creative director persona, design system applied, MARP export to PPT + PDF |
-| **(future) prototype skill** | Building a prototype here in claude.ai before pushing to brain | Not yet defined — see section 7 |
+STEP 4 — FEATURE REGISTRY UPDATE
+  Feature added to project/feature-registry.md
+  Status: NEXT
+  Dependencies documented.
+
+STEP 5 — EAGLE MODE 1 (gap report)
+  EAGLE reads prototype vs production.
+  Produces gap report.
+  STOP — Shon reviews in VEERABHADRA.
+
+STEP 6 — EAGLE MODE 2 (spec)
+  EAGLE produces written spec.
+  HTML preview generated.
+  STOP — Shon types "approved" to proceed.
+
+STEP 7 — EAGLE MODE 3 (execute)
+  Code written only after "approved".
+  Risk-ordered stages.
+  Stage report after each stage.
+
+STEP 8 — VERIFY
+  npm run build:all — zero new errors
+  Three grep checks — all empty for CRM
+  Visual check on localhost:4002
+  Three-layer access audit if permissions touched
+
+STEP 9 — COMMIT AND HANDOVER
+  Change log entry written FIRST
+  git add [specific files only]
+  git commit with structured message
+  GitHub Desktop pushes
+  Latha reviews PR
+  WhatsApp Latha with PR link and summary
+
+STEP 10 — BRAIN UPDATE
+  feature-registry.md status set to DONE
+  Graphify updated
+  Session-state updated
+  Brain committed
+
+## 3.6 The Role System — Permanent
+
+USERTYPES — LOCKED AT 10. NEVER ADD MORE.
+
+SUPER_ADMIN    Shon, Latha. Everything.
+MANAGER        Don, Sruthi, Santosh. Operations.
+TEAM_LEAD      Anandhu, Midhun, Stalin, Gopika. Call center.
+STAFF          Internal coordinators.
+AGENT          External DeAssists sub-agents.
+ORG_OWNER      Partner org director (BCBT CEO level).
+ORG_ADMIN      Partner org operations (BCBT manager level).
+ORG_AGENT      Partner org field agents (BCBT coordinators).
+USER           Students and applicants.
+ALL            System marker only.
+
+For finer granularity — use DATABASE ROLES.
+Never add a new UserType. Never.
+
+DATABASE ROLES — unlimited, no code change needed:
+  CallCenter     CRM and call tools access
+  SalesSetup     Sales configuration access
+  Finance        Finance module access
+  Vendor         Vendor portal access
+  SMSAdmin       Student management access
+  LMSAdmin       Learning management access
+  Add any future role via database config only
+
+## 3.7 The Data Flow — End to End
+
+LEAD ENTERS:
+  Universal form on any platform
+    → POST /v1/leads (backend)
+    → MongoDB leads collection
+    → AI Lead Router assigns queue
+    → Call center agent sees in portal
+
+CALL LOGGED:
+  Agent logs outcome in CallLogModal
+    → POST /v1/leads/:id/call-log
+    → logCall() state machine updates status
+    → AI Follow-up Bot triggers if needed
+    → Lead stays in queue or moves forward
+
+CONVERTS:
+  Agent marks converted
+    → Lead becomes application record
+    → Student gets portal account
+    → Documents collected via portal
+    → Coordinator submits to university
+    → University responds
+    → Student sees status in mobile app
+
+ENROLLED:
+  Application confirmed
+    → Commission calculated automatically
+    → Fee logged in finance module
+    → Post-landing services activated
+    → BCBT blocked account if needed
+    → Student arrives in Germany
+
+## 3.8 The API Pattern — Four Layers Always
+
+Component
+  imports named hook only
+    → Named Hook
+       libs/react-query/queries/{module}.ts
+    → Core Hook
+       useCustomQueryV2 or useCustomMutationV2
+    → Axios Client
+       libs/shared/config/axios-client.ts
+       handles auth automatically
+    → Backend
+       NestJS controller → service → MongoDB
+
+NEVER:
+  Raw fetch() in components
+  getCookie in components
+  Authorization header set manually
+  Inline useCustomQuery with raw URLs
+  Any layer skipped for any reason
+
+## 3.9 The Three-Layer Access Rule
+### Every feature. Every time. All three.
+
+LAYER 1 — SIDEBAR VISIBILITY
+  sidemenu.ts + permission.helper.ts
+  Who sees the menu item?
+
+LAYER 2 — PAGE GUARD
+  ALLOWED_ROLES array in page file
+  Who can visit the URL?
+
+LAYER 3 — DATA PERMISSION
+  useCustomQuery + MongoDB roles
+  Who can fetch the data?
+
+All three must pass.
+One passing does not mean all pass.
+Test minimum two roles before every commit.
 
 ---
 
-## 6. THE 3 FILE SPACES AND HOW THEY SYNC
+# BOOK 4 — THE GROWTH PLAN
 
-There are actually **four** spaces, and they sync differently. Knowing this matters because most "I thought you saw that" confusion comes from sync drift.
+## 4.1 The Next 30-75 Days
 
-### 6.1 Space 1 — Mac Mini local working copies
+PRIORITY 1 — COMPLETE THE ERP FOUNDATION
+  All 8 migration tasks done
+  Phase 1 constants — missing enums added
+  Phase 2A — Q Intelligence (CallLogModal)
+  Phase 2B — Service Catalog
+  Phase 2C — Course Finder
+  Phase 2D — Sales Tools
+  Phase 2E — Sales Library
+  Universal lead capture form live
+  Zero Google Sheets dependency
 
-Path: `~/deassists-workspace/369-brain/` and `~/deassists-workspace/deassists/`
+PRIORITY 2 — BCBT SEPTEMBER PROOF
+  Full portal ready for BCBT September intake
+  Every BCBT student onboarded through platform
+  BCBT staff trained and using portal daily
+  SMS prototype reviewed and approved
 
-This is where Cursor + Claude Code do all editing. Every brain file change happens here first. Every code change happens here first. The Mac Mini has the freshest version of everything you and Claude Code have just touched — until the moment of `git push`, this is the only place that change exists.
+PRIORITY 3 — AI AGENTS FIRST WAVE
+  Lead Router live — zero manual queue assignment
+  Follow-up Bot live — zero manual reminders
+  Doc Checker live — zero manual document chasing
+  Status Updater live — zero manual status changes
 
-**Sync:** changes here only reach GitHub when you (or Claude Code) run `git push`. Until then, nothing else in the world can see them.
+## 4.2 The Next 6 Months
 
-### 6.2 Space 2 — GitHub (the source of truth)
+MONTH 1-2:  ERP MVP complete. BCBT live.
+MONTH 3:    Finance module architecture and prototype.
+MONTH 4:    SMS prototype built and reviewed with BCBT.
+MONTH 5:    SMS build begins. Second university in pipeline.
+MONTH 6:    Second university onboarded.
+            BCBT as reference case for sales.
+            Finance module live for BCBT.
 
-URLs: `github.com/Deassists369/369-brain` and `github.com/Deassists369/deassists`
+## 4.3 The Next 12 Months
 
-This is the **canonical truth.** When the Mac Mini and GitHub disagree, GitHub wins (once you push, GitHub is what the world sees). When ThinkPad and GitHub disagree, ThinkPad needs to `git pull`. When Latha and GitHub disagree, Latha needs to `git pull`.
+Q1 2027:  3 universities on platform.
+           SMS live for BCBT.
+           LMS prototype approved.
+           DATEV integration researched.
 
-**Sync:** GitHub is push/pull, no auto-sync. Every machine is responsible for pulling before working.
+Q2 2027:  LMS build begins.
+           Finance module for all tenants.
+           AI agents handling 60% of routine work.
+           OpenClaw evaluation begins.
 
-### 6.3 Space 3 — Latha's machine
+Q3 2027:  LMS live for BCBT.
+           5 universities on platform.
+           DATEV integration live for BCBT.
+           Paperclip CEO dashboard prototype.
 
-Path: wherever Latha cloned `Deassists369/deassists`. Latha **does not have** 369-brain. By design.
+Q4 2027:  10 universities on platform.
+           Full AI automation of routine operations.
+           DeAssists sellable as standalone SaaS.
+           International expansion research begins.
 
-**Sync:** Latha pulls from GitHub before reviewing. Latha pushes to GitHub after committing. Latha never touches the brain repo.
+## 4.4 How We Scale Without Breaking
 
-### 6.4 Space 4 — This Claude.ai Project (where VEERABHADRA reads files)
+RULE 1 — New university = configuration, not code
+  New tenant configured in MongoDB.
+  No code deployment needed.
+  Roles, permissions, services all configurable.
 
-This is the space most easily forgotten. The Claude.ai project for VEERABHADRA contains files that **Shon manually uploaded.** Right now I see:
+RULE 2 — New service = new module, not new spine
+  Every new service is a module.
+  Connects to the same backend.
+  Same permission system. Same student record.
 
-- Salesdocskill.md
-- it-change-log-sop.md
-- BRANCH-CHANGE-LOG-portal_shon369.md
-- VEERABHADRA-MASTER-CONTEXT.md (note: this was just archived in 369-brain, but the project still has it)
-- DAILY-OPERATIONS-GUIDE.md (also archived)
-- LATHA-HANDOVER-GUIDE.md
-- README.md
-- deassists-platform.html (the prototype)
-- EAGLESKILL.md
-- eagleskill-reports-readme.md
-- eagleskill-previews-readme.md
-- eagleskill-execlogs-readme.md
-- De_Assists_Internal_SOP_Lead_to_Enrollment_v1_2.pdf
+RULE 3 — New country = new data, same platform
+  German-specific data is configuration.
+  The platform works for any country.
+  Regulations and partners are data.
+  The code is universal.
 
-**This list is stale.** It does not reflect tonight's archive moves. It does not have the new `patterns/` or `project/` files. It does not have the new lean CLAUDE.md.
+RULE 4 — New staff = new role assignment, not new code
+  Any user type gets any database role.
+  No code change needed to give someone new access.
+  All granularity via MongoDB roles.
 
-**Sync:** manual. Every time we make a major brain change, the Claude.ai project files need to be re-uploaded by Shon. There is currently no automatic way for VEERABHADRA in this chat to read the live GitHub state.
+RULE 5 — New AI agent = new subscriber, not new architecture
+  Every state change fires an event.
+  New agents subscribe to events.
+  No existing code changes needed.
+  Agents plug in — the system keeps running.
 
-### 6.5 The implications you must internalise
+## 4.5 The Failure Mode Playbook
 
-1. **GitHub is the truth.** Always.
-2. **The Claude.ai project is a snapshot, often stale.** When something seems off, ask: "is this version current?"
-3. **Mac Mini is fresh until `git push`** — fresher than GitHub for what you just touched.
-4. **Latha sees only what's pushed to deassists.** Brain commits never reach her.
-5. **Three Things Always Need to Sync Before a Session:**
-   - Mac Mini `git pull` on both repos
-   - This Claude.ai project re-uploaded with current brain files (when material brain changes have happened)
-   - Latha notified if a portal PR is waiting for review
+FAILURE: A key developer leaves
+  Recovery: CLAUDE.md + OS gives full context in 2 hours
+  New developer reads brain files before touching code
+  No tribal knowledge required
+  The system runs because it is documented
 
-### 6.6 The known gap (worth naming)
+FAILURE: A university asks for custom feature
+  Decision rule: does it work for ANY tenant?
+  YES → build it properly for all tenants
+  NO → configure it, do not code it
+  Who decides: Shon + VEERABHADRA only
 
-**There is currently no automated sync between GitHub and the Claude.ai Project Files.** This means VEERABHADRA can fall behind on brain state. The mitigation today is: at session start, Shon either tells me "here's what changed since you last saw it" or re-uploads the changed files.
+FAILURE: An AI agent makes wrong decision
+  Recovery: session-lock.md shows state
+  Audit: activity-log.md shows what happened
+  Fix: decisions.md gets a new rule
+  Never patch without documenting why
 
-A future fix is the GitHub MCP connector here in claude.ai, which would let me read the live state of GitHub directly. That's a real improvement to plan for. For now, manual.
+FAILURE: Two agents conflict on same task
+  Prevention: session-lock.md blocks second agent
+  Recovery: FORCE_CLEAN protocol
+  Rule: one agent per brain file at a time
 
-### 6.7 What goes where — explicit
+FAILURE: Commit breaks production
+  Rule: never commit to main directly
+  Recovery: revert via git — not patch forward
+  Prevention: build:all gate before every commit
 
-| Type of file | 369-brain | deassists | Claude.ai project | Notes |
-|---|---|---|---|---|
-| Strategy, decisions, vision | ✅ | ❌ | ✅ (uploaded) | Brain only |
-| SOPs, change logs | ✅ | ❌ | ✅ (uploaded) | Brain only |
-| Prototypes (HTML) | ✅ (`prototypes/`) | ❌ | ✅ (uploaded) | Brain only |
-| Skills | ✅ (`skills/`) | ❌ | ✅ (uploaded) | Brain only |
-| Production code | ❌ | ✅ | ❌ | Code only |
-| Config (package.json, .env) | ❌ | ✅ | ❌ | Code only |
-| Tests | ❌ | ✅ | ❌ | Code only |
-| Latha handover docs | ✅ (origin) | ❌ | ✅ (uploaded) | Brain only — Latha gets a copy via WhatsApp/email, not via git |
-| Code snapshots from retired branches | ✅ (`code-snapshot/`) | ❌ | ❌ | Brain only — historical reference |
-| `CLAUDE.md` | ✅ | ❌ — NEVER | ❌ | The locked rule from 17 April |
+FAILURE: Session ends without close protocol
+  Result: session-lock stays OPEN
+  Next session: finds OPEN, raises warning
+  Recovery: Shon types FORCE_CLEAN
+  Prevention: "stop for today" triggers auto-close
 
----
+FAILURE: Feature built without prototype
+  Rule: revert the feature
+  Build the prototype first
+  Then rebuild correctly
+  No exceptions. Ever.
 
-## 7. THE NEW WORKFLOW — PROTOTYPE-FIRST
-
-This is the shift you proposed in this session. It is significant enough to warrant its own section and a v2.1 update to EAGLE.
-
-### 7.1 The shift — from migration thinking to capability thinking
-
-Until now, our work was **migration-shaped:** the old branch had work; we are moving it cleanly to the new branch. The 8 migration tasks (`crmTokens.ts`, backend entity, routing, badges, Queue View, Form, Dashboard, Sidebar) are migration work. EAGLE v2 was designed for this — production exists, prototype is corrected to match, add capability when production lacks it.
-
-Going forward, much of the work will be **capability-shaped:** new features that don't exist anywhere yet. Sales Guide. Partner views. Service-context switcher. Q Intelligence. Each of these starts as a thought, becomes a prototype, and is bridged into production.
-
-For capability work, the default flips. **Prototype intent leads. Production catches up.** The override that's currently buried in EAGLE v2 ("the prototype intent is correct, production needs to catch up") becomes the default for new features.
-
-### 7.2 The five-step prototype-first flow
-
-```
-Step 1 — BRAINSTORM with VEERABHADRA (here, in claude.ai)
-         What capability are we adding?
-         What does it solve?
-         How does it look in both modes (operator + platform)?
-         Who sees what (which roles)?
-         What's the dual-mode demo?
-         Output: a clear written specification.
-
-Step 2 — BUILD PROTOTYPE in claude.ai
-         VEERABHADRA produces an HTML/React prototype.
-         Static, no backend, but fully designed.
-         Stored as a downloadable file from the chat.
-         Shon reviews, iterates, locks the version.
-
-Step 3 — PUSH PROTOTYPE TO 369-BRAIN
-         Two paths:
-         A) Manual: Shon downloads, saves to ~/deassists-workspace/369-brain/prototypes/, commits.
-         B) Future: GitHub MCP connector here in claude.ai, push directly.
-         Path A is what we use today. Path B is the future improvement.
-
-Step 4 — EAGLE BRIDGES PROTOTYPE → cms-next
-         Run EAGLE on Mac Mini.
-         Mode 1 — gap report: what's missing in cms-next for this prototype.
-         Mode 2 — plan: files to add (add-only, never modify).
-         Mode 2.5 — preview: HTML showing rendered result, file tree, rollback plan.
-         Shon types "approved".
-         Mode 3 — execute: writes only the planned files.
-
-Step 5 — LATHA REVIEWS, MERGES
-         Shon tests on localhost:4002.
-         Shon hands PR to Latha with WhatsApp + branch change log entry.
-         Latha pulls, reviews, merges to dev_v2.
-         Eventually merges to main.
-```
-
-### 7.3 When this workflow applies — and when it doesn't
-
-| Type of work | Workflow |
-|---|---|
-| **Migration tasks** (existing capability moving cleanly) | EAGLE v2 default — production wins ties |
-| **New capability** (doesn't exist in cms-next yet) | EAGLE v2.1 — prototype-leads (proposed update) |
-| **UI redesign** of existing page (no logic change) | uiux-superman → EAGLE for the integration |
-| **Sidebar / permission change** | sidebar-audit → EAGLE |
-| **Bug fix** in existing code | NOT EAGLE — Latha + Shon decide directly. EAGLE is add-only and bug fixes often modify. |
-| **New brain file or SOP** | Not EAGLE — Shon and VEERABHADRA decide, Shon commits to 369-brain |
-
-### 7.4 The discipline that survives the shift
-
-Even with prototype-first, all of these still hold:
-
-- ADD-ONLY rule still applies in cms-next — new capability is added alongside, existing is never reshaped
-- NO-HARDCODING still applies — every value traces to a constants file
-- HTML PREVIEW MANDATORY before any production write
-- EXACT APPROVAL PHRASE before any execution
-- 5-STAGE SOP for every commit
-- ONE TASK = ONE COMMIT
-- TWO-REPO RULE — never mix
-- LATHA REVIEWS EVERY PR
-
-What changes is only the question "does prototype lead or does production lead?" — and that answer is now context-dependent rather than always "production."
+FAILURE: Platform outgrows current architecture
+  Sign: feature requires touching 10+ files
+  Action: STOP — bring to VEERABHADRA
+  Never patch architecture into code
+  Redesign first — build after approval
 
 ---
 
-## 8. EAGLE SKILL — STATUS AND PROPOSED v2.1 UPDATE
+# BOOK 5 — THE OPERATING MANUAL
 
-### 8.1 EAGLE v2.0 today — what works
+## 5.1 How Every Session Starts
 
-EAGLE v2.0 (locked 26 April) does the following well:
+ON MAC MINI TERMINAL:
+  cd ~/deassists-workspace/369-brain && git pull
+  cd ~/deassists-workspace/deassists && git pull
+  pm2 status   — all three must be online
 
-- Forces a comprehensive baseline read (Mode 0) before any task work
-- Refuses to modify existing logic (the add-only enforcement)
-- Refuses to skip preview (Mode 2.5 mandatory)
-- Refuses to accept "yes" or "go" or "ok" — only the three exact approval phrases
-- Reverts cleanly if a preview turns out inaccurate during execution
-- Coordinates with sidebar-audit and uiux-superman without replacing them
-- Stays inside its mode boundaries (read-only in 0/1/2, write only in 3)
+IN CLAUDE CODE:
+  "Run session-start skill"
+  Reads session-lock.md first
+  If IDLE → writes OPEN → continues
+  If OPEN → hard stop → alert Shon
+  Reports current position and next task
+  Then waits for Shon instruction
 
-Mode 0 baseline ran on 26 April. The output `eagle-baseline-system-readout.md` (574 lines) lives at `369-brain/skills/eagleskill/eagle-baseline-system-readout.md` and is the foundational reference for all subsequent EAGLE work.
+IN VEERABHADRA (claude.ai):
+  Tell VEERABHADRA what we are working on today
+  VEERABHADRA confirms context is current
+  Session begins
 
-### 8.2 Why EAGLE needs a v2.1 update
+## 5.2 How Every Decision Gets Made
 
-The "production wins ties" default was correct for migration work, but it's the wrong default for new capability work. Every new feature starts as prototype intent and needs production to catch up. Burying that as an "explicit override" creates friction and risk:
+STEP 1 — Is this decision already locked?
+  Read memory/decisions.md
+  If YES → follow the locked decision. No discussion.
+  If NO → go to Step 2.
 
-- Shon has to remember the override phrasing
-- Every new feature requires a separate decision before EAGLE will accept the work
-- The default behaviour silently asserts "the prototype is wrong" even when it's the entire reason we're building
+STEP 2 — Is this a technical decision?
+  YES → VEERABHADRA proposes options
+        Shon chooses
+        Decision goes to decisions.md immediately
 
-EAGLE v2.1 should explicitly distinguish **migration mode** (production wins) from **capability mode** (prototype leads), and ask which one applies at the start of any task.
+STEP 3 — Is this a product decision?
+  YES → Shon decides based on the seven principles
+        Does it serve the student?
+        Does it work for 50 universities?
+        Does it support AI-first operations?
+        Decision goes to decisions.md immediately
 
-### 8.3 Proposed v2.1 — the changes
+STEP 4 — Is this a business decision?
+  YES → Shon decides
+        VEERABHADRA documents implications
+        Decision goes to decisions.md immediately
 
-```
-TWO MODES OF WORK (declared at task start, not buried as override):
+RULE: Every significant decision goes into
+decisions.md before the next session starts.
+If it is not written — it did not happen.
 
-  MODE A — MIGRATION (production wins ties)
-    Used when the capability already exists in cms-next.
-    Prototype is corrected to match production by default.
-    Add-only rule still applies.
+## 5.3 How Every New Person or Agent Onboards
 
-  MODE B — CAPABILITY (prototype leads)
-    Used when the capability does NOT exist in cms-next.
-    Production catches up to prototype intent.
-    Add-only rule still applies — additions only, no reshaping.
+FOR A NEW HUMAN (developer, partner, team member):
+  Step 1: Read this file (THE-DEASSISTS-OS.md)
+  Step 2: Read project/vision.md
+  Step 3: Read CODING-CONSTITUTION.md
+  Step 4: Read project/PRD.md
+  Step 5: Read project/feature-registry.md
+  Step 6: Read patterns/anti-ambiguity.md
+  Step 7: Shadow one full feature cycle before touching code
+  Time required: one full day
+  No exceptions.
 
-EAGLE asks at the start of Mode 1 (gap report):
-  "Is this MIGRATION (existing capability) or CAPABILITY (new)?
-   Shon must answer A or B before gap report begins."
+FOR A NEW AI AGENT:
+  Step 1: Read CLAUDE.md (boot file)
+  Step 2: Follow boot sequence exactly
+  Step 3: Run session-start skill
+  Step 4: Report position and await instruction
+  Time required: under 90 seconds
+  No exceptions.
 
-The rest of EAGLE's behaviour is unchanged:
-  - Mode 0 still mandatory once
-  - Modes 1, 2, 2.5, 3 unchanged
-  - HTML preview mandatory
-  - Three approval phrases unchanged
-  - Add-only still enforced
-  - No-hardcoding still enforced
-  - Stop-and-ask still default for ambiguity
+FOR A NEW UNIVERSITY TENANT:
+  Step 1: Create org record in MongoDB
+  Step 2: Assign ORG_OWNER credentials
+  Step 3: Configure database roles for their team
+  Step 4: Scope their data via permission system
+  Step 5: Train their ORG_ADMIN on portal
+  No code deployment needed. Configuration only.
 
-A new line in the change log entry:
-  Task type: MIGRATION | CAPABILITY
-  (records which default was used)
-```
+## 5.4 How Every Feature Gets Prioritised
 
-### 8.4 The decision for Shon
+PRIORITY FRAMEWORK — in order:
 
-We do **not** have to update EAGLE today. The current v2.0 with explicit override is fine for the next several tasks (the 8 migration tasks are MIGRATION mode by definition). The v2.1 update should happen when we start the first true CAPABILITY task — the dual-mode prototype demo.
+1. BLOCKING (do immediately)
+   Anything that stops the portal working for users
+   Security vulnerabilities
+   Data loss risks
+   BCBT September deadline items
 
-Recommended order: finish the 8 migration tasks under EAGLE v2.0, then update to v2.1 when starting the prototype-first work.
+2. HIGH (do this sprint)
+   Missing enums before new components
+   Features in current EAGLE phase
+   AI agent hookup for live features
 
-If you'd rather lock v2.1 now and use it for both modes, that's also fine — it's strictly additive (no rule loosened), it just adds a question at task start.
+3. MEDIUM (do next sprint)
+   Sales Library
+   Admin and finance views
+   CRM Overview
 
-I lean toward "lock v2.1 now" — small change, no harm, and it forces the migration-vs-capability conversation explicitly.
+4. LOW (do when ready)
+   Vendor Portal
+   Kanban Board
+   Advanced reporting
+
+5. DEFERRED (future phases)
+   SMS, LMS, DATEV
+   Mobile app new features
+   Multi-country expansion
+
+RULE: Never start a LOW while a HIGH is NEXT.
+RULE: Never start new feature while a blocker is open.
+RULE: Latha blockers are always priority 1.
+
+## 5.5 How Every Session Ends
+
+TRIGGER: Shon says "stop for today" or "session ending"
+
+MANDATORY SEQUENCE — all steps required:
+
+E1  List all files created or modified today.
+    Full paths. Brain and portal separate.
+
+E2  Update memory/session-state.md
+    Current position, last task, next task,
+    any new blockers found today.
+
+E3  Append memory/activity-log.md
+    Date, session number, what was done,
+    commits made with hashes,
+    decisions locked today.
+
+E4  Show Shon the updates.
+    Wait for confirmation before committing.
+
+E5  Commit brain files to 369-brain/main
+    Specific files only — never git add .
+    Confirm commit hash.
+
+E6  Write IDLE to memory/session-lock.md
+    STATUS: IDLE
+    LAST_CLOSED_BY: [who]
+    LAST_CLOSED_AT: [timestamp]
+    LAST_TASK_COMPLETED: [task]
+    NEXT_TASK: [what comes next]
+
+    FINAL STEP. ALWAYS LAST.
+    CANNOT BE SKIPPED.
+    CANNOT BE COMBINED WITH OTHER STEPS.
+    WITHOUT THIS — NEXT SESSION IS BLOCKED.
+
+## 5.6 The Brain File Map — Complete
+
+369-brain/
+  CLAUDE.md                    Mission control boot file
+  CODING-CONSTITUTION.md       All coding rules
+  THE-DEASSISTS-OS.md          This file — company OS
+  VEERABHADRA.md               Company identity
+
+  project/
+    vision.md                  ERP vision — founding document
+    PRD.md                     Module requirements per module
+    feature-registry.md        All features — status and priority
+    architecture.md            Where code lives
+    design-system.md           Tokens and visual rules
+    never-touch.md             Files that cannot be modified
+
+  memory/
+    session-lock.md            Session integrity gate
+    session-state.md           Current build position
+    decisions.md               Locked decisions — append only
+    activity-log.md            Session history — append only
+
+  patterns/
+    api-patterns.md            4-layer chain and hooks
+    permission-patterns.md     Sidebar and access rules
+    git-workflow.md            Git discipline
+    anti-ambiguity.md          Pre-code checklist
+
+  skills/
+    eagleskill/                EAGLE bridge skill v2.1
+    session-start/             Session start skill
+    uiux-superman/             UI redesign skill
+    salesdocskill/             Sales document skill
+    deassists-sidebar-audit/   Permission audit skill
+
+  prototypes/
+    deassists-platform.html    Master prototype 5659 lines
+    [feature-name].html        One prototype per feature
+
+  change-logs/
+    BRANCH-CHANGE-LOG-portal.shon369.md
+
+  company/
+    staff-brain.md             Full team details
+    partners-brain.md          University partners
+
+  archive/                     Superseded files — read only
+
+## 5.7 The Never-Touch List
+
+PORTAL REPO — READ PERMITTED, MODIFY NEVER:
+  apps/cms-next/pages/universitiesd/
+  apps/backend-nest/src/core/entities/
+    extendables/payment.entity.ts
+  apps/mui-cms-next/
+  MASTER-RUN.cjs
+  scope.guard.ts
+  Any .env file
+  package.json and pnpm-lock.yaml
+    without Latha approval
+  Any file with JWT or AWS credentials
+
+BRAIN REPO — READ PERMITTED, MODIFY NEVER:
+  archive/
+  code-snapshot/
+  graphify-out/
+
+If a task requires touching these:
+  Hard stop. Do not open the file.
+  Alert Shon immediately. Wait.
 
 ---
 
-## 9. THE PROMPT DISCIPLINE — LAYER 1 OF MISTAKE-PREVENTION
+# APPENDIX A — GLOSSARY
 
-The original 27 April diagnosis named this clearly: my prompts to Claude Code constrained WHAT to build but never HOW. Claude Code filled the HOW gap with whatever pattern it found or invented. That's where raw `fetch()` came from. That's where inline `useCustomQuery` came from.
+VEERABHADRA      Master brain in claude.ai.
+                 Plans everything.
+                 Digital twin of Shon AJ.
 
-The fix is structured prompts. Every prompt I give you to give Claude Code follows the same shape.
+Execution Agent  Any AI tool running CLAUDE.md boot file.
+                 Claude Code, Cursor Agent, or future AI.
+                 The rules apply regardless of which tool.
 
-### 9.1 The structured prompt template
+EAGLE            Discipline skill bridging prototype to production.
+                 4 modes. Add-only enforcement.
+                 HTML preview mandatory before any code.
 
-```
-[SECTION 1 — IDENTITY]
-You are working on the DeAssists portal, branch feature/portal.shon369.
-Read CLAUDE.md FIRST. Then read these specific reference files:
-  [list of pattern/project files relevant to the task]
+session-lock     File that controls whether a session can start.
+                 STATUS: IDLE = safe to start.
+                 STATUS: OPEN = blocked.
 
-[SECTION 2 — TASK]
-[Single sentence: what to do]
+cms-next         Staff and partner portal. Port 4002.
+                 Primary application. All portal work here.
 
-[SECTION 3 — REFERENCE FILES (the HOW)]
-Copy the pattern exactly from:
-  [exact file path] — [what to copy]
+feature/portal
+.shon369         Active build branch.
+                 All 8 migration tasks land here.
 
-For example:
-  libs/react-query/queries/leads.ts — copy the named hook pattern
-  libs/shared/constants/lead.constants.ts — copy the enum pattern
+MIGRATION        Feature exists in production. Needs syncing.
+                 Production wins ties in reconciliation.
 
-[SECTION 4 — FILES TO CREATE/MODIFY]
-CREATE:
-  [exact path 1] — [what it should contain]
-  [exact path 2] — [what it should contain]
+CAPABILITY       Feature does not exist yet.
+                 Prototype leads. Production catches up.
 
-MODIFY (additive only):
-  [exact path] — [what to add, where, do NOT touch existing logic]
+dev_v2           Integration branch.
+                 Latha merges features here.
 
-DO NOT TOUCH:
-  [list of related files that should be left alone]
+BCBT             First external university tenant.
+                 Already live on platform today.
+                 September 2026 MVP target.
 
-[SECTION 5 — VERIFICATION]
-After writing, run these checks (must all pass):
-  npm run build:all
-  grep -rn "await fetch(" apps/cms-next/components/ apps/cms-next/pages/   # must be empty
-  grep -rn "getCookie" apps/cms-next/components/ apps/cms-next/pages/      # must be empty
-  grep -rn "Authorization.*Bearer" apps/cms-next/components/ apps/cms-next/pages/  # must be empty
+OpenClaw         Future orchestrator agent. Concept only.
+                 Comes after operations layer is stable.
 
-[SECTION 6 — STOP CONDITIONS]
-Stop and ask before proceeding if:
-  - Any reference file in Section 3 doesn't exist
-  - Any path in Section 4 doesn't match the existing structure
-  - You think you need to modify an existing function (you don't)
-  - You're about to hardcode a value (move it to a constants file first)
+Paperclip        Future CEO dashboard layer. Concept only.
+                 Sits above all operations. Shon's view.
 
-[SECTION 7 — OUTPUT EXPECTED]
-List of files created/modified with full paths.
-Output of each verification check.
-Confirmation that no DO-NOT-TOUCH file was changed.
-```
+Two-repo rule    369-brain and deassists never mix in one commit.
+                 Latha never sees 369-brain.
 
-This template gets tightened or expanded per task, but the seven sections are always present.
+Add-only rule    EAGLE never modifies existing logic.
+                 Only adds new code alongside existing.
 
-### 9.2 Bad prompt (the kind we used before)
+Four-layer chain Component then Named Hook then Core Hook
+                 then Axios Client then Backend.
+                 No exceptions.
 
-> "Build the Queue View UI for the call centre, here's the design"
+Three-layer audit Sidebar plus Page guard plus Data permission.
+                 All three must pass for every feature.
 
-What goes wrong: Claude Code invents the API pattern. Picks `fetch()` because it's familiar. Hardcodes role strings because no constants are referenced. Modifies an existing component "to make room" instead of adding alongside. Result: QA fails twice, two rebuilds.
-
-### 9.3 Good prompt (the kind we use now)
-
-> "Read CLAUDE.md and patterns/api-patterns.md. Task: add the QueueView component at apps/cms-next/components/leads/QueueView.tsx. API pattern: copy from libs/react-query/queries/leads.ts (use useLeadsList, useLeadQueues). Constants: import LeadQueue from libs/shared/constants/lead.constants.ts — never hardcode queue names. Roles: import CRM_ALLOWED_ROLES from same file. Do not modify pages/leads/index.tsx — only create the new component. Verify with npm run build:all and the three grep checks. Output: file path created, build output, grep results."
-
-What goes right: Claude Code has no gaps to fill with improvisation. The prompt itself prevents the failure mode.
+Prototype-first  Every feature needs an approved HTML prototype
+                 before any code is written.
+                 No exceptions. Ever.
 
 ---
 
-## 10. DAILY OPERATIONS
+# APPENDIX B — QUICK REFERENCE COMMANDS
 
-### 10.1 Session start (5 minutes, every time)
+SESSION START:
+  cd ~/deassists-workspace/369-brain && git pull
+  cd ~/deassists-workspace/deassists && git pull
+  pm2 status
 
-```
-1. On Mac Mini terminal:
-     cd ~/deassists-workspace/369-brain && git pull
-     cd ~/deassists-workspace/deassists && git pull
+BUILD CHECK:
+  cd ~/deassists && npm run build:all
 
-2. Check branch position:
-     cd ~/deassists-workspace/deassists && git branch
-     # Should show * feature/portal.shon369
+THREE GREP CHECKS:
+  grep -rn "await fetch(" apps/cms-next/components/ apps/cms-next/pages/
+  grep -rn "getCookie" apps/cms-next/components/ apps/cms-next/pages/
+  grep -rn "Authorization.*Bearer" apps/cms-next/components/ apps/cms-next/pages/
 
-3. Check pm2 servers:
-     pm2 status
-     # All three (backend, cms, website) should be online
+GRAPHIFY UPDATE (after portal commit):
+  cd ~/deassists && \
+  /opt/homebrew/bin/graphify update . \
+  --output ~/deassists-workspace/369-brain/graphify-out/
 
-4. Open this Claude.ai chat (VEERABHADRA).
-   Tell me what we're working on today.
-   I will tell you if anything in my context looks stale and I need re-uploads.
+PM2:
+  pm2 status
+  pm2 stop cms
+  pm2 restart all
 
-5. If context is fresh, we plan. If stale, you upload changed files first.
-```
+RECOVERY (if portal crashes):
+  pm2 stop all && \
+  rm -rf apps/cms-next/.next && \
+  pm2 start all
 
-### 10.2 Mid-session
-
-- Every prompt to Claude Code uses the structured template (section 9.1)
-- Every command Claude Code asks permission for, you press 1 (yes), never 2 (yes-blanket)
-- Every commit gets a change log entry written **before** the commit, not after
-- If anything feels confused or rushed — stop. Tell me. We slow down.
-
-### 10.3 Session end (the protocol)
-
-When you say "stop for today," I remind you to paste this into Claude Code:
-
-```
-Session ending.
-1. List all files created/modified today with full paths.
-2. Update memory/session-state.md and memory/activity-log.md.
-3. Show me what was updated.
-```
-
-Bring the output back to me. I review it. We commit any pending brain updates. Then sleep.
-
-### 10.4 When to stop and ask
-
-- Architectural decision not in `memory/decisions.md`
-- Locked decision the task would violate
-- Discrepancy between prototype and cms-next where neither seems right
-- API contract change (mobile app risk — always check first)
-- Multiple plausible interpretations of intent
-- Anything involving payments, security, JWT, or scope guards
-- Any change touching > 10 files
-- Any change that would modify existing logic (REFUSE, cite the rule)
-
-### 10.5 When to switch from VEERABHADRA to Claude Code
-
-You leave this chat and open Cursor/Claude Code when:
-- A structured prompt is ready
-- A task is clearly scoped (one task, one commit)
-- The pre-build checklist is satisfied (section 13)
-
-You come back to this chat when:
-- A decision is needed and isn't in `memory/decisions.md`
-- A prompt needs to be written
-- An ambiguity surfaces that Claude Code stop-and-asks
-- A session is ending and we're updating brain files
-- Brainstorming a new prototype
+GIT BRAIN COMMIT:
+  cd ~/deassists-workspace/369-brain
+  git add [specific files]
+  git commit -m "brain: [what changed]"
+  git push origin main
 
 ---
 
-## 11. LOCKED DECISIONS — THE 100% LOCKS (synthesized)
+# CLOSING STATEMENT
 
-This is the synthesis. The full chronological list lives at `369-brain/memory/decisions.md`. These are the decisions that are non-negotiable, grouped by theme.
+This document was written by VEERABHADRA
+on behalf of Shon AJ, CEO of Three Sixty Nine GmbH.
 
-### Architecture & repo discipline
+It is the founding operating system of DeAssists —
+a company built by one non-developer founder
+and an AI system working in complete alignment.
 
-- Two repos, never mixed in one commit
-- 369-brain is private brain; deassists is portal code
-- `CLAUDE.md` lives in 369-brain only — never committed to deassists
-- Latha never sees 369-brain
-- libs/shared-ui/ only for portal visual work — `apps/mui-cms-next/` is the dual codebase
-- Pre-commit hook permanently removed (root cause of the 1000+ file Prettier disaster)
-- 369-brain GitHub is single source of truth for all memory
+What makes this historically significant is not
+the technology. It is the discipline.
 
-### Code patterns
+The same principles that make a great company
+make a great codebase make a great AI system.
+Write everything down. Build for the long term.
+Never hardcode assumptions. Make it work for anyone.
 
-- 4-layer API chain — Component → Named Hook → Core Hook → Axios Client → Backend
-- Named hooks in `libs/react-query/queries/{module}.ts`
-- Endpoints in `libs/shared/constants/endpoints.enum.ts`
-- Never raw `fetch()` in components/pages
-- Never `getCookie` in components — axios client handles auth
-- Never set `Authorization: Bearer` manually
-- Constants file is a hard gate — enums must exist before code references them
-- `lead.constants.ts` is single source of truth for CRM enum values
-- `SidebarRole` enum lives in `lead.constants.ts`
-- `CRM_ROLES` constant replaces repeated role arrays in `@Roles()` decorators
-
-### Permission & access
-
-- Three-layer access audit (Sidebar + Page guard + Data permission) — mandatory for every CRM page
-- LEAD_CRM and SALES_SETUP removed as user Types — replaced by database Roles
-- Call Centre and Sales Setup are database Roles assignable to any user Type
-- TEAM_LEAD is the call centre type — Anandhu, Midhun, Stalin, Gopika
-- AGENT type reserved for external sub-agents only — never DeAssists internal staff
-- Permission clone rule — filter `newItem.children` not `x.children`
-
-### Build & commit
-
-- `npm run build:all` mandatory before every commit
-- All 3 servers must start together — cms:serve, website:serve, backend:serve
-- One phase = one commit (Rule 14 in CLAUDE.md)
-- Stage freely, commit only when 100% complete and tested
-- All commits staged locally, pushed together at end of session
-- Always confirm feature complete before committing — ask Shon
-- Never amend a pushed commit — always new commit
-- `git diff` mandatory before any brain file commit
-- Never commit `pnpm-lock.yaml` (Latha owns it)
-- Never commit `.gitignore` without Latha approval
-- Any `package.json` change requires Latha approval
-
-### Workflow & sessions
-
-- One session = one chat in VEERABHADRA project
-- Session start = `git pull` both repos + tell VEERABHADRA what we're doing
-- Session end = brain commit (non-negotiable)
-- Mid-session "SAVE THIS" flagged for important decisions
-
-### Skills & process
-
-- Sidebar Audit Skill mandatory before any permission commit
-- Salesdocskill is the Sales Output Engine
-- MARP for all slide exports (PPT + PDF every time)
-- Web research mandatory on every Salesdocskill output
-- EAGLESKILL v2 for prototype↔production reconciliation
-- Add-only rule (EAGLE) — never modify existing logic
-- HTML preview mandatory before any production write
-- Three approval phrases — `approved` / `not approved` / `I have a doubt: [...]`
-
-### Product & UX
-
-- Semantic colour language: green=positive, amber=attention, grey=done, red=destructive
-- Transactions widget removed from dashboard (belongs in Finance)
-- UIUX redesign by Shon + VEERABHADRA (not Latha)
-- cms-next .env.local symlink to root .env
-
-### Strategic
-
-- Dual-mode principle (operator today, platform tomorrow)
-- Prototype must demo both modes (internal staff + external partner)
-- OpenClaw evaluation deferred until cms-next CRM proven in real use
-- Paperclip (CEO layer) sits on top after operations layer is stable
-- Agent layer tool TBD — function defined now, tool chosen after portal stable
+This file will outlive every tool used to build it.
+The principles do not expire.
+The seven principles never change.
+Everything else evolves correctly around them.
 
 ---
 
-## 12. COMMIT DISCIPLINE
-
-### 12.1 Why one task = one commit
-
-If a commit contains two tasks, you can't revert one without the other. The whole mistake-prevention strategy is built on small, reversible units. One task = one commit = one Latha review = one revertable atom.
-
-### 12.2 The commit message format
-
-Brain commits:
-```
-brain: [what changed in plain words]
-```
-
-Examples:
-```
-brain: reconcile decisions.md (add constants-as-gate entry) + simplify session-state.md + archive 4 superseded files
-brain: upgrade CLAUDE.md — skill selector, tier system, structured prompt format
-brain: add 6 pattern + project reference files
-```
-
-Portal commits (Latha will write these):
-```
-[type]: [what changed]
-```
-
-Where type is `feat`, `fix`, `chore`, `refactor`, `docs`, `test`. Latha owns this format.
-
-### 12.3 Branch hygiene
-
-- Brain repo: only `main`. No feature branches.
-- Portal repo: feature branches off `dev_v2`. Active is `feature/portal.shon369`. Old branches are retired and snapshotted to `369-brain/code-snapshot/`.
-- Never patch a retired branch. Always create clean from `dev_v2`.
-
-### 12.4 The Latha handover
-
-After a portal commit, Latha receives:
-1. PR link (GitHub)
-2. WhatsApp message with PR link + summary
-3. `BRANCH-CHANGE-LOG-portal.shon369.md` updated with the entry
-
-Latha does the rest — pull, review, merge, push.
-
-### 12.5 Never mix repos in one commit
-
-If you find yourself running `git add` on a file from each repo, stop. The two-repo rule is being violated. Brain commits go to 369-brain. Portal commits go to deassists. They are committed separately.
-
----
-
-## 13. WHAT TO CHECK BEFORE WRITING ANY CODE
-
-A concrete checklist. Use it. Skip nothing.
-
-```
-[ ] Mac Mini brain repo is up to date
-        cd ~/deassists-workspace/369-brain && git pull
-        Result: "Already up to date" or new commits pulled cleanly.
-
-[ ] Mac Mini portal repo is up to date
-        cd ~/deassists-workspace/deassists && git pull
-        Result: same.
-
-[ ] Active branch is correct
-        cd ~/deassists-workspace/deassists && git branch
-        Result: * feature/portal.shon369
-
-[ ] Working tree is clean (no leftover changes from another session)
-        git status
-        Result: "nothing to commit, working tree clean"
-
-[ ] All 3 servers running
-        pm2 status
-        Result: backend, cms, website all online
-
-[ ] EAGLE Mode 0 baseline exists and is current
-        ls 369-brain/skills/eagleskill/eagle-baseline-system-readout.md
-        Result: file exists. (If older than the last major refactor, re-run Mode 0.)
-
-[ ] The pattern files exist for what I'm about to build
-        ls 369-brain/patterns/
-        ls 369-brain/project/
-        Result: api-patterns, permission-patterns, git-workflow, architecture, design-system, never-touch all present.
-
-[ ] Constants file already has the enums I need
-        Open libs/shared/constants/lead.constants.ts (or the relevant constants file)
-        If a value I need is missing, ADD IT FIRST in a separate commit, then come back.
-
-[ ] The prototype (if applicable) is pushed to 369-brain
-        ls 369-brain/prototypes/
-        For prototype-first work — the prototype must be on disk and pushed before EAGLE reads it.
-
-[ ] No NEVER-TOUCH file is in the planned scope
-        Check 369-brain/project/never-touch.md against my planned files.
-
-[ ] Latha is reachable for review
-        WhatsApp confirmed. (Not strictly required to start, but required before push.)
-```
-
----
-
-## 14. THE LARGER PICTURE — DEASSISTS AS ERP
-
-It's worth saying explicitly because the day-to-day work can lose this thread.
-
-### 14.1 Why this is an ERP, not a CRM
-
-A CRM tracks sales pipeline. DeAssists tracks the **entire customer life-cycle** plus **operations** plus **partner coordination** plus eventually **finance**. That's an ERP.
-
-The CRM module (lead intake, qualification, conversion) is one part. The application portal (after conversion) is another. The partner views are another. The mobile app for customers is another. They share a spine — the same backend, the same enums, the same permission system, the same audit log.
-
-### 14.2 The modules — current and future
-
-```
-Today:
-  ┌─────────────────────────────────────────────────────────┐
-  │  Lead CRM (Sheets → cms-next, in migration)              │
-  │  Application Portal (cms-next, partial)                  │
-  │  Customer mobile app (in build)                          │
-  │  Public website (live)                                   │
-  └─────────────────────────────────────────────────────────┘
-
-Building next:
-  ┌─────────────────────────────────────────────────────────┐
-  │  Sales operations (full Sales Guide UI)                  │
-  │  Partner views (BCBT, accommodation — dual-mode demo)    │
-  │  Q Intelligence (call log + lead detail enhancements)    │
-  │  Finance / payments reconciliation                       │
-  │  Reporting & dashboards (cross-team)                     │
-  └─────────────────────────────────────────────────────────┘
-
-Eventually:
-  ┌─────────────────────────────────────────────────────────┐
-  │  Multi-tenant SaaS (partners self-serve onboarding)      │
-  │  Automation layer (OpenClaw)                             │
-  │  CEO layer (Paperclip)                                   │
-  │  International expansion (other expat markets)           │
-  └─────────────────────────────────────────────────────────┘
-```
-
-### 14.3 How they connect
-
-Every module reads the same person-record. A customer is one entity that progresses through stages. A lead becomes an applicant becomes a customer becomes a post-landing relationship. Same record, enriched. Same permissions system across modules. Same audit log captures every state change.
-
-This is why hardcoding strings is so destructive — a queue name in the CRM module that doesn't match the queue name in the dashboard module is a person who silently disappears. The constants file is what holds the modules together.
-
-### 14.4 The future layers
-
-- **OpenClaw — execution engine.** Runs scheduled tasks, automates routine operations, executes plays defined by VEERABHADRA. Not designed yet. Tool not chosen. Will be selected after the supervised manual workflow is proven.
-- **Paperclip — CEO layer.** Sits above the operations layer. Aggregates, summarises, alerts. Designed for Shon to run the company without opening 12 dashboards. Concept only today.
-
-These come **after** the operational layer is stable. We're not building them now. They sit on the horizon as design constraints — every choice today should not foreclose them.
-
----
-
-## 15. RIGHT-NOW PRIORITIES
-
-### 15.1 Tonight (or first session tomorrow)
-
-1. **Finish the brain remap.** Commit B is staged and approved (decisions.md reconciled, session-state simplified, 4 files archived). After it pushes, Commit C (slim VEERABHADRA.md, fix codebase-brain.md auth section) closes the remap.
-2. **Re-upload brain files to this Claude.ai project** so my context becomes current. Specifically: new CLAUDE.md, the 6 pattern/project files, the new decisions.md, and (after Commit C) the new VEERABHADRA.md.
-3. **Save THIS document** to `369-brain/THE-DEASSISTS-OS.md`. Commit it. Push it.
-
-### 15.2 Tomorrow
-
-4. **Decide EAGLE v2.1.** Lock the migration-vs-capability mode question. Either keep v2.0 for now or upgrade. (My recommendation: upgrade to v2.1.)
-5. **Begin Task 1 — `crmTokens.ts`.** First migration task on the new branch. Goes through full EAGLE flow (Mode 1 → 2 → 2.5 → 3) end-to-end. This is the first proof that the discipline holds.
-
-### 15.3 This week
-
-6. Tasks 2 through 8 (backend entity, routing, badges, Queue View, Form, Dashboard, Sidebar). One commit each. One Latha review each. Pace is one task per session, sometimes two.
-
-### 15.4 This month
-
-7. Phase 4 Queue View UI as a real feature (not migration).
-8. First true CAPABILITY task (probably the dual-mode prototype demo) — runs under EAGLE v2.1.
-9. Partner view prototype for BCBT.
-
-### 15.5 Q2 2026
-
-10. Mobile app integration for customer-facing application status.
-11. Sales Guide capability (operator + partner).
-12. Reporting dashboards.
-13. Begin selecting OpenClaw tooling.
-
----
-
-## 16. THE MASTER PROMPT (paste-ready for Cursor / Claude Code)
-
-This is the prompt you paste into a fresh Cursor / Claude Code session at the start of any new session. It loads the agent with everything in this document by reference.
-
-```
-You are working on the DeAssists portal as Claude Code, the executor 
-agent for Shon AJ (CEO, non-developer) and VEERABHADRA (the master 
-brain in claude.ai who plans the work).
-
-Before doing anything, read these files in order:
-
-1. ~/deassists-workspace/369-brain/CLAUDE.md
-2. ~/deassists-workspace/369-brain/THE-DEASSISTS-OS.md  (this document)
-3. ~/deassists-workspace/369-brain/memory/decisions.md
-4. ~/deassists-workspace/369-brain/memory/session-state.md
-5. ~/deassists-workspace/369-brain/patterns/api-patterns.md
-6. ~/deassists-workspace/369-brain/project/never-touch.md
-7. ~/deassists-workspace/369-brain/skills/eagleskill/EAGLESKILL.md
-
-Then confirm you have read them by stating, in one sentence:
-- The active branch
-- The current task position (from session-state.md)
-- The add-only rule
-- The three approval phrases
-
-DO NOT start any task work until I (Shon) give you a structured 
-prompt that follows the seven-section template defined in 
-THE-DEASSISTS-OS.md section 9.1.
-
-Until that prompt arrives, you are in standby. You may answer 
-questions, read files, run read-only checks. You may not write, 
-modify, commit, or push anything.
-
-Hard rules (cite the file when refusing):
-- Never modify existing logic in cms-next (add-only rule, EAGLESKILL)
-- Never run `git add .` or `git add -A` (Rule from git-workflow.md)
-- Never commit brain files to deassists, never commit portal code 
-  to 369-brain (two-repo rule)
-- Never hardcode a value — every value traces to a constants file
-- Never accept "yes" / "go" / "ok" as approval — only the exact 
-  phrases: "approved" / "not approved" / "I have a doubt: [...]"
-- Always confirm a task is MIGRATION (existing capability) or 
-  CAPABILITY (new) before producing a gap report (EAGLE v2.1)
-- Always update the change log entry BEFORE the commit, not after
-- Always run npm run build:all before committing portal code
-- Always show me the diff stat before committing — wait for explicit 
-  approval before running git commit
-
-When you finish a task, output:
-- List of files created/modified with full paths
-- Output of npm run build:all (must pass)
-- Output of the three anti-pattern grep checks (must be empty)
-- Confirmation that no NEVER-TOUCH file was changed
-- The change log entry to be added to BRANCH-CHANGE-LOG-portal.shon369.md
-
-You are not a generic coding assistant. You are the discipline layer 
-that keeps this project from breaking. The rules exist because each 
-one was paid for in past mistakes. Cite them. Refuse what they 
-forbid. Surface ambiguity instead of guessing.
-
-If anything in the files you just read contradicts these instructions, 
-the FILES win — read them first, then come back and tell me what 
-needs to be reconciled.
-
-Begin by reading the files and confirming.
-```
-
-That's the prompt. It should be the first thing every Cursor / Claude Code session sees. It loads identity, rules, and standby posture in one paste.
-
----
-
-## 17. HONEST RISKS, GAPS, OPEN QUESTIONS
-
-### 17.1 What we don't know yet
-
-- Whether the prototype-first workflow will actually be smoother than migration-first, or if it just shifts where the friction lives
-- Whether Latha will accept v2.1 EAGLE without modification (she may have feedback on the migration/capability declaration)
-- Whether the GitHub MCP connector here in claude.ai will be reliable enough to use for direct prototype pushes
-- How much real-world drift happens between Mac Mini and Latha's machine when both work on different things in the same week
-- Whether `memory/activity-log.md` (1488 lines) needs the same treatment as the rest — it's stayed correct so far, but it's the largest file in the brain
-
-### 17.2 What can still go wrong
-
-- **Stale Claude.ai project files** — VEERABHADRA gives advice based on outdated brain. Mitigation: re-upload at session start when material change has happened.
-- **Mode 0 baseline going stale** — major refactors after a Mode 0 run mean EAGLE is reading old assumptions. Mitigation: re-run Mode 0 after any large change in cms-next structure.
-- **Rule drift** — new rules added to decisions.md but not propagated to CLAUDE.md or pattern files. Mitigation: every rule addition should explicitly check whether it changes any pattern file.
-- **Prototype quality** — a sloppy prototype produces sloppy production. Mitigation: prototype review with Shon before EAGLE bridge, no exceptions.
-- **Sync confusion across the 4 spaces** — the most common source of "I thought you saw that." Mitigation: explicit checks at session start (section 13).
-
-### 17.3 What needs to be decided
-
-- EAGLE v2.0 → v2.1 — lock now or after migrations finish?
-- Should `memory/activity-log.md` be split (history vs current month)?
-- The 7 placeholder files in `services/`, `company/`, `technology/` — fill them or archive them?
-- GitHub MCP connector here in claude.ai — install it and try, or wait?
-- A new `prototype-skill` — do we need one, or is brainstorming with VEERABHADRA + creating an artifact enough?
-
-I won't pre-decide these. They're open. We address them in dedicated sessions, not as side notes during other work.
-
----
-
-## 18. APPENDIX A — FILE MAP
-
-Every file in `369-brain` after Commit B (about to land) and Commit C (planned). What each is for.
-
-### Root files
-
-| File | Purpose |
-|---|---|
-| `CLAUDE.md` (126 lines) | Lean router — read first by every Claude Code session. Points to pattern files, project files, skills. |
-| `VEERABHADRA.md` (358 → ~120 lines after Commit C) | Company identity only. People, services, two-repo rule, 5-stage SOP. |
-| `THE-DEASSISTS-OS.md` (this file) | Foundational understanding doc. Read after CLAUDE.md. |
-| `.gitignore` | Standard. |
-
-### `patterns/` (the HOW)
-
-| File | Purpose |
-|---|---|
-| `api-patterns.md` (125 lines) | 4-layer chain. Named hooks. Anti-patterns. Reference table. Source of truth for every API call. |
-| `permission-patterns.md` (115 lines) | Sidebar gates. Three-layer access audit. Role visibility matrix. |
-| `git-workflow.md` (117 lines) | 10-rule git discipline. No `git add .`. Branch hygiene. |
-
-### `project/` (the WHAT)
-
-| File | Purpose |
-|---|---|
-| `architecture.md` (143 lines) | Monorepo structure. Repo layout. Where things live. |
-| `design-system.md` (119 lines) | Design tokens. Semantic colour language. crmTokens reference. |
-| `never-touch.md` (89 lines) | Files Claude Code refuses to modify. universitiesd/, payment entity, MASTER-RUN.cjs, Stripe logic. |
-
-### `memory/` (state and history)
-
-| File | Purpose |
-|---|---|
-| `decisions.md` (~88 lines after Commit B) | Locked decisions, dated, append-only. Single source of truth for rules. |
-| `session-state.md` (~169 lines after Commit B) | Current state — branch, task position, blockers. Updated end of each session. |
-| `activity-log.md` (1488 lines) | Append-only history of every session. |
-| `it-change-log-sop.md` (147 lines) | The 5-stage SOP locked 19 April. |
-
-### `change-logs/`
-
-| File | Purpose |
-|---|---|
-| `BRANCH-CHANGE-LOG-portal.shon369.md` (306 lines) | Change log for the active feature branch. One entry per commit. Latha receives this with every PR. |
-
-### `checklists/`
-
-| File | Purpose |
-|---|---|
-| `pre-build-checklist.md` (43 lines) | The mandatory check before any new code. Subset of section 13 of this doc. |
-
-### `prototypes/`
-
-| File | Purpose |
-|---|---|
-| `deassists-platform.html` | The current prototype — UX source of truth. Updated when production reality differs from prototype intent (production-wins-ties default) or when new capability is being added (prototype-leads, EAGLE v2.1). |
-
-### `skills/`
-
-| File | Purpose |
-|---|---|
-| `eagleskill/EAGLESKILL.md` (1048 lines) | The bridge skill. Four modes. Add-only enforcement. Will be 1100+ lines after v2.1 update. |
-| `eagleskill/eagle-baseline-system-readout.md` (574 lines) | Mode 0 baseline of cms-next — the foundational reference for all EAGLE work. Re-run on major refactor. |
-| `eagleskill/{reports,plans,previews,exec-logs}/` | Where EAGLE outputs live, separated by mode. |
-| `sales-design/Salesdocskill.md` (698 lines) | Sales output engine. 10-year creative director persona. MARP export discipline. |
-| `sidebar-audit.md` (19 lines) | Trigger doc for the sidebar permission audit skill. |
-| `uiux-superman.md` (20 lines) | Trigger doc for the UI redesign skill. |
-
-### `company/` (currently mixed — some real, some placeholder)
-
-| File | Purpose |
-|---|---|
-| `staff-brain.md` (365 lines) | Real — full team details with roles, types, responsibilities. |
-| `partners-brain.md` (16 lines) | Real but minimal — university partner list. |
-| `vision.md` (10 lines) | **Placeholder.** Should hold the dual-mode vision. Fill or archive (decision pending). |
-| `revenue-model.md` (14 lines) | **Placeholder.** Marked "to be completed." Fill or archive. |
-| `sales-brain.md` (12 lines) | **Placeholder.** Three sales channels noted but not detailed. Fill or archive. |
-
-### `services/`
-
-| File | Purpose |
-|---|---|
-| `crm-brain.md` (46 lines) | Real — CRM v3.0 Final reference, Sheets schema. |
-| `accommodation-brain.md` (24 lines) | Real but minimal. |
-| `communications-brain.md` (35 lines) | Real — communication channels. |
-| `admissions-brain.md` (15 lines) | **Placeholder despite being 90% of revenue.** Should be filled with admissions process detail. Fill or archive. |
-| `services-brain.md` (14 lines) | **Placeholder.** Other services covered. Fill or archive. |
-
-### `technology/`
-
-| File | Purpose |
-|---|---|
-| `codebase-brain.md` (77 lines) | Real but contains wrong auth pattern (until Commit C fixes it). Then real. |
-| `automation-brain.md` (17 lines) | **Placeholder.** Four automation stages noted. Fill or archive. |
-| `mobile-brain.md` (16 lines) | **Placeholder.** Mobile app context. Fill or archive. |
-
-### `archive/` (created by Commit B)
-
-| File | Why archived |
-|---|---|
-| `VEERABHADRA-MASTER-CONTEXT.md` (486 lines) | Superseded by lean CLAUDE.md + this doc + slim VEERABHADRA.md |
-| `DAILY-OPERATIONS-GUIDE.md` (287 lines) | Superseded by section 10 of this doc + the 5-stage SOP |
-| `MASTER-STATE-19Apr2026.md` (162 lines) | Superseded by current session-state.md |
-| `session-workflow.md` (267 lines) | Superseded by section 10 of this doc |
-
-### `code-snapshot/`
-
-19 files — reference code from the retired `feature/portal-crm-phase1` branch. Do not modify. Read-only historical reference.
-
----
-
-## 19. APPENDIX B — GLOSSARY
-
-| Term | Meaning |
-|---|---|
-| **VEERABHADRA** | The master brain and digital twin of Shon AJ. Lives in this Claude.ai project. Plans, brainstorms, writes prompts. Does not touch files or git. |
-| **Claude Code** | Terminal-based agent inside Cursor on Mac Mini. Reads CLAUDE.md, executes file edits, runs git on specific files. |
-| **Cursor Agent** | Cursor's native agent (Cmd+I). Same Claude underneath. Used for quick edits. For multi-file commits, prefer Claude Code in terminal. |
-| **EAGLE / EAGLESKILL** | The discipline skill bridging prototype and production. Lives at `369-brain/skills/eagleskill/EAGLESKILL.md`. |
-| **cms-next** | The staff/partner-facing portal. Next.js app, port 4002. The main piece of code we work on. |
-| **website-next** | The public marketing site. Next.js app, port 4001. Includes Course Finder. |
-| **Backend** | The NestJS API server. Port 8000. Single backend serves cms-next, website-next, and the mobile app. |
-| **dev_v2** | The integration branch in deassists repo. Latha merges feature branches here before they reach `main`. |
-| **feature/portal.shon369** | The current active feature branch. Where the 8 migration tasks land. |
-| **The 8 migration tasks** | crmTokens, backend entity + ID service, backend routing/module/controller/service, badges, Queue View, New Lead Form, Dashboard, Sidebar/Avatar redesign. |
-| **Mode 0** | EAGLE's comprehensive baseline read of cms-next. Multi-hour. Runs once per major refactor. |
-| **Add-only rule** | Never modify existing logic. Only add alongside. Locked in EAGLESKILL v2. |
-| **Production wins ties** | Default rule (EAGLE v2): when prototype and production disagree, prototype is corrected to match production. |
-| **Prototype leads** | Proposed rule for EAGLE v2.1: when building new capability, production catches up to prototype. |
-| **The 5-stage SOP** | Plan → Build → Verify → Commit → Latha Handover. Every IT task follows this sequence. |
-| **The three approval phrases** | `approved` / `not approved` / `I have a doubt: [...]`. Nothing else proceeds. |
-| **The 4-layer API chain** | Component → Named Hook → Core Hook → Axios Client → Backend. Skipping any layer is a violation. |
-| **The two-repo rule** | 369-brain and deassists never mix in one commit. Latha never sees 369-brain. |
-| **Three-layer access audit** | Sidebar visibility + Page guard + Data permission. All three must align for every CRM page. (Rule 27) |
-| **Constants file as hard gate** | Enums must exist before any code references them. No magic strings. (Rule 28) |
-| **Dual-mode** | Operator today, platform tomorrow. Every architectural decision supports both. |
-| **OpenClaw** | Future automation execution engine. Concept only. |
-| **Paperclip** | Future CEO dashboard layer. Concept only. |
-
----
-
-## 20. APPENDIX C — THE 5-STAGE SOP, VISUALISED
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                                                                     │
-│  STAGE 1 — PLAN                                                     │
-│  ────────────                                                       │
-│  Where: VEERABHADRA chat (this Claude.ai)                          │
-│  Who:   Shon + VEERABHADRA                                          │
-│  What:  Define the task. Choose MIGRATION or CAPABILITY mode.       │
-│         Confirm pattern files exist. Draft structured prompt.       │
-│  Output: A paste-ready structured prompt for Claude Code.           │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                                                                     │
-│  STAGE 2 — BUILD                                                    │
-│  ─────────────                                                      │
-│  Where: Cursor / Claude Code on Mac Mini                            │
-│  Who:   Shon + Claude Code (with EAGLE for production writes)       │
-│  What:  EAGLE Mode 1 → 2 → 2.5 → wait for "approved" → Mode 3       │
-│         Files written exactly per preview.                          │
-│  Output: Files created/modified per the approved preview.           │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                                                                     │
-│  STAGE 3 — VERIFY                                                   │
-│  ──────────────                                                     │
-│  Where: Browser (localhost:4002, sometimes 4001 and the API)        │
-│  Who:   Shon                                                        │
-│  What:  Test the feature. Confirm UI renders. Confirm API works.    │
-│         Check different roles see correct sidebar.                  │
-│         Run npm run build:all. All 4 projects must build.           │
-│  Output: Verified working feature, build passing.                   │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                                                                     │
-│  STAGE 4 — COMMIT                                                   │
-│  ──────────────                                                     │
-│  Where: Cursor / Claude Code on Mac Mini                            │
-│  Who:   Shon + Claude Code                                          │
-│  What:  Write change log entry FIRST.                               │
-│         git add SPECIFIC files (never `git add .`).                 │
-│         git status, git diff --staged --stat — review.              │
-│         git commit with structured message.                         │
-│         git push origin feature/portal.shon369.                     │
-│  Output: Commit pushed to GitHub.                                   │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                                                                     │
-│  STAGE 5 — LATHA HANDOVER                                           │
-│  ───────────────────────                                            │
-│  Where: GitHub (PR) + WhatsApp                                      │
-│  Who:   Shon → Latha                                                │
-│  What:  Open PR on GitHub.                                          │
-│         WhatsApp Latha with PR link + summary.                      │
-│         Send the BRANCH-CHANGE-LOG entry alongside.                 │
-│         Wait for Latha review.                                      │
-│  Output: Latha reviews, approves, merges to dev_v2.                 │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-                       NEXT TASK STARTS
-                       (one task → one commit, never batched)
-```
-
----
-
-## DOCUMENT END
-
-This document is meant to be re-read at the start of any new chat or session. It changes only when something fundamental in the system changes — a new repo, a new role, a new locked decision. Small updates to the project are not document changes; they're entries in `decisions.md` or `activity-log.md`.
-
-If you find yourself confused about anything in DeAssists work, this file is the place to come back to. If you find something here that's wrong or out of date, fix it the same way we fix everything else: small commit, change log entry, push.
-
-Welcome to the system, properly.
-
----
-
+*THE DEASSISTS OPERATING SYSTEM v2.0*
 *Owner: Shon AJ — Three Sixty Nine GmbH — Berlin*
 *Brain: VEERABHADRA — Claude.ai*
-*Document version: 1.0*
-*Last updated: 28 April 2026*
+*Built with discipline, not just code.*
