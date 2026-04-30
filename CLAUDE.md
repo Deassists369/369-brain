@@ -1,126 +1,342 @@
-# DeAssists Portal — Claude Code Brain
-# Read this FIRST. Every session. No exceptions.
-# Last updated: 27 April 2026 | Branch: feature/portal.shon369
+# DeAssists — Mission Control
+# Location: 369-brain/CLAUDE.md
+#
+# This file is read by every agent and every human
+# who works on this project — AI or otherwise.
+# It is the single entry point to the entire system.
+#
+# If you are an AI agent — follow the boot sequence.
+# If you are a human — read everything.
+# The rules apply equally to both.
+# Currency is verified via git log — not by any
+# date written inside this file.
+
+---
+
+## WHAT WE ARE BUILDING
+
+DeAssists is an AI-first Education ERP SaaS platform.
+We run expat services and university operations
+end-to-end — with minimal human staff and maximum
+AI automation. The platform is tenant-aware and
+designed to be sold to universities globally.
+
+First external tenant: BCBT University.
+September 2026 target: full ERP MVP live for BCBT.
+
+Full vision: project/vision.md
+Full requirements: project/PRD.md
+Full build order: project/feature-registry.md
+
+Read those three files to understand the complete
+picture before doing any significant work.
 
 ---
 
 ## WHO OWNS WHAT
-- Shon AJ — CEO, tests everything, approves before Latha sees it
-- Latha — reviews ALL code, commits to GitHub, merges branches
-- VEERABHADRA — plans in Claude.ai, writes all prompts, never commits
-- Never commit to main or dev_v2 directly. Always branch → Latha → merge.
+
+Shon AJ        CEO. All decisions. Tests everything.
+               Approves before Latha sees any code.
+
+Latha          Lead developer. Reviews all code.
+               Commits portal code to GitHub.
+               Merges branches. Never sees 369-brain.
+
+VEERABHADRA    Master brain in claude.ai.
+               Plans, designs, decides, approves.
+               Never touches files directly.
+
+Execution agent  Any AI tool running this boot file.
+               Claude Code, Cursor Agent, or future.
+               Reads brain files. Writes code.
+               Never commits portal code.
+               Never merges branches.
 
 ---
 
-## THE GOLDEN RULE
-Before writing ANY new code:
-  1. Find the closest existing working feature in this codebase
-  2. Trace its full data flow: component → hook → axios → backend → UI
-  3. Copy that pattern exactly. Zero improvisation.
-If you cannot point to an existing file using this exact pattern — STOP.
-Return to VEERABHADRA and ask for the reference file.
+## TWO REPOS — NEVER MIX
+
+369-brain (this repo)
+  Path: ~/deassists-workspace/369-brain/
+  Contains: memory, skills, patterns, docs, vision
+  Commits: execution agent commits directly to main
+  Purpose: company brain and operating system
+
+deassists portal
+  Path: ~/deassists-workspace/deassists/
+  Branch: feature/portal.shon369
+  Contains: Next.js, NestJS production code
+  Commits: GitHub Desktop only, Latha reviews PR
+  Purpose: live product code
+
+HARD STOP: Never commit brain files to portal repo.
+HARD STOP: Never commit portal code to brain repo.
+HARD STOP: Never use git add . or git add -A ever.
+HARD STOP: Never commit to main or dev_v2 directly.
 
 ---
 
-## STRUCTURED PROMPT FORMAT
-Every prompt from VEERABHADRA follows this exact structure.
-If a prompt arrives without this format — stop and ask VEERABHADRA to resend.
+## BOOT SEQUENCE
+## For any agent starting a session.
+## Run in exact order. Never skip a step.
 
-  READ FIRST:      [specific file path to read before writing anything]
-  PATTERN TO COPY: [exact file + function name to copy]
-  TASK:            [plain English — what to build]
-  FILES TO CREATE: [exact full paths]
-  FILES TO MODIFY: [exact full paths + what to add only]
-  NEVER TOUCH:     [list of files not to open]
-  VERIFY WITH:     [exact terminal commands to run]
-  REPORT BACK:     files created + line counts + any deviation from plan
+STEP 0 — SESSION INTEGRITY
+  Read: memory/session-lock.md
 
----
+  STATUS: IDLE
+    Safe. Write STATUS: OPEN with timestamp.
+    Record who opened and current task.
+    Continue to Step 1.
 
-## SKILL SELECTOR — PICK BY TASK TYPE
+  STATUS: OPEN
+    Hard stop. Do not proceed.
+    Output:
+      "SESSION LOCK IS OPEN.
+       Last opened by: [OPENED_BY]
+       At: [OPENED_AT]
+       Last task: [CURRENT_TASK]
+       Type FORCE_CLEAN to override.
+       Type REVIEW to check activity log."
+    Wait for human response. Do not guess.
 
-| Task type | Tier | Skill | Read first |
-|-----------|------|-------|------------|
-| New component or hook (1-3 files) | 1 | Pre-build checklist | patterns/api-patterns.md |
-| New full module (4+ files) | 2 | EAGLESKILL Mode 1→3 | patterns/api-patterns.md |
-| Sidebar or permission change | 3 | sidebar-audit (mandatory) | patterns/permission-patterns.md |
-| Visual reduperman | project/design-system.md |
-| Architectural decision or new service | 5 | STOP → return to VEERABHADRA | — |
-| Sales document, deck, brochure | — | Sales Output Engine | skills/sales-design/Salesdocskill.md |
-| Any git operation | — | — | patterns/git-workflow.md |
-| Unsure what files to touch | — | — | project/architecture.md |
-| What never to modify | — | — | project/never-touch.md |
+  FILE MISSING
+    Treat as OPEN. Hard stop.
+    Create file with STATUS: OPEN.
+    Alert Shon. Wait for instruction.
 
----
+STEP 1 — LOAD RULES
+  Read: CODING-CONSTITUTION.md
+  This file contains all coding rules.
+  Hard stop if missing.
 
-## TIER RULES
+STEP 2 — LOAD STATE
+  Read: memory/session-state.md
+  Read: memory/decisions.md
+  Know where work left off.
+  Know what is permanently locked.
+  Hard stop if session-state is missing.
 
-### Tier 1 — Small build (1-3 files, known pattern)
-1. Read patterns/api-patterns.md
-2. Read the reference file from the table
-3. Run checklists/pre-build-checklist.md before writing
-4. Build following the pattern exactly
-5. npm run build:all
-6. Three grep checks
-7. git add [specific files] → commit
+STEP 3 — LOAD TASK
+  Read: project/feature-registry.md
+  Find first item with status NEXT.
+  That is the task for this session.
 
-### Tier 2 — New module (4+ files)
-1. Read patterns/api-patterns.md
-2. EAGLESKILL Mode 1 — gap report
-3. EAGLESKILL Mode 2 — plan (wait for VEERABHADRA approval)
-4. EAGLESKILL Mode 2.5 — HTML preview (wait for "approved")
-5. EAGLESKILL Mode 3 — execute only after exact phrase "approved"
-6. npm run build:all → three grep checks → commit
+STEP 4 — REPORT AND WAIT
+  Output:
+  ══════════════════════════════
+  AGENT READY
+  Lock: OPEN
+  Rules: LOADED
+  State: LOADED
+  Tasks: LOADED
 
-### Tier 3 — Sidebar or permission (any size)
-1. Read patterns/permission-patterns.md completely
-2. Read both sidemenu.ts AND permission.helper.ts before touching either
-3. Build the change
-4. Run sidebar audit: type "run sidebar audit" in Claude Code
-5. Audit must pass — no exceptions
-6. pm2 restart backend
-7. Test minimum 2 roles in browser
-8. Commit only after all roles verified
+  Position: [from session-state]
+  Next task: [from feature-registry]
+  Mode: [MIGRATION/CAPABILITY/LIVE CHANGE]
+  Blocked by: [any dependencies]
 
-### Tier 4 — Visual redesign
-1. UIUX Superman 7-step process — no shortcuts
-2. Never touches logic files
-3. Never removes any feature
-4. HTML preview approved by Shon before any implementation
-5. Feature audit at Step 6 must pass before commit
+  Awaiting instruction from Shon.
+  ══════════════════════════════
 
-### Tier 5 — Architectural decision
-STOP. Do not write any code.
-Return to VEERABHADRA in Claude.ai.
-Brainstorm happens there. Decision is made there.
-Only then does a structured prompt come back to Claude Code.
+  Do not start any task until Shon responds.
+  Do not assume. Do not begin work early.
 
 ---
 
-## BEFORE ANY COMMIT — THREE HARD GATES
+## TASK PATHS
+## Declare path before writing any code.
 
-Gate 1: npm run build:all — zero new errors
-Gate 2: git diff --staged --name-only — read every file
-Gate 3: Three grep checks — any result = fix first, then commit:
+PATH B — NEW FEATURE
+  Does not exist in production yet.
+  Prototype must exist in 369-brain first.
+  Run full EAGLE Mode 1 to 2 to 3.
+  Shon must approve before Mode 3 executes.
+  Read: skills/eagleskill/EAGLESKILL.md
+
+PATH C — LIVE CHANGE
+  Exists in production. Fixing or improving.
+  Read the full file before touching anything.
+  Make minimum change only.
+  No refactoring while fixing.
+  Read: patterns/anti-ambiguity.md Part 3
+
+UNSURE WHICH PATH
+  Hard stop. Ask Shon in VEERABHADRA.
+  Never guess the path.
+  Never start without knowing.
+
+---
+
+## CODING RULES
+
+All rules live in: CODING-CONSTITUTION.md
+Read at boot. Never duplicated here.
+
+The five rules that can never be broken:
+  1. Constants before components — always
+  2. Four-layer API chain — no exceptions
+  3. Three-layer access audit — all three
+  4. Never hardcode business values — ever
+  5. Build passes before every commit — always
+
+If CODING-CONSTITUTION conflicts with anything
+else — CODING-CONSTITUTION always wins.
+
+---
+
+## NEVER-TOUCH FILES
+
+Read permitted. Modify never permitted.
+
+PORTAL REPO:
+  apps/cms-next/pages/universitiesd/
+  apps/backend-nest/src/core/entities/
+    extendables/payment.entity.ts
+  apps/mui-cms-next/
+  MASTER-RUN.cjs
+  scope.guard.ts
+  Any file with JWT or AWS secrets
+  .env files of any kind
+  package.json and pnpm-lock.yaml
+    without Latha approval
+
+BRAIN REPO:
+  archive/
+  code-snapshot/
+  graphify-out/
+
+Task requires touching these:
+  Hard stop. Do not open the file.
+  Alert Shon immediately. Wait.
+
+---
+
+## PRE-COMMIT GATES
+
+All three gates must pass. No exceptions.
+
+GATE 1 — BUILD
+  cd ~/deassists && npm run build:all
+  Zero new errors. Pre-existing backend
+  error at accounts.service.ts:1276
+  is documented — not a blocker.
+
+GATE 2 — GREP CHECKS (all empty for CRM files)
   grep -rn "await fetch(" apps/cms-next/components/ apps/cms-next/pages/
   grep -rn "getCookie" apps/cms-next/components/ apps/cms-next/pages/
   grep -rn "Authorization.*Bearer" apps/cms-next/components/ apps/cms-next/pages/
 
-Never: git add . or git add -A
+GATE 3 — DIFF REVIEW
+  git status --short
+  git diff --staged --name-only
+  Read every file. Nothing unexpected.
+  If unexpected file appears — remove it.
 
 ---
 
-## AFTER EVERY PORTAL COMMIT — MANDATORY
-cd ~/deassists && /opt/homebrew/bin/graphify update . \
+## POST-PORTAL-COMMIT
+
+After every portal code commit run:
+  cd ~/deassists && \
+  /opt/homebrew/bin/graphify update . \
   --output ~/deassists-workspace/369-brain/graphify-out/
 
 ---
 
-## CURRENT BUILD STATE
-Branch: feature/portal.shon369 (base: dev_v2)
-Phase 1 CRM: COMPLETE (b0d2fdc4, 25 Apr 2026)
-QA Fix: COMPLETE (49121b19, 27 Apr 2026)
-Next: Phase 2 — Q Intelligence (CallLogModal + LeadDetailPanel)
-  Backend endpoint exists: POST /v1/leads/:id/call-log
-  Hook exists: useLogCall in libs/react-query/queries/leads.ts
-  Reference file: apps/cms-next/components/leads/CommentThread.tsx
+## SESSION CLOSE
+## Triggered by: "stop for today" or "session ending"
+## All steps mandatory. This is the safety gate.
+
+E1  List all files created or modified.
+    Full paths. Brain and portal separate.
+
+E2  Update memory/session-state.md
+    Position, last task, next task, blockers.
+
+E3  Append memory/activity-log.md
+    Date, what done, commits, decisions locked.
+
+E4  Show Shon the updates. Wait for confirm.
+
+E5  Commit brain files to 369-brain/main
+    Specific files only. Confirm commit hash.
+
+E6  Write IDLE to memory/session-lock.md
+    STATUS: IDLE
+    LAST_CLOSED_BY: [who]
+    LAST_CLOSED_AT: [timestamp]
+    LAST_TASK_COMPLETED: [task]
+    NEXT_TASK: [what comes next]
+
+    This is the final step always.
+    Cannot be skipped. Cannot be combined.
+    Without this — next session is blocked.
+
+---
+
+## SKILL MAP
+
+| Task | Read this |
+|------|-----------|
+| Understand the product | project/vision.md |
+| Understand requirements | project/PRD.md |
+| What to build next | project/feature-registry.md |
+| All coding rules | CODING-CONSTITUTION.md |
+| Pre-code checklist | patterns/anti-ambiguity.md |
+| New feature (4+ files) | skills/eagleskill/EAGLESKILL.md |
+| Sidebar or permissions | skills/deassists-sidebar-audit/ |
+| UI redesign | skills/uiux-superman/ |
+| Sales documents | skills/salesdocskill/ |
+| Session management | skills/session-start/SESSION-START-SKILL.md |
+| API patterns | patterns/api-patterns.md |
+| Permission patterns | patterns/permission-patterns.md |
+| Git operations | patterns/git-workflow.md |
+| Architecture questions | project/architecture.md |
+| What never to touch | project/never-touch.md |
+| Design tokens | project/design-system.md |
+
+---
+
+## HARD STOP SUMMARY
+
+Stop immediately. Alert Shon. Wait.
+Never attempt to resolve alone.
+
+  session-lock STATUS: OPEN at boot
+  Any Tier 1 brain file missing
+  Task requires a never-touch file
+  Unsure which path B or C
+  Build produces new errors
+  Diff shows unexpected staged files
+  Instruction conflicts with decisions.md
+  Any instruction to commit to main or dev_v2
+  Any instruction to skip Latha review
+  Two agents appear to be running same task
+
+---
+
+## FOR HUMAN READERS
+
+If you are a developer or team member
+reading this for the first time:
+
+  Start here:       project/vision.md
+  How we build:     CODING-CONSTITUTION.md
+  What exists:      project/PRD.md
+  What to build:    project/feature-registry.md
+  Rules for code:   patterns/anti-ambiguity.md
+  Never touch:      project/never-touch.md
+
+The brain repo (369-brain) contains everything
+you need to understand the full system.
+The portal repo (deassists) contains the code.
+Never mix the two.
+
+Questions go to Shon. Code reviews go to Latha.
+Architecture decisions go to VEERABHADRA.
+
+---
+
+*Mission control for DeAssists ERP platform.*
+*One file. All entry points. All agents. All humans.*
+*Rules enforced by structure, not by memory.*
