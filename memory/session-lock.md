@@ -9,10 +9,11 @@
 
 ---
 
-STATUS: OPEN
-OPENED_BY: Claude Code
-OPENED_AT: 2026-05-01T21:00:00+02:00
-CURRENT_TASK: LeadDetailPanel cleanup — remove callback_note, reverse call history
+STATUS: IDLE
+LAST_CLOSED_BY: Claude Code
+LAST_CLOSED_AT: 2026-05-01T21:05:00+02:00
+LAST_TASK_COMPLETED: Phase 2A complete — Q Intelligence + polish
+NEXT_TASK: Phase 2B Service Catalog
 SESSIONS_TODAY: 5
 
 ---
