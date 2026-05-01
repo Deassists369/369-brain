@@ -4,6 +4,114 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 1 May 2026 — Full Day CRM Build — Phase 2A Complete
+
+**Duration:** Full day session
+**Participants:** Shon AJ, Claude Code
+**Context:** Phase 2A Q Intelligence build + Guide Layer design system
+
+### What was done
+
+**1. Phase 1 Constants (morning)**
+- All 8 enums added to lead.constants.ts:
+  ServiceCategory, LeadScoreBand, PartnershipTier, ProgrammeLevel,
+  StudentType, AssetType, FeeStatus, EnrollmentStatus
+- SidebarRole.Finance and SidebarRole.Vendor added
+- crmTokens.ts token values synced
+
+**2. Phase 2A Q Intelligence (afternoon)**
+- useLogCall hook added to libs/react-query/queries/leads.ts
+- CallLogModal.tsx created — full modal with outcome, callback date, quick note
+- Q Intelligence block added to LeadDetailPanel
+- Close button fix — X on same row as Lead ID
+- Date picker confirmation — shows "✓ Callback set: {date}"
+- Activity tab with call history timeline
+- call_log field added to lead.entity.ts
+- formatCallDate future date fix applied
+
+**3. Guide Layer Design System (evening)**
+- guide-layer.md created — self-explaining UI design system
+- A13 rule added to CODING-CONSTITUTION.md
+- All core documents connected to guide-layer.md
+- Guide layer tooltips added to all CRM components
+
+**4. Constitution Updates**
+- A10: Data access pattern rule (list vs single endpoint)
+- A11: (reserved for next rule)
+- A12: Bug handling protocol
+- A13: Self-explaining UI guided UX principle
+- C3: pm2 restart rule after CMS changes
+
+### Files created or modified
+
+```
+369-brain (committed):
+  CODING-CONSTITUTION.md — A10, A12, A13, C3 rules
+  project/feature-registry.md — Phase 2A progress
+  project/guide-layer.md — NEW (design system)
+  patterns/anti-ambiguity.md — guide layer reference
+  skills/session-start/SESSION-START-SKILL.md — constitution review
+  CLAUDE.md — guide layer reference
+  memory/session-state.md — this session
+  memory/activity-log.md — this entry
+  memory/session-lock.md — IDLE
+
+Portal (uncommitted, pending PR):
+  apps/backend-nest/src/leads/entities/lead.entity.ts
+  apps/backend-nest/src/leads/leads.service.ts
+  apps/cms-next/components/leads/CallLogModal.tsx (NEW)
+  apps/cms-next/components/leads/CommentThread.tsx
+  apps/cms-next/components/leads/LeadDetailPanel.tsx
+  apps/cms-next/components/leads/LeadQueueSidebar.tsx
+  apps/cms-next/pages/leads/index.tsx
+  apps/cms-next/styles/crmTokens.ts
+  libs/react-query/queries/leads.ts
+  libs/shared/constants/lead.constants.ts
+```
+
+### Brain commits today
+
+7ca7921, c334f44, 3e35885, 4318cf0, 45a4315, e851ec7, 6028965,
+25e9949, 2010bcf, 10c5e9a, 0045837
+
+### What was learned
+
+```
+1. useCustomQuery + SINGLE endpoint = result.data (not result.data.data)
+   This caused the Q Intelligence bug — 3 hours debugging.
+   Now documented as A10 in CODING-CONSTITUTION.md.
+
+2. pm2 must restart after CMS changes — build:all compiles but
+   pm2 serves old bundle until restarted. Added to C3.
+
+3. Guide layer tooltips should be added during feature build,
+   not as a separate pass. Now part of the checklist.
+
+4. Bug handling protocol (A12) — evidence before code, always.
+   JAM recording or screenshot required before investigating.
+```
+
+### Open bugs for next session
+
+```
+- Call history UI needs redesign (timeline layout)
+- Missing tooltips on 10 elements
+- Missing helper text on 6 fields
+- Hardcoded color '#d97706' at LeadDetailPanel.tsx:341
+```
+
+### What's next
+
+```
+1. Activity tab polish — call history UI redesign
+2. Complete guide layer Layer 1 (remaining tooltips)
+3. Complete guide layer Layer 2 (helper text)
+4. Fix hardcoded color
+5. Then Phase 2B — Service Catalog
+```
+
+---
+
 ## 29 April 2026 — EAGLE v2.1 Lock Session
 
 **Duration:** ~7 hours (afternoon to early evening)

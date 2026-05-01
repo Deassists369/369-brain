@@ -1,35 +1,67 @@
 # DeAssists — Session State
 # Owner: Shon AJ | Brain: VEERABHADRA
-# Last updated: 30 April 2026
+# Last updated: 1 May 2026
 
 ---
 
 ## CURRENT STATE
 
 **Active branch:** `feature/portal.shon369`
-**Last activity:** 30 April 2026 — Brain architecture session + boot sequence test
-**Build position:** EAGLE Mode 1 complete. Phase 1 constants NEXT. crmTokens.ts ready.
-**Portal uncommitted:** `apps/cms-next/styles/crmTokens.ts` (token sync, pending PR)
+**Last activity:** 1 May 2026 — Full day CRM build session
+**Build position:** Phase 2A complete. Activity tab and call history next.
+**Portal uncommitted:** 10 files (CallLogModal new, 9 modified)
 
 ---
 
-## WHAT HAPPENED — 30 APRIL SESSION
+## WHAT HAPPENED — 1 MAY SESSION
 
-Two sessions today:
+Full day session — Phase 2A Q Intelligence complete.
 
-### Session 1 (earlier)
-- EAGLE Mode 0 baseline committed to 369-brain (5c318b5)
-- EAGLE Mode 1 full prototype inventory committed (2abba6d)
-- crmTokens.ts token values updated (12 values synced to prototype)
-- Task 1 change log entry committed (3e35885)
-- decisions.md appended with 12 new 30 Apr entries
+### Work completed
+- Phase 1 constants — all 8 enums added to lead.constants.ts
+- crmTokens.ts — token values synced
+- useLogCall hook — added to leads.ts
+- CallLogModal component — created
+- Q Intelligence block — added to LeadDetailPanel
+- Close button fix — X on same row as Lead ID
+- Date picker confirmation — shows "Callback set: {date}"
+- Guide layer design system — guide-layer.md created
+- Guide layer tooltips — all CRM components
+- Activity tab with call history — added
+- call_log backend field — added to lead.entity.ts
+- formatCallDate future date fix — applied
+- A10 A11 A12 A13 rules — added to constitution
 
-### Session 2 (boot sequence test)
-- New CLAUDE.md read and boot sequence followed
-- CODING-CONSTITUTION.md loaded (607 lines)
-- feature-registry.md loaded (246 lines)
-- Session lock opened and closed properly
-- Boot sequence working as designed
+### Brain commits today
+7ca7921, c334f44, 3e35885, 4318cf0, 45a4315, e851ec7, 6028965,
+25e9949, 2010bcf, 10c5e9a, 0045837
+
+---
+
+## NEXT TASKS
+
+**Immediate — Activity tab refinement:**
+- Call history UI redesign
+- Missing tooltips on 10 elements
+- Missing helper text on 6 fields
+- Hardcoded color line 341 '#d97706'
+
+**Then Phase 2B — Service Catalog:**
+- serviceRegistry data structure
+- Service Catalog page
+- Service tabs component
+- Sidebar item: Service Catalog
+
+---
+
+## OPEN BUGS
+
+| Bug | Location | Notes |
+|-----|----------|-------|
+| Call history UI needs redesign | LeadDetailPanel.tsx | Timeline layout |
+| Missing tooltips on 10 elements | Various CRM components | Guide layer Layer 1 |
+| Missing helper text on 6 fields | Various CRM components | Guide layer Layer 2 |
+| Hardcoded color '#d97706' | LeadDetailPanel.tsx:341 | Should use crmTokens |
 
 ---
 
@@ -37,35 +69,12 @@ Two sessions today:
 
 | Item | Status |
 |------|--------|
-| Phase 1 CRM Backend | COMPLETE (b0d2fdc4) |
-| Phase 1 CRM Frontend | COMPLETE (49121b19) |
-| QA Fix — React Query | COMPLETE (656f7ef0) |
-| EAGLE Mode 0 Baseline | COMPLETE (5c318b5) |
-| EAGLE Mode 1 Inventory | COMPLETE (2abba6d) |
-| crmTokens.ts sync | DONE — uncommitted |
-| Phase 1 Constants | NEXT |
-| Phase 2A Q Intelligence | PENDING |
-
----
-
-## NEXT TASKS (from feature-registry.md)
-
-Phase 1 Constants — add to lead.constants.ts:
-- ServiceCategory enum
-- LeadScoreBand enum
-- PartnershipTier enum
-- ProgrammeLevel enum
-- StudentType enum
-- AssetType enum
-- FeeStatus enum
-- EnrollmentStatus enum
-- SidebarRole.Finance
-- SidebarRole.Vendor
-
-Then Phase 2A Q Intelligence:
-- useLogCall hook
-- CallLogModal component
-- Q Intelligence block in LeadDetailPanel
+| Phase 1 CRM Backend | COMPLETE |
+| Phase 1 CRM Frontend | COMPLETE |
+| Phase 1 Constants | COMPLETE |
+| Phase 2A Q Intelligence | COMPLETE |
+| Activity tab | DONE — needs polish |
+| Phase 2B Service Catalog | NEXT |
 
 ---
 
@@ -79,19 +88,6 @@ Then Phase 2A Q Intelligence:
 
 ---
 
-## KEY FILES UPDATED TODAY
-
-369-brain:
-- memory/decisions.md — 12 new entries (30 Apr)
-- change-logs/BRANCH-CHANGE-LOG-portal.shon369.md — Task 1 entry
-- memory/session-lock.md — tested open/close cycle
-- memory/session-state.md — this file
-
-Portal (uncommitted):
-- apps/cms-next/styles/crmTokens.ts — 12 token values synced
-
----
-
 ## WORKFLOW LOCKED
 
 1. VEERABHADRA thinks and plans
@@ -102,5 +98,5 @@ Portal (uncommitted):
 
 ---
 
-*Session state — 30 April 2026*
-*Next: Phase 1 constants, then Phase 2A Q Intelligence*
+*Session state — 1 May 2026*
+*Next: Activity tab polish, then Phase 2B Service Catalog*
