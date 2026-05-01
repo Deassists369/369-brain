@@ -260,6 +260,92 @@ Root cause of Q Intelligence bug (1 May 2026):
 
 ---
 
+### A12 — Bug Handling Protocol
+
+When a bug is reported or found —
+NEVER start fixing immediately.
+Always follow this exact sequence.
+
+STEP 1 — GATHER EVIDENCE FIRST
+  Before reading a single line of code, ask:
+
+  "Before I investigate this bug I need:
+   Option A: A JAM recording of the bug
+             jam.dev — record the exact steps
+             Share the link here
+   Option B: A screenshot showing the problem
+             With browser DevTools Network tab open
+   Option C: A clear description:
+             - What did you do?
+             - What did you expect to happen?
+             - What actually happened?
+             - Any error messages visible?
+
+   Please provide one of the above.
+   I will not touch any code until I have this."
+
+  Never skip this step.
+  Never assume you understand the bug without evidence.
+  Evidence first. Code second. Always.
+
+STEP 2 — READ ALL CONNECTED CODE
+  After receiving evidence:
+  Read every file connected to the bug.
+  Not just the file that seems broken.
+  Read the full chain:
+    Hook → Component → Page → Constants → Types
+
+  Produce a written summary:
+    - What the code does today
+    - What the evidence shows is wrong
+    - Every possible failure point
+    - The most likely single root cause
+
+  Show this summary to Shon before proceeding.
+  Wait for confirmation.
+
+STEP 3 — STATE THE ROOT CAUSE IN ONE SENTENCE
+  Write exactly one sentence:
+  "The bug is caused by [X] in [file] at [line]
+   because [reason]."
+
+  If you cannot write this sentence clearly —
+  you do not understand the bug yet.
+  Go back to Step 1.
+
+STEP 4 — PROPOSE THE MINIMUM FIX
+  Write the fix in plain English first.
+  Not code — words.
+  "I will change [X] to [Y] in [file] at [line]."
+
+  Ask: "Is this the minimum change needed?"
+  If the fix touches more than 3 lines —
+  question whether it is truly minimum.
+
+STEP 5 — APPLY AND VERIFY
+  Apply the fix.
+  Run: pm2 stop cms && rm -rf ~/deassists/apps/cms-next/.next && pm2 start cms
+  Run: npm run build:all
+  Run: three grep checks
+  Visual check on localhost:4002
+  Record a new JAM to confirm bug is fixed.
+
+STEP 6 — DOCUMENT THE BUG
+  Add to CODING-CONSTITUTION.md Part E:
+  What the bug was
+  What caused it
+  How it was fixed
+  What rule prevents it in future
+
+THE GOLDEN RULE OF BUG FIXING:
+  Understand before you act.
+  Evidence before code.
+  One fix for one bug.
+  Verify before moving on.
+  Document so it never happens again.
+
+---
+
 ## PART B — NEW FEATURE PATH
 ## Use when building something that does
 ## not exist in production yet.
@@ -373,22 +459,38 @@ Do not assume. Do not proceed.
 
 ---
 
-### C1 — Pre-Change Checklist
+### C1 — Pre-Change Checklist (Bug Fix Protocol)
 
+  BEFORE TOUCHING ANY CODE:
+  [ ] Have I received a JAM link, screenshot,
+      or clear written description of the bug?
+      If NO — ask for it. Do not proceed.
+
+  [ ] Have I read ALL connected files fully?
+      Not just the broken file.
+      The full chain: hook, component, page,
+      constants, types.
+      If NO — read them now.
+
+  [ ] Can I state the root cause in one sentence?
+      "The bug is caused by ___ in ___ at ___
+       because ___."
+      If NO — I do not understand the bug yet.
+      Go back and read more.
+
+  [ ] Is my proposed fix the minimum change?
+      Less than 5 lines ideally.
+      If more — question whether it is truly minimum.
+
+  [ ] Have I confirmed the exact API response shape
+      using JAM before changing any data access?
+      If NO — record a JAM first.
+
+  EXISTING CHECKS:
   [ ] Have I read the FULL file I am changing?
-      Not just the relevant section. The whole file.
-  [ ] Do I understand every function it connects to?
   [ ] Is this the minimum possible change?
   [ ] Could this break anything else?
-  [ ] If touching permissions:
-      Have I read permission.helper.ts fully?
-      Have I read sidemenu.ts fully?
-  [ ] If touching sidemenu.ts:
-      Run sidebar audit after the change.
-  [ ] If touching lead.constants.ts:
-      Check every file that imports from it.
   [ ] Is this a never-touch file?
-      If yes — STOP. Ask Shon.
 
 ---
 
