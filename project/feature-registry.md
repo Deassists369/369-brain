@@ -72,9 +72,17 @@ Priority values:
 
 | Feature | Status | Priority | Owner | Depends On | Notes |
 |---------|--------|----------|-------|------------|-------|
-| useLogCall hook | PENDING | HIGH | Shon | Phase 1 done | Backend exists at POST /v1/leads/:id/call-log |
-| CallLogModal component | PENDING | HIGH | Shon | useLogCall | Prototype lines 1555-1574 |
-| Q Intelligence block in LeadDetailPanel | PENDING | HIGH | Shon | CallLogModal | Add to existing component |
+| useLogCall hook | DONE | HIGH | Shon | Phase 1 done | Backend exists at POST /v1/leads/:id/call-log |
+| CallLogModal component | DONE | HIGH | Shon | useLogCall | Prototype lines 1555-1574 |
+| Q Intelligence block in LeadDetailPanel | DONE | HIGH | Shon | CallLogModal | Add to existing component |
+| Close button position fix | DONE | HIGH | Shon | Q Intelligence done | X button on same row as Lead ID |
+| Date picker confirmation text | DONE | MEDIUM | Shon | CallLogModal | Shows "✓ Callback set: {date}" |
+| Guide layer Layer 1 tooltips | DONE | MEDIUM | Shon | Q Intelligence done | All CRM components have title attributes |
+| Activity tab in LeadDetailPanel | NEXT | HIGH | Shon | Q Intelligence done | Full call history timeline — Details, Comments, Activity tabs |
+| Call history timeline component | NEXT | HIGH | Shon | Activity tab | Shows all calls with outcome, note, agent, time |
+| Quick note display in Activity | NEXT | HIGH | Shon | Call history component | Each call entry shows the quick note |
+| Loading state for Q Intelligence | NEXT | MEDIUM | Shon | Q Intelligence done | Skeleton while useLeadDetails fetches |
+| Call history view expandable | DEFERRED | MEDIUM | Shon | Activity tab live | Expandable call list in Q Intelligence block |
 
 ### Phase 2B — Service Catalog
 
