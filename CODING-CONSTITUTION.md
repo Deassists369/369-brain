@@ -384,6 +384,15 @@ Do not fix it now.
 ### C3 — After Change
 
   [ ] npm run build:all — zero new errors
+  [ ] pm2 restart cms (Mac Mini only)
+      After any cms-next file change:
+      pm2 stop cms
+      rm -rf ~/deassists/apps/cms-next/.next
+      pm2 start cms
+      Wait 30 seconds
+      Cmd+Shift+R in browser
+      This is mandatory — build:all compiles
+      but pm2 serves old bundle until restarted
   [ ] Three grep checks — clean
   [ ] Visual check on localhost:4002
   [ ] If permissions changed:
