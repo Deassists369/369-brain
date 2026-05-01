@@ -471,6 +471,43 @@ When building any new feature — ask:
 
 ---
 
+### A14 — Post-Build Audit (mandatory after every change)
+
+After every build passes — before moving to
+the next task — run this audit:
+
+  1. grep for hardcoded colors:
+     grep -n "'#" apps/cms-next/components/leads/[changed-file].tsx
+     Any result = violation = fix before next task
+
+  2. grep for hardcoded strings:
+     grep -n "backgroundColor\|color:.*'[^c]" [file]
+     Check against crmTokens
+
+  3. Run guide layer checklist:
+     Every button has title tooltip?
+     Every input has helper text?
+     If NO — add before next task
+
+  4. Check data access pattern:
+     Any new hook calls follow A10?
+     Correct path for single vs list?
+
+This audit takes 5 minutes.
+Skipping it costs hours of debugging later.
+
+One task is not complete until audit passes.
+Build passing is not enough.
+Audit passing is done.
+
+Root cause of 1 May 2026 violations:
+  Build passed — audit was skipped
+  Hardcoded color, missing tooltips discovered
+  only during end-of-session review
+  Cost: full re-review of 952 line file
+
+---
+
 ## PART B — NEW FEATURE PATH
 ## Use when building something that does
 ## not exist in production yet.
