@@ -140,6 +140,9 @@ Read only when the task requires them.
   For any code work (always):
     ~/deassists-workspace/369-brain/patterns/anti-ambiguity.md
 
+  For any UI or component work (always):
+    ~/deassists-workspace/369-brain/project/guide-layer.md
+
   For any new feature using EAGLE:
     ~/deassists-workspace/369-brain/skills/eagleskill/EAGLESKILL.md
     ~/deassists-workspace/369-brain/skills/eagleskill/eagleskill-config.md

@@ -433,6 +433,13 @@ When building any new feature — ask:
   If NO — add tooltips and helper text first.
   Then ship.
 
+  Full design system and implementation guide:
+  Read: project/guide-layer.md
+  This file defines all five guide elements,
+  visual design, language rules, and the
+  role-specific guidance system.
+  Read it before building any UI component.
+
 ---
 
 ## PART B — NEW FEATURE PATH
@@ -470,6 +477,10 @@ If any answer is NO or UNKNOWN — stop and resolve.
       (dependencies: ___)
   [ ] Is this tenant-aware?
   [ ] Is this AI-hookable?
+  [ ] Have I read project/guide-layer.md?
+  [ ] Does every CTA have a tooltip?
+  [ ] Does this feature pass the day one test?
+      (A new agent can use it without asking anyone)
 
 ---
 
@@ -539,6 +550,8 @@ Do not assume. Do not proceed.
   [ ] feature-registry.md updated
   [ ] Change log entry written
   [ ] Stage report produced
+  [ ] Guide layer checklist passed
+      (run checklist in project/guide-layer.md)
 
 ---
 
@@ -580,6 +593,9 @@ Do not assume. Do not proceed.
   [ ] Is this the minimum possible change?
   [ ] Could this break anything else?
   [ ] Is this a never-touch file?
+  [ ] Does the changed element still have
+      correct tooltip and helper text?
+  [ ] Does the change break any guide layer element?
 
 ---
 

@@ -294,6 +294,7 @@ E6  Write IDLE to memory/session-lock.md
 | Architecture questions | project/architecture.md |
 | What never to touch | project/never-touch.md |
 | Design tokens | project/design-system.md |
+| Guide layer and tooltips | project/guide-layer.md |
 
 ---
 

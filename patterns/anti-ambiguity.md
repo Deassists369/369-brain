@@ -361,6 +361,29 @@ rounds and a broken feature in QA.
 
 ---
 
+
+---
+
+### About the Guide Layer
+
+  [ ] Does every button have a title tooltip?
+      Answer: YES / NO
+      If NO — add before committing.
+
+  [ ] Does every input have helper text below?
+      Answer: YES / NO
+      If NO — add before committing.
+
+  [ ] Does this pass the day one test?
+      "A new call center agent on day one
+       can use this without asking anyone."
+      Answer: YES / NO
+      If NO — add guide elements until YES.
+
+  [ ] Have you read project/guide-layer.md?
+      Answer: YES / NO
+      If NO — read it now before continuing.
+
 *DeAssists Anti-Ambiguity Checklist v1.0*
 *Owner: Shon AJ | Brain: VEERABHADRA*
 *Created: 30 April 2026*
