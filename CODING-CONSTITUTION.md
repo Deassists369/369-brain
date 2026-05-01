@@ -346,6 +346,95 @@ THE GOLDEN RULE OF BUG FIXING:
 
 ---
 
+### A13 — Self-Explaining UI (Guided UX Principle)
+
+Every element in the portal must explain itself.
+No user should ever need to ask what a button,
+field, or section does.
+
+This is not optional. This is a core product requirement.
+A portal that needs external training is incomplete.
+
+THREE LAYERS — implement in order:
+
+LAYER 1 — TOOLTIPS (every CTA and icon)
+  Every button, icon, and non-obvious element
+  must have a tooltip explaining its purpose.
+
+  Implementation:
+    title="Explain what this does in plain English"
+
+  Examples:
+    Log Call button:
+      title="Record the outcome of this call.
+             Updates lead status automatically."
+
+    Save button:
+      title="Save changes to this lead's details"
+
+    Queue badge:
+      title="The queue this lead is assigned to.
+             Change it in Update Lead below."
+
+  Rules:
+    Never use developer language in tooltips
+    Write as if explaining to someone on day one
+    Maximum 2 sentences per tooltip
+    Always start with a verb
+
+LAYER 2 — FIELD HELPER TEXT
+  Every input field must have helper text
+  explaining what goes there and why it matters.
+
+  Empty state example:
+    University Interest field:
+    placeholder="e.g. SRH Berlin, BSBI London"
+    Helper: "Which university is this student
+             most interested in?"
+
+  Rules:
+    placeholder is NOT helper text
+    Helper text appears below the field
+    Explains purpose, not just format
+
+LAYER 3 — CONTEXTUAL GUIDANCE
+  Complex sections get a ? help icon
+  Clicking it shows a brief explanation
+  of what that section does and how to use it.
+
+  Example:
+    CALL INTELLIGENCE section ? icon:
+    "This shows the history of calls made
+     to this lead. Log calls using the
+     Log Call button above. The AI will
+     use this data to suggest next actions."
+
+ONBOARDING RULE:
+  First time a user visits any page —
+  show a brief 3-step guided tour.
+  After completion — never show again.
+  Store completion in user preferences.
+
+THE TEST:
+  A brand new call center agent on day one
+  must be able to complete their first
+  call log without asking anyone for help.
+  If they cannot — the UI is incomplete.
+
+This principle applies to:
+  Every page we build
+  Every component we add
+  Every feature we ship
+  Applies equally for internal staff
+  and external tenant staff (BCBT etc)
+
+When building any new feature — ask:
+  "Could a new agent use this without training?"
+  If NO — add tooltips and helper text first.
+  Then ship.
+
+---
+
 ## PART B — NEW FEATURE PATH
 ## Use when building something that does
 ## not exist in production yet.
