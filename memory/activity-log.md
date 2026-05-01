@@ -37,21 +37,33 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 **4. Constitution Updates**
 - A10: Data access pattern rule (list vs single endpoint)
-- A11: (reserved for next rule)
 - A12: Bug handling protocol
 - A13: Self-explaining UI guided UX principle
+- A14: Post-build audit (mandatory after every change)
 - C3: pm2 restart rule after CMS changes
+
+**5. Intelligence Layer (evening)**
+- INTELLIGENCE-LAYER.md created (375 lines)
+- DECISIONS-LOG.md created (74 lines)
+- LEARNING-MIND.md created (103 lines)
+- FUTURE-VISION.md created (128 lines)
+- Intervention mechanism wired (5 moments)
+- 680 total lines of intelligence infrastructure
 
 ### Files created or modified
 
 ```
 369-brain (committed):
-  CODING-CONSTITUTION.md — A10, A12, A13, C3 rules
+  CODING-CONSTITUTION.md — A10, A12, A13, A14, C3 rules
   project/feature-registry.md — Phase 2A progress
   project/guide-layer.md — NEW (design system)
   patterns/anti-ambiguity.md — guide layer reference
   skills/session-start/SESSION-START-SKILL.md — constitution review
   CLAUDE.md — guide layer reference
+  intelligence/INTELLIGENCE-LAYER.md — NEW (375 lines)
+  intelligence/DECISIONS-LOG.md — NEW (74 lines)
+  intelligence/LEARNING-MIND.md — NEW (103 lines)
+  intelligence/FUTURE-VISION.md — NEW (128 lines)
   memory/session-state.md — this session
   memory/activity-log.md — this entry
   memory/session-lock.md — IDLE
@@ -72,7 +84,7 @@ Portal (uncommitted, pending PR):
 ### Brain commits today
 
 7ca7921, c334f44, 3e35885, 4318cf0, 45a4315, e851ec7, 6028965,
-25e9949, 2010bcf, 10c5e9a, 0045837
+25e9949, 2010bcf, 10c5e9a, 0045837, 8628453, e88a051, a243d76
 
 ### What was learned
 
@@ -89,6 +101,12 @@ Portal (uncommitted, pending PR):
 
 4. Bug handling protocol (A12) — evidence before code, always.
    JAM recording or screenshot required before investigating.
+
+5. Post-build audit (A14) must run after every change — not at
+   end of session. Build passing is not enough. Audit passing is done.
+
+6. Intelligence Layer sits above constitution. Constitution = HOW.
+   Intelligence Layer = WHY, WHAT, WHETHER. Both needed.
 ```
 
 ### Open bugs for next session

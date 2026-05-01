@@ -1,28 +1,28 @@
 # DeAssists — Session State
 # Owner: Shon AJ | Brain: VEERABHADRA
-# Last updated: 1 May 2026
+# Last updated: 1 May 2026 (session close)
 
 ---
 
 ## CURRENT STATE
 
 **Active branch:** `feature/portal.shon369`
-**Last activity:** 1 May 2026 — Full day CRM build session
-**Build position:** Phase 2A complete. Activity tab and call history next.
+**Last activity:** 1 May 2026 — Full day CRM build + Intelligence Layer
+**Build position:** Phase 2A complete. Intelligence Layer live. Activity tab polish next.
 **Portal uncommitted:** 10 files (CallLogModal new, 9 modified)
 
 ---
 
-## WHAT HAPPENED — 1 MAY SESSION
+## WHAT WAS COMPLETED — 1 MAY SESSION
 
-Full day session — Phase 2A Q Intelligence complete.
+Full day session — Phase 2A Q Intelligence + Intelligence Layer.
 
 ### Work completed
 - Phase 1 constants — all 8 enums added to lead.constants.ts
 - crmTokens.ts — token values synced
 - useLogCall hook — added to leads.ts
-- CallLogModal component — created
-- Q Intelligence block — added to LeadDetailPanel
+- CallLogModal component — created and tested
+- Q Intelligence block — working in LeadDetailPanel
 - Close button fix — X on same row as Lead ID
 - Date picker confirmation — shows "Callback set: {date}"
 - Guide layer design system — guide-layer.md created
@@ -30,17 +30,18 @@ Full day session — Phase 2A Q Intelligence complete.
 - Activity tab with call history — added
 - call_log backend field — added to lead.entity.ts
 - formatCallDate future date fix — applied
-- A10 A11 A12 A13 rules — added to constitution
+- Intelligence Layer — created (4 files)
+- Constitution rules A10 A12 A13 A14 — added
 
 ### Brain commits today
 7ca7921, c334f44, 3e35885, 4318cf0, 45a4315, e851ec7, 6028965,
-25e9949, 2010bcf, 10c5e9a, 0045837
+25e9949, 2010bcf, 10c5e9a, 0045837, 8628453, e88a051, a243d76
 
 ---
 
 ## NEXT TASKS
 
-**Immediate — Activity tab refinement:**
+**Immediate — Activity tab polish:**
 - Call history UI redesign
 - Missing tooltips on 10 elements
 - Missing helper text on 6 fields
@@ -54,14 +55,25 @@ Full day session — Phase 2A Q Intelligence complete.
 
 ---
 
-## OPEN BUGS
+## OPEN VIOLATIONS (fix next session)
 
-| Bug | Location | Notes |
-|-----|----------|-------|
-| Call history UI needs redesign | LeadDetailPanel.tsx | Timeline layout |
-| Missing tooltips on 10 elements | Various CRM components | Guide layer Layer 1 |
-| Missing helper text on 6 fields | Various CRM components | Guide layer Layer 2 |
-| Hardcoded color '#d97706' | LeadDetailPanel.tsx:341 | Should use crmTokens |
+| Violation | Rule | Location | Notes |
+|-----------|------|----------|-------|
+| Hardcoded color '#d97706' | A4 | LeadDetailPanel.tsx:341 | Use crmTokens.am |
+| Missing tooltips (10) | A13 | LeadDetailPanel.tsx | Guide Layer 1 |
+| Missing helper text (6) | A13 | LeadDetailPanel.tsx | Guide Layer 2 |
+| Call history UI | — | LeadDetailPanel.tsx | Needs timeline redesign |
+
+---
+
+## LATHA BLOCKERS
+
+| Issue | Priority | Notes |
+|-------|----------|-------|
+| JWT secrets rotation | CRITICAL | Exposed in git |
+| AWS ACL accounts.service.ts:1276 | MEDIUM | TypeScript error |
+| Stripe write-back bug | HIGH | Payment not saved |
+| call_log array | HIGH | Needs Latha PR review |
 
 ---
 
@@ -73,18 +85,9 @@ Full day session — Phase 2A Q Intelligence complete.
 | Phase 1 CRM Frontend | COMPLETE |
 | Phase 1 Constants | COMPLETE |
 | Phase 2A Q Intelligence | COMPLETE |
+| Intelligence Layer | LIVE |
 | Activity tab | DONE — needs polish |
 | Phase 2B Service Catalog | NEXT |
-
----
-
-## ACTIVE BLOCKERS (unchanged)
-
-1. JWT secrets must be rotated — Latha, CRITICAL
-2. 4 AWS ACL errors in accounts.service.ts — Latha, MEDIUM
-3. Stripe write-back bug — Latha, HIGH
-4. Security guard bypass scope.guard.ts ~L79 — Latha, HIGH
-5. assigned_to enum EMPTY — Shon, HIGH (needs 37 agent names)
 
 ---
 
@@ -98,5 +101,5 @@ Full day session — Phase 2A Q Intelligence complete.
 
 ---
 
-*Session state — 1 May 2026*
-*Next: Activity tab polish, then Phase 2B Service Catalog*
+*Session state — 1 May 2026 (closed)*
+*Next: Activity tab polish, fix A4 A13 violations, then Phase 2B*
