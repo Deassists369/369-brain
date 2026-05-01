@@ -990,3 +990,27 @@ Example: write UserTypes.TEAM_LEAD not UserTypes.TEAM_LEAD.
 After writing any .ts or .tsx file run:
   grep -rn "](http" apps/cms-next/ libs/
 Result must be empty before reporting done.
+
+---
+
+### A18 — Rebuild Shared Library Before CMS Restart
+
+Any time a file inside libs/shared/ is changed,
+the shared library must be rebuilt before restarting cms.
+Restarting cms alone is not enough.
+
+Files affected:
+  - sidemenu.ts
+  - lead.constants.ts
+  - service-registry.ts
+  - Any other file inside libs/shared/
+
+Required sequence:
+  1. npx nx build shared --skip-nx-cache
+  2. pm2 restart cms
+  3. Wait 60 seconds before testing in browser
+
+Why: The cms dev server loads compiled JavaScript
+from dist/libs/shared/. If you restart cms without
+rebuilding shared, the browser shows stale code.
+This caused debugging time loss on 1 May 2026.
