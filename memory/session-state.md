@@ -1,50 +1,61 @@
 # DeAssists — Session State
 # Owner: Shon AJ | Brain: VEERABHADRA
-# Last updated: 1 May 2026 (session 5 close)
+# Last updated: 2 May 2026 (session close)
 
 ---
 
 ## CURRENT STATE
 
 **Active branch:** `feature/portal.shon369`
-**Last activity:** 1 May 2026 — Phase 2A complete, tested, polished
-**Build position:** Phase 2A COMPLETE. Phase 2B Service Catalog next.
-**Portal uncommitted:** 10 files (CallLogModal new, 9 modified)
+**Last activity:** 2 May 2026 — Phase 2B Service Catalog code complete
+**Build position:** Phase 2B code on disk. Blocked by Latha's permission.helper.ts typo.
+**Portal uncommitted:** 12 files (2 new catalog files, 10 modified)
 
 ---
 
-## WHAT WAS COMPLETED — 1 MAY (ALL SESSIONS)
+## WHAT WAS COMPLETED — 2 MAY
 
-Full day — Phase 2A Q Intelligence fully built and tested.
+Phase 2B Service Catalog fully coded and waiting for build.
 
 ### Work completed
-- Phase 1 constants — all 8 enums in lead.constants.ts
-- crmTokens.ts — token values synced
-- useLogCall hook — added to leads.ts
-- CallLogModal component — created and tested
-- Q Intelligence block — working in LeadDetailPanel
-- Close button fix — X on same row as Lead ID
-- Date picker confirmation — shows "Callback set: {date}"
-- Guide layer design system — guide-layer.md created
-- Guide layer tooltips — all CRM components
-- Activity tab with call history — added
-- call_log backend field — added to lead.entity.ts
-- formatCallDate future date fix — applied
-- Intelligence Layer — created (4 files)
-- Constitution rules A10 A12 A13 A14 C3 — added
-- Hardcoded color fix — '#d97706' → crmTokens.am
-- Call history reverse order — newest first
-- Callback reason section — added to Call Summary
+- Pulled Latha's 14 commits (66 files changed)
+- Stash/pull/pop workflow to preserve local changes
+- sidemenu.ts auto-merged successfully — Sales Guide section intact
+- Shared library rebuild attempted — blocked by upstream bug
+
+### Blocker discovered
+- permission.helper.ts:139 uses `isPermitted` but line 200 declares `permitted`
+- This is a typo in Latha's commit — shared library cannot compile
+- Browser test and commit blocked until Latha fixes
+
+---
+
+## PHASE 2B FILES ON DISK (uncommitted)
+
+**New files:**
+- libs/shared/constants/service-registry.ts (ServiceEntry interface + 12 services)
+- apps/cms-next/components/catalog/ServiceCard.tsx
+- apps/cms-next/pages/catalog/index.tsx
+
+**Modified files:**
+- libs/shared/constants/lead.constants.ts (3 enum values added)
+- libs/shared/models/sidemenu.ts (Sales Guide section added)
+- Plus Phase 2A files still uncommitted
 
 ---
 
 ## NEXT TASKS
 
-**Phase 2B — Service Catalog:**
-- serviceRegistry data structure
-- Service Catalog page
-- Service tabs component
-- Sidebar item: Service Catalog
+**Immediate (blocked on Latha):**
+- Fix permission.helper.ts:139 — change `isPermitted` to `permitted`
+- Rebuild shared library
+- Restart cms
+- Browser test /catalog page
+
+**After fix:**
+- Verify Sales Guide section in sidebar
+- Verify Service Catalog page loads
+- Commit Phase 2A + 2B together
 
 ---
 
@@ -54,6 +65,7 @@ Full day — Phase 2A Q Intelligence fully built and tested.
 |-------|----------|-------|
 | callback_note always shows last saved value | LeadDetailPanel.tsx | May need per-call note from call_log array |
 | 4 remaining '#fff' hardcoded | LeadDetailPanel.tsx:264,278,303,937 | Intentional white-on-dark |
+| permission.helper.ts typo | Line 139 | Latha's commit — isPermitted should be permitted |
 
 ---
 
@@ -61,6 +73,7 @@ Full day — Phase 2A Q Intelligence fully built and tested.
 
 | Issue | Priority | Notes |
 |-------|----------|-------|
+| permission.helper.ts:139 typo | CRITICAL | Blocks shared library build |
 | JWT secrets rotation | CRITICAL | Exposed in git |
 | AWS ACL accounts.service.ts:1276 | MEDIUM | TypeScript error |
 | Stripe write-back bug | HIGH | Payment not saved |
@@ -78,7 +91,7 @@ Full day — Phase 2A Q Intelligence fully built and tested.
 | Phase 2A Q Intelligence | COMPLETE |
 | Intelligence Layer | LIVE |
 | Activity tab | COMPLETE |
-| Phase 2B Service Catalog | NEXT |
+| Phase 2B Service Catalog | CODE COMPLETE — BUILD BLOCKED |
 
 ---
 
@@ -92,5 +105,5 @@ Full day — Phase 2A Q Intelligence fully built and tested.
 
 ---
 
-*Session state — 1 May 2026 (session 5 closed)*
-*Next: Phase 2B Service Catalog*
+*Session state — 2 May 2026 (session closed)*
+*Next: Fix permission.helper.ts typo, then browser test + commit*

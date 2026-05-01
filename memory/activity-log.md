@@ -4,6 +4,72 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 2 May 2026 — Phase 2B Service Catalog — Code Complete, Build Blocked
+
+**Duration:** Evening session
+**Participants:** Shon AJ, Claude Code
+**Context:** Phase 2B Service Catalog build + Latha upstream merge
+
+### What was done
+
+**1. Pulled Latha's 14 commits**
+- 66 files changed across portal
+- Used stash/pull/pop workflow to preserve local changes
+- sidemenu.ts auto-merged successfully — Sales Guide section intact
+
+**2. Phase 2B Service Catalog (completed yesterday, verified today)**
+- service-registry.ts with 12 services and ServiceEntry interface
+- ServiceCard.tsx component with revenue driver / redirect categorization
+- catalog/index.tsx page with ALLOWED_ROLES guard
+- Sales Guide sidebar section with Service Catalog and Sales Library
+
+**3. Build blocked by upstream bug**
+- permission.helper.ts:139 uses `isPermitted` but variable is `permitted` (line 200)
+- This is a typo in Latha's commit — shared library cannot compile
+- Browser test and commit blocked until fix applied
+
+### Files on disk (uncommitted)
+
+```
+Portal (Phase 2A + 2B combined):
+  apps/backend-nest/src/leads/entities/lead.entity.ts
+  apps/backend-nest/src/leads/leads.service.ts
+  apps/cms-next/components/catalog/ServiceCard.tsx (NEW)
+  apps/cms-next/components/leads/CallLogModal.tsx (NEW)
+  apps/cms-next/components/leads/CommentThread.tsx
+  apps/cms-next/components/leads/LeadDetailPanel.tsx
+  apps/cms-next/components/leads/LeadQueueSidebar.tsx
+  apps/cms-next/pages/catalog/index.tsx (NEW)
+  apps/cms-next/pages/leads/index.tsx
+  apps/cms-next/styles/crmTokens.ts
+  libs/react-query/queries/leads.ts
+  libs/shared/constants/lead.constants.ts
+  libs/shared/constants/service-registry.ts (NEW)
+  libs/shared/models/sidemenu.ts
+```
+
+### Blocker for Latha
+
+```
+File: libs/shared/functions/permission.helper.ts
+Line: 139
+Error: isPermitted should be permitted
+Cause: Typo in Latha's recent commit
+Impact: Shared library build fails, CMS cannot restart
+```
+
+### What's next
+
+```
+1. Fix permission.helper.ts:139 — change isPermitted to permitted
+2. Rebuild shared library
+3. Restart cms
+4. Browser test /catalog page
+5. Commit Phase 2A + 2B together
+```
+
+---
+
 ## 1 May 2026 — Full Day CRM Build — Phase 2A Complete
 
 **Duration:** Full day session
