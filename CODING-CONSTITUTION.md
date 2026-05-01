@@ -234,29 +234,58 @@ future automation hookup.
 
 ---
 
-### A10 — Data Access Pattern — Two Hook Types
+### A10 — Data Access Pattern — Know Your Endpoint
+
+RULE ZERO: Before accessing data from any hook —
+check the actual API response shape using JAM.
+Never assume. Always verify.
+
+TWO HOOK TYPES:
 
 useCustomQuery (legacy):
-  Returns AxiosResponse<T>
-  Access actual data via: result.data.data
-  Example: const leads = data?.data?.data ?? []
+  Returns UseQueryResult<AxiosResponse<T>>
+  result.data = AxiosResponse wrapper
+  result.data.data = actual API payload
 
 useCustomQueryV2 (new):
   Auto-unwraps AxiosResponse
-  Access actual data via: result.data
-  Example: const stats = data?.data
+  result.data = actual API payload directly
 
-NEVER access result.data when using useCustomQuery
-and expect the API payload — it is the Axios wrapper.
-Always use result.data.data for useCustomQuery.
-Always use result.data for useCustomQueryV2.
-Check which hook is used before accessing data.
+TWO ENDPOINT TYPES — CRITICAL DISTINCTION:
+
+LIST endpoints wrap response in data object:
+  GET /v1/leads → { data: [...], total, page }
+  Access: result.data.data (the array)
+  Example: const leads = data?.data?.data ?? []
+
+SINGLE endpoints return object directly:
+  GET /v1/leads/:id → { _id, call_attempts, ... }
+  Access: result.data (the object itself)
+  Example: const lead = data?.data
+
+THIS IS THE RULE THAT MATTERS:
+  useCustomQuery + LIST endpoint = result.data.data
+  useCustomQuery + SINGLE endpoint = result.data
+  useCustomQueryV2 + ANY endpoint = result.data
+
+BEFORE ACCESSING DATA — ANSWER THESE:
+  1. Which hook am I using?
+     useCustomQuery or useCustomQueryV2?
+  2. Is this a LIST or SINGLE endpoint?
+     Does it return { data: [...] } or { _id: ... }?
+  3. Use the correct path from the table above.
+  4. Verify with JAM if unsure.
+
+NEVER assume list pattern equals single pattern.
+They are different. Always check.
 
 Root cause of Q Intelligence bug (1 May 2026):
   useLeadDetails uses useCustomQuery (legacy)
-  detailedLead = leadDetailsData?.data was wrong
-  detailedLead = leadDetailsData?.data?.data is correct
-  The block was invisible because data was undefined.
+  GET /v1/leads/:id returns lead directly
+  So correct path: leadDetailsData?.data
+  NOT: leadDetailsData?.data?.data
+  The extra .data caused undefined every time.
+  Cost: 3 hours of debugging.
 
 ---
 
