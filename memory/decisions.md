@@ -111,3 +111,4 @@ Decision: All new module code MUST follow the project's full API pattern:
 7. Reference files: account.ts (auth), model.ts (generic CRUD), leads.ts (custom controller)
 Locked by: Shon AJ
 Trigger: Two rounds of Latha feedback 27 Apr 2026
+| 2026-05-01 | A17 added | Markdown hyperlink syntax found inside TypeScript enum array causing silent runtime bug. Rule: grep for ](http after every file write. |

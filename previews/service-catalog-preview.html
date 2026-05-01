@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Catalog — DeAssists Portal Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ══════════════════════════════════════════════════════════════
+       crmTokens — exact values from apps/cms-next/styles/crmTokens.ts
+       ══════════════════════════════════════════════════════════════ */
+    :root {
+      --g: #1D7A45;
+      --gl: #2a9458;
+      --gx: #e8f5ee;
+      --gxx: #d0ecda;
+      --am: #F59E0B;
+      --aml: #fff8ee;
+      --amx: #FDE9B0;
+      --cr: #F6F7F4;
+      --wh: #ffffff;
+      --t1: #0d1a10;
+      --t2: #1a3d26;
+      --t3: #4a7c59;
+      --t4: #bbbbbb;
+      --bd: #E1EBE3;
+      --r1: 8px;
+      --r2: 10px;
+      --r3: 12px;
+      --r4: 20px;
+      --sh1: 0 1px 3px rgba(0,0,0,0.04);
+      --sh2: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--cr);
+      color: var(--t1);
+      min-height: 100vh;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       Page Layout
+       ══════════════════════════════════════════════════════════════ */
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 32px;
+    }
+
+    .page-header {
+      margin-bottom: 20px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--t1);
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--t3);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       Info Box
+       ══════════════════════════════════════════════════════════════ */
+    .info-box {
+      background: var(--gx);
+      border: 1px solid var(--gxx);
+      border-radius: var(--r2);
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--t2);
+    }
+
+    .info-box strong {
+      color: var(--g);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       Section Labels
+       ══════════════════════════════════════════════════════════════ */
+    .catalog-section {
+      margin-top: 8px;
+    }
+
+    .catalog-section + .catalog-section {
+      margin-top: 32px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--t3);
+      margin-bottom: 12px;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       Catalog Grid
+       ══════════════════════════════════════════════════════════════ */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       Service Card
+       ══════════════════════════════════════════════════════════════ */
+    .cat-card {
+      background: var(--wh);
+      border: 1px solid var(--bd);
+      border-radius: var(--r2);
+      padding: 18px 20px;
+      cursor: pointer;
+      box-shadow: var(--sh1);
+      transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cat-card:hover {
+      border-color: var(--g);
+      box-shadow: var(--sh2);
+      transform: translateY(-1px);
+    }
+
+    /* Redirect cards — muted, non-clickable */
+    .cat-card.redirect {
+      cursor: default;
+      opacity: 0.85;
+    }
+
+    .cat-card.redirect:hover {
+      border-color: var(--bd);
+      box-shadow: var(--sh1);
+      transform: none;
+    }
+
+    /* Green top stripe */
+    .cat-stripe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--g);
+    }
+
+    .cat-card.redirect .cat-stripe {
+      background: var(--t4);
+    }
+
+    /* Card content */
+    .cat-icon {
+      font-size: 28px;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .cat-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--t1);
+      letter-spacing: -0.005em;
+      line-height: 1.3;
+    }
+
+    .cat-desc {
+      font-size: 12px;
+      color: var(--t3);
+      line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       Tags
+       ══════════════════════════════════════════════════════════════ */
+    .cat-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
+    /* Revenue Driver tag — green */
+    .tag-revenue {
+      background: var(--gx);
+      color: var(--g);
+      border: 1px solid var(--gxx);
+    }
+
+    /* Redirect tag — amber */
+    .tag-redirect {
+      background: var(--aml);
+      color: #92400e;
+      border: 1px solid var(--amx);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       ALLOWED_ROLES Comment (for Latha reference)
+       ══════════════════════════════════════════════════════════════ */
+    .dev-note {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      background: var(--wh);
+      border: 1px solid var(--bd);
+      border-radius: var(--r2);
+      padding: 12px 16px;
+      font-size: 11px;
+      color: var(--t3);
+      box-shadow: var(--sh2);
+      max-width: 280px;
+    }
+
+    .dev-note code {
+      display: block;
+      margin-top: 6px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 10px;
+      color: var(--t2);
+      background: var(--cr);
+      padding: 8px;
+      border-radius: var(--r1);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-title">Service Catalog</div>
+      <div class="page-subtitle">Every service DeAssists offers · Click a service to enter its workspace</div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+      <strong>Sales Guide</strong> is your service workspace. Each service has its own tools, FAQ, scripts, partners, and fee log. When external partners log in, they see only the services scoped to them.
+    </div>
+
+    <!-- "We operate" section -->
+    <div class="catalog-section">
+      <div class="section-label">We operate · Full sales workspace</div>
+      <div class="catalog-grid">
+        <!-- University Admissions -->
+        <div class="cat-card" title="Open the University Admissions workspace with course finder, fee calculator, and partner tools">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">🎓</div>
+          <div class="cat-name">University Admissions</div>
+          <div class="cat-desc">Full course finder, fee calculator, partner universities</div>
+          <div class="cat-tag tag-revenue">Revenue Driver</div>
+        </div>
+
+        <!-- Accommodation -->
+        <div class="cat-card" title="Open the Accommodation workspace for student housing in Germany">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">🏠</div>
+          <div class="cat-name">Accommodation</div>
+          <div class="cat-desc">Student housing in Germany</div>
+          <div class="cat-tag tag-revenue">Revenue Driver</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- "We redirect" section -->
+    <div class="catalog-section">
+      <div class="section-label">We redirect · Partner-handled · Reference only</div>
+      <div class="catalog-grid">
+        <!-- Blocked Account -->
+        <div class="cat-card redirect" title="Partner-handled service — redirect inquiries to +49 XXX XXX">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">💰</div>
+          <div class="cat-name">Blocked Account</div>
+          <div class="cat-desc">Partner-handled service</div>
+          <div class="cat-tag tag-redirect">Redirect</div>
+        </div>
+
+        <!-- Visa Support -->
+        <div class="cat-card redirect" title="Partner-handled service — redirect inquiries to +49 XXX XXX">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">🛂</div>
+          <div class="cat-name">Visa Support</div>
+          <div class="cat-desc">Partner-handled service</div>
+          <div class="cat-tag tag-redirect">Redirect</div>
+        </div>
+
+        <!-- Health Insurance -->
+        <div class="cat-card redirect" title="Partner-handled service — redirect inquiries to +49 XXX XXX">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">🏥</div>
+          <div class="cat-name">Health Insurance</div>
+          <div class="cat-desc">Partner-handled service</div>
+          <div class="cat-tag tag-redirect">Redirect</div>
+        </div>
+
+        <!-- APS & Translations -->
+        <div class="cat-card redirect" title="Partner-handled service — redirect inquiries to +49 XXX XXX">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">🌐</div>
+          <div class="cat-name">APS & Translations</div>
+          <div class="cat-desc">Partner-handled service</div>
+          <div class="cat-tag tag-redirect">Redirect</div>
+        </div>
+
+        <!-- Legal Support -->
+        <div class="cat-card redirect" title="Partner-handled service — redirect inquiries to +49 XXX XXX">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">⚖️</div>
+          <div class="cat-name">Legal Support</div>
+          <div class="cat-desc">Partner-handled service</div>
+          <div class="cat-tag tag-redirect">Redirect</div>
+        </div>
+
+        <!-- Ausbildung -->
+        <div class="cat-card redirect" title="Partner-handled service — redirect inquiries to +49 XXX XXX">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">🔧</div>
+          <div class="cat-name">Ausbildung</div>
+          <div class="cat-desc">Partner-handled service</div>
+          <div class="cat-tag tag-redirect">Redirect</div>
+        </div>
+
+        <!-- Full-Time Jobs -->
+        <div class="cat-card redirect" title="Partner-handled service — redirect inquiries to +49 XXX XXX">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">💼</div>
+          <div class="cat-name">Full-Time Jobs</div>
+          <div class="cat-desc">Partner-handled service</div>
+          <div class="cat-tag tag-redirect">Redirect</div>
+        </div>
+
+        <!-- Part-Time Jobs -->
+        <div class="cat-card redirect" title="Partner-handled service — redirect inquiries to +49 XXX XXX">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">⏱️</div>
+          <div class="cat-name">Part-Time Jobs</div>
+          <div class="cat-desc">Partner-handled service</div>
+          <div class="cat-tag tag-redirect">Redirect</div>
+        </div>
+
+        <!-- Post-Landing -->
+        <div class="cat-card redirect" title="Partner-handled service — redirect inquiries to +49 XXX XXX">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">✈️</div>
+          <div class="cat-name">Post-Landing</div>
+          <div class="cat-desc">Partner-handled service</div>
+          <div class="cat-tag tag-redirect">Redirect</div>
+        </div>
+
+        <!-- General -->
+        <div class="cat-card redirect" title="General inquiries — no specific service category">
+          <div class="cat-stripe"></div>
+          <div class="cat-icon">💬</div>
+          <div class="cat-name">General</div>
+          <div class="cat-desc">General inquiries</div>
+          <div class="cat-tag tag-redirect">Redirect</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dev Note showing ALLOWED_ROLES -->
+  <div class="dev-note">
+    <strong>ALLOWED_ROLES</strong> (page guard)
+    <code>
+UserTypes.SUPER_ADMIN
+UserTypes.MANAGER
+UserTypes.TEAM_LEAD
+UserTypes.STAFF
+    </code>
+  </div>
+</body>
+</html>

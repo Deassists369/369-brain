@@ -981,3 +981,12 @@ Rule added: A16 — verify before building.
 *Lives at: 369-brain/CODING-CONSTITUTION.md*
 *Updates: only via VEERABHADRA session*
 *Lessons added: every time a mistake is made*
+
+### A17 — Never Write Markdown Syntax Into TypeScript Source Files
+
+Markdown hyperlink syntax (text) must never appear inside .ts or .tsx files.
+Always write plain TypeScript identifiers.
+Example: write UserTypes.TEAM_LEAD not UserTypes.TEAM_LEAD.
+After writing any .ts or .tsx file run:
+  grep -rn "](http" apps/cms-next/ libs/
+Result must be empty before reporting done.
