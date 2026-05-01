@@ -562,6 +562,41 @@ Category 3 — Business content not yet in DB
 
 ---
 
+### A17 — Never Write Markdown Syntax Into TypeScript Source Files
+
+Markdown hyperlink syntax (text) must never appear inside .ts or .tsx files.
+Always write plain TypeScript identifiers.
+Example: write UserTypes.TEAM_LEAD not UserTypes.TEAM_LEAD.
+After writing any .ts or .tsx file run:
+  grep -rn "](http" apps/cms-next/ libs/
+Result must be empty before reporting done.
+
+---
+
+### A18 — Rebuild Shared Library Before CMS Restart
+
+Any time a file inside libs/shared/ is changed,
+the shared library must be rebuilt before restarting cms.
+Restarting cms alone is not enough.
+
+Files affected:
+  - sidemenu.ts
+  - lead.constants.ts
+  - service-registry.ts
+  - Any other file inside libs/shared/
+
+Required sequence:
+  1. npx nx build shared --skip-nx-cache
+  2. pm2 restart cms
+  3. Wait 60 seconds before testing in browser
+
+Why: The cms dev server loads compiled JavaScript
+from dist/libs/shared/. If you restart cms without
+rebuilding shared, the browser shows stale code.
+This caused debugging time loss on 1 May 2026.
+
+---
+
 ## PART B — NEW FEATURE PATH
 ## Use when building something that does
 ## not exist in production yet.
@@ -951,9 +986,9 @@ Rule added: A16 — verify before building.
   // Three things always together:
 
   {
-    name: 'Service Catalog',
+    title: 'Service Catalog',
     path: '/catalog',
-    allowedRoles: [
+    permissionLevel: [
       UserTypes.SUPER_ADMIN,
       UserTypes.MANAGER,
       UserTypes.TEAM_LEAD,
@@ -981,36 +1016,3 @@ Rule added: A16 — verify before building.
 *Lives at: 369-brain/CODING-CONSTITUTION.md*
 *Updates: only via VEERABHADRA session*
 *Lessons added: every time a mistake is made*
-
-### A17 — Never Write Markdown Syntax Into TypeScript Source Files
-
-Markdown hyperlink syntax (text) must never appear inside .ts or .tsx files.
-Always write plain TypeScript identifiers.
-Example: write UserTypes.TEAM_LEAD not UserTypes.TEAM_LEAD.
-After writing any .ts or .tsx file run:
-  grep -rn "](http" apps/cms-next/ libs/
-Result must be empty before reporting done.
-
----
-
-### A18 — Rebuild Shared Library Before CMS Restart
-
-Any time a file inside libs/shared/ is changed,
-the shared library must be rebuilt before restarting cms.
-Restarting cms alone is not enough.
-
-Files affected:
-  - sidemenu.ts
-  - lead.constants.ts
-  - service-registry.ts
-  - Any other file inside libs/shared/
-
-Required sequence:
-  1. npx nx build shared --skip-nx-cache
-  2. pm2 restart cms
-  3. Wait 60 seconds before testing in browser
-
-Why: The cms dev server loads compiled JavaScript
-from dist/libs/shared/. If you restart cms without
-rebuilding shared, the browser shows stale code.
-This caused debugging time loss on 1 May 2026.
