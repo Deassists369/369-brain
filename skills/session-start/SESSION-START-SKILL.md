@@ -229,6 +229,27 @@ STEP E3 — Append activity-log.md
   Commits made with hashes.
   Decisions locked today.
 
+STEP E3B — CONSTITUTION REVIEW (mandatory)
+  Before committing brain files ask:
+
+  1. Did we find any bugs today?
+     If YES — add to CODING-CONSTITUTION.md Part E
+     Document: what happened, root cause, fix, rule
+
+  2. Did we discover any new patterns?
+     If YES — add to CODING-CONSTITUTION.md Part F
+
+  3. Were any rules missing that caused confusion?
+     If YES — add to CODING-CONSTITUTION.md Part A
+
+  4. Did any checklist item get skipped?
+     If YES — add to Part B or C checklist
+
+  This step is mandatory.
+  A session that found a bug and did not
+  document it has not truly closed.
+  The constitution must grow every session.
+
 STEP E4 — Show Shon what was updated
   Confirm session-state.md changes.
   Confirm activity-log.md entry.
