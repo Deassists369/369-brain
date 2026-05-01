@@ -234,6 +234,32 @@ future automation hookup.
 
 ---
 
+### A10 — Data Access Pattern — Two Hook Types
+
+useCustomQuery (legacy):
+  Returns AxiosResponse<T>
+  Access actual data via: result.data.data
+  Example: const leads = data?.data?.data ?? []
+
+useCustomQueryV2 (new):
+  Auto-unwraps AxiosResponse
+  Access actual data via: result.data
+  Example: const stats = data?.data
+
+NEVER access result.data when using useCustomQuery
+and expect the API payload — it is the Axios wrapper.
+Always use result.data.data for useCustomQuery.
+Always use result.data for useCustomQueryV2.
+Check which hook is used before accessing data.
+
+Root cause of Q Intelligence bug (1 May 2026):
+  useLeadDetails uses useCustomQuery (legacy)
+  detailedLead = leadDetailsData?.data was wrong
+  detailedLead = leadDetailsData?.data?.data is correct
+  The block was invisible because data was undefined.
+
+---
+
 ## PART B — NEW FEATURE PATH
 ## Use when building something that does
 ## not exist in production yet.
