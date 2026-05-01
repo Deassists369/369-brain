@@ -51,21 +51,21 @@ Priority values:
 
 ## LAYER 2 — LEAD AND SALES SYSTEM
 
-### Phase 1 — Constants (NEXT — do before all else)
+### Phase 1 — Constants (DONE)
 
 | Feature | Status | Priority | Owner | Depends On | Notes |
 |---------|--------|----------|-------|------------|-------|
 | crmTokens.ts token update | DONE | HIGH | Shon | — | 12 values updated, not committed |
-| ServiceCategory enum | NEXT | HIGH | Shon | — | Add to lead.constants.ts |
-| LeadScoreBand enum | NEXT | HIGH | Shon | — | Add to lead.constants.ts |
-| PartnershipTier enum | NEXT | MEDIUM | Shon | — | Add to lead.constants.ts |
-| ProgrammeLevel enum | NEXT | MEDIUM | Shon | — | Add to lead.constants.ts |
-| StudentType enum | NEXT | MEDIUM | Shon | — | Add to lead.constants.ts |
-| AssetType enum | NEXT | MEDIUM | Shon | — | Add to lead.constants.ts |
-| FeeStatus enum | NEXT | MEDIUM | Shon | — | Add to lead.constants.ts |
-| EnrollmentStatus enum | NEXT | MEDIUM | Shon | — | Add to lead.constants.ts |
-| SidebarRole.Finance | NEXT | MEDIUM | Shon | — | Add to lead.constants.ts |
-| SidebarRole.Vendor | NEXT | LOW | Shon | — | Phase 2 only |
+| ServiceCategory enum | DONE | HIGH | Shon | — | Added to lead.constants.ts |
+| LeadScoreBand enum | DONE | HIGH | Shon | — | Added to lead.constants.ts |
+| PartnershipTier enum | DONE | MEDIUM | Shon | — | Added to lead.constants.ts |
+| ProgrammeLevel enum | DONE | MEDIUM | Shon | — | Added to lead.constants.ts |
+| StudentType enum | DONE | MEDIUM | Shon | — | Added to lead.constants.ts |
+| AssetType enum | DONE | MEDIUM | Shon | — | Added to lead.constants.ts |
+| FeeStatus enum | DONE | MEDIUM | Shon | — | Added to lead.constants.ts |
+| EnrollmentStatus enum | DONE | MEDIUM | Shon | — | Added to lead.constants.ts |
+| SidebarRole.Finance | DONE | MEDIUM | Shon | — | Added to lead.constants.ts |
+| SidebarRole.Vendor | DONE | LOW | Shon | — | Added to lead.constants.ts |
 | assigned_to enum (37 agents) | BLOCKED | HIGH | Shon | Agent list from Sheets | =UNIQUE(K2:K9999) |
 
 ### Phase 2A — Q Intelligence
