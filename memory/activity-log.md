@@ -109,23 +109,53 @@ Portal (uncommitted, pending PR):
    Intelligence Layer = WHY, WHAT, WHETHER. Both needed.
 ```
 
-### Open bugs for next session
+### Late session polish (9pm)
+
+**Fixes applied:**
+- Hardcoded color '#d97706' → crmTokens.am (line 341)
+- Missing tooltips added (Close button, tabs, Assigned To, University Interest, Intake)
+- Call history redesigned — numbered calls, color-coded outcomes, callback display
+- Call history reversed — newest first (.slice().reverse())
+- Callback reason section added to Call Summary
+
+**Known issue discovered:**
+- callback_note shows last saved value always (not per-call)
+- Investigate next session: may need to pull note from call_log array
+
+### Constitution review — what was learned
 
 ```
-- Call history UI needs redesign (timeline layout)
-- Missing tooltips on 10 elements
-- Missing helper text on 6 fields
-- Hardcoded color '#d97706' at LeadDetailPanel.tsx:341
+A10-A15 added today:
+  A10: Data access pattern — list vs single endpoint data shape
+  A12: Bug handling protocol — evidence before code
+  A13: Self-explaining UI — tooltips and helper text required
+  A14: Post-build audit — grep checks after every change
+  A15: Guide layer enforcement
+  C3: pm2 restart rule after CMS changes
+
+Intelligence Layer created:
+  INTELLIGENCE-LAYER.md — three questions on every prompt
+  DECISIONS-LOG.md — permanent decision record
+  LEARNING-MIND.md — session learnings capture
+  FUTURE-VISION.md — 9-year roadmap anchor
+
+Mistakes made and documented:
+  1. useCustomQuery SINGLE endpoint returns result.data not result.data.data
+     — 3 hours debugging, now rule A10
+  2. pm2 must restart after CMS changes — build compiles but serves old bundle
+     — now rule C3
+  3. Guide layer tooltips should be added during feature build
+     — now part of A13 checklist
 ```
 
 ### What's next
 
 ```
-1. Activity tab polish — call history UI redesign
-2. Complete guide layer Layer 1 (remaining tooltips)
-3. Complete guide layer Layer 2 (helper text)
-4. Fix hardcoded color
-5. Then Phase 2B — Service Catalog
+1. Phase 2B — Service Catalog
+   - serviceRegistry data structure
+   - Service Catalog page
+   - Service tabs component
+   - Sidebar item
 ```
 
 ---
