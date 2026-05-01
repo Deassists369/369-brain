@@ -95,6 +95,7 @@ Never delete entries. Only append.
 | 30 Apr 2026 | DeAssists ecosystem model — every expat service can plug in as a module. Shell stays the same. Ecosystem grows through configuration not code. | Ecosystem architecture locked |
 | 30 Apr 2026 | Brain file update rule — before Claude Code touches any existing brain file it must fetch and read it first, then work, then save. Never overwrite without reading. | Prevents brain file corruption |
 | 30 Apr 2026 | One file at a time discipline — produce one file, review in VEERABHADRA, approve, save via terminal, confirm line count, then next file. Never batch without review. | Quality gate for brain files |
+| 1 May 2026 | Prototype hardcoded arrays are demo data only — never create backend modules without verifying they do not already exist in apps/backend-nest/src/ and collections.ts | Prevents duplicate entity creation — backend modules belong to Latha — EAGLE must verify before flagging anything as missing |
 
 ---
 

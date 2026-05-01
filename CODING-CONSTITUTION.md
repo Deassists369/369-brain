@@ -508,6 +508,60 @@ Root cause of 1 May 2026 violations:
 
 ---
 
+### A16 — Prototype Data Is Demo Data — Always Verify Before Building
+
+Every hardcoded array or object in the prototype
+is DEMO DATA — it exists to make the prototype
+work visually. It is NOT a specification for
+what needs to be built.
+
+Before creating any backend module, collection,
+entity, hook, or API endpoint — answer these
+questions in order:
+
+QUESTION 1 — Does this collection already exist?
+  Check: apps/backend-nest/src/
+  Check: libs/shared/constants/collections.ts
+  If YES — do NOT create a new entity.
+           Go to Question 2.
+  If NO  — then and only then create the entity.
+
+QUESTION 2 — Does an endpoint already exist?
+  Check: the existing controller for that module
+  If YES — do NOT create a new endpoint.
+           Go to Question 3.
+  If NO  — add to the existing controller only.
+
+QUESTION 3 — Does a named hook already exist?
+  Check: libs/react-query/queries/
+  If YES — import and use it. Done.
+  If NO  — create the hook file only.
+           Follow A2 four-layer chain.
+
+THE ONLY THING THAT MAY NOT EXIST IS THE HOOK.
+Backend modules, entities and collections are
+built by Latha — never assume they are missing
+without checking the full backend source first.
+
+HARDCODED PROTOTYPE DATA CATEGORIES:
+
+Category 1 — Configuration constants
+  Examples: serviceRegistry, SidebarRole, UserTypes
+  Rule: stays as TypeScript constant — never MongoDB
+  Reason: changes require code review, not DB edit
+
+Category 2 — Business content already in DB
+  Examples: universities, courses, leads
+  Rule: check backend first — build hook only
+  Reason: Latha may have already built the module
+
+Category 3 — Business content not yet in DB
+  Examples: new Phase 3+ features
+  Rule: bring to VEERABHADRA first — never assume
+  Reason: Latha must build entity before hook exists
+
+---
+
 ## PART B — NEW FEATURE PATH
 ## Use when building something that does
 ## not exist in production yet.
@@ -820,6 +874,21 @@ specific file staging.
 Rule: Always git add [specific file].
 Always read git status before committing.
 Always discard non-code files before commit.
+
+---
+
+### E5 — Prototype Arrays Are Not Missing Collections
+
+What happened: prototype had hardcoded universities[],
+programmes[], agents[] arrays for visual demo purposes.
+Execution agent assumed these needed new MongoDB
+collections and seed scripts.
+Why it was wrong: CollectionNames.Courses and
+CollectionNames.University already exist in the
+codebase. Latha already built these modules.
+The fix: always grep the backend src/ folder and
+collections.ts before assuming anything is missing.
+Rule added: A16 — verify before building.
 
 ---
 

@@ -358,6 +358,40 @@ correction is applied (see Matched-Test Rule below).
 Output: eagle-report-round-[N]-[topic]-[YYYY-MM-DD].md
   Path: per eagleskill-config.md (typically reports/ subfolder)
 
+DATA SOURCE VERIFICATION (mandatory in every Mode 1):
+
+For every data array or object found in the prototype
+run this verification before flagging as missing:
+
+STEP 1 — Classify it:
+  Is this configuration?
+  (enums, registries, roles, sidebar config)
+  → TypeScript constant. Never database. Stop here.
+
+  Is this business content?
+  → Must verify before assuming it needs building.
+  → Continue to Step 2.
+
+STEP 2 — For business content run these checks:
+  grep -rn "[collection name]" apps/backend-nest/src/
+  cat libs/shared/constants/collections.ts
+  ls libs/react-query/queries/
+
+STEP 3 — Report findings in gap report:
+  EXISTS in backend    → hook needed only
+                         flag as: HOOK ONLY
+  EXISTS as constant   → import it, no new file
+                         flag as: IMPORT EXISTING
+  DOES NOT EXIST       → flag for VEERABHADRA
+                         flag as: NEEDS DISCUSSION
+                         never build without approval
+
+STEP 4 — Never create what already exists.
+  The rule is additive — add only what is missing.
+  Backend modules belong to Latha.
+  EAGLE never creates a new entity without
+  explicit instruction from Shon via VEERABHADRA.
+
 BETWEEN ROUNDS — THE CORRECTION DISCIPLINE:
 
 After each round, Shon and VEERABHADRA work through corrections in
