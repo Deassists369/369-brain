@@ -4,477 +4,15 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
-## 2 May 2026 — Phase 2B Service Catalog — Code Complete, Build Blocked
-
-**Duration:** Evening session
-**Participants:** Shon AJ, Claude Code
-**Context:** Phase 2B Service Catalog build + Latha upstream merge
-
-### What was done
-
-**1. Pulled Latha's 14 commits**
-- 66 files changed across portal
-- Used stash/pull/pop workflow to preserve local changes
-- sidemenu.ts auto-merged successfully — Sales Guide section intact
-
-**2. Phase 2B Service Catalog (completed yesterday, verified today)**
-- service-registry.ts with 12 services and ServiceEntry interface
-- ServiceCard.tsx component with revenue driver / redirect categorization
-- catalog/index.tsx page with ALLOWED_ROLES guard
-- Sales Guide sidebar section with Service Catalog and Sales Library
-
-**3. Build blocked by upstream bug**
-- permission.helper.ts:139 uses `isPermitted` but variable is `permitted` (line 200)
-- This is a typo in Latha's commit — shared library cannot compile
-- Browser test and commit blocked until fix applied
-
-### Files on disk (uncommitted)
-
-```
-Portal (Phase 2A + 2B combined):
-  apps/backend-nest/src/leads/entities/lead.entity.ts
-  apps/backend-nest/src/leads/leads.service.ts
-  apps/cms-next/components/catalog/ServiceCard.tsx (NEW)
-  apps/cms-next/components/leads/CallLogModal.tsx (NEW)
-  apps/cms-next/components/leads/CommentThread.tsx
-  apps/cms-next/components/leads/LeadDetailPanel.tsx
-  apps/cms-next/components/leads/LeadQueueSidebar.tsx
-  apps/cms-next/pages/catalog/index.tsx (NEW)
-  apps/cms-next/pages/leads/index.tsx
-  apps/cms-next/styles/crmTokens.ts
-  libs/react-query/queries/leads.ts
-  libs/shared/constants/lead.constants.ts
-  libs/shared/constants/service-registry.ts (NEW)
-  libs/shared/models/sidemenu.ts
-```
-
-### Blocker for Latha
-
-```
-File: libs/shared/functions/permission.helper.ts
-Line: 139
-Error: isPermitted should be permitted
-Cause: Typo in Latha's recent commit
-Impact: Shared library build fails, CMS cannot restart
-```
-
-### What's next
-
-```
-1. Fix permission.helper.ts:139 — change isPermitted to permitted
-2. Rebuild shared library
-3. Restart cms
-4. Browser test /catalog page
-5. Commit Phase 2A + 2B together
-```
-
----
-
-## 1 May 2026 — Full Day CRM Build — Phase 2A Complete
-
-**Duration:** Full day session
-**Participants:** Shon AJ, Claude Code
-**Context:** Phase 2A Q Intelligence build + Guide Layer design system
-
-### What was done
-
-**1. Phase 1 Constants (morning)**
-- All 8 enums added to lead.constants.ts:
-  ServiceCategory, LeadScoreBand, PartnershipTier, ProgrammeLevel,
-  StudentType, AssetType, FeeStatus, EnrollmentStatus
-- SidebarRole.Finance and SidebarRole.Vendor added
-- crmTokens.ts token values synced
-
-**2. Phase 2A Q Intelligence (afternoon)**
-- useLogCall hook added to libs/react-query/queries/leads.ts
-- CallLogModal.tsx created — full modal with outcome, callback date, quick note
-- Q Intelligence block added to LeadDetailPanel
-- Close button fix — X on same row as Lead ID
-- Date picker confirmation — shows "✓ Callback set: {date}"
-- Activity tab with call history timeline
-- call_log field added to lead.entity.ts
-- formatCallDate future date fix applied
-
-**3. Guide Layer Design System (evening)**
-- guide-layer.md created — self-explaining UI design system
-- A13 rule added to CODING-CONSTITUTION.md
-- All core documents connected to guide-layer.md
-- Guide layer tooltips added to all CRM components
-
-**4. Constitution Updates**
-- A10: Data access pattern rule (list vs single endpoint)
-- A12: Bug handling protocol
-- A13: Self-explaining UI guided UX principle
-- A14: Post-build audit (mandatory after every change)
-- C3: pm2 restart rule after CMS changes
-
-**5. Intelligence Layer (evening)**
-- INTELLIGENCE-LAYER.md created (375 lines)
-- DECISIONS-LOG.md created (74 lines)
-- LEARNING-MIND.md created (103 lines)
-- FUTURE-VISION.md created (128 lines)
-- Intervention mechanism wired (5 moments)
-- 680 total lines of intelligence infrastructure
-
-### Files created or modified
-
-```
-369-brain (committed):
-  CODING-CONSTITUTION.md — A10, A12, A13, A14, C3 rules
-  project/feature-registry.md — Phase 2A progress
-  project/guide-layer.md — NEW (design system)
-  patterns/anti-ambiguity.md — guide layer reference
-  skills/session-start/SESSION-START-SKILL.md — constitution review
-  CLAUDE.md — guide layer reference
-  intelligence/INTELLIGENCE-LAYER.md — NEW (375 lines)
-  intelligence/DECISIONS-LOG.md — NEW (74 lines)
-  intelligence/LEARNING-MIND.md — NEW (103 lines)
-  intelligence/FUTURE-VISION.md — NEW (128 lines)
-  memory/session-state.md — this session
-  memory/activity-log.md — this entry
-  memory/session-lock.md — IDLE
-
-Portal (uncommitted, pending PR):
-  apps/backend-nest/src/leads/entities/lead.entity.ts
-  apps/backend-nest/src/leads/leads.service.ts
-  apps/cms-next/components/leads/CallLogModal.tsx (NEW)
-  apps/cms-next/components/leads/CommentThread.tsx
-  apps/cms-next/components/leads/LeadDetailPanel.tsx
-  apps/cms-next/components/leads/LeadQueueSidebar.tsx
-  apps/cms-next/pages/leads/index.tsx
-  apps/cms-next/styles/crmTokens.ts
-  libs/react-query/queries/leads.ts
-  libs/shared/constants/lead.constants.ts
-```
-
-### Brain commits today
-
-7ca7921, c334f44, 3e35885, 4318cf0, 45a4315, e851ec7, 6028965,
-25e9949, 2010bcf, 10c5e9a, 0045837, 8628453, e88a051, a243d76
-
-### What was learned
-
-```
-1. useCustomQuery + SINGLE endpoint = result.data (not result.data.data)
-   This caused the Q Intelligence bug — 3 hours debugging.
-   Now documented as A10 in CODING-CONSTITUTION.md.
-
-2. pm2 must restart after CMS changes — build:all compiles but
-   pm2 serves old bundle until restarted. Added to C3.
-
-3. Guide layer tooltips should be added during feature build,
-   not as a separate pass. Now part of the checklist.
-
-4. Bug handling protocol (A12) — evidence before code, always.
-   JAM recording or screenshot required before investigating.
-
-5. Post-build audit (A14) must run after every change — not at
-   end of session. Build passing is not enough. Audit passing is done.
-
-6. Intelligence Layer sits above constitution. Constitution = HOW.
-   Intelligence Layer = WHY, WHAT, WHETHER. Both needed.
-```
-
-### Late session polish (9pm)
-
-**Fixes applied:**
-- Hardcoded color '#d97706' → crmTokens.am (line 341)
-- Missing tooltips added (Close button, tabs, Assigned To, University Interest, Intake)
-- Call history redesigned — numbered calls, color-coded outcomes, callback display
-- Call history reversed — newest first (.slice().reverse())
-- Callback reason section added to Call Summary
-
-**Known issue discovered:**
-- callback_note shows last saved value always (not per-call)
-- Investigate next session: may need to pull note from call_log array
-
-### Constitution review — what was learned
-
-```
-A10-A15 added today:
-  A10: Data access pattern — list vs single endpoint data shape
-  A12: Bug handling protocol — evidence before code
-  A13: Self-explaining UI — tooltips and helper text required
-  A14: Post-build audit — grep checks after every change
-  A15: Guide layer enforcement
-  C3: pm2 restart rule after CMS changes
-
-Intelligence Layer created:
-  INTELLIGENCE-LAYER.md — three questions on every prompt
-  DECISIONS-LOG.md — permanent decision record
-  LEARNING-MIND.md — session learnings capture
-  FUTURE-VISION.md — 9-year roadmap anchor
-
-Mistakes made and documented:
-  1. useCustomQuery SINGLE endpoint returns result.data not result.data.data
-     — 3 hours debugging, now rule A10
-  2. pm2 must restart after CMS changes — build compiles but serves old bundle
-     — now rule C3
-  3. Guide layer tooltips should be added during feature build
-     — now part of A13 checklist
-```
-
-### What's next
-
-```
-1. Phase 2B — Service Catalog
-   - serviceRegistry data structure
-   - Service Catalog page
-   - Service tabs component
-   - Sidebar item
-```
-
----
-
-## 29 April 2026 — EAGLE v2.1 Lock Session
-
-**Duration:** ~7 hours (afternoon to early evening)
-**Participants:** Shon AJ, VEERABHADRA (Claude.ai chat)
-**Context:** Full design pass on EAGLE skill — v2.0 → v2.1 upgrade
-
-### What was done
-
-Three categories of work:
-
-**1. Design conversation (~5 hours):**
-Working through 16 design decisions one at a time via tappable popup
-questions. Each decision pushed back on, stress-tested, and resolved
-deliberately. Key locks include:
-- 5-mode structure replaces v2.0's 4-mode (added Postmortem)
-- Self-improvement loop via Mode 4
-- Portability (universal pattern + project config separation)
-- One prototype = one capability = one commit to Latha
-- Iterative reconciliation loop with 5 oscillation-detection mechanisms
-- One-issue-at-a-time correction discipline
-- Matched-test rule (4 categories)
-- Skill activation table (sequential thinking + brainstorming per stage)
-- Plugin discipline (forbid /ce:work, /superpowers:execute-plan,
-  /dispatching-parallel-agents in Mode 3)
-- Three-tier required reading
-- Risk-ordered staged execution with always-produced stage reports
-- MIGRATION vs CAPABILITY mode declaration at start of every Mode 1
-
-**2. Document production (~1 hour):**
-Three artifacts produced in chat as downloadable files:
-- Decision Audit (553 lines) — all 16 decisions, cross-consistency check,
-  10 dated locks for memory/decisions.md
-- EAGLESKILL.md v2.1 (1,172 lines) — universal pattern only
-- eagleskill-config.md (440 lines) — DeAssists-specific config
-- README.md (322 lines) — folder structure & file conventions
-
-**3. GitHub commits (afternoon and evening):**
-
-Successful commits:
-- `brain: add EAGLE v2.1 decision audit — 16 locked decisions for review`
-- `brain: delete misnamed EAGLESKILL-v2.0-2026-04-26.md` (cleanup)
-- `brain: rename EAGLESKILL.md to eagleskill-config.md` (cleanup)
-- `brain: lock EAGLESKILL v2.1 — universal pattern (1,172 lines)`
-- `brain: add README.md at skills/eagleskill/ — folder structure & file conventions`
-- 4 deletes for old subfolder readmes (replaced by single root README)
-- `brain: lock 10 EAGLE v2.1 design decisions in memory/decisions.md`
-- `brain: refresh session-state.md after EAGLE v2.1 lock`
-- This activity-log entry
-
-### Files created or modified
-
-```
-NEW:
-  369-brain/skills/eagleskill/eagle-v2.1-decision-audit-2026-04-29.md
-  369-brain/skills/eagleskill/EAGLESKILL.md (v2.1, 1,172 lines)
-  369-brain/skills/eagleskill/eagleskill-config.md (440 lines)
-  369-brain/skills/eagleskill/README.md (322 lines)
-
-MODIFIED:
-  369-brain/memory/decisions.md (10 dated locks appended)
-  369-brain/memory/session-state.md (full refresh)
-  369-brain/memory/activity-log.md (this entry)
-
-DELETED:
-  369-brain/skills/eagleskill/reports/eagleskill-reports-readme.md
-  369-brain/skills/eagleskill/plans/eagleskill-plans-readme.md
-  369-brain/skills/eagleskill/previews/eagleskill-previews-readme.md
-  369-brain/skills/eagleskill/exec-logs/eagleskill-execlogs-readme.md
-  (Replaced by single root README.md with cleaner navigation)
-
-LOST (accepted):
-  369-brain/skills/eagleskill/EAGLESKILL.md (v2.0 content, 1,048 lines) —
-  superseded by v2.1; not preserved as archive due to GitHub web editor
-  rename confusion. v2.0 → v2.1 evolution documented in Decision Audit.
-```
-
-### What was learned
-
-```
-1. GitHub web editor renames are unreliable when followed by content
-   replacement. Better pattern: rename first as separate commit, then
-   create new file as second commit.
-
-2. The audit-before-draft discipline (produce Decision Audit, review,
-   then draft v2.1) caught zero contradictions but built confidence
-   that the design was internally consistent.
-
-3. One-popup-question-at-a-time pace was the right cadence for this
-   session. Each decision got proper attention; no rubber-stamping.
-
-4. Sectioned drafting (offered for v2.1 file) was abandoned in favor of
-   one-shot file production. For documents this size where decisions
-   are pre-locked via audit, one-shot is cleaner than sectioned review.
-
-5. Single-file delivery (full merged content as artifact) was faster
-   than append-snippets when the underlying file was non-trivial.
-   Used successfully for decisions.md, session-state.md, and this log.
-```
-
-### What's next
-
-```
-- Mac Mini: git pull, fresh Claude Code session, run Mode 0 re-run with
-  v2.1, produce fresh baseline dated 29 April
-- Begin Task 1 (crmTokens.ts) as v2.1 dogfood
-- Cross-reference pass deferred (check CLAUDE.md, VEERABHADRA.md,
-  THE-DEASSISTS-OS.md for stale v2.0 references)
-```
-
-### Energy at end of session
-
-```
-7 hours of focused architecture work. Quality stayed high throughout
-because of one-question-at-a-time pacing. End-of-session signal: file
-production worked correctly on first attempt; review fatigue was visible
-during commit sequence (the rename/create confusion happened during
-hours 5-6).
-
-Lesson for future long sessions: stop file commits at hour 5; resume
-fresh next morning. Today we pushed through and recovered cleanly, but
-the recovery itself cost time.
-```
-
----
-
-## 30 April 2026 — Brain Architecture + Boot Sequence Test
-
-**Duration:** Two sessions (earlier + evening)
-**Participants:** Shon AJ, VEERABHADRA, Claude Code
-
-### What was done
-
-**Session 1 (earlier):**
-- EAGLE Mode 0 fresh baseline run
-- EAGLE Mode 1 full prototype inventory (434 lines)
-- crmTokens.ts token sync (12 values updated)
-- Task 1 change log entry written
-- decisions.md updated with 12 new 30 Apr entries
-- New brain architecture files received from VEERABHADRA:
-  - CLAUDE.md (mission control, boot sequence)
-  - CODING-CONSTITUTION.md (all coding rules)
-  - PRD.md (full requirements)
-  - feature-registry.md (build order)
-  - vision.md (company vision)
-
-**Session 2 (evening):**
-- Boot sequence test — followed new CLAUDE.md protocol
-- Session lock system verified (IDLE → OPEN → IDLE)
-- All tier 1 files loaded successfully
-- feature-registry.md task lookup working
-- Session close protocol executed
-
-### Files created or modified
-
-```
-369-brain (committed):
-  skills/eagleskill/eagle-baseline-system-readout.md (5c318b5)
-  skills/eagleskill/reports/eagle-report-round-1-full-inventory-2026-04-29.md (2abba6d)
-  change-logs/BRANCH-CHANGE-LOG-portal.shon369.md (3e35885)
-  memory/decisions.md (12 rows appended)
-  memory/session-state.md (this session)
-  memory/activity-log.md (this entry)
-  memory/session-lock.md (IDLE)
-
-Portal (uncommitted, pending PR):
-  apps/cms-next/styles/crmTokens.ts
-```
-
-### Key decisions locked (12 total)
-
-- Hardcoding rule final form
-- DeAssists = full 5-layer Education ERP SaaS
-- UserTypes enum permanently locked at 10
-- BCBT September 2026 hard deadline
-- AI-first design principle
-- Universal Lead Capture Form architecture
-- Tool workflow: VEERABHADRA → Claude Code → Cursor → GitHub Desktop → Latha
-- Session integrity system (session-lock.md)
-- Architecture before prototype rule
-- DeAssists ecosystem model
-- Brain file update rule (read before write)
-- One file at a time discipline
-
-### What's next
-
-```
-1. Phase 1 Constants — add missing enums to lead.constants.ts:
-   ServiceCategory, LeadScoreBand, PartnershipTier, ProgrammeLevel,
-   StudentType, AssetType, FeeStatus, EnrollmentStatus,
-   SidebarRole.Finance, SidebarRole.Vendor
-
-2. Phase 2A Q Intelligence:
-   useLogCall hook, CallLogModal, Q Intelligence block
-
-3. Commit crmTokens.ts with portal PR when ready
-```
-
----
-
-## 28 April 2026 — Brain Restructure (Complete)
-
-**Session focus:** Reduce CLAUDE.md token cost, create modular reference files, archive superseded docs
-
-### Commits Pushed to 369-brain
-
-| Hash | Message |
-|------|---------|
-| `c5c99d3` | brain: upgrade CLAUDE.md — skill selector, tier system, structured prompt format |
-| `e509ad1` | brain: add 6 pattern + project reference files |
-| `dd5f63f` | brain: reconcile decisions.md + simplify session-state.md + archive 4 superseded files |
-| `c8c6fa7` | brain: add THE-DEASSISTS-OS.md — foundational understanding and operations playbook (v1.0) |
-
-### Files Created
-- `patterns/api-patterns.md` — 4-layer API chain, reference table, leads module hooks
-- `patterns/git-workflow.md` — commit sequence, message format, absolute rules
-- `patterns/permission-patterns.md` — sidebar two-file system, three-layer access model
-- `project/architecture.md` — monorepo structure, where new code goes
-- `project/design-system.md` — crmTokens, typography, colours, 4 data states
-- `project/never-touch.md` — files to avoid by category
-- `THE-DEASSISTS-OS.md` — 1451-line foundational playbook (v1.0)
-
-### Files Modified
-- `CLAUDE.md` — reduced from 1062 → 126 lines; now references pattern/project files
-- `memory/decisions.md` — added constants-as-gate entry (25 Apr)
-- `memory/session-state.md` — rules table replaced with pointer to decisions.md
-
-### Files Archived (git mv to archive/)
-- `VEERABHADRA-MASTER-CONTEXT.md`
-- `memory/DAILY-OPERATIONS-GUIDE.md`
-- `memory/MASTER-STATE-19Apr2026.md`
-- `memory/session-workflow.md`
-
-### Result
-- CLAUDE.md token cost reduced ~90%
-- Single source of truth for rules: decisions.md (append-only)
-- Task-specific loading: read only the pattern/project file relevant to current task
-- Stale docs archived with history preserved
-
----
-
-## 27 April 2026 — CRM Phase 1 QA Fix (Complete)
-- Latha reported 404 errors + wrong API patterns on QA deployment
-- Root cause 1: new.tsx and dashboard/index.tsx used raw fetch() — 404 in QA
-- Root cause 2: All CRM components used inline useCustomQuery/useCustomMutationV2 with raw URLs instead of creating a dedicated query file with named hooks (project pattern: every module has a file in libs/react-query/queries/)
-- Fix round 1 (commit 656f7ef0): Replaced raw fetch with hooks in new.tsx and dashboard
-- Fix round 2 (commit 49121b19): Created libs/react-query/queries/leads.ts with 7 named hooks (useLeadsList, useLeadDetails, useLeadQueues, useLeadStats, useCreateLead, useUpdateLead, useAddLeadComment). Refactored all 6 CRM components to import named hooks. Added LEADS to endpoints.enum.ts. 9 files changed, +81/-44
-- Total: 2 commits, 10 files changed, pattern now matches account.ts/model.ts
-- Remaining: assigned_to hardcoded (needs backend dynamic endpoint), country_codes hardcoded (switch to react-phone-input-2)
-- Lesson: On a running project, dont just use the right hooks — organize them the way the project organizes them. Every module gets a dedicated query file with named hooks.
+## 27 April 2026 — CRM Phase 1 QA Fix
+- Latha reported 404 errors on QA deployment (qa-portal.deassists.com)
+- Root cause: new.tsx and dashboard/index.tsx used raw fetch('/api/v1/leads') instead of React Query hooks
+- Raw fetch hits frontend URL in QA (404), axios client handles backend URL correctly
+- Fixed 2 files, audited 4 others (already correct)
+- Lesson: Always trace existing patterns before writing new code. This project has useCustomQuery, useCustomMutationV2, axios client with auto auth — we bypassed all of it
+- Rule 31 added to CLAUDE.md to prevent recurrence (Rule 30 was already taken — server startup commands)
+- Decision locked in decisions.md
+- Commit: e67089df — fix: replace raw fetch with useCustomMutationV2/useCustomQueryV2 — fixes QA 404s
 
 ---
 
@@ -1047,6 +585,37 @@ Branch: feature/portal.shon369
 Change log: BRANCH-CHANGE-LOG-portal.shon369.md filled with all 6 commit hashes.
 Waiting for Latha review and merge.
 
+### FILES MODIFIED TODAY (this session — deassists portal)
+
+- `libs/shared/models/sidemenu.ts` — Call Center 369 + Sales CRM sections added
+- `.husky/pre-commit` — DELETED permanently
+
+### FILES COMMITTED TODAY (full CRM migration — all 6 commits)
+
+**New files (16):**
+- apps/cms-next/styles/crmTokens.ts
+- apps/backend-nest/src/leads/entities/lead.entity.ts
+- apps/backend-nest/src/leads/lead-id.service.ts
+- apps/backend-nest/src/leads/leads-routing.service.ts
+- apps/backend-nest/src/leads/leads.module.ts
+- apps/backend-nest/src/leads/leads.controller.ts
+- apps/backend-nest/src/leads/leads.service.ts
+- apps/cms-next/components/leads/StatusBadge.tsx
+- apps/cms-next/components/leads/QueueBadge.tsx
+- apps/cms-next/components/leads/LeadQueueSidebar.tsx
+- apps/cms-next/components/leads/LeadTable.tsx
+- apps/cms-next/components/leads/LeadDetailPanel.tsx
+- apps/cms-next/components/leads/CommentThread.tsx
+- apps/cms-next/pages/leads/index.tsx
+- apps/cms-next/pages/leads/new.tsx
+- apps/cms-next/pages/dashboard/index.tsx
+
+**Modified files (4):**
+- apps/backend-nest/src/app.module.ts
+- libs/shared/constants/collections.ts
+- libs/shared/models/sidemenu.ts
+- apps/backend-nest/src/accounts/accounts.service.ts (779c7930 — ACL fix, Latha approved)
+
 ### KEY DECISIONS
 
 - Pre-commit hook permanently removed — no blanket formatting ever
@@ -1444,8 +1013,6 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `369-brain/memory/session-state.md` — **07.04.2026** block at top; optional export copy: `design/outputs/SESSION-STATE-UPDATE-07042026.md`  
 
----
-
 ## 06 April 2026 — VEERABHADRA / MCP Sector 12 — **12-sector alignment complete** (Shon)
 
 **COMPLETED**
@@ -1453,15 +1020,11 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - **`369-brain/memory/mcp-sector-12.md`** — what MCP is, current vs future connections, daily ops impact, priority checklist (GitHub, Gmail, Drive, Sheets, custom Portal MCP), MCP + OpenClaw loop  
 - **Milestone:** full **12-sector** brain alignment set for DeAssists (Sectors 01–12)
 
----
-
 ## 06 April 2026 — VEERABHADRA / Storage & connections Sector 11 (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/storage-connections-sector-11.md`** — master storage map (Atlas, S3, Sheets legacy, Drive, Gmail, Cursor workspaces, Mac Mini), live vs to-build connections, end-to-end lead→intelligence map, data ownership, GDPR notes, phase checklists; **Sector 12 — MCP** next
-
----
 
 ## 06 April 2026 — VEERABHADRA / Shon control layer Sector 10 (Shon)
 
@@ -1469,23 +1032,17 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 - **`369-brain/memory/shon-control-layer-sector-10.md`** — CEO interaction model (Paperclip primary, WhatsApp alerts, Claude for thinking), daily rhythm, what Shon stops doing manually, phased build of control layer, **filter rules** for what reaches Shon; **Sector 11 — Storage & system connections** next
 
----
-
 ## 06 April 2026 — VEERABHADRA / Paperclip Sector 09 (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/paperclip-sector-09.md`** — Paperclip as company OS (organise/track/govern, not think/execute), CEO dashboard outline, Phase 1–2 governance scope, OpenClaw **under** Paperclip, full operating model table, Phase 0–3 timeline (**~Apr 10** Mac Mini + OpenClaw), standing rules, **Sector 10 — Shon control layer** next
 
----
-
 ## 06 April 2026 — VEERABHADRA / OpenClaw Sector 08 — CORE MODEL (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/openclaw-sector-08.md`** — **Three Layer Model + CEO** locked: Claude (intelligence), OpenClaw (Mac Mini M4 execution), Paperclip (company OS), Shon (CEO); flow Shon → Claude → OpenClaw → Paperclip → Shon; **no layer skipped**
-
----
 
 ## 06 April 2026 — VEERABHADRA / BUILDERS = Shon + Claude (final lock)
 
@@ -1498,15 +1055,11 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `session-state.md`, `automation-sector-07.md`, `company-structure-sector-01.md`, `workspace-guide.md`, `portal.md`, `portal-sector-04.md`, `mobile-sector-05.md`, `developer-BRAIN.md`, `mobile-app.md`
 
----
-
 ## 06 April 2026 — VEERABHADRA / Automation Sector 07 full document (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/automation-sector-07.md`** — locked **5-phase** build order (portal CRM → sales → data → connections → automation); **Phase 1** breakdown: `leads` schema, `leads-routing.service.ts` rules, `lead-id.service.ts`, `/v1/leads` API, queue UI, entry form, ALL LEADS migration, verification checklist
-
----
 
 ## 06 April 2026 — VEERABHADRA / Documentation Sector 06 full document (Shon)
 
@@ -1514,15 +1067,11 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 - **`369-brain/memory/documentation-sector-06.md`** — AI brain vs operational knowledge gap, current inventory, **DeAssists Operations Guide** as top gap, target two-type architecture + bridge, P1–P3 staff doc backlog, ownership/Kaizen rules; **Sector 07 — Automation** next
 
----
-
 ## 06 April 2026 — VEERABHADRA / Mobile App Sector 05 full document (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/mobile-sector-05.md`** — Expo RN + same NestJS/Mongo, locked design + MVP/nav, `deassists-rn.zip` handoff, **06 Apr reality** (API/Swagger/Postman, Latha↔mobile gap), **locked build order** (portal CRM first), risks + next-step checklists; **Sector 06 — Documentation** next
-
----
 
 ## 06 April 2026 — VEERABHADRA / Web Portal Sector 04 full document (Shon / Latha codebase)
 
@@ -1530,23 +1079,17 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 - **`369-brain/memory/portal-sector-04.md`** — full alignment from **dev_v2**: monorepo apps/libs, stack, 8 roles, 20 modules / schemas / state machine, website + cms-next surfaces, `.env` issues, **critical security/payment bugs**, operational **island** diagram, honest ~55% status, **P1–P5** build order, git log; **Sector 05 — Mobile App** next
 
----
-
 ## 06 April 2026 — VEERABHADRA / Sales Support Sector 03 full document (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/sales-support-sector-03.md`** — full alignment: sales support definition, current agent reality, **locked single CMS → 3 views** (public / sales / admin), two conversion flows, 369 Private De Assists + handoff gaps, preserve vs improve, Phase 1–2 build checklists, **Sector 04 — Web Portal** next
 
----
-
 ## 06 April 2026 — VEERABHADRA / CRM Sector 02 full document (Shon)
 
 **COMPLETED**
 
 - **`369-brain/memory/crm-sector-02.md`** — full Sector 02 alignment: current Sheets CRM, tabs, 7 routing rules, daily usage (Gopika / call center), working vs painful, portal must-not-break + improvements, Phase 1 MVP checklist, scripts, **Sector 03 — Sales Support** next
-
----
 
 ## 06 April 2026 — VEERABHADRA / Company Structure Sector 01 (brain alignment)
 
@@ -1556,8 +1099,6 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - **Next:** Sector 02 — CRM (document Sheets heart before portal CRM build)
 
 **Brain:** `session-state.md` pointer added
-
----
 
 ## 05 April 2026 — VEERABHADRA / Auth mobile preview in repo
 
@@ -1569,8 +1110,6 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `session-state.md`, `mobile-app.md` updated
 
----
-
 ## 05 April 2026 — VEERABHADRA / Final locked prototype in repo (public pages)
 
 **COMPLETED**
@@ -1580,8 +1119,6 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - **Synced to repo:** `design/outputs/deassists-mobile-prototype.html` (~550KB)
 
 **Brain:** `session-state.md`, `mobile-app.md` updated (scope + paths)
-
----
 
 ## 05 April 2026 — VEERABHADRA / Mobile App Sprint + Latha Handoff
 
@@ -1609,8 +1146,6 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `session-state.md`, `mobile-app.md` updated
 
----
-
 ## 05 April 2026 — VEERABHADRA / Mobile HTML Shot 2 (canonical locked)
 
 **COMPLETED**
@@ -1623,8 +1158,6 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `session-state.md`, `mobile-app.md` updated
 
----
-
 ## 05 April 2026 — VEERABHADRA / Mobile HTML v2 (Shot 1)
 
 **COMPLETED**
@@ -1635,8 +1168,6 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 **HANDOFF:** **Latha** — JSX conversion (v2 reference) — *superseded by Shot 2 canonical (`deassists-mobile-shot2.html`)*
 
 **Brain:** `session-state.md`, `mobile-app.md` updated
-
----
 
 ## 04 April 2026 — VEERABHADRA / Mobile App HTML Reference Build (full session)
 
@@ -1659,8 +1190,6 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 
 **Brain:** `session-state.md` + `mobile-app.md` updated
 
----
-
 ## 03 April 2026 — SYSTEM-LOGIC.md v2.0 update (Shon approved)
 - Version header updated to v2.0
 - Column order updated to v3.0 layout (D=Agent Name, E=Full Name etc.)
@@ -1670,8 +1199,6 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - Changelog entry added
 - All changes Shon-approved
 
----
-
 ## 03 April 2026 — Brain batch: workspace-guide, CRM v3 memory, Paperclip, mobile, portal
 
 - **Created** `369-brain/memory/workspace-guide.md` — two workspaces (brain vs code), paths, tokens, conflict-check rule.
@@ -1680,13 +1207,9 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - **Replaced** `369-brain/memory/mobile-app.md` — Product Brain v7 public screens, design rules, data needs.
 - **Replaced** `369-brain/memory/portal.md` — Product Brain (stack, dev servers, Latha build status, 5 modules, Excel→web).
 
----
-
 ## 03 April 2026 — memory/portal.md (Portal & Product architecture)
 
 - Canonical **Portal & Product — Complete Architecture** in `369-brain/memory/portal.md`: five Excel→web modules, connected data flow (Lead→Student→Service→Archive→commission), build phases 1–6, AI automation layer (VEERABHADRA / OpenClaw / Paperclip / WATI), locked staff access levels, Shon learning protocol, VEERABHADRA↔Latha and mobile dev coordination, locked tech stack (Next.js nx, NestJS, MongoDB, JWT, pnpm, S3).
-
----
 
 ## 03 April 2026 — VEERABHADRA / CRM v2.0 Deployment
 
@@ -1698,8 +1221,6 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 - Issue: queue tabs empty after Sync Now — source typo validation conflict
 - Recovery in progress: recoverFromAuditLog running from ALL LEADS
 - Brain fully intact in Cursor: 42 files confirmed
-
----
 
 ## 1 April 2026 — VEERABHADRA / Code.gs v5 + CRM full redesign session
 
@@ -1965,3 +1486,72 @@ If stuck: `pm2 stop all && rm -rf apps/cms-next/.next && pm2 start all`
 Add to this file every session.
 One improvement minimum per session.
 This log is proof that we get better every day.
+
+---
+
+## 2 May 2026 — 369-ECC Build: Phases 0–3 and 5–6 Complete
+
+### What was built today
+
+The 369-ECC (Enforcement and Coding Constitution) enforcement engine was designed, built, tested, and wired in a single session.
+
+**Phase 0 — Inventory (complete)**
+- Brain files read and mapped.
+- Current position confirmed: Phase 2B Service Catalog code complete, build blocked by upstream typo in permission.helper.ts.
+
+**Phase 1 — Enforcement Engine Build (complete)**
+- Created `~/.claude/369/` directory structure: agents/, rules/, commands/, hooks/
+- Created 25 files: 8 agents, 5 rules, 8 commands, 4 hooks
+- Ran 10 systematic tests — all passed
+- Identified pre-existing bug: undeclared `isPermitted` variable at line 139 of permission.helper.ts (Latha's fix)
+- Identified staging violation: CallLogModal.tsx (Phase 2A) mixed with Phase 2B files — blocked and corrected
+
+**Phase 2 — Brain Wiring (complete)**
+- Wired Intelligence Layer (3-question check) into deassists-architect agent
+- Appended verification loop (5-step checklist) to all 8 agents (+14 lines each, +28 for architect)
+- Created `AGENTS.md` in brain — agent reference table with slash commands
+- Created `HOOKS.md` in brain — hook reference table with examples and cost of bugs
+- Replaced `CLAUDE.md` with lean router (1072 lines → 84 lines)
+- Brain commit: `671ed84`
+
+**Phase 3 — Brain Cleanup (complete)**
+- Created `archive/2026-05-02/` folder
+- Archived 4 superseded files: session-lock.md, SESSION-START-SKILL.md, eagleskill-config.md, anti-ambiguity.md
+- Prepended SUPERSEDED header to THE-DEASSISTS-OS.md
+- Updated session-state.md with 369-ECC build status block
+- Brain commit: `0db507a`
+
+**Phase 6 — GAN Autonomous Build Loop Setup (complete)**
+- Confirmed monorepo uses pnpm (not npm) — critical discovery
+- Installed @playwright/test via pnpm, Chromium v1217 downloaded
+- Created `playwright.config.ts` in apps/cms-next/
+- Created `.env.playwright` (gitignored — credentials never committed)
+- Created `e2e/helpers/auth.ts` — login helper and page access assertions
+- Created `e2e/service-catalog.spec.ts` — first 4-test suite for Phase 2B Service Catalog
+- Created `intelligence/SCORING-RUBRIC.md` — 10-criterion 0-10 scoring rubric for GAN loop
+- Created `deassists-gan-planner.md` agent — expands feature descriptions into full specs
+- Created `deassists-gan-evaluator.md` agent — scores built features against rubric via Playwright
+- Brain commit: `5da8de7`
+
+**A19 — pnpm rule added to Coding Constitution**
+- Root cause: npm install failed with lockfile conflict during Phase 6
+- Rule A19 permanently locks in pnpm as the only package manager for this monorepo
+- Brain commit: `41d3a2d`
+
+### All commit hashes — 2 May 2026
+- `0192613` — brain: log Course Finder endpoint gap — State 2B pending Latha confirmation
+- `671ed84` — brain: Phase 2 complete — AGENTS.md, HOOKS.md, lean CLAUDE.md, intelligence layer and verification loop wired
+- `0db507a` — brain: Phase 3 complete — archive superseded files, lean structure confirmed
+- `5da8de7` — brain: Phase 6 — scoring rubric and GAN agents added
+- `41d3a2d` — brain: A19 — always use pnpm in DeAssists monorepo, never npm
+
+### Pending for next session
+- Phase 4: acceptance test — requires Latha to fix permission.helper.ts first (undeclared `isPermitted` at line 139)
+- Phase 4 browser test: log in as SUPER_ADMIN, confirm sidebar renders Service Catalog, confirm /catalog loads
+- GAN first run: after Phase 4 passes, run deassists-gan-evaluator against service-catalog.spec.ts
+- Portal commit: after Phase 4 passes, run /latha-handover for Phase 2B Service Catalog PR
+
+### Lessons learned today
+- This monorepo uses pnpm. npm install corrupts the lockfile. Always pnpm. Rule A19 now enforces this permanently.
+- The 369-ECC layer is a multiplier: it caught a real TypeScript bug (isPermitted), a real staging violation (CallLogModal.tsx), and a real lockfile error (npm vs pnpm) — all in the same day it was built.
+- CLAUDE.md does not need 1072 lines. 84 lines is enough if the skill map and boot sequence are correct.

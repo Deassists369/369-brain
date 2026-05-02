@@ -1,14 +1,15 @@
-LAST UPDATED: 2 May 2026
+LAST UPDATED: 2 May 2026 — SESSION CLOSED
 369-ECC BUILD STATUS:
 Phase 0 — COMPLETE (inventory done)
 Phase 1 — COMPLETE (25 files in ~/.claude/369/, all 10 tests passed)
 Phase 2 — COMPLETE (brain wired, AGENTS.md, HOOKS.md, lean CLAUDE.md)
-Phase 3 — IN PROGRESS (brain cleanup)
-Phase 4 — PENDING
-Phase 5 — PENDING
-Phase 6 — IN PROGRESS (Playwright installed, rubric created, GAN agents created, first test written)
+Phase 3 — COMPLETE (archive created, superseded files moved, brain cleaned)
+Phase 4 — PENDING (waiting for Latha permission.helper.ts fix)
+Phase 5 — COMPLETE
+Phase 6 — COMPLETE (Playwright installed, SCORING-RUBRIC.md, GAN Planner + Evaluator agents, first test written, A19 added to Coding Constitution)
 Portal build: PAUSED — resumes after Phase 4
-Active portal blocker: Latha permission.helper.ts fix pending
+Active portal blocker: Latha permission.helper.ts fix pending — undeclared isPermitted variable at line 139
+GAN loop: READY FOR FIRST RUN after Phase 4 browser test passes
 
 ---
 
