@@ -644,6 +644,32 @@ Date discovered: 2 May 2026.
 
 ---
 
+### A21 — Verify Config File Format Before Writing
+
+Before writing to any configuration file, read the file first and verify
+the correct format by checking how existing entries are structured.
+Never assume a format. Always verify first.
+
+This applies to:
+  - ~/.claude/settings.json
+  - ~/.claude/commands/*.md
+  - hookify config files
+  - package manager config files
+  - any JSON, YAML, or tool configuration file
+
+Required sequence:
+  1. Read the target config file.
+  2. Read one existing working example.
+  3. Confirm the required format.
+  4. Only then write the change.
+
+Root cause: Phase 4 Step 3 registered slash commands in settings.json,
+but Claude Code reads slash commands from markdown files in ~/.claude/commands/.
+The wrong assumption overwrote plugin settings and broke /session-open.
+Rule added 2 May 2026.
+
+---
+
 ## PART B — NEW FEATURE PATH
 ## Use when building something that does
 ## not exist in production yet.
