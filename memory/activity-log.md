@@ -4,6 +4,59 @@ Entries are appended by `scripts/brain/brain-logger.cjs` (CLI or `require`).
 
 ---
 
+## 2 May 2026 — Sidebar Audit + 4 Fixes (Uncommitted)
+
+**Branch:** feature/portal.shon369 (portal) | main (369-brain)
+
+### What was done
+
+Ran `/sidebar-audit` against the three-layer access model for all 7 user roles
+(SUPER_ADMIN, ORG_ADMIN, MANAGER, TEAM_LEAD, STAFF, AGENT, ORG_OWNER).
+
+Initial verdict: **FAIL** — 4 issues found:
+
+1. `/catalog` page guard mismatch with sidebar (ORG_ADMIN saw link → 403; STAFF could deep-link in)
+2. `/leads` page guard mismatch (STAFF could deep-link in even though sidebar hid it)
+3. Dead/broken filter block in `permission.helper.ts:205-218` — missing `return` in arrow function, both branches returned `null` anyway
+4. AGENT "Courses" path used admin route instead of `/service/*` prefix
+
+All 4 fixes applied one file at a time, before/after shown for each.
+
+### Files modified (NOT committed — Latha review required)
+
+| File | Lines | Fix |
+|------|-------|-----|
+| `apps/cms-next/pages/catalog/index.tsx` | 11-16 | ALLOWED_ROLES = [SUPER_ADMIN, ORG_ADMIN, MANAGER, TEAM_LEAD] |
+| `apps/cms-next/pages/leads/index.tsx` | 15-21 | Dropped STAFF from ALLOWED_ROLES |
+| `libs/shared/functions/permission.helper.ts` | 205-218 | Removed dead block (14 lines collapsed to single `return null`) |
+| `libs/shared/models/sidemenu.ts` | 233-234 | AGENT Courses path → `/service/${CollectionNames.Courses}` |
+
+### Build
+
+`npx nx build shared --skip-nx-cache` — SUCCESS
+
+### Re-audit verdict: PASS (all 7 roles, all 3 layers consistent)
+
+### Decisions locked
+
+- Sidebar audit must run before any permission.helper.ts or sidemenu.ts commit (already in patterns doc — reaffirmed)
+- Page guard ALLOWED_ROLES must match sidebar permissionLevel — no deep-link bypasses
+- Dead code with broken logic must be removed even when behavior is unaffected (Rule 27 trap prevention)
+
+### Commits
+
+NONE — all 4 portal fixes uncommitted, awaiting:
+- pm2 restart backend
+- Browser smoke test (2 roles minimum)
+- Latha review (permission.helper.ts MAXIMUM RISK)
+- `/latha-handover` PR package
+
+### Next session
+
+Run `/latha-handover` → produce PR package → wait for Latha to approve before commit.
+
+---
+
 ## 27 April 2026 — CRM Phase 1 QA Fix
 - Latha reported 404 errors on QA deployment (qa-portal.deassists.com)
 - Root cause: new.tsx and dashboard/index.tsx used raw fetch('/api/v1/leads') instead of React Query hooks

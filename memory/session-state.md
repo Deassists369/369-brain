@@ -1,15 +1,15 @@
-LAST UPDATED: 2 May 2026 — SESSION CLOSED
+LAST UPDATED: 2 May 2026 — SESSION CLOSED (sidebar audit + 4 fixes applied, uncommitted)
 369-ECC BUILD STATUS:
 Phase 0 — COMPLETE (inventory done)
 Phase 1 — COMPLETE (25 files in ~/.claude/369/, all 10 tests passed)
 Phase 2 — COMPLETE (brain wired, AGENTS.md, HOOKS.md, lean CLAUDE.md)
 Phase 3 — COMPLETE (archive created, superseded files moved, brain cleaned)
-Phase 4 — PENDING (waiting for Latha permission.helper.ts fix)
+Phase 4 — IN REVIEW (sidebar audit PASS post-fix; awaiting browser smoke test + Latha review of permission.helper.ts edit)
 Phase 5 — COMPLETE
 Phase 6 — COMPLETE (Playwright installed, SCORING-RUBRIC.md, GAN Planner + Evaluator agents, first test written, A19 added to Coding Constitution)
-Portal build: PAUSED — resumes after Phase 4
-Active portal blocker: Latha permission.helper.ts fix pending — undeclared isPermitted variable at line 139
-GAN loop: READY FOR FIRST RUN after Phase 4 browser test passes
+Portal build: 4 uncommitted fixes pending Latha review (see SESSION 2 May 2026 below)
+Active portal blocker: NONE — sidebar audit PASS for all 7 roles; pre-commit browser smoke test required (ORG_ADMIN reaching /catalog, STAFF blocked from /leads + /catalog)
+GAN loop: READY FOR FIRST RUN after Latha approves Phase 4 fixes
 
 ---
 
@@ -30,6 +30,31 @@ GAN loop: READY FOR FIRST RUN after Phase 4 browser test passes
 - Audited 4 other components: already correct
 - Awaiting QA redeployment and Latha verification
 Remaining blockers: assigned_to enum hardcoded, Stripe write-back, scope.guard bypass, JWT rotation
+
+---
+
+## SESSION 2 May 2026 — Sidebar Audit + 4 Fixes (UNCOMMITTED)
+
+Three-layer access audit run on SUPER_ADMIN, ORG_ADMIN, MANAGER, TEAM_LEAD, STAFF, AGENT, ORG_OWNER.
+Audit FAIL → 4 fixes applied → re-audit PASS.
+
+**Portal files modified (NOT committed — Latha review required):**
+
+| File | Fix |
+|------|-----|
+| `apps/cms-next/pages/catalog/index.tsx` | Fix 1: ALLOWED_ROLES dropped STAFF, added ORG_ADMIN — now matches sidebar visibility |
+| `apps/cms-next/pages/leads/index.tsx` | Fix 2: ALLOWED_ROLES dropped STAFF — closes deep-link bypass |
+| `libs/shared/functions/permission.helper.ts` | Fix 3: removed dead block (lines 205-218) with broken arrow `(perm) => { perm.collection.includes(item.path); }` (no return). Behavior unchanged, trap removed |
+| `libs/shared/models/sidemenu.ts` | Fix 4: AGENT "Courses" path → `/service/${CollectionNames.Courses}` (was admin path, violated AGENT pattern rule) |
+
+**Build:** `npx nx build shared --skip-nx-cache` → SUCCESS
+**Audit verdict:** PASS for all 7 roles across all 3 layers.
+
+**Pre-commit blockers:**
+1. `pm2 restart backend` (permission.helper.ts edit per pattern doc Rule 4)
+2. Browser smoke test: ORG_ADMIN reaching `/catalog`, STAFF blocked from `/leads` + `/catalog`
+3. Latha review (permission.helper.ts is MAXIMUM RISK per pattern doc)
+4. `/latha-handover` to produce PR package
 
 ---
 
