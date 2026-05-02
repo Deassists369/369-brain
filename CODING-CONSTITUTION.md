@@ -623,6 +623,27 @@ Rule added 2 May 2026.
 
 ---
 
+### A20 — Always Run Full nx Build Before pm2 Start After Deleting .next
+
+When the .next folder is deleted, never run pm2 start cms directly.
+Always run a full nx build first so environment variables are correctly
+baked into the new bundle.
+
+Required sequence:
+  1. pm2 stop cms
+  2. rm -rf ~/deassists/apps/cms-next/.next
+  3. npx nx build cms-next --skip-nx-cache
+  4. pm2 start cms
+
+Skipping step 3 causes environment variables like NEXT_PUBLIC_GOOGLE_CLIENT_ID
+to not load correctly, breaking Google OAuth signin.
+
+Root cause: Next.js bakes environment variables into the compiled bundle at
+build time. pm2 restart without rebuild serves a stale or incomplete bundle.
+Date discovered: 2 May 2026.
+
+---
+
 ## PART B — NEW FEATURE PATH
 ## Use when building something that does
 ## not exist in production yet.
