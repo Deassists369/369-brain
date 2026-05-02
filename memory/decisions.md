@@ -1,6 +1,6 @@
 # DeAssists — Locked Decisions
 # Owner: Shon AJ | Brain: VEERABHADRA
-# Updated: 29 April 2026
+# Updated: 18 April 2026
 
 Every locked decision is recorded here with date and reason.
 Never delete entries. Only append.
@@ -67,48 +67,25 @@ Never delete entries. Only append.
 | 25 Apr 2026 | Navigation guard pattern: isDirty + guardedAction + pendingAction | Protects against data loss on queue clicks, lead row clicks, and route changes |
 | 25 Apr 2026 | Country code required with +91 default | India is primary market — sensible default prevents blank country codes |
 | 25 Apr 2026 | Phase 1 CRM complete — b0d2fdc4 | 8 files, enum architecture, navigation guard, UI polish — ready for Latha merge |
-| 25 Apr 2026 | Constants file is a hard gate — enums must exist before code references them | Caused 3 critical Phase 1 bugs from queue/status string drift; lead.constants.ts is the single source of truth |
 | 25 Apr 2026 | npm run build:all mandatory before every commit | Latha requirement — tsc --noEmit alone misses Nx build errors across monorepo |
 | 25 Apr 2026 | Server startup always requires all 3 commands — cms:serve, website:serve, backend:serve | Prevents partial startup issues |
 | 25 Apr 2026 | LeadTable useCustomQuery<any> — merge resolved with Latha | Both fixes merged, build passing, leads table working |
 | 25 Apr 2026 | Q Intelligence builds in next session — CallLogModal + LeadDetailPanel only | Backend already complete from Phase 1 |
 | 25 Apr 2026 | CLAUDE.md rethink scheduled — separate session | File over 1000 lines, token cost too high per session |
-| 29 Apr 2026 | EAGLE has 5 modes (Baseline / Reconcile / Spec / Execute / Postmortem); Mode 4 Postmortem is new in v2.1 | Self-improvement loop — bugs in EAGLE-built work trigger skill updates rather than ad-hoc fixes |
-| 29 Apr 2026 | EAGLE is portable to other projects — universal pattern in EAGLESKILL.md, project config in eagleskill-config.md | Pattern is the asset; configuration is the deployment detail |
-| 29 Apr 2026 | One prototype = one capability = one commit to Latha (supersedes "one task = one commit") | Capability completion is the right unit of review, not artificial task boundaries |
-| 29 Apr 2026 | Mode 1 reconciliation loop has no artificial cap but five mechanisms detect oscillation (sequential thinking, convergence delta, soft signal at Round 3, escalation at Round 5, brainstorming on recurring issues) | Hard caps cause artificial ship-it pressure; smart awareness prevents stuck loops without urgency |
-| 29 Apr 2026 | One issue → one element/enum/constant → corrected → tested individually → next issue (no batched corrections) | Cause-and-effect isolation; same discipline as Phase 1 enum architecture |
-| 29 Apr 2026 | Matched-test rule for corrections — 4 categories: naming/constants (file re-read), schema/types (build:all), visual/UX (browser preview), integration/runtime (localhost as role) | Right-sizes verification cost to actual change risk |
-| 29 Apr 2026 | EAGLE may invoke any plugin (superpowers, ce, built-ins) for thinking/planning/brainstorming, but plugins forbidden in Mode 3 Execute: /ce:work, /superpowers:execute-plan, /dispatching-parallel-agents | Supersedes 6 Apr lock with precise formulation; plugins are tools, EAGLE is the discipline |
-| 29 Apr 2026 | Mode 3 Execute writes code in risk-ordered stages (pure additions → isolated new files → wiring/integration); EAGLE judges stage count based on capability | Smaller surface per stage, faster diagnosis when something breaks, natural test points at stage boundaries |
-| 29 Apr 2026 | Stage reports produced always — even for one-stage tiny capabilities | Consistency over speed; skipping creates exception culture that grows over time |
-| 29 Apr 2026 | Mode 1 declares MIGRATION vs CAPABILITY at start; migration = production wins ties, capability = prototype leads | Makes the v2.0 "explicit override" first-class; supports both migration tasks and prototype-led capability work |
-| 30 Apr 2026 | Hardcoding rule final form — never hardcode any value that appears more than once, could change, or represents a business concept. Constants, enums and tokens must exist before any component references them. | Prevents silent failures and string drift |
-| 30 Apr 2026 | DeAssists is a full Education ERP SaaS platform — five layers: Student Portal, Lead and Sales, Finance, SMS + LMS, Tax and Compliance. Every architectural decision must support all five layers without a rebuild. | Full ERP vision locked |
-| 30 Apr 2026 | UserTypes enum is permanently locked at 10 types. Never add new UserTypes to solve operational problems. All granularity via database roles and AI agents. Goal: run full university ERP with minimum human staff. | Prevents code bloat and org chart in code |
-| 30 Apr 2026 | BCBT University is already a live tenant today. Target: full ERP MVP live for BCBT September 2026 intake. BCBT is the proof of concept for all future university sales. | September 2026 hard deadline |
-| 30 Apr 2026 | AI-first design principle — every workflow designed for AI execution. Every repetitive task gets an AI agent. Humans handle exceptions only. Design so AI can do it tomorrow without a rebuild. | Minimal staff model locked |
-| 30 Apr 2026 | Universal Lead Capture Form — single embeddable form on any platform. Must work for DeAssists AND BCBT. Every submission creates a live CRM lead automatically. Zero manual entry. | Lead capture architecture locked |
-| 30 Apr 2026 | Tool workflow locked — VEERABHADRA thinks and plans, Claude Code reads and saves brain files, Cursor Agent writes portal code, GitHub Desktop commits, Latha reviews PR. Never mix these roles. | Permanent tool division |
-| 30 Apr 2026 | Session integrity system — session-lock.md controls whether a new session can start. STATUS: BUSY means blocked. STATUS: OPEN means safe. Session-end protocol is mandatory. Applies to humans and AI agents equally. | Prevents concurrent sessions and data corruption |
-| 30 Apr 2026 | Architecture before prototype rule — for every new layer: understand fully, architecture document, prototype, UI/UX review, finalise, then build. Never build before understanding. | Applied to SMS, LMS, Finance, DATEV |
-| 30 Apr 2026 | DeAssists ecosystem model — every expat service can plug in as a module. Shell stays the same. Ecosystem grows through configuration not code. | Ecosystem architecture locked |
-| 30 Apr 2026 | Brain file update rule — before Claude Code touches any existing brain file it must fetch and read it first, then work, then save. Never overwrite without reading. | Prevents brain file corruption |
-| 30 Apr 2026 | One file at a time discipline — produce one file, review in VEERABHADRA, approve, save via terminal, confirm line count, then next file. Never batch without review. | Quality gate for brain files |
-| 1 May 2026 | Prototype hardcoded arrays are demo data only — never create backend modules without verifying they do not already exist in apps/backend-nest/src/ and collections.ts | Prevents duplicate entity creation — backend modules belong to Latha — EAGLE must verify before flagging anything as missing |
 
----
-
-## 27 April 2026 — API Pattern Discipline (LOCKED) (Updated after second Latha review)
-Context: CRM Phase 1 failed QA twice. First: raw fetch(). Second: inline hooks without dedicated query file.
-Decision: All new module code MUST follow the project's full API pattern:
-1. Create a dedicated query file in libs/react-query/queries/{module}.ts
-2. Define named hooks (useModuleList, useModuleDetails, useCreateModule, etc.)
-3. Use Endpoints enum from @constants/endpoints.enum.ts for base URLs
-4. Import useCustomQuery/useCustomQueryV2/useCustomMutationV2 from ../src/index
-5. Export all hooks and re-export from queries/index.ts
-6. Components import ONLY named hooks — never inline useCustomQuery with raw URLs
-7. Reference files: account.ts (auth), model.ts (generic CRUD), leads.ts (custom controller)
+## 27 April 2026 — API Pattern Discipline (LOCKED)
+Context: CRM Phase 1 deployed to QA, 404 errors. Root cause: raw fetch() instead of project's axios client + React Query hooks.
+Decision: All new code MUST use existing project patterns.
+- Use useCustomQuery/useCustomQueryV2 for GET requests
+- Use useCustomMutationV2 for POST/PUT requests
+- Use useCustomDelete for DELETE requests
+- All hooks go through axios client (libs/shared/config/axios-client.ts) which handles: base URL per environment, auth token, 401 refresh
+- Leads uses custom controller at /v1/leads (NOT generic /v1/model/leads)
+- For generic collections, use model hooks from libs/react-query/src/queries/model.ts
+- NEVER raw fetch(), NEVER manual getCookie for auth
 Locked by: Shon AJ
-Trigger: Two rounds of Latha feedback 27 Apr 2026
-| 2026-05-01 | A17 added | Markdown hyperlink syntax found inside TypeScript enum array causing silent runtime bug. Rule: grep for ](http after every file write. |
+Trigger: Latha QA failure report
+
+## 2 May 2026 — Course Finder Endpoint Gap (LOGGED)
+
+2026-05-02 — Course Finder Phase 2C — GET /v1/programmes does not exist. Existing endpoint is GET courses/v1/list. Latha must confirm correct endpoint path before useProgrammes hook is written. Feature remains State 2B pending endpoint confirmation.
