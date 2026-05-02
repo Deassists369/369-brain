@@ -1,3 +1,12 @@
+STATUS: SUPERSEDED — 2 May 2026
+This file has been superseded by the 369-ECC structure.
+Unique content absorbed into: VEERABHADRA.md, CODING-CONSTITUTION.md, AGENTS.md
+Kept for historical reference only.
+Do not read this file in active sessions.
+Use VEERABHADRA.md and CLAUDE.md instead.
+
+---
+
 # THE DEASSISTS OPERATING SYSTEM
 ## Version 2.0 | Owner: Shon AJ | Brain: VEERABHADRA
 ### The founding document of a company built by one founder and AI.
