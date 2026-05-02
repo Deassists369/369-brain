@@ -6,7 +6,7 @@ Phase 2 — COMPLETE (brain wired, AGENTS.md, HOOKS.md, lean CLAUDE.md)
 Phase 3 — IN PROGRESS (brain cleanup)
 Phase 4 — PENDING
 Phase 5 — PENDING
-Phase 6 — PENDING
+Phase 6 — IN PROGRESS (Playwright installed, rubric created, GAN agents created, first test written)
 Portal build: PAUSED — resumes after Phase 4
 Active portal blocker: Latha permission.helper.ts fix pending
 
