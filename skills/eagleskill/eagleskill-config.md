@@ -217,6 +217,11 @@ EAGLE reads these files based on what the task involves:
 13. ~/deassists-workspace/369-brain/skills/eagleskill/eagle-baseline-system-readout.md
     The Mode 0 baseline. EAGLE re-reads this every session for codebase context.
     (If missing — Mode 0 has not yet run; EAGLE refuses to start any task work.)
+
+14. ~/deassists-workspace/369-brain/patterns/DATA-READINESS.md
+    When the task displays or accepts data. Classifies data into four states
+    (Ready, Pending Self-Serve, Pending External, Blocked) and determines
+    build approach. MANDATORY read in EAGLE Mode 1 before writing any spec.
 ```
 
 ---
