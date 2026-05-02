@@ -597,6 +597,32 @@ This caused debugging time loss on 1 May 2026.
 
 ---
 
+### A19 — Always Use pnpm in the DeAssists Monorepo
+
+This monorepo uses pnpm as the package manager.
+Never use npm install or yarn in any terminal command inside ~/deassists/.
+
+Always use:
+  pnpm add [package]       — to add a dependency
+  pnpm add -D [package]    — to add a dev dependency
+  pnpm install             — to install all dependencies
+  npx nx build [project]   — for building via nx (nx uses pnpm internally)
+
+Never use:
+  npm install
+  npm add
+  yarn add
+  yarn install
+
+Using npm in a pnpm monorepo corrupts the lockfile and breaks
+the build for all team members including Latha.
+
+Root cause: Phase 6 Task 6.3 used npm install for Playwright —
+failed with lockfile conflict. Fixed by switching to pnpm add -D.
+Rule added 2 May 2026.
+
+---
+
 ## PART B — NEW FEATURE PATH
 ## Use when building something that does
 ## not exist in production yet.
