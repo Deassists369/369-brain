@@ -1,0 +1,76 @@
+# DATA STATE DECLARATION — `rag-foundation-v1`
+
+**Note**: The ticket passed in ARGUMENTS overrides the "first NEXT in feature-registry" default. `rag-foundation-v1` is **not** registered in `feature-registry.md`, and it has **no frontend surface** — it is pure backend infrastructure (collections, ingestion pipeline, search endpoint). EAGLE produces frontend gap reports against prototypes, so this ticket lives upstream of EAGLE regardless of state.
+
+A prior data-check exists at `intelligence/harness-runs/output/rag-foundation-v1/data-check.txt`. I re-verified the underlying facts against the current portal:
+
+- No `documents` collection schema exists (`apps/backend-nest/src/core/entities/` has only `user-document.entity.ts` — student application docs, URL ref to S3, no chunking/hashing/embedding).
+- No `chunks` collection, no `documents` module under `apps/backend-nest/src/modules/`.
+- No `POST /api/v1/documents/search` controller.
+- S3 upload is LIVE (Layer 1, owned by Latha) but emits no ingestion event consumed downstream.
+- No prototype HTML, no UI surface, no `useDocuments` / `useDocumentSearch` hook.
+
+---
+
+### The Five Questions
+
+**Q1 — What data does this feature display?**
+None displayed. Data created/stored:
+- `documents`: `_id`, `tenant_id`, `filename`, `mime_type`, `file_size`, `sha256_hash`, `s3_key`, `uploaded_by`, `uploaded_at`, `source_event`, `metadata` (title, author, page_count, language), `status`, `chunk_count`.
+- `chunks`: `_id`, `document_id`, `tenant_id`, `chunk_index`, `text`, `token_count`, `start_offset`, `end_offset`, `embedding?`, `metadata` (page_number, section_heading).
+- Search response: matched chunks + parent doc refs, `tenant_id`-scoped.
+
+**Q2 — Where does that data live today?**
+- `documents` collection: does not exist.
+- `chunks` collection: does not exist.
+- Raw S3 uploads: LIVE.
+- Ingestion / chunking / hashing / embedding: does not exist.
+
+**Q3 — Is there a working endpoint today?**
+No. `POST /api/v1/documents/search` is not present in any backend controller.
+
+**Q4 — Can we enter this data ourselves?**
+No. Data is *derived* from S3 upload events by a pipeline. Manual entry is not the feature — dedup + chunking + indexing is.
+
+**Q5 — What is the Latha task?**
+The entire ticket. Specifically:
+1. Create `documents` collection + Mongoose schema.
+2. Create `chunks` collection + schema, indexed on `(tenant_id, document_id)`.
+3. Add SHA-256 uniqueness constraint per `tenant_id` for dedup.
+4. Build ingestion pipeline: subscribe to S3 upload event → metadata extract → SHA-256 → dedup check → chunk → write `chunks` → mark document `processed`.
+5. Build `POST /api/v1/documents/search` controller in `apps/backend-nest/src/modules/documents-module/` with mandatory `tenant_id` scoping (use existing scope guard).
+6. Decide: keyword (Mongo text index) vs semantic (Atlas vector + embedding model).
+7. E2E test: upload twice → second returns existing `document_id`, no duplicate chunks.
+
+---
+
+### DATA STATE TABLE
+
+| Feature | Data State | Data Source | Latha Task |
+|---|---|---|---|
+| rag-foundation-v1 | **STATE 3** | Does not exist | Build `documents` + `chunks` collections, S3-event ingestion pipeline, SHA-256 dedup, `POST /api/v1/documents/search` scoped to `tenant_id` |
+
+---
+
+### RECOMMENDATION — **STATE 3: DO NOT PROCEED**
+
+Do **not** run `/eagle-mode1`.
+
+1. **No frontend surface.** EAGLE compares prototype to codebase; there is no prototype for a backend ingestion pipeline.
+2. **No collections, no endpoint, no pipeline.** Textbook State 3.
+3. **This IS the Latha task**, not a Shon EAGLE task.
+
+### Required next actions
+
+1. **Register the ticket** in `feature-registry.md` under a new `LAYER 7 — RAG / KNOWLEDGE FOUNDATION` section:
+   - Status: `BLOCKED`
+   - Owner: `Latha`
+   - Notes: Backend foundation for RAG. State 3. Frontend RAG features (search UI, document explorer) blocked until collections + endpoint exist.
+2. **Run `/latha-handover`** to package Q5 items 1–7 as a Latha ticket.
+3. **Do not begin any RAG-consuming frontend** (search UI, document chat, knowledge browser) until Latha confirms:
+   - Both collections live in MongoDB.
+   - `POST /api/v1/documents/search` returns 200 with tenant scoping verified.
+   - Ingestion e2e (dedup) passes.
+4. **After Latha confirms backend complete** → flip `BLOCKED → NEXT` for the consuming *frontend* feature, then `/eagle-mode1`.
+
+**Verdict: STATE 3 — BLOCKED. Raise Latha task. Feature stays out of EAGLE.**

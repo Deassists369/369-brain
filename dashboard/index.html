@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>IT Mission Control 369</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+:root{--bg:#eef0f3;--bg2:#e4e7ec;--card:#f7f8fa;--card2:#ffffff;--border:#d0d5de;--border2:#b8bfcc;--ink:#080f18;--ink2:#1e2d3d;--muted:#3d4f66;--dim:#5a6a82;--green:#0a7a4e;--green-bg:#d6f0e4;--green-b:#7ecfab;--red:#c0392b;--red-bg:#fce8e6;--red-b:#f4a49e;--amber:#9a5a00;--amber-bg:#fdefd6;--amber-b:#f5c97a;--blue:#1a4fa0;--blue-bg:#dce8fb;--blue-b:#7aaae8;--purple:#5b3fa8;--purple-bg:#ede9fb;--purple-b:#b8a8f0;--teal:#0f766e;--teal-bg:#ccfbf1;--teal-b:#5eead4;--mono:'DM Mono',monospace;--display:'Syne',sans-serif;--body:'Outfit',sans-serif;--r:12px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+body{min-height:100vh;}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(238,240,243,0.94);backdrop-filter:blur(20px);border-bottom:2px solid var(--ink);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.brand{font-family:var(--display);font-size:15px;font-weight:800;letter-spacing:0.08em;color:var(--ink);text-transform:uppercase;}
+.brand em{color:var(--muted);font-style:normal;font-weight:400;letter-spacing:0.04em;}
+.tl{display:flex;align-items:center;gap:20px;}
+.live-badge{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;letter-spacing:0.12em;background:var(--green-bg);color:var(--green);border:1.5px solid var(--green-b);padding:4px 10px;border-radius:4px;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.tr{display:flex;align-items:center;gap:12px;}
+.clock{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.06em;}
+.rbtn{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--ink2);background:var(--card2);border:1.5px solid var(--border2);padding:6px 14px;border-radius:4px;cursor:pointer;text-transform:uppercase;transition:all 120ms;}
+.rbtn:hover{background:var(--ink);color:var(--card2);}
+.tabs{display:flex;padding:0 32px;background:var(--card);border-bottom:1.5px solid var(--border);}
+.tab{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;padding:13px 22px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;transition:all 150ms;font-weight:700;border-right:1.5px solid var(--border);}
+.tab:first-child{border-left:1.5px solid var(--border);}
+.tab:hover{color:var(--ink);background:var(--card2);}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--card2);}
+.page{display:none;}.page.active{display:block;}
+.hero{padding:28px 32px 0;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;}
+.stat{background:var(--card2);border:1.5px solid var(--border);border-radius:var(--r);padding:20px 22px;position:relative;overflow:hidden;}
+.stat-accent{position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r);}
+.stat.eagle .stat-accent{background:var(--blue);}
+.stat.test .stat-accent{background:var(--green);}
+.stat.learn .stat-accent{background:var(--purple);}
+.stat.queue .stat-accent{background:var(--amber);}
+.stat-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.stat-num{font-family:var(--display);font-size:40px;font-weight:800;line-height:1;margin-bottom:6px;}
+.stat.eagle .stat-num{color:var(--blue);}
+.stat.test .stat-num{color:var(--green);}
+.stat.learn .stat-num{color:var(--purple);}
+.stat.queue .stat-num{color:var(--amber);}
+.stat-sub{font-size:12px;color:var(--muted);font-family:'Inter',sans-serif;}
+.main{padding:24px 32px;display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.full{grid-column:1/-1;}
+.panel{background:var(--card2);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.panel-head{padding:12px 18px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--card);}
+.panel-title{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;color:var(--ink2);text-transform:uppercase;font-weight:700;}
+.pbadge{font-family:var(--mono);font-size:9px;padding:3px 9px;border-radius:4px;border:1.5px solid;letter-spacing:0.06em;text-transform:uppercase;}
+.pbadge.blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-b);}
+.pbadge.green{background:var(--green-bg);color:var(--green);border-color:var(--green-b);}
+.pbadge.purple{background:var(--purple-bg);color:var(--purple);border-color:var(--purple-b);}
+.pbadge.teal{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-b);}
+.panel-body{padding:14px 18px;}
+.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1.5px dashed var(--border);}
+.row:last-child{border-bottom:none;}
+.row-id{font-family:var(--mono);font-size:9px;color:var(--dim);width:70px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.04em;}
+.row-name{flex:1;color:var(--ink);font-weight:500;font-size:13px;font-family:'Inter',sans-serif;}
+.row-time{font-family:var(--mono);font-size:9px;color:var(--dim);flex-shrink:0;}
+.badge{font-family:var(--mono);font-size:8px;padding:3px 8px;border-radius:4px;border:1.5px solid;flex-shrink:0;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;}
+.badge.done{background:var(--green-bg);color:var(--green);border-color:var(--green-b);}
+.badge.live{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-b);}
+.badge.review{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-b);}
+.badge.fail{background:var(--red-bg);color:var(--red);border-color:var(--red-b);}
+.badge.queued{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-b);}
+.phase-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;}
+.phase-list{display:flex;flex-direction:column;}
+.ph{display:flex;align-items:center;gap:8px;padding:6px 0;position:relative;}
+.ph:not(:last-child)::after{content:'';position:absolute;left:8px;top:24px;width:1.5px;height:calc(100% - 4px);background:var(--border2);}
+.ph-dot{width:16px;height:16px;border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;z-index:1;border:1.5px solid;}
+.ph-dot.pass{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+.ph-dot.fail{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+.ph-dot.run{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);animation:blink 1s infinite;}
+.ph-dot.wait{background:var(--card);border-color:var(--border2);color:var(--dim);}
+.ph-name{font-family:var(--mono);font-size:10px;color:var(--ink2);flex:1;letter-spacing:0.02em;}
+.ph-dur{font-family:var(--mono);font-size:9px;color:var(--dim);}
+.mwrap{overflow-x:auto;}
+table.mx{width:100%;border-collapse:collapse;}
+table.mx th{font-family:var(--mono);font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:8px 6px;text-align:center;border-bottom:2px solid var(--border2);background:var(--card);}
+table.mx th:first-child{text-align:left;padding-left:0;}
+table.mx td{padding:8px 6px;text-align:center;border-bottom:1px dashed var(--border);}
+table.mx td:first-child{text-align:left;font-family:var(--mono);font-size:9px;font-weight:700;color:var(--ink2);padding-left:0;letter-spacing:0.04em;}
+table.mx tr:last-child td{border-bottom:none;}
+.cp{color:var(--green);font-weight:800;font-size:12px;}
+.cf{color:var(--red);font-weight:800;font-size:12px;}
+.cs{color:var(--dim);font-size:11px;}
+.intel{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:10px;}
+.intel:last-child{margin-bottom:0;}
+.intel-h{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.intel-icon{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.intel-icon.warn{background:var(--amber-bg);border:1.5px solid var(--amber-b);}
+.intel-icon.info{background:var(--blue-bg);border:1.5px solid var(--blue-b);}
+.intel-icon.teal{background:var(--teal-bg);border:1.5px solid var(--teal-b);}
+.intel-title{font-weight:600;font-size:13px;color:var(--ink);font-family:'Inter',sans-serif;}
+.intel-body{font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);line-height:1.7;}
+.empty{padding:28px;text-align:center;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:0.04em;}
+footer{margin:8px 32px 24px;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--r);background:var(--card2);display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:0.06em;}
+footer strong{color:var(--ink2);}
+.dt-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;}
+.dt-card{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 14px;}
+.dt-name{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.dt-num{font-family:var(--display);font-size:28px;font-weight:800;color:var(--teal);line-height:1;}
+.dt-sub{font-family:'Inter',sans-serif;font-size:9px;color:var(--muted);margin-top:4px;}
+.prog-wrap{margin:8px 0;}
+.prog-label{display:flex;justify-content:space-between;font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);margin-bottom:4px;}
+.prog-bar{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;border:1px solid var(--border);}
+.prog-fill{height:100%;border-radius:4px;}
+.prog-fill.green{background:var(--green);}
+.prog-fill.amber{background:var(--amber);}
+.prog-fill.red{background:var(--red);}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="tl">
+    <div class="brand">IT Mission Control <em>// 369</em></div>
+    <div class="live-badge"><span class="dot"></span>LIVE</div>
+  </div>
+  <div class="tr">
+    <div class="clock" id="clock">--:--:--</div>
+    <button class="rbtn" onclick="loadAll()">↻ Refresh</button>
+  </div>
+</div>
+<div class="tabs">
+  <div class="tab active" id="tab-build" onclick="switchTab('build')">Build Intelligence</div>
+  <div class="tab" id="tab-docs" onclick="switchTab('docs')" style="color:var(--teal)">Document Intelligence</div>
+</div>
+<div class="page active" id="page-build">
+<div class="hero">
+  <div class="stat eagle"><div class="stat-accent"></div><div class="stat-label">EAGLE Builds</div><div class="stat-num" id="s-eagle">—</div><div class="stat-sub" id="s-eagle-sub">loading…</div></div>
+  <div class="stat test"><div class="stat-accent"></div><div class="stat-label">Test Runs</div><div class="stat-num" id="s-test">—</div><div class="stat-sub" id="s-test-sub">loading…</div></div>
+  <div class="stat learn"><div class="stat-accent"></div><div class="stat-label">Proposals</div><div class="stat-num" id="s-learn">—</div><div class="stat-sub" id="s-learn-sub">loading…</div></div>
+  <div class="stat queue"><div class="stat-accent"></div><div class="stat-label">Queue</div><div class="stat-num" id="s-queue">—</div><div class="stat-sub" id="s-queue-sub">loading…</div></div>
+</div>
+<div class="main">
+  <div class="panel"><div class="panel-head"><span class="panel-title">EAGLE — Recent Builds</span><span class="pbadge blue">builder</span></div><div class="panel-body" id="eagle-list"><div class="empty">Loading…</div></div></div>
+  <div class="panel"><div class="panel-head"><span class="panel-title">Test Harness — Night Watch</span><span class="pbadge green">guardian</span></div><div class="panel-body" id="test-list"><div class="empty">Builds tonight via playwright-full-test-suite</div></div></div>
+  <div class="panel"><div class="panel-head"><span class="panel-title">Ticket Queue</span></div><div class="panel-body" id="queue-list"><div class="empty">Loading queue…</div></div></div>
+  <div class="panel"><div class="panel-head"><span class="panel-title">Role × Permission Matrix</span></div><div class="panel-body" id="matrix-wrap"><div class="empty">Populates after first Playwright run</div></div></div>
+  <div class="panel full"><div class="panel-head"><span class="panel-title">Latest Run — Phase Trail</span><span id="latest-run-id" style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.06em">—</span></div><div style="padding:14px 18px;" id="phase-trail"><div class="empty">Loading…</div></div></div>
+  <div class="panel full"><div class="panel-head"><span class="panel-title">Self-Improvement — Intelligence Reports</span><span class="pbadge purple">learner</span></div><div class="panel-body" id="intel-list">
+    <div class="intel"><div class="intel-h"><div class="intel-icon warn">!</div><span class="intel-title">First analysis running tonight</span></div><div class="intel-body">Self-improvement harness builds tonight. Reads full codebase + SOP + harness_runs. First analysis report appears here tomorrow morning.</div></div>
+    <div class="intel"><div class="intel-h"><div class="intel-icon info">i</div><span class="intel-title">Run 1 complete — 3 May 2026, 4:44pm</span></div><div class="intel-body">First EAGLE run. sidebar-restructure. Found 12 issues in sidemenu.ts. Sidebar audit passed after page guard fixes. Brain committed b78e376.</div></div>
+  </div></div>
+</div>
+</div>
+<div class="page" id="page-docs">
+<div class="hero">
+  <div class="stat"><div class="stat-accent" style="background:var(--teal)"></div><div class="stat-label">Docs Processed</div><div class="stat-num" style="color:var(--teal)" id="d-total">—</div><div class="stat-sub">today</div></div>
+  <div class="stat"><div class="stat-accent" style="background:var(--green)"></div><div class="stat-label">Auto-Approved</div><div class="stat-num" style="color:var(--green)" id="d-approved">—</div><div class="stat-sub">by 369 Assessment</div></div>
+  <div class="stat"><div class="stat-accent" style="background:var(--amber)"></div><div class="stat-label">Needs Review</div><div class="stat-num" style="color:var(--amber)" id="d-review">—</div><div class="stat-sub">staff attention needed</div></div>
+  <div class="stat"><div class="stat-accent" style="background:var(--blue)"></div><div class="stat-label">BCBT Intake</div><div class="stat-num" style="color:var(--blue)" id="d-intake">—</div><div class="stat-sub">Sep 2026 students</div></div>
+</div>
+<div class="main">
+  <div class="panel full"><div class="panel-head"><span class="panel-title">BCBT September 2026 — Intake Readiness</span><span class="pbadge teal">369 assessment</span></div>
+    <div class="panel-body">
+      <div class="intel"><div class="intel-h"><div class="intel-icon teal">◎</div><span class="intel-title">MongoDB Atlas collections live — RAG Foundation building tonight</span></div><div class="intel-body">documents collection ✓ live on Atlas · chunks collection ✓ live on Atlas · RAG Foundation ticket queued · 369 Assessment engine builds next week · Document Intelligence panels populate once pipeline is live</div></div>
+      <div style="margin-top:14px;">
+        <div class="prog-wrap"><div class="prog-label"><span>All documents complete</span><span>— students</span></div><div class="prog-bar"><div class="prog-fill green" style="width:0%"></div></div></div>
+        <div class="prog-wrap"><div class="prog-label"><span>1-2 documents missing</span><span>— students</span></div><div class="prog-bar"><div class="prog-fill amber" style="width:0%"></div></div></div>
+        <div class="prog-wrap"><div class="prog-label"><span>3+ documents missing</span><span>— students</span></div><div class="prog-bar"><div class="prog-fill red" style="width:0%"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="panel"><div class="panel-head"><span class="panel-title">369 Assessment — By Document Type</span></div>
+    <div class="panel-body"><div class="dt-grid">
+      <div class="dt-card"><div class="dt-name">Passport</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
+      <div class="dt-card"><div class="dt-name">Bank Statement</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
+      <div class="dt-card"><div class="dt-name">Academic Cert</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
+      <div class="dt-card"><div class="dt-name">Language Cert</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
+      <div class="dt-card"><div class="dt-name">Motivation Letter</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
+      <div class="dt-card"><div class="dt-name">Visa Docs</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
+      <div class="dt-card"><div class="dt-name">Blocked Account</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
+      <div class="dt-card" style="border-color:var(--teal-b);background:var(--teal-bg)"><div class="dt-name" style="color:var(--teal)">Total Checked</div><div class="dt-num" style="color:var(--teal)">0</div><div class="dt-sub">since RAG live</div></div>
+    </div></div>
+  </div>
+  <div class="panel"><div class="panel-head"><span class="panel-title">Live Feed — Document Activity</span></div>
+    <div class="panel-body">
+      <div class="row"><span class="row-id">atlas</span><span class="row-name">documents collection created</span><span class="badge done">live ✓</span><span class="row-time">tonight</span></div>
+      <div class="row"><span class="row-id">atlas</span><span class="row-name">chunks collection created</span><span class="badge done">live ✓</span><span class="row-time">tonight</span></div>
+      <div class="row"><span class="row-id">queue</span><span class="row-name">rag foundation building</span><span class="badge queued">tonight</span><span class="row-time">queued</span></div>
+      <div class="empty" style="padding:12px 0 0">Live document activity appears once RAG pipeline is live</div>
+    </div>
+  </div>
+  <div class="panel full"><div class="panel-head"><span class="panel-title">Data Intelligence — MongoDB + Dropbox</span><span class="pbadge teal">data layer</span></div>
+    <div class="panel-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;">
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--ink2);text-transform:uppercase;font-weight:700;padding-bottom:8px;border-bottom:1.5px solid var(--border);margin-bottom:4px;">MongoDB Atlas</div>
+          <div class="row"><span class="row-name">documents</span><span class="row-time" style="margin-right:10px">live</span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span></div>
+          <div class="row"><span class="row-name">chunks</span><span class="row-time" style="margin-right:10px">live</span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span></div>
+          <div class="row"><span class="row-name">leads</span><span class="row-time" style="margin-right:10px">live</span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span></div>
+          <div class="row"><span class="row-name">applications</span><span class="row-time" style="margin-right:10px">live</span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span></div>
+          <div class="row"><span class="row-name">users</span><span class="row-time" style="margin-right:10px">live</span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span></div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--amber);text-transform:uppercase;font-weight:700;padding-bottom:8px;border-bottom:1.5px solid var(--amber-b);margin-bottom:4px;">Dropbox Sync</div>
+          <div class="row"><span class="row-name">Status</span><span class="row-time" style="color:var(--amber);font-weight:700;letter-spacing:0.04em">Ready to connect</span></div>
+          <div class="row"><span class="row-name">Instructions</span><span class="row-time" style="color:var(--amber);letter-spacing:0.04em;text-align:right">Set DROPBOX_TOKEN env var to activate</span></div>
+          <div class="row"><span class="row-name">Last check</span><span class="row-time">never</span></div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--teal);text-transform:uppercase;font-weight:700;padding-bottom:8px;border-bottom:1.5px solid var(--teal-b);margin-bottom:4px;">AI Learns From</div>
+          <div class="row"><span class="row-name">Documents processed</span><span class="row-time" style="color:var(--teal);font-weight:700;font-size:11px">0 · grows as RAG runs</span></div>
+          <div class="row"><span class="row-name">Patterns identified</span><span class="row-time" style="color:var(--teal);font-weight:700;font-size:11px">0 · grows as self-improvement runs</span></div>
+          <div class="row"><span class="row-name">Student profiles</span><span class="row-time" style="color:var(--teal);font-weight:700;font-size:11px">0 · grows as students upload</span></div>
+          <div class="row"><span class="row-name">Last analysis</span><span class="row-time" style="color:var(--teal);letter-spacing:0.04em">tonight · self-improvement Run 001</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<footer>
+  <strong>IT Mission Control 369</strong> · DeAssists / Three Sixty Nine GmbH · Shon AJ + VEERABHADRA
+  <span id="last-refresh">Last refresh: —</span>
+</footer>
+<script>
+const ts=d=>{if(!d)return'—';const s=Math.floor((Date.now()-new Date(d))/1000);if(s<60)return s+'s';if(s<3600)return Math.floor(s/60)+'m';return Math.floor(s/3600)+'h';};
+const sc=s=>({'complete':'done','running':'live','awaiting-approval':'review','failed':'fail','rejected':'fail','blocked':'fail'}[s]||'review');
+const sl=s=>({'complete':'done','running':'live','awaiting-approval':'review','failed':'fail','rejected':'fail','blocked':'blocked'}[s]||s||'—');
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  document.getElementById('page-'+t).classList.add('active');
+}
+function rr(r){return'<div class="row"><span class="row-id">'+(r.run_id||'').slice(0,8)+'</span><span class="row-name">'+(r.feature||r.ticket||'—').replace(/-/g,' ')+'</span><span class="badge '+sc(r.status)+'">'+sl(r.status)+'</span><span class="row-time">'+ts(r.started_at)+' ago</span></div>';}
+function rq(open,await_,done){
+  const all=[...await_.map(t=>({n:t,s:'review'})),...open.map(t=>({n:t,s:'queued'})),...done.slice(-2).reverse().map(t=>({n:t,s:'done'}))];
+  if(!all.length)return'<div class="empty">Queue empty</div>';
+  return all.map((t,i)=>'<div class="row"><span class="row-id">#'+String(i+1).padStart(2,'0')+'</span><span class="row-name">'+t.n.replace('.md','').replace(/-/g,' ')+'</span><span class="badge '+t.s+'">'+t.s+'</span></div>').join('');
+}
+function rph(runs){
+  if(!runs.length)return'<div class="empty">No runs yet</div>';
+  const r=runs[runs.length-1];const phases=r.phases||[];
+  document.getElementById('latest-run-id').textContent=(r.run_id||'').slice(0,16)+' · '+(r.feature||'').replace(/-/g,' ');
+  if(!phases.length)return'<div class="empty">Run started — phases logging…</div>';
+  const cols=[[],[],[]];phases.forEach((p,i)=>cols[i%3].push(p));
+  return'<div class="phase-grid">'+cols.map(col=>{if(!col.length)return'<div></div>';return'<div class="phase-list">'+col.map(p=>{const d=p.status==='complete'?'pass':p.status==='failed'?'fail':p.status==='running'?'run':'wait';const ic=d==='pass'?'✓':d==='fail'?'✕':d==='run'?'…':'○';const dur=p.duration_ms?Math.round(p.duration_ms/1000)+'s':'';return'<div class="ph"><div class="ph-dot '+d+'">'+ic+'</div><span class="ph-name">'+(p.phase||p.name||'—')+'</span><span class="ph-dur">'+dur+'</span></div>';}).join('')+'</div>';}).join('')+'</div>';
+}
+function rmx(tests){
+  const R=['SA','OO','OA','MGR','TL','STF','AGT'];
+  const P=['/dashboard','/leads','/catalog','/applications','/manage-users'];
+  if(!tests.length)return'<div class="empty">Populates after first Playwright run</div>';
+  const r=tests[tests.length-1];const res=r.results||{};
+  let h='<div class="mwrap"><table class="mx"><thead><tr><th>Page</th>';
+  R.forEach(x=>h+='<th>'+x+'</th>');h+='</tr></thead><tbody>';
+  P.forEach(p=>{h+='<tr><td>'+p+'</td>';R.forEach(x=>{const v=res[x+':'+p];h+=v===true?'<td class="cp">✓</td>':v===false?'<td class="cf">✕</td>':'<td class="cs">—</td>';});h+='</tr>';});
+  return h+'</tbody></table></div>';
+}
+async function loadAll(){
+  try{
+    const d=await(await fetch('/api/data')).json();
+    document.getElementById('s-eagle').textContent=d.eagle.length||0;
+    const el=d.eagle[d.eagle.length-1];
+    document.getElementById('s-eagle-sub').textContent=el?'last: '+(el.feature||'').slice(0,16).replace(/-/g,' ')+' · '+ts(el.started_at)+' ago':'no builds yet';
+    document.getElementById('s-test').textContent=d.test.length||0;
+    const tp=d.test.filter(r=>r.status==='complete').length;
+    document.getElementById('s-test-sub').textContent=d.test.length?tp+'/'+d.test.length+' passed':'builds tonight';
+    document.getElementById('s-learn').textContent=d.selfImprove.length||0;
+    document.getElementById('s-learn-sub').textContent=d.selfImprove.length?d.selfImprove.length+' analyses run':'first analysis tonight';
+    const qt=d.ticketsOpen.length+d.ticketsAwaiting.length;
+    document.getElementById('s-queue').textContent=qt;
+    document.getElementById('s-queue-sub').textContent=d.ticketsAwaiting.length+' awaiting review · '+d.ticketsComplete.length+' done';
+    document.getElementById('eagle-list').innerHTML=d.eagle.length?[...d.eagle].reverse().slice(0,6).map(rr).join(''):'<div class="empty">No builds yet</div>';
+    document.getElementById('test-list').innerHTML=d.test.length?[...d.test].reverse().slice(0,6).map(rr).join(''):'<div class="empty">Builds tonight</div>';
+    document.getElementById('queue-list').innerHTML=rq(d.ticketsOpen,d.ticketsAwaiting,d.ticketsComplete);
+    document.getElementById('phase-trail').innerHTML=rph(d.eagle);
+    document.getElementById('matrix-wrap').innerHTML=rmx(d.test);
+    document.getElementById('last-refresh').textContent='refreshed: '+new Date().toLocaleTimeString('en-GB');
+  }catch(e){document.getElementById('last-refresh').textContent='offline — run: node mission-control-server.js';}
+}
+setInterval(()=>document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-GB'),1000);
+setInterval(loadAll,30000);
+loadAll();
+</script>
+</body>
+</html>

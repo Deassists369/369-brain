@@ -1,0 +1,1014 @@
+I have the context. Producing Mode 2 spec for `harness-eagle-stage-marker-contract` per Shon's locked answers (Option B — 2-issue hardening subset, harness carve-out approved, feature-registry append confirmed).
+
+---
+
+# EAGLE Mode 2 — Spec & Working Preview
+**Ticket:** `harness-eagle-stage-marker-contract`
+**Date:** 3 May 2026
+**Mode declaration carried from Mode 1:** CAPABILITY (brain-repo internal harness tooling)
+**Add-only carve-out:** ACTIVE — `harness/**` may evolve in-place when the harness itself is the subject of the ticket. Portal code and brain memory/decisions/patterns remain add-only.
+**Mode 1 path chosen:** Option B (2-issue hardening subset).
+
+---
+
+## PHASE 2A — DRIFT CHECK
+
+Last harness-related commit: `5dfab22 Mode 3 per-stage marker-contract patch loop (Option A v1)` (this ticket's v1).
+Most recent commit on `main`: `b78e376 brain: Run 1 complete — sidebar-restructure done…` (no harness changes).
+
+`git status` of brain repo at Mode 2 start:
+- `M intelligence/harness-runs/eagle-harness.jsonl` — log file, expected to drift, not in scope
+- `M memory/session-lock.md` — session-state, not in scope
+- `M tickets/open/harness-eagle-stage-marker-contract.md` — Mode 1 review answers, expected
+- Several untracked output dirs in `intelligence/harness-runs/output/` — harness-emitted, not in scope
+- Three deletions (`patterns/anti-ambiguity.md`, two skill READMEs) — unrelated cleanup, out of scope for this ticket
+
+No code drift in `harness/core/*` or `harness/eagle/*` since Mode 1 round 1. No new files have appeared in `harness/__tests__/` (the directory still does not exist — Glob confirms zero `harness/**/*test*` matches). Drift check **CLEAN.** Proceeding to Phase 2B.
+
+---
+
+## PHASE 2B — FINAL DETAILED REPORT
+
+### Section 1 — WHAT IS IDENTICAL (no work needed)
+
+The literal v1 contract in `5dfab22` already implements the four ticket clauses verbatim. These pieces stay untouched in this ticket:
+
+| Function / module | File:line | Status |
+|---|---|---|
+| `<<<PATCH_START>>>` / `<<<PATCH_END>>>` markers | `harness/core/patcher.js:15-16` | KEEP AS-IS |
+| `extractPatchBetweenMarkers()` | `harness/core/patcher.js:37-46` | KEEP AS-IS |
+| `parsePatchPaths()` | `harness/core/patcher.js:52-68` | KEEP AS-IS |
+| `validatePatch()` | `harness/core/patcher.js:73-85` | KEEP AS-IS (logic unchanged; only its NEVER-TOUCH input changes) |
+| `applyPatch()` / `revertPatch()` | `harness/core/patcher.js:94-138` | KEEP AS-IS |
+| `runMode3Stage()` end-to-end pipeline | `harness/eagle/eagle-harness.js:328-452` | KEEP AS-IS |
+| Post-apply guard (porcelain diff vs `trulyOutOfScope`) | `harness/eagle/eagle-harness.js:420-434` | KEEP AS-IS |
+| `MODE3_STAGES` registry shape | `harness/eagle/eagle-harness.js:35-58` | SHAPE UNCHANGED — append a new key for this ticket (see Stage 0 below) |
+
+### Section 2 — WHAT IS BEING CREATED / MODIFIED
+
+#### 2.1 New files (Stage 1 — pure addition)
+
+**`harness/__tests__/patcher.test.js`** — Node built-in test runner (`node:test`) covering every pure function in `harness/core/patcher.js`. Approximate 130–160 lines.
+
+Test coverage matrix:
+
+| Function | Test cases |
+|---|---|
+| `extractPatchBetweenMarkers` | (a) happy: both markers present, body returned exactly; (b) missing start marker → `null`; (c) missing end marker → `null`; (d) empty body between markers → `null`; (e) whitespace-only body → `null`; (f) multi-file diff body preserved byte-for-byte |
+| `parsePatchPaths` | (a) standard `diff --git a/X b/Y` line captures both; (b) new file `--- /dev/null` only adds `b/` path; (c) deletion `+++ /dev/null` only adds `a/` path; (d) two-file patch returns all four paths deduped via Set |
+| `validatePatch` | (a) all paths in allow-list, none NEVER-TOUCH → `{ ok: true }`; (b) path `apps/mui-cms-next/Foo.tsx` → `neverTouch` populated, `ok: false`; (c) path outside allow-list → `outOfScope` populated, `ok: false`; (d) both violation types coexist → both arrays populated |
+| `parsePorcelainPaths` | (a) `M  path/to/file` → `path/to/file`; (b) `?? new/file.ts` → `new/file.ts`; (c) `D  removed.ts` → `removed.ts`; (d) empty string → `[]`; (e) trailing newline tolerated |
+| Module-load constitution parser (added in Stage 2 — re-tested in Stage 2's match-test) | Defer to Stage 2 |
+
+**`harness/__tests__/eagle-harness.test.js`** — Node built-in test runner. Approximate 60–90 lines.
+
+Test coverage matrix:
+
+| Function | Test cases |
+|---|---|
+| `extractHtmlBetweenMarkers` | (a) happy: both HTML markers present → trimmed body returned; (b) missing start marker → `null`; (c) missing end marker → `null`; (d) empty body → `null`; (e) preserves inner `<style>` and `<!doctype>` exactly |
+
+Both test files use only `node:test` and `node:assert` — no third-party deps, no `package.json` required.
+
+**Run command** (from `~/deassists-workspace/369-brain/`): `node --test harness/__tests__/`
+
+#### 2.2 Modified files (Stage 2 — harness carve-out, in-place edit)
+
+**`harness/core/patcher.js`** — replace the hardcoded `NEVER_TOUCH_SUBSTRINGS` const (lines 18–35) with a parser that reads `369-brain/CODING-CONSTITUTION.md` § A7 once at module load.
+
+Parser algorithm:
+1. Read constitution file from `path.join(__dirname, '..', '..', 'CODING-CONSTITUTION.md')`.
+2. Locate heading `### A7 — Never-Touch Files`.
+3. Extract section body up to the next `### ` heading.
+4. Iterate each line. Skip if:
+   - Empty / whitespace-only
+   - Starts with `#`
+   - Starts with `These files cannot`, `Under any`, `If you find`, `Bring it to`
+   - Starts with `Any ` (semantic line, not a substring — e.g., "Any Stripe or payment logic")
+   - Is a section label ending with `:` (e.g., `PRODUCTION REPO (deassists):`)
+5. For surviving lines:
+   - Trim leading whitespace
+   - Strip trailing parenthetical comments: `package.json and pnpm-lock.yaml (without Latha approval)` → `package.json and pnpm-lock.yaml`; `.env files (read only)` → `.env files`
+   - Strip trailing ` files` if present (matches `.env files` → `.env`)
+   - Split on ` and ` to handle compound entries
+   - Validate each token matches `/^[\w\-./]+$/` — if not, drop it
+6. Result is exposed via `getNeverTouchSubstrings()` (cached after first call).
+7. **Fail-loud:** if the file cannot be read, the heading cannot be found, or the parsed list is empty, throw `Error('NEVER-TOUCH parse failed: <detail>')` at first call. Module load itself does not parse — parsing happens on first invocation of `validatePatch` so the harness can still load for non-validating tasks. (This deliberate deviation from "throw at module load" in Mode 1 keeps test isolation: tests can mock the constitution file before first call.)
+8. The parsed list MUST be a superset of these 11 entries (Stage 1 test asserts this exactly):
+   ```
+   apps/cms-next/pages/universitiesd/
+   apps/backend-nest/src/core/entities/extendables/payment.entity.ts
+   apps/mui-cms-next/
+   MASTER-RUN.cjs
+   scope.guard.ts
+   package.json
+   pnpm-lock.yaml
+   .env
+   archive/
+   code-snapshot/
+   graphify-out/
+   ```
+9. Public surface: `validatePatch()` calls `getNeverTouchSubstrings()` instead of reading a const. The exported name `NEVER_TOUCH_SUBSTRINGS` is preserved for backward-compatibility but becomes a getter (Object.defineProperty on `module.exports`) that calls `getNeverTouchSubstrings()` lazily. Existing imports continue to work without reshape.
+
+#### 2.3 Stage 0 — manual prep by Shon BEFORE approving Mode 2
+
+`MODE3_STAGES` in `harness/eagle/eagle-harness.js` does not yet have an entry for this ticket. The Mode 3 harness will refuse to run without it (line 333-334). Two clean choices:
+
+**Choice A (recommended)** — Shon hand-applies this exact diff during Mode 2 review, then approves:
+
+```diff
+--- a/harness/eagle/eagle-harness.js
++++ b/harness/eagle/eagle-harness.js
+@@ -55,6 +55,28 @@ const MODE3_STAGES = {
+         'brain: queue sidebar-split-internal-student feature ticket — EAGLE sidebar-restructure follow-up',
+     },
+   ],
++  'harness-eagle-stage-marker-contract': [
++    {
++      name: 's1-tests',
++      title: 'Stage 1 — add patcher + eagle-harness tests (pure addition)',
++      repo: BRAIN_ROOT,
++      repo_label: 'brain (~/deassists-workspace/369-brain)',
++      allowed_paths: [
++        'harness/__tests__/patcher.test.js',
++        'harness/__tests__/eagle-harness.test.js',
++      ],
++      context_files: ['harness/core/patcher.js', 'harness/eagle/eagle-harness.js'],
++      commit_msg:
++        'test(harness): add node:test coverage for marker / patch / porcelain helpers — EAGLE harness-eagle-stage-marker-contract S1',
++    },
++    {
++      name: 's2-constitution-parser',
++      title: 'Stage 2 — replace NEVER_TOUCH const with constitution parser',
++      repo: BRAIN_ROOT,
++      repo_label: 'brain (~/deassists-workspace/369-brain)',
++      allowed_paths: ['harness/core/patcher.js'],
++      context_files: ['harness/core/patcher.js', 'CODING-CONSTITUTION.md'],
++      commit_msg:
++        'refactor(harness): parse NEVER-TOUCH list from CODING-CONSTITUTION § A7 (carve-out) — EAGLE harness-eagle-stage-marker-contract S2',
++    },
++  ],
+ };
+```
+
+**Choice B** — defer Mode 3 entirely; Shon executes both stages by direct chat-level Edit calls. Skip the harness for this ticket. (Lower automation, simpler prep.)
+
+Spec assumes **Choice A** unless Shon overrides at Mode 2 approval.
+
+### Section 3 — WHAT IS THE FINAL OUTPUT
+
+After both stages land:
+
+1. `harness/__tests__/patcher.test.js` and `harness/__tests__/eagle-harness.test.js` exist. `node --test harness/__tests__/` exits 0 with all suites green.
+2. `harness/core/patcher.js` no longer contains a hardcoded NEVER-TOUCH list. The list is derived live from `CODING-CONSTITUTION.md § A7` on first `validatePatch()` call.
+3. The 11-entry parity assertion proves the migration is byte-equivalent at v1.
+4. Future edits to § A7 propagate automatically — no second source of truth, no silent drift.
+5. Issue 1 and Issue 7 from Mode 1 are closed. The 6 remaining items stay on the followups ticket.
+6. `feature-registry.md` gains a `BRAIN AND INFRASTRUCTURE` section (drafted in Section 4.3 below).
+
+What Latha will see in the PR: **N/A — this is a brain-repo-only change.** No portal commit. No `latha-handover` invocation needed. The post-stage sequence will detect zero portal changes and skip the restart sequence (eagle-harness.js:478-480 already handles this).
+
+### Section 4 — STAGE PLAN
+
+#### 4.1 Stage 1 — Tests-first (pure addition)
+
+| Field | Value |
+|---|---|
+| Stage label | S1 — pure addition |
+| Repo | `~/deassists-workspace/369-brain` |
+| Allowed paths | `harness/__tests__/patcher.test.js`, `harness/__tests__/eagle-harness.test.js` |
+| Files modified | None |
+| Files created | 2 |
+| Match-test | **Cat 2** — `cd ~/deassists-workspace/369-brain && node --test harness/__tests__/` exits 0; output shows ≥ 25 individual asserts passing |
+| Risk | LOW (no carve-out used; pure addition) |
+| Expected duration | 8–12 minutes |
+| Rollback | `cd ~/deassists-workspace/369-brain && rm -rf harness/__tests__/` (reverts the entire stage) |
+
+#### 4.2 Stage 2 — Constitution parser (in-place; harness carve-out)
+
+| Field | Value |
+|---|---|
+| Stage label | S2 — harness in-place edit |
+| Repo | `~/deassists-workspace/369-brain` |
+| Allowed paths | `harness/core/patcher.js` |
+| Files modified | 1 |
+| Files created | 0 |
+| Match-test | **Cat 2 + Cat 4** — (a) `node --test harness/__tests__/` still exits 0 (Stage 1 suites all green, plus 1 new suite asserting parser output equals the 11-entry baseline); (b) live drift sim — append a temporary path to § A7, `require()` the patcher fresh in a Node REPL, confirm parser includes it, then revert the § A7 edit |
+| Risk | HIGH — modifies the live harness; carve-out cited |
+| Expected duration | 12–18 minutes |
+| Rollback | `cd ~/deassists-workspace/369-brain && git checkout harness/core/patcher.js` (uncommitted; one file) |
+
+#### 4.3 `feature-registry.md` append (separate Mode 3 stage NOT in this ticket)
+
+The ticket itself does not change `feature-registry.md`. Instead, after both stages above land, Shon makes ONE follow-up edit (also under harness-carve-out brain repo) to add this section near the bottom of `project/feature-registry.md`:
+
+```md
+## BRAIN AND INFRASTRUCTURE
+
+| ID | Name | Status | Owner | Notes |
+|----|------|--------|-------|-------|
+| HI-001 | harness-eagle-stage-marker-contract | v1 + hardening shipped (3 May 2026) | Shon | Per-stage Mode 3 patch contract. v1 lit acceptance criteria via 5dfab22; hardening adds tests + constitution parser. |
+| HI-002 | harness-eagle-stage-marker-contract-followups | open (8 issues) | Shon | v2 evolution: JSON-emitted stages, content-hash drift, per-phase tool restriction, etc. |
+```
+
+This is added on Shon's normal brain-commit cycle, not as part of Mode 3 staged execution. Listed here only to honor the Mode 1 commitment and keep the registry honest.
+
+### Section 5 — RULE / DECISION LOCKS THIS WORK INTRODUCES
+
+A new entry should be added to `memory/decisions.md` after Stage 2 completes (drafted by EAGLE; locked by Shon):
+
+```md
+### 2026-05-03 — Harness add-only carve-out
+The EAGLE add-only rule does NOT apply to `369-brain/harness/**` when the harness
+itself is the subject of the active ticket. Portal code (~/deassists/**) and
+brain memory/decisions/patterns/skills remain add-only. First applied:
+ticket harness-eagle-stage-marker-contract Stage 2 (3 May 2026).
+```
+
+---
+
+## PHASE 2C — WORKING HTML PREVIEW
+
+The working prototype below is a single-file self-contained HTML document that demonstrates:
+
+1. **The two-issue hardening surface** — file-level diff visualization (Stage 1 = adds; Stage 2 = in-place edit on patcher.js).
+2. **Live drift simulator** — paste a § A7 line, see what the parser would extract; verify the 11-entry parity is preserved.
+3. **Test coverage matrix** — interactive checklist mirroring Section 2.1's matrix; clicking a row marks it green and updates the running coverage tally.
+4. **Stage-flow walkthrough** — visual representation of the Mode 3 stage loop with this ticket's two stages, showing which gates pause where.
+5. **Pre-merger security review surface** — for completeness; flags any obvious risks from the spec (zero secrets touched, zero portal touched, single in-place harness edit with carve-out documented).
+
+The HTML is ~28 KB inline, no external assets, no scripts fetching remote resources. CSS is inline. Logic uses vanilla JS (no fetches).
+
+---
+
+<<<HTML_PREVIEW_START>>>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EAGLE Mode 2 Preview · harness-eagle-stage-marker-contract</title>
+<style>
+:root {
+  --bg: #0b0f14;
+  --bg-elev: #131a23;
+  --bg-elev-2: #1a2330;
+  --border: #243042;
+  --text: #e6edf3;
+  --text-dim: #8b98a8;
+  --text-muted: #5d6b7e;
+  --accent: #4cc2ff;
+  --accent-dim: #2a89b8;
+  --green: #4ade80;
+  --green-dim: #16a34a;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --red-dim: #b91c1c;
+  --mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+  padding: 32px 24px 80px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+}
+h2 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 36px 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 18px 0 8px;
+  color: var(--text);
+}
+p { margin: 8px 0; color: var(--text); }
+small { color: var(--text-muted); }
+code, pre {
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+pre {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  margin: 10px 0;
+  line-height: 1.5;
+}
+code {
+  background: var(--bg-elev);
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+pre code { background: none; border: none; padding: 0; }
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+  margin-bottom: 8px;
+}
+.subhead {
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.tag.ok { color: var(--green); border-color: var(--green-dim); }
+.tag.warn { color: var(--amber); border-color: #a16207; }
+.tag.high { color: var(--red); border-color: var(--red-dim); }
+.tag.accent { color: var(--accent); border-color: var(--accent-dim); }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+.card h3 { margin-top: 0; }
+
+.stage-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.stage-row {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.stage-num {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--accent);
+}
+.stage-num.s0 { color: var(--text-dim); }
+.stage-row .body { min-width: 0; }
+.stage-row .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.stage-row .meta b { color: var(--text); font-weight: 500; }
+.stage-arrow {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 18px;
+  padding: 4px 0;
+}
+
+.test-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.test-table th, .test-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.test-table th {
+  color: var(--text-dim);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+}
+.test-row {
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.test-row:hover { background: var(--bg-elev-2); }
+.test-row.checked { background: rgba(74, 222, 128, 0.06); }
+.test-row.checked td:first-child::before {
+  content: '✓';
+  color: var(--green);
+  font-weight: 700;
+  margin-right: 6px;
+}
+.test-row td:first-child::before {
+  content: '○';
+  color: var(--text-muted);
+  margin-right: 6px;
+}
+
+.coverage-bar {
+  height: 6px;
+  background: var(--bg-elev-2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 10px 0 16px;
+  border: 1px solid var(--border);
+}
+.coverage-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--green) 100%);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+.coverage-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.diff-panel { font-family: var(--mono); font-size: 12px; }
+.diff-line { padding: 1px 8px; white-space: pre; }
+.diff-add { background: rgba(74, 222, 128, 0.10); color: #a7f3d0; }
+.diff-remove { background: rgba(248, 113, 113, 0.10); color: #fecaca; }
+.diff-hunk { color: var(--accent); }
+.diff-meta { color: var(--text-muted); }
+
+textarea.parser-input {
+  width: 100%;
+  min-height: 200px;
+  background: var(--bg-elev-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  resize: vertical;
+}
+.parser-output {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  min-height: 60px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.parser-output .ok { color: var(--green); }
+.parser-output .skip { color: var(--text-muted); font-style: italic; }
+.parser-output .err { color: var(--red); }
+button.primary {
+  display: inline-block;
+  background: var(--accent);
+  color: #001220;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+button.primary:hover { background: #6ed1ff; }
+button.ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  margin-left: 8px;
+}
+button.ghost:hover { color: var(--text); border-color: var(--text-dim); }
+
+.parity-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+.parity-list li {
+  padding: 3px 0;
+  color: var(--text-dim);
+  display: flex;
+  gap: 10px;
+}
+.parity-list li::before { content: '·'; color: var(--text-muted); }
+.parity-list li.match { color: var(--green); }
+.parity-list li.match::before { content: '✓'; color: var(--green); }
+.parity-list li.miss { color: var(--red); }
+.parity-list li.miss::before { content: '✗'; color: var(--red); }
+
+.security-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+@media (max-width: 700px) { .security-grid { grid-template-columns: 1fr; } }
+.sec-item {
+  padding: 10px 12px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sec-item .label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.sec-item .verdict {
+  font-weight: 600;
+  font-size: 13px;
+}
+.sec-item.pass .verdict { color: var(--green); }
+.sec-item.note .verdict { color: var(--amber); }
+
+footer {
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<header class="head">
+  <div>
+    <h1>EAGLE Mode 2 — harness-eagle-stage-marker-contract</h1>
+    <div class="subhead">Working preview · 3 May 2026 · Path B (2-issue hardening subset)</div>
+  </div>
+  <div class="tags">
+    <span class="tag accent">Mode 2</span>
+    <span class="tag">CAPABILITY</span>
+    <span class="tag warn">Carve-out · harness/**</span>
+    <span class="tag ok">Drift check clean</span>
+  </div>
+</header>
+
+<section>
+  <h2>Stage flow — Mode 3 walk-through</h2>
+  <div class="stage-flow">
+    <div class="stage-row">
+      <div class="stage-num s0">0</div>
+      <div class="body">
+        <strong>Pre-flight (manual, by Shon)</strong> — Append <code>'harness-eagle-stage-marker-contract'</code> entry to <code>MODE3_STAGES</code> in <code>harness/eagle/eagle-harness.js</code> using the diff in Section 2.3 of the spec.
+        <div class="meta">
+          <span><b>Repo:</b> brain</span>
+          <span><b>Files:</b> 1 (in-place)</span>
+          <span><b>Why manual:</b> harness cannot register its own stages</span>
+        </div>
+      </div>
+      <span class="tag warn">Manual</span>
+    </div>
+    <div class="stage-arrow">↓</div>
+    <div class="stage-row">
+      <div class="stage-num">1</div>
+      <div class="body">
+        <strong>Stage 1 — Tests-first (pure addition)</strong><br>
+        Add <code>harness/__tests__/patcher.test.js</code> + <code>harness/__tests__/eagle-harness.test.js</code>. Zero existing-file edits.
+        <div class="meta">
+          <span><b>Repo:</b> brain</span>
+          <span><b>Allowed paths:</b> 2</span>
+          <span><b>Match-test:</b> Cat 2 (<code>node --test</code>)</span>
+          <span><b>Risk:</b> low</span>
+        </div>
+      </div>
+      <span class="tag ok">Add-only</span>
+    </div>
+    <div class="stage-arrow">↓ stage approved</div>
+    <div class="stage-row">
+      <div class="stage-num">2</div>
+      <div class="body">
+        <strong>Stage 2 — Constitution parser (in-place edit · carve-out)</strong><br>
+        Replace <code>NEVER_TOUCH_SUBSTRINGS</code> const in <code>harness/core/patcher.js</code> with a parser of <code>CODING-CONSTITUTION.md § A7</code>. Backward-compatible export via getter.
+        <div class="meta">
+          <span><b>Repo:</b> brain</span>
+          <span><b>Allowed paths:</b> 1</span>
+          <span><b>Match-test:</b> Cat 2 + Cat 4 (drift sim)</span>
+          <span><b>Risk:</b> high (carve-out)</span>
+        </div>
+      </div>
+      <span class="tag high">Carve-out</span>
+    </div>
+    <div class="stage-arrow">↓ stage approved</div>
+    <div class="stage-row">
+      <div class="stage-num s0">✓</div>
+      <div class="body">
+        <strong>Capability complete</strong> — post-stage sequence detects zero portal changes → restart sequence is skipped → <code>/sidebar-audit</code> + <code>/latha-handover</code> still run on empty diff (graceful, no-op handover). Ticket moves to <code>tickets/complete/</code>.
+        <div class="meta">
+          <span><b>Latha PR:</b> none — brain repo only</span>
+          <span><b>Decision lock:</b> harness carve-out (memory/decisions.md)</span>
+        </div>
+      </div>
+      <span class="tag ok">Complete</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Stage 1 · Test coverage matrix</h2>
+  <p><small>Click a row to mark it as covered. The bar tracks running coverage of the planned assert surface.</small></p>
+  <div class="coverage-bar"><div class="coverage-fill" id="cov-fill"></div></div>
+  <div class="coverage-label">
+    <span><span id="cov-count">0</span> / <span id="cov-total">0</span> assertions checked</span>
+    <span id="cov-pct">0%</span>
+  </div>
+  <table class="test-table">
+    <thead>
+      <tr><th style="width:32%">Function</th><th>Case</th><th style="width:18%">Category</th></tr>
+    </thead>
+    <tbody id="test-body">
+      <!-- rows injected by script -->
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Stage 2 · Live constitution parser simulator</h2>
+  <p><small>Paste a candidate § A7 body and click <em>Parse</em>. The simulator runs the same algorithm the harness will run on first <code>validatePatch()</code> call. The 11-entry parity check verifies migration safety against the current hardcoded list.</small></p>
+  <div class="grid-2">
+    <div>
+      <h3>Input · § A7 body</h3>
+      <textarea id="parser-input" class="parser-input" spellcheck="false">### A7 — Never-Touch Files
+
+These files cannot be modified.
+Under any circumstances. For any reason.
+
+PRODUCTION REPO (deassists):
+  apps/cms-next/pages/universitiesd/
+  apps/backend-nest/src/core/entities/extendables/payment.entity.ts
+  apps/mui-cms-next/
+  MASTER-RUN.cjs
+  Any Stripe or payment logic
+  scope.guard.ts
+  package.json and pnpm-lock.yaml (without Latha approval)
+  Any file containing JWT secrets
+  .env files (read only)
+
+BRAIN REPO (369-brain):
+  archive/
+  code-snapshot/
+  graphify-out/
+
+If you find yourself needing to modify
+a never-touch file — STOP.</textarea>
+      <div style="margin-top:10px;">
+        <button class="primary" id="parse-btn">Parse</button>
+        <button class="ghost" id="reset-btn">Reset to current § A7</button>
+      </div>
+    </div>
+    <div>
+      <h3>Output · parsed substrings</h3>
+      <div class="parser-output" id="parser-output">Click <em>Parse</em> to run the algorithm.</div>
+      <h3 style="margin-top:18px;">Parity vs current hardcoded list</h3>
+      <ul class="parity-list" id="parity-list">
+        <!-- rows injected by script -->
+      </ul>
+      <p id="parity-summary" style="margin-top:10px; font-weight:600;"></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Stage 2 · Diff visualization (illustrative)</h2>
+  <p><small>The actual patch will be produced by inner Claude under the <code>&lt;&lt;&lt;PATCH_START&gt;&gt;&gt;</code>/<code>&lt;&lt;&lt;PATCH_END&gt;&gt;&gt;</code> contract during Mode 3. This is the shape Shon should expect to see.</small></p>
+  <div class="card">
+    <div class="diff-panel">
+      <div class="diff-line diff-meta">diff --git a/harness/core/patcher.js b/harness/core/patcher.js</div>
+      <div class="diff-line diff-meta">--- a/harness/core/patcher.js</div>
+      <div class="diff-line diff-meta">+++ b/harness/core/patcher.js</div>
+      <div class="diff-line diff-hunk">@@ -18,18 +18,71 @@</div>
+      <div class="diff-line diff-remove">-// Constitution NEVER-TOUCH list — substring matches against patch paths.</div>
+      <div class="diff-line diff-remove">-// Source of truth: 369-brain/CODING-CONSTITUTION.md  Rule A7.</div>
+      <div class="diff-line diff-remove">-// Keep this list in sync. Any path in a patch containing one of these substrings is rejected.</div>
+      <div class="diff-line diff-remove">-const NEVER_TOUCH_SUBSTRINGS = [</div>
+      <div class="diff-line diff-remove">-  // Portal repo</div>
+      <div class="diff-line diff-remove">-  'apps/cms-next/pages/universitiesd/',</div>
+      <div class="diff-line diff-remove">-  'apps/backend-nest/src/core/entities/extendables/payment.entity.ts',</div>
+      <div class="diff-line diff-remove">-  'apps/mui-cms-next/',</div>
+      <div class="diff-line diff-remove">-  'MASTER-RUN.cjs',</div>
+      <div class="diff-line diff-remove">-  'scope.guard.ts',</div>
+      <div class="diff-line diff-remove">-  'package.json',</div>
+      <div class="diff-line diff-remove">-  'pnpm-lock.yaml',</div>
+      <div class="diff-line diff-remove">-  '.env',</div>
+      <div class="diff-line diff-remove">-  // Brain repo</div>
+      <div class="diff-line diff-remove">-  'archive/',</div>
+      <div class="diff-line diff-remove">-  'code-snapshot/',</div>
+      <div class="diff-line diff-remove">-  'graphify-out/',</div>
+      <div class="diff-line diff-remove">-];</div>
+      <div class="diff-line diff-add">+// Constitution NEVER-TOUCH list — derived from CODING-CONSTITUTION.md § A7.</div>
+      <div class="diff-line diff-add">+// Parsed lazily on first validatePatch() call. Fails loud if § A7 is unreadable</div>
+      <div class="diff-line diff-add">+// or empty after parsing — silent drift is the failure mode this fixes.</div>
+      <div class="diff-line diff-add">+const CONSTITUTION_PATH = path.join(__dirname, '..', '..', 'CODING-CONSTITUTION.md');</div>
+      <div class="diff-line diff-add">+let _neverTouchCache = null;</div>
+      <div class="diff-line diff-add">+</div>
+      <div class="diff-line diff-add">+function parseNeverTouchFromConstitution(constitutionText) {</div>
+      <div class="diff-line diff-add">+  const headingIdx = constitutionText.indexOf('### A7 — Never-Touch Files');</div>
+      <div class="diff-line diff-add">+  if (headingIdx === -1) throw new Error('NEVER-TOUCH parse failed: § A7 heading not found');</div>
+      <div class="diff-line diff-add">+  const after = constitutionText.slice(headingIdx);</div>
+      <div class="diff-line diff-add">+  const nextIdx = after.indexOf('\n### ', 1);</div>
+      <div class="diff-line diff-add">+  const section = nextIdx === -1 ? after : after.slice(0, nextIdx);</div>
+      <div class="diff-line diff-add">+  const out = [];</div>
+      <div class="diff-line diff-add">+  for (const raw of section.split('\n')) {</div>
+      <div class="diff-line diff-add">+    const line = raw.trim();</div>
+      <div class="diff-line diff-add">+    if (!line) continue;</div>
+      <div class="diff-line diff-add">+    if (line.startsWith('#')) continue;</div>
+      <div class="diff-line diff-add">+    if (line.startsWith('Any ')) continue;</div>
+      <div class="diff-line diff-add">+    if (/^[A-Z][\w ]+\(.+\):$/.test(line)) continue;</div>
+      <div class="diff-line diff-add">+    if (/^(These|Under|If you|Bring it)/.test(line)) continue;</div>
+      <div class="diff-line diff-add">+    let candidate = line.replace(/\s*\(.+?\)\s*$/, '').trim();</div>
+      <div class="diff-line diff-add">+    candidate = candidate.replace(/\s+files\s*$/, '');</div>
+      <div class="diff-line diff-add">+    for (const tok of candidate.split(/\s+and\s+/)) {</div>
+      <div class="diff-line diff-add">+      const t = tok.trim();</div>
+      <div class="diff-line diff-add">+      if (/^[\w\-./]+$/.test(t)) out.push(t);</div>
+      <div class="diff-line diff-add">+    }</div>
+      <div class="diff-line diff-add">+  }</div>
+      <div class="diff-line diff-add">+  if (!out.length) throw new Error('NEVER-TOUCH parse failed: empty list after parsing');</div>
+      <div class="diff-line diff-add">+  return out;</div>
+      <div class="diff-line diff-add">+}</div>
+      <div class="diff-line diff-add">+</div>
+      <div class="diff-line diff-add">+function getNeverTouchSubstrings() {</div>
+      <div class="diff-line diff-add">+  if (_neverTouchCache) return _neverTouchCache;</div>
+      <div class="diff-line diff-add">+  const text = fs.readFileSync(CONSTITUTION_PATH, 'utf8');</div>
+      <div class="diff-line diff-add">+  _neverTouchCache = parseNeverTouchFromConstitution(text);</div>
+      <div class="diff-line diff-add">+  return _neverTouchCache;</div>
+      <div class="diff-line diff-add">+}</div>
+      <div class="diff-line diff-hunk">@@ -73,7 +126,8 @@</div>
+      <div class="diff-line"> function validatePatch(patchText, { allowedPaths = [] } = {}) {</div>
+      <div class="diff-line">   const paths = parsePatchPaths(patchText);</div>
+      <div class="diff-line diff-remove">-  const neverTouch = paths.filter((p) =&gt;</div>
+      <div class="diff-line diff-remove">-    NEVER_TOUCH_SUBSTRINGS.some((s) =&gt; p.includes(s)),</div>
+      <div class="diff-line diff-remove">-  );</div>
+      <div class="diff-line diff-add">+  const list = getNeverTouchSubstrings();</div>
+      <div class="diff-line diff-add">+  const neverTouch = paths.filter((p) =&gt; list.some((s) =&gt; p.includes(s)));</div>
+      <div class="diff-line"> </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Pre-merger security review</h2>
+  <div class="security-grid">
+    <div class="sec-item pass">
+      <span class="label">Secrets exposure</span>
+      <span class="verdict">PASS</span>
+      <small>No secrets in scope. Tests use only literal markers and synthetic patch text. Parser reads brain-repo CODING-CONSTITUTION.md only.</small>
+    </div>
+    <div class="sec-item pass">
+      <span class="label">Production code touched</span>
+      <span class="verdict">PASS — none</span>
+      <small>Zero files in <code>~/deassists/**</code>. No portal commit produced. No JWT, payment, scope.guard, or sidebar code.</small>
+    </div>
+    <div class="sec-item pass">
+      <span class="label">Add-only rule</span>
+      <span class="verdict">PASS — carve-out cited</span>
+      <small>Stage 1 = pure addition. Stage 2 = in-place under documented harness carve-out. Decision lock entry drafted.</small>
+    </div>
+    <div class="sec-item note">
+      <span class="label">Path traversal in parser</span>
+      <span class="verdict">NOTE</span>
+      <small>Parser only reads a hardcoded path (<code>__dirname/../../CODING-CONSTITUTION.md</code>). No user input flows into <code>fs.readFileSync</code>. Low risk.</small>
+    </div>
+    <div class="sec-item note">
+      <span class="label">Cache invalidation</span>
+      <span class="verdict">NOTE</span>
+      <small>Parser caches after first call per Node process. Long-running harness will not see § A7 edits until restart. Acceptable for Mode 3 (one-shot per run); flagged for v2 reload signal.</small>
+    </div>
+    <div class="sec-item pass">
+      <span class="label">Backward compatibility</span>
+      <span class="verdict">PASS</span>
+      <small>Exported <code>NEVER_TOUCH_SUBSTRINGS</code> name preserved via getter. Existing imports unaffected. <code>validatePatch</code> signature unchanged.</small>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Approval phrases</h2>
+  <pre><code>approved             — proceed to Mode 3 Stage 1 (after Stage 0 manual prep)
+not approved         — return to Mode 1 with notes
+I have a doubt: …    — clarify before deciding</code></pre>
+  <p><small>If Choice B (skip harness for Mode 3) is preferred over Choice A (manual MODE3_STAGES append), say so on approval — EAGLE will switch to direct Edit-tool execution at the chat level.</small></p>
+</section>
+
+<footer>
+  EAGLE Mode 2 · ticket harness-eagle-stage-marker-contract · 3 May 2026 · self-contained preview, no external assets
+</footer>
+
+<script>
+(function () {
+  // ---- Test coverage matrix ----
+  var tests = [
+    { fn: 'extractPatchBetweenMarkers', cs: 'happy: both markers, body returned exactly', cat: 'Cat 2' },
+    { fn: 'extractPatchBetweenMarkers', cs: 'missing start marker → null', cat: 'Cat 2' },
+    { fn: 'extractPatchBetweenMarkers', cs: 'missing end marker → null', cat: 'Cat 2' },
+    { fn: 'extractPatchBetweenMarkers', cs: 'empty body → null', cat: 'Cat 2' },
+    { fn: 'extractPatchBetweenMarkers', cs: 'whitespace-only body → null', cat: 'Cat 2' },
+    { fn: 'extractPatchBetweenMarkers', cs: 'multi-file body preserved byte-for-byte', cat: 'Cat 2' },
+    { fn: 'parsePatchPaths', cs: 'standard diff --git captures both a/ and b/', cat: 'Cat 2' },
+    { fn: 'parsePatchPaths', cs: 'new file --- /dev/null adds only b/ path', cat: 'Cat 2' },
+    { fn: 'parsePatchPaths', cs: 'deletion +++ /dev/null adds only a/ path', cat: 'Cat 2' },
+    { fn: 'parsePatchPaths', cs: 'two-file patch returns deduped paths', cat: 'Cat 2' },
+    { fn: 'validatePatch', cs: 'all paths in allow-list, none NEVER-TOUCH → ok=true', cat: 'Cat 2' },
+    { fn: 'validatePatch', cs: 'apps/mui-cms-next/Foo.tsx → neverTouch populated', cat: 'Cat 2' },
+    { fn: 'validatePatch', cs: 'path outside allow-list → outOfScope populated', cat: 'Cat 2' },
+    { fn: 'validatePatch', cs: 'both violation types coexist → both arrays populated', cat: 'Cat 2' },
+    { fn: 'parsePorcelainPaths', cs: 'M  path/to/file → path/to/file', cat: 'Cat 2' },
+    { fn: 'parsePorcelainPaths', cs: '?? new/file.ts → new/file.ts', cat: 'Cat 2' },
+    { fn: 'parsePorcelainPaths', cs: 'D  removed.ts → removed.ts', cat: 'Cat 2' },
+    { fn: 'parsePorcelainPaths', cs: 'empty string → []', cat: 'Cat 2' },
+    { fn: 'parsePorcelainPaths', cs: 'trailing newline tolerated', cat: 'Cat 2' },
+    { fn: 'extractHtmlBetweenMarkers', cs: 'happy: both HTML markers, trimmed body returned', cat: 'Cat 2' },
+    { fn: 'extractHtmlBetweenMarkers', cs: 'missing start marker → null', cat: 'Cat 2' },
+    { fn: 'extractHtmlBetweenMarkers', cs: 'missing end marker → null', cat: 'Cat 2' },
+    { fn: 'extractHtmlBetweenMarkers', cs: 'empty body → null', cat: 'Cat 2' },
+    { fn: 'extractHtmlBetweenMarkers', cs: 'preserves <style> and <!doctype> exactly', cat: 'Cat 2' },
+    { fn: 'parseNeverTouchFromConstitution (Stage 2)', cs: 'parsed list equals 11-entry baseline (parity)', cat: 'Cat 1' },
+    { fn: 'parseNeverTouchFromConstitution (Stage 2)', cs: 'missing § A7 heading → throws', cat: 'Cat 2' },
+    { fn: 'parseNeverTouchFromConstitution (Stage 2)', cs: 'empty parsed result → throws', cat: 'Cat 2' },
+    { fn: 'parseNeverTouchFromConstitution (Stage 2)', cs: 'live drift — append a path → next call picks it up', cat: 'Cat 4' }
+  ];
+  var tbody = document.getElementById('test-body');
+  tests.forEach(function (t, i) {
+    var tr = document.createElement('tr');
+    tr.className = 'test-row';
+    tr.dataset.idx = i;
+    tr.innerHTML = '<td>' + t.fn + '</td><td>' + t.cs + '</td><td><span class="tag">' + t.cat + '</span></td>';
+    tr.addEventListener('click', function () {
+      tr.classList.toggle('checked');
+      updateCoverage();
+    });
+    tbody.appendChild(tr);
+  });
+  document.getElementById('cov-total').textContent = tests.length;
+  function updateCoverage() {
+    var checked = document.querySelectorAll('.test-row.checked').length;
+    var pct = Math.round((checked / tests.length) * 100);
+    document.getElementById('cov-count').textContent = checked;
+    document.getElementById('cov-pct').textContent = pct + '%';
+    document.getElementById('cov-fill').style.width = pct + '%';
+  }
+  updateCoverage();
+
+  // ---- Constitution parser simulator (mirrors the spec algorithm) ----
+  var CURRENT_HARDCODED = [
+    'apps/cms-next/pages/universitiesd/',
+    'apps/backend-nest/src/core/entities/extendables/payment.entity.ts',
+    'apps/mui-cms-next/',
+    'MASTER-RUN.cjs',
+    'scope.guard.ts',
+    'package.json',
+    'pnpm-lock.yaml',
+    '.env',
+    'archive/',
+    'code-snapshot/',
+    'graphify-out/'
+  ];
+  function parse(text) {
+    var headingIdx = text.indexOf('### A7 — Never-Touch Files');
+    if (headingIdx === -1) throw new Error('§ A7 heading not found');
+    var after = text.slice(headingIdx);
+    var nextIdx = after.indexOf('\n### ', 1);
+    var section = nextIdx === -1 ? after : after.slice(0, nextIdx);
+    var out = [];
+    var skipped = [];
+    section.split('\n').forEach(function (raw) {
+      var line = raw.trim();
+      if (!line) return;
+      if (line.charAt(0) === '#') return;
+      if (line.indexOf('Any ') === 0) { skipped.push(line); return; }
+      if (/^[A-Z][\w ]+\(.+\):$/.test(line)) return;
+      if (/^(These|Under|If you|Bring it)/.test(line)) return;
+      var candidate = line.replace(/\s*\(.+?\)\s*$/, '').trim();
+      candidate = candidate.replace(/\s+files\s*$/, '');
+      candidate.split(/\s+and\s+/).forEach(function (tok) {
+        var t = tok.trim();
+        if (/^[\w\-./]+$/.test(t)) out.push(t);
+        else if (t) skipped.push(t);
+      });
+    });
+    if (!out.length) throw new Error('Empty list after parsing');
+    return { out: out, skipped: skipped };
+  }
+  function render(text) {
+    var output = document.getElementById('parser-output');
+    var parityList = document.getElementById('parity-list');
+    var summary = document.getElementById('parity-summary');
+    parityList.innerHTML = '';
+    try {
+      var r = parse(text);
+      var lines = r.out.map(function (s) { return '<span class="ok">' + s + '</span>'; }).join('\n');
+      var sk = r.skipped.length ? '\n\n<span class="skip">' + r.skipped.length + ' line(s) skipped (semantic narrative): ' + r.skipped.join(' · ') + '</span>' : '';
+      output.innerHTML = lines + sk;
+      var have = new Set(r.out);
+      var missing = CURRENT_HARDCODED.filter(function (e) { return !have.has(e); });
+      var extra = r.out.filter(function (e) { return CURRENT_HARDCODED.indexOf(e) === -1; });
+      CURRENT_HARDCODED.forEach(function (e) {
+        var li = document.createElement('li');
+        li.className = have.has(e) ? 'match' : 'miss';
+        li.textContent = e;
+        parityList.appendChild(li);
+      });
+      if (missing.length === 0 && extra.length === 0) {
+        summary.style.color = 'var(--green)';
+        summary.textContent = '✓ Exact parity with current hardcoded list (' + CURRENT_HARDCODED.length + '/' + CURRENT_HARDCODED.length + ').';
+      } else {
+        summary.style.color = 'var(--red)';
+        summary.textContent = '✗ Drift detected · missing: ' + missing.length + ' · extra: ' + extra.length + (extra.length ? ' (' + extra.join(', ') + ')' : '');
+      }
+    } catch (e) {
+      output.innerHTML = '<span class="err">Parse error: ' + e.message + '</span>';
+      summary.textContent = '';
+    }
+  }
+  var INITIAL = document.getElementById('parser-input').value;
+  document.getElementById('parse-btn').addEventListener('click', function () {
+    render(document.getElementById('parser-input').value);
+  });
+  document.getElementById('reset-btn').addEventListener('click', function () {
+    document.getElementById('parser-input').value = INITIAL;
+    render(INITIAL);
+  });
+  // Auto-run on load
+  render(INITIAL);
+})();
+</script>
+</body>
+</html>
+<<<HTML_PREVIEW_END>>>
+
+---
+
+## PHASE 2D — APPROVAL GATE
+
+Working preview ready. The harness will save it to:
+`/Users/deassists369/deassists-workspace/369-brain/previews/harness-eagle-stage-marker-contract.html`
+
+Open the file locally, exercise the parser simulator (verify the 11-entry parity check passes against the current § A7), click through the test coverage matrix to confirm the assertion surface looks complete, and review the Stage 2 illustrative diff.
+
+When ready, respond with one of:
+
+- **`approved`** — proceed to Mode 3, Stage 1 (assumes Choice A: you have already appended the `MODE3_STAGES` entry per Section 2.3 of the spec)
+- **`approved · choice B`** — proceed without the harness; EAGLE will execute both stages via direct chat-level edits
+- **`not approved`** — return to Mode 1 with revision notes
+- **`I have a doubt: [...]`** — clarify before deciding
+
+EAGLE will not proceed without one of the four exact phrases.

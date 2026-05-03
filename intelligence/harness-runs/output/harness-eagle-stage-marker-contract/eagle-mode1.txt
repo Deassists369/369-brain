@@ -1,0 +1,16 @@
+The new preview write was denied. The existing preview at `previews/harness-eagle-stage-marker-contract.html` (29.7 KB, 750 lines) was generated with these same locked answers and remains valid. The fresh spec above supersedes only the *narrative* portion of `intelligence/harness-runs/output/harness-eagle-stage-marker-contract/eagle-mode2.txt` — the HTML payload there is byte-identical with `previews/harness-eagle-stage-marker-contract.html`.
+
+If you'd like a fresh preview file written to the `-preview.html` skill path, please re-grant the Write permission and I'll save the updated HTML I prepared (which adds: a "Stage 0 done" badge, a stage-flow row marked complete for Stage 0, the locked-answers summary block at top, and an extra hunk in the diff visualization showing the backward-compat getter on `module.exports`).
+
+---
+
+## MODE 2 COMPLETE — HTML PREVIEW READY
+
+Spec is above. Preview file:
+- **Existing (valid, same locked answers):** `~/deassists-workspace/369-brain/previews/harness-eagle-stage-marker-contract.html`
+- **New (pending Write permission):** `~/deassists-workspace/369-brain/previews/harness-eagle-stage-marker-contract-preview.html`
+
+Awaiting approval phrase before Mode 3 can begin.
+Type **approved** to proceed.
+Type **not approved** to revise.
+Type **I have a doubt: [question]** to ask a question.

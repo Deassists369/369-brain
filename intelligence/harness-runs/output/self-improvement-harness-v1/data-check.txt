@@ -1,0 +1,52 @@
+Ticket read. This is brain infrastructure (not a portal data-display feature), but I'll still run the classification per the framework.
+
+## DATA STATE DECLARATION
+
+| Feature | Data State | Data Source | Latha Task |
+|---------|------------|-------------|------------|
+| self-improvement-harness-v1 | **STATE 2A — with prerequisites** | Mixed: 2 ready, 2 unspecified, 1 to create | None — brain infrastructure, no backend |
+
+### Inputs the "first analysis" needs
+
+| Input | Where it lives today | Ready? |
+|-------|----------------------|--------|
+| Codebase (brain + portal) | `~/deassists-workspace/369-brain/` + `~/deassists/` | READY |
+| harness_runs | `intelligence/harness-runs/eagle-harness.jsonl` + `intelligence/harness-runs/output/` (6 run dirs) | READY |
+| SOP file | Path NOT specified in ticket. `Glob **/*SOP*` returned 0 hits. Possibly meant CODING-CONSTITUTION.md, AGENTS.md, HOOKS.md, or skills/eagleskill/ — ambiguous | **MISSING** |
+| Google Doc | URL/ID NOT in ticket; Google Drive MCP exists but needs a target | **MISSING** |
+| Output dir `intelligence/proposed-fixes/` | Does not exist | Trivial — `mkdir` during build |
+
+### The 5 questions
+
+1. **What data does this feature process?** Harness run logs (JSONL + output artifacts), full codebase (two repos), an SOP document, a Google Doc. Output: a first-analysis report (markdown).
+2. **Where does it live?** Harness runs + codebase = local files (READY). SOP = unspecified file. Google Doc = external (Google Drive). Output target dir = does not exist yet.
+3. **Working endpoint?** N/A — brain-side tooling, no backend controller. Equivalent "endpoints" are file reads + `mcp__claude_ai_Google_Drive__*` for the doc.
+4. **Can we create the missing pieces ourselves?** `proposed-fixes/` dir = yes, trivially. SOP path + Google Doc URL = **NO — must come from Shon.**
+5. **Latha task?** None. This is brain infrastructure, not portal code.
+
+---
+
+## RECOMMENDATION
+
+**STATE 2A — with two hard prerequisites before any build begins.**
+
+Do NOT proceed to `/eagle-mode1` until Shon provides:
+
+1. **Which SOP file?** Exact path, or name. Candidates I can see: `CODING-CONSTITUTION.md`, `AGENTS.md`, `HOOKS.md`, `skills/eagleskill/EAGLESKILL.md`, `patterns/DATA-READINESS.md`. Pick one or list several.
+2. **Google Doc URL or ID.** Required for `mcp__claude_ai_Google_Drive__read_file_content`. Without it the "first analysis" is incomplete.
+
+### Also flag (process, not data)
+
+- Feature is **not in `feature-registry.md`**. Per the registry rule ("single source of truth"), add a row under BRAIN AND INFRASTRUCTURE before build:
+  `| self-improvement-harness-v1 | NEXT | HIGH | Shon | SOP path + GDoc URL | Build harness/self-improvement/ + first-analysis report |`
+- Session lock is **OPEN** under today's Claude Code session (opened 13:47 today via FORCE_CLEAN). Confirmed safe to continue under the same session — flagging only so you know.
+- `intelligence/harness-runs/` exists but `intelligence/proposed-fixes/` does not — will be created during build.
+
+### Once Shon answers the two prerequisites
+
+Move to `/eagle-mode1` with the spec covering:
+- `harness/self-improvement/` folder structure (orchestrator, analyzer, report writer)
+- Empty-state for `proposed-fixes/` is N/A (output, not display)
+- Entry path = the analysis script itself; ingestion sources are the 5 inputs above
+
+**Awaiting Shon's two answers before `/eagle-mode1`.**

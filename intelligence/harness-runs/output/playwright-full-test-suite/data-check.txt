@@ -1,0 +1,44 @@
+# DATA STATE DECLARATION — `playwright-full-test-suite`
+
+## Pre-classification flag
+
+This ticket is **not in `feature-registry.md`** and is not a portal feature that displays/accepts user data — it is a testing infrastructure task. The DATA-READINESS pattern is built for portal features. Applied here, it classifies the four *test inputs* the ticket depends on. (First NEXT items in registry are Phase 2A items — Activity tab, Call history timeline, Quick note display — none match.)
+
+## Source verification (what actually exists right now)
+
+| Claimed source | Reality |
+|---|---|
+| `e2e/` folder | **Does not exist** — no `e2e/` in `~/deassists/` or `369-brain/` |
+| Playwright | **Installed** (`playwright@1.59.1` + `@playwright/test`) but no `playwright.config.ts` |
+| SOP PDF | **Not located** — only `369-brain/memory/it-change-log-sop.md` exists; PDF path not provided |
+| Google Doc (64 scenarios) | **External, URL not provided**; content not in repo |
+| 8 roles | **Mismatch** — `UserTypes` enum at `libs/shared/constants/user.types.ts:1` has **10 values** (super_admin, organization_owner, organization_admin, manager, team_lead, staff, agent, organization_agent, user, all). "8" is undefined |
+
+## Five-question classification
+
+| Input | Q1 fields | Q2 lives where | Q3 endpoint | Q4 entry path | State |
+|---|---|---|---|---|---|
+| **Roles list** | role name, login fixture, expected sidebar/page perms | TS constants: `user.types.ts` (`UserTypes`) + `lead.constants.ts` (`SidebarRole`) | N/A — enum | N/A | **STATE 1** for the enum, but "8" ≠ 10 → needs Shon to lock the list |
+| **64 email scenarios** | trigger, role, template id, expected subject, expected body, assertions | External Google Doc (URL not provided) | None | No — port doc → repo | **STATE 2B** |
+| **SOP PDF** | per-role test steps, expected outcomes | External PDF (not located) | None | No — manual extraction | **STATE 2B** |
+| **`e2e/` infra** | `playwright.config.ts`, fixtures, role-login helpers, page objects, seeded test users | Does not exist | None | N/A — infra to be built | **STATE 3** |
+
+## Aggregate state
+
+**STATE 3 — DO NOT PROCEED.**
+
+Test infrastructure (State 3) dominates. Two of three input sources (State 2B) are not even located. Generating 8 × 64 = 512 test cases against missing infra, an unverified role list, and unlinked source docs would burn a full build cycle and produce dead code.
+
+## Recommendation
+
+**STATE 3 — do not proceed to `/eagle-mode1`.** Raise three precursor tasks in this order:
+
+1. **Shon:** lock the 8-role list (which 8 of the 10 `UserTypes`?) → record in `decisions.md`; paste Google Doc URL in the ticket; drop the SOP PDF in `369-brain/docs/`.
+2. **Latha task:** seed test users per locked role in a `test-fixtures` collection (or migration) + provide a `RESET_TEST_DB` test-only endpoint gated to non-prod env.
+3. **New ticket `e2e-infra-bootstrap`:** create `playwright.config.ts` at `~/deassists/` root, build `e2e/fixtures/` with role-login helpers, decide auth strategy (real login vs `storageState`), ship one passing smoke test as proof-of-rails.
+
+Only after all three are DONE does `playwright-full-test-suite` become a STATE 2B feature (data exists in structured form, port to test files), at which point it is ready for `/eagle-mode1`.
+
+---
+
+Note: Tried to overwrite the existing `intelligence/harness-runs/output/playwright-full-test-suite/data-check.txt` with this re-verified classification (only delta from prior run: corrected `UserTypes` count 11 → 10, and confirmed Playwright is already installed). Write was denied — let me know if you want it persisted.

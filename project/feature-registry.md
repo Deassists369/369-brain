@@ -252,3 +252,14 @@ Priority values:
 *Location: 369-brain/project/feature-registry.md*
 *Update: every time a feature status changes*
 *Never delete rows — only update status*
+
+## BRAIN AND INFRASTRUCTURE
+
+| Feature | Status | Priority | Owner | Depends On | Description |
+|---|---|---|---|---|---|
+| harness-eagle-stage-marker-contract | IN PROGRESS | HIGH | Shon | Run 1 complete | Harden Mode 3 patch contract — tests + constitution parser |
+| harness-eagle-stage-marker-contract-followups | WAITING | HIGH | Shon | marker-contract complete | 8 v1 improvements discovered during Run 1 |
+| self-improvement-harness-v1 | DONE | HIGH | Shon | harness runs data | Build self-improvement harness — first analysis report |
+| harness-worker-crash-recovery | WAITING | HIGH | Shon | — | Auto-recovery when worker dies mid-run |
+| harness-worker-ticket-ordering | WAITING | MEDIUM | Shon | — | Sort tickets by priority not filesystem order |
+| harness-parallel-execution | WAITING | MEDIUM | Shon | crash-recovery | Run two workers simultaneously without conflicts |

@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EAGLE Mode 2 Preview · self-improvement-harness-v1</title>
+<style>
+:root {
+  --bg:#0b0f14;--bg-elev:#131a23;--bg-elev-2:#1a2330;
+  --border:#243042;--border-strong:#33455c;
+  --text:#e6edf3;--text-dim:#8b98a8;--text-muted:#5d6b7e;
+  --accent:#4cc2ff;--accent-dim:#2a89b8;
+  --green:#4ade80;--green-dim:#16a34a;
+  --amber:#fbbf24;--amber-dim:#92400e;
+  --red:#f87171;--red-dim:#b91c1c;
+  --teal:#5eead4;--teal-dim:#0f766e;
+  --purple:#c4b5fd;--purple-dim:#5b3fa8;
+  --mono:ui-monospace,SFMono-Regular,"JetBrains Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.55;
+  padding:32px 24px 80px;max-width:1180px;margin:0 auto;
+}
+h1{font-size:26px;font-weight:600;letter-spacing:-0.01em;margin:0 0 4px;}
+h2{font-size:13px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-dim);margin:36px 0 14px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+h3{font-size:14px;font-weight:600;margin:18px 0 8px;color:var(--text);letter-spacing:0.02em;}
+p{margin:8px 0;color:var(--text);}
+a{color:var(--accent);text-decoration:none;}
+code,pre,.mono{font-family:var(--mono);}
+code{background:var(--bg-elev);padding:1px 6px;border-radius:3px;font-size:12.5px;color:var(--accent);}
+pre{background:var(--bg-elev);border:1px solid var(--border);border-radius:6px;padding:14px 16px;overflow-x:auto;font-size:12.5px;line-height:1.55;color:var(--text);margin:10px 0;}
+ul,ol{margin:8px 0;padding-left:22px;}
+li{margin:5px 0;}
+.subtitle{color:var(--text-dim);font-size:13px;letter-spacing:0.02em;margin:0 0 20px;}
+.lockstrip{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 28px;}
+.lock{font-family:var(--mono);font-size:11px;letter-spacing:0.04em;background:var(--bg-elev);border:1px solid var(--border);border-radius:4px;padding:5px 11px;color:var(--text-dim);}
+.lock strong{color:var(--green);font-weight:700;}
+.lock.amber strong{color:var(--amber);}
+.card{background:var(--bg-elev);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:14px 0;}
+.card.teal{border-left:4px solid var(--teal-dim);}
+.card.green{border-left:4px solid var(--green-dim);}
+.card.amber{border-left:4px solid var(--amber-dim);}
+.card.purple{border-left:4px solid var(--purple-dim);}
+.card.red{border-left:4px solid var(--red-dim);}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.card-icon{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.card-icon.teal{background:rgba(94,234,212,0.12);border:1px solid var(--teal-dim);color:var(--teal);}
+.card-icon.green{background:rgba(74,222,128,0.12);border:1px solid var(--green-dim);color:var(--green);}
+.card-icon.amber{background:rgba(251,191,36,0.12);border:1px solid var(--amber-dim);color:var(--amber);}
+.card-icon.purple{background:rgba(196,181,253,0.12);border:1px solid var(--purple-dim);color:var(--purple);}
+.card-title{font-weight:600;font-size:14.5px;color:var(--text);}
+.card-body{color:var(--text-dim);font-size:13px;line-height:1.6;}
+.card-body strong{color:var(--text);}
+
+/* tables */
+table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:13px;}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-weight:700;background:var(--bg-elev);border-bottom:2px solid var(--border-strong);}
+tbody tr:hover{background:rgba(76,194,255,0.04);}
+td.mono{font-family:var(--mono);font-size:12px;color:var(--accent);}
+td.num{font-family:var(--mono);font-size:12px;color:var(--text-dim);text-align:right;}
+
+/* trigger panel */
+.trigger{background:#000;border:1px solid var(--border-strong);border-radius:8px;padding:18px 22px;font-family:var(--mono);font-size:12.5px;line-height:1.7;color:var(--text);margin:14px 0;}
+.trigger .prompt{color:var(--green);}
+.trigger .cmt{color:var(--text-muted);}
+.trigger .flag{color:var(--amber);}
+.trigger .out{color:var(--accent);}
+
+/* run-state pipeline */
+.pipeline{display:flex;flex-wrap:wrap;gap:0;margin:14px 0;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg-elev);}
+.pp{flex:1;min-width:140px;padding:14px 16px;border-right:1px solid var(--border);position:relative;}
+.pp:last-child{border-right:none;}
+.pp-num{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--text-muted);}
+.pp-name{font-family:var(--mono);font-size:11.5px;color:var(--text);margin-top:4px;}
+.pp-status{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:0.06em;padding:2px 7px;border-radius:3px;margin-top:6px;text-transform:uppercase;font-weight:700;}
+.pp-status.pending{background:rgba(139,152,168,0.1);border:1px solid var(--text-muted);color:var(--text-muted);}
+.pp-status.complete{background:rgba(74,222,128,0.1);border:1px solid var(--green-dim);color:var(--green);}
+.pp-status.run{background:rgba(76,194,255,0.1);border:1px solid var(--accent-dim);color:var(--accent);}
+
+/* report mock */
+.mockreport{background:var(--bg-elev);border:1px solid var(--border);border-radius:8px;padding:0;overflow:hidden;margin:12px 0;}
+.mockreport-head{padding:10px 16px;background:var(--bg-elev-2);border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--text-muted);letter-spacing:0.04em;display:flex;justify-content:space-between;}
+.mockreport-body{padding:18px 22px;font-size:13px;line-height:1.7;color:var(--text-dim);}
+.mockreport-body h4{margin:14px 0 6px;color:var(--text);font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;}
+.mockreport-body h4:first-child{margin-top:0;}
+.mockreport-body ul{margin:4px 0 8px;padding-left:22px;}
+.mockreport-body li{margin:3px 0;}
+.mockreport-body .meta{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.mockreport-body em{color:var(--purple);font-style:normal;background:rgba(196,181,253,0.08);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:11.5px;}
+
+/* badge */
+.b{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;letter-spacing:0.05em;text-transform:uppercase;font-weight:700;border:1px solid;}
+.b.green{background:rgba(74,222,128,0.1);border-color:var(--green-dim);color:var(--green);}
+.b.amber{background:rgba(251,191,36,0.1);border-color:var(--amber-dim);color:var(--amber);}
+.b.red{background:rgba(248,113,113,0.1);border-color:var(--red-dim);color:var(--red);}
+.b.teal{background:rgba(94,234,212,0.1);border-color:var(--teal-dim);color:var(--teal);}
+.b.purple{background:rgba(196,181,253,0.1);border-color:var(--purple-dim);color:var(--purple);}
+.b.dim{background:rgba(139,152,168,0.08);border-color:var(--text-muted);color:var(--text-dim);}
+
+/* approval block */
+.approval{background:var(--bg-elev-2);border:1.5px solid var(--accent-dim);border-radius:10px;padding:22px 26px;margin:30px 0 8px;}
+.approval h3{margin-top:0;color:var(--accent);font-size:15px;letter-spacing:0.04em;text-transform:uppercase;}
+.approval ul{margin:10px 0;padding-left:0;list-style:none;}
+.approval li{margin:6px 0;font-family:var(--mono);font-size:13px;}
+.approval li code{background:var(--bg);color:var(--green);font-weight:700;padding:2px 8px;}
+.approval .stop{font-family:var(--mono);font-size:12px;color:var(--amber);margin-top:14px;padding-top:14px;border-top:1px dashed var(--border-strong);}
+
+footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--text-muted);letter-spacing:0.04em;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+</style>
+</head>
+<body>
+
+<h1>EAGLE Mode 2 Preview · self-improvement-harness-v1</h1>
+<p class="subtitle">Capability mode · backend orchestrator · no UI · manual trigger only · v1</p>
+
+<div class="lockstrip">
+  <span class="lock">mode <strong>CAPABILITY</strong></span>
+  <span class="lock">SOP files <strong>5/5</strong></span>
+  <span class="lock amber">Google Doc <strong>WAIVED v1</strong></span>
+  <span class="lock">registry row <strong>YES</strong></span>
+  <span class="lock">trigger <strong>MANUAL</strong></span>
+  <span class="lock">LEARNING-MIND <strong>APPEND</strong></span>
+</div>
+
+<h2>What this capability is</h2>
+<div class="card teal">
+  <div class="card-head">
+    <div class="card-icon teal">◎</div>
+    <div class="card-title">A meta-harness that reads how the brain has been working and proposes how it can work better</div>
+  </div>
+  <div class="card-body">
+    Reads five SOP files, the eagle-harness JSONL log, the ticket queue, and a high-level codebase summary.
+    Asks one structured LLM call: <em>what patterns are emerging? what's recurring? what should the brain learn?</em>
+    Writes a markdown report to <code>intelligence/proposed-fixes/</code>, appends one new dated section to
+    <code>LEARNING-MIND.md</code>, and logs one JSONL row with the same schema as the eagle harness.
+    Mission Control's existing <strong>Self-Improvement — Intelligence Reports</strong> panel picks it up automatically.
+  </div>
+</div>
+
+<h2>Trigger surface — manual only for v1</h2>
+<div class="trigger">
+<span class="cmt"># run a normal analysis</span><br>
+$ <span class="prompt">node ~/deassists-workspace/369-brain/harness/self-improvement/self-improvement-harness.js</span><br>
+<br>
+<span class="cmt"># dry-run — assemble the prompt, print it, do not call Claude</span><br>
+$ <span class="prompt">node …/self-improvement-harness.js</span> <span class="flag">--dry-run</span><br>
+<br>
+<span class="cmt"># skip the LEARNING-MIND append</span><br>
+$ <span class="prompt">node …/self-improvement-harness.js</span> <span class="flag">--skip-learning-mind</span><br>
+<br>
+<span class="cmt"># consider only the last N harness-runs entries (default: all)</span><br>
+$ <span class="prompt">node …/self-improvement-harness.js</span> <span class="flag">--limit-runs 20</span><br>
+<br>
+<span class="cmt"># exit codes</span><br>
+<span class="out">0</span> complete &nbsp; <span class="out">1</span> failed mid-run &nbsp; <span class="out">2</span> blocked (a Tier-1 SOP file missing)
+</div>
+
+<h2>Run-state pipeline (live during invocation)</h2>
+<div class="pipeline">
+  <div class="pp"><div class="pp-num">PHASE 1</div><div class="pp-name">read-sops</div><div class="pp-status complete">complete</div></div>
+  <div class="pp"><div class="pp-num">PHASE 2</div><div class="pp-name">read-harness-runs</div><div class="pp-status complete">complete</div></div>
+  <div class="pp"><div class="pp-num">PHASE 3</div><div class="pp-name">read-tickets</div><div class="pp-status complete">complete</div></div>
+  <div class="pp"><div class="pp-num">PHASE 4</div><div class="pp-name">build-prompt</div><div class="pp-status run">running</div></div>
+  <div class="pp"><div class="pp-num">PHASE 5</div><div class="pp-name">invoke-analyzer</div><div class="pp-status pending">pending</div></div>
+  <div class="pp"><div class="pp-num">PHASE 6</div><div class="pp-name">write-report</div><div class="pp-status pending">pending</div></div>
+  <div class="pp"><div class="pp-num">PHASE 7</div><div class="pp-name">append-learning-mind</div><div class="pp-status pending">pending</div></div>
+</div>
+<p class="subtitle" style="margin:0;">Each phase logs <code>{phase, status, detail, timestamp}</code> to the JSONL row, identical to eagle-harness.</p>
+
+<h2>Inputs (read-only)</h2>
+<table>
+  <thead><tr><th>Source</th><th>Path</th><th>Mode</th></tr></thead>
+  <tbody>
+    <tr><td>SOP file 1</td><td class="mono">AGENTS.md</td><td><span class="b dim">READ</span></td></tr>
+    <tr><td>SOP file 2</td><td class="mono">CLAUDE.md</td><td><span class="b dim">READ</span></td></tr>
+    <tr><td>SOP file 3</td><td class="mono">CODING-CONSTITUTION.md</td><td><span class="b dim">READ</span></td></tr>
+    <tr><td>SOP file 4</td><td class="mono">HOOKS.md</td><td><span class="b dim">READ</span></td></tr>
+    <tr><td>SOP file 5</td><td class="mono">THE-DEASSISTS-OS.md</td><td><span class="b dim">READ</span></td></tr>
+    <tr><td>Harness runs</td><td class="mono">intelligence/harness-runs/eagle-harness.jsonl</td><td><span class="b dim">READ</span></td></tr>
+    <tr><td>Ticket queue</td><td class="mono">tickets/open/, tickets/waiting/, tickets/awaiting-approval/</td><td><span class="b dim">READ</span></td></tr>
+    <tr><td>Codebase summary</td><td class="mono">harness/, project/, skills/, intelligence/ (top-level listings + LOC counts)</td><td><span class="b dim">READ</span></td></tr>
+    <tr><td>Google Doc</td><td class="mono">— (waived for v1) —</td><td><span class="b amber">SKIP</span></td></tr>
+  </tbody>
+</table>
+
+<h2>Outputs</h2>
+<table>
+  <thead><tr><th>Artifact</th><th>Path</th><th>Mode</th></tr></thead>
+  <tbody>
+    <tr><td>Analysis report</td><td class="mono">intelligence/proposed-fixes/2026-05-03-self-improvement-run-001.md</td><td><span class="b green">CREATE</span></td></tr>
+    <tr><td>Learning Mind entry</td><td class="mono">intelligence/LEARNING-MIND.md <span class="b teal">+section</span></td><td><span class="b teal">APPEND</span></td></tr>
+    <tr><td>Run log row</td><td class="mono">intelligence/harness-runs/self-improvement-harness.jsonl</td><td><span class="b teal">APPEND</span></td></tr>
+    <tr><td>Mission Control stat</td><td class="mono">— (auto, via <code>s-learn</code> in mission-control-index.html) —</td><td><span class="b dim">AUTO</span></td></tr>
+    <tr><td>Feature registry status</td><td class="mono">project/feature-registry.md (Mode 3 S4 only) — IN PROGRESS → DONE</td><td><span class="b amber">Mode 3</span></td></tr>
+  </tbody>
+</table>
+
+<h2>Output 1 — analysis report (mock)</h2>
+<div class="mockreport">
+  <div class="mockreport-head">
+    <span>intelligence/proposed-fixes/2026-05-03-self-improvement-run-001.md</span>
+    <span>2.4 KB · markdown</span>
+  </div>
+  <div class="mockreport-body">
+    <p class="meta">
+      Run ID: a1b2c3d4e5f60718 &nbsp;·&nbsp; Started: 2026-05-03T22:14:00Z &nbsp;·&nbsp; Duration: 47s<br>
+      Inputs: <em>5 SOPs</em> · <em>1 harness-run log (8 entries)</em> · <em>6 ticket queue items</em> · <em>codebase summary</em>
+    </p>
+
+    <h4>Deepened Understanding (3)</h4>
+    <ul>
+      <li>The Mode 3 stage registry is hardcoded in <em>eagle-harness.js:35</em>; this couples Mode 2 outputs to a manual JS edit and was already flagged as a v2 follow-up.</li>
+      <li>Pre-flight allowed-paths check protects against partial work bleeding into a stage; sidebar-restructure proved this saved a corrupt run.</li>
+      <li>Approval phrases are the load-bearing safeguard — every stage gate respected the exact-phrase rule even when retries piled up.</li>
+    </ul>
+
+    <h4>Wrong Assumptions Corrected (2)</h4>
+    <ul>
+      <li><strong>WRONG:</strong> Mode 2 inner Claude can use Write directly. <strong>RIGHT:</strong> Headless permission deadlock — must use the marker-contract pattern (<em>HTML_PREVIEW_START / END</em> markers).</li>
+      <li><strong>WRONG:</strong> One <em>git add</em> per stage is fine. <strong>RIGHT:</strong> All Mode 3 stages stay uncommitted until the final stage; one commit captures the whole capability.</li>
+    </ul>
+
+    <h4>Patterns Identified (2)</h4>
+    <ul>
+      <li>Approval-phrase volume scales with retry count — sidebar-restructure ran 11 approvals across one ticket. Worth tracking per-ticket as a friction signal.</li>
+      <li>Stage failures cluster around pre-flight (allowed paths already dirty); a <em>git stash</em> hint in the failure detail would shorten recovery time.</li>
+    </ul>
+
+    <h4>Proposed Fixes (3)</h4>
+    <ul>
+      <li><span class="b teal">skill rule</span> EAGLESKILL.md — add Stage Pre-flight section explicitly mentioning <em>git stash</em> recovery. Severity: <span class="b green">LOW</span>. Evidence: harness-runs phase <em>mode3-s1-sidemenu</em> failed at 16:30:58Z, recovered at 18:48:11Z (2h gap). Suggested ticket: <em>eagleskill-stage-preflight-recovery</em>.</li>
+      <li><span class="b purple">new pattern</span> patterns/ — add <em>marker-contract.md</em> documenting the HTML_PREVIEW_START / END contract for any future harness with headless inner-Claude. Severity: <span class="b amber">MED</span>. Suggested ticket: <em>marker-contract-pattern-doc</em>.</li>
+      <li><span class="b teal">skill rule</span> EAGLESKILL.md — Mode 2 should emit the Mode 3 stage list as JSON between markers (already noted as TODO at <em>eagle-harness.js:33</em>). Severity: <span class="b amber">MED</span>. Existing ticket: <em>harness-eagle-stage-marker-contract-followups</em> (already in queue).</li>
+    </ul>
+
+    <h4>Open Questions for VEERABHADRA (1)</h4>
+    <ul>
+      <li>Should the harness propose closing the <em>self-improvement-harness-v1</em> ticket itself once it has run successfully, or is that strictly Shon's call?</li>
+    </ul>
+
+    <h4>Challenge for Next Session</h4>
+    <p style="margin-left:0;">Before extending the harness with cron, prove Run 001's proposed fixes were actually adopted — or document why they were rejected. Don't let proposals pile up without disposition.</p>
+
+    <h4>Evidence Index</h4>
+    <ul>
+      <li>harness-runs entries cited: <em>fd68945a22254495</em> (sidebar-restructure, complete) · <em>d65b537434f90d64</em> (rag-foundation-v1, blocked)</li>
+      <li>SOP files cited: <em>EAGLESKILL.md</em>, <em>CODING-CONSTITUTION.md</em></li>
+      <li>ticket files cited: <em>harness-eagle-stage-marker-contract-followups.md</em>, <em>self-improvement-harness-v1.md</em></li>
+    </ul>
+  </div>
+</div>
+<p class="subtitle">Above mock is illustrative — actual content will reflect what the analyzer finds in the real input set on the day of the run.</p>
+
+<h2>Output 2 — LEARNING-MIND append (mock)</h2>
+<div class="mockreport">
+  <div class="mockreport-head">
+    <span>intelligence/LEARNING-MIND.md (append at bottom)</span>
+    <span>+1 section · existing content untouched</span>
+  </div>
+  <div class="mockreport-body">
+<pre style="margin:0;background:transparent;border:0;padding:0;color:var(--text);">
+## LEARNING — 3 MAY 2026 — SELF-IMPROVEMENT RUN 001
+
+SESSION: 3 May 2026 — Self-improvement harness Run 001
+DEEPENED UNDERSTANDING:
+  Mode 3 stage registry is hardcoded; couples Mode 2
+  output to a manual edit. v2 should emit it as JSON.
+
+  Pre-flight allowed-paths check is load-bearing —
+  it caught a dirty-tree bleed in sidebar-restructure.
+
+WRONG ASSUMPTIONS CORRECTED:
+  WRONG: Mode 2 inner Claude can use Write directly
+  RIGHT: Headless deadlock — use marker-contract pattern
+
+  WRONG: One git add per stage is fine
+  RIGHT: All stages uncommitted until final;
+         one commit captures the whole capability
+
+PATTERNS IDENTIFIED:
+  Approval-phrase volume scales with retry count.
+  Worth tracking per-ticket as a friction signal.
+
+OPEN QUESTIONS:
+  Should the harness close its own ticket
+  on successful completion, or is that
+  strictly Shon's call?
+
+CHALLENGE FOR NEXT SESSION:
+  Prove Run 001's proposed fixes were either
+  adopted or explicitly rejected before
+  letting Run 002 propose more.
+
+Source: intelligence/proposed-fixes/2026-05-03-self-improvement-run-001.md
+</pre>
+  </div>
+</div>
+
+<h2>Output 3 — JSONL run log row (mock)</h2>
+<pre>{
+  "run_id": "a1b2c3d4e5f60718",
+  "harness": "self-improvement-harness",
+  "feature": "self-improvement-harness-v1",
+  "tenant_id": null,
+  "meta": {
+    "sop_files_read": 5,
+    "harness_runs_read": 8,
+    "tickets_read": 6,
+    "patterns_found": 2,
+    "proposed_fixes": 3,
+    "report_path": "intelligence/proposed-fixes/2026-05-03-self-improvement-run-001.md"
+  },
+  "started_at": "2026-05-03T22:14:00.123Z",
+  "completed_at": "2026-05-03T22:14:47.842Z",
+  "status": "complete",
+  "phases": [
+    { "phase": "read-sops",            "status": "complete", "detail": "5 files, 47kb total", "timestamp": "2026-05-03T22:14:00.480Z" },
+    { "phase": "read-harness-runs",    "status": "complete", "detail": "8 entries",            "timestamp": "2026-05-03T22:14:00.812Z" },
+    { "phase": "read-tickets",         "status": "complete", "detail": "6 tickets",            "timestamp": "2026-05-03T22:14:01.044Z" },
+    { "phase": "build-prompt",         "status": "complete", "detail": "12.3kb prompt",        "timestamp": "2026-05-03T22:14:01.288Z" },
+    { "phase": "invoke-analyzer",      "status": "complete", "detail": "claude -p · 42.1s",    "timestamp": "2026-05-03T22:14:43.401Z" },
+    { "phase": "write-report",         "status": "complete", "detail": "2.4kb saved",          "timestamp": "2026-05-03T22:14:43.880Z" },
+    { "phase": "append-learning-mind", "status": "complete", "detail": "+1 section",           "timestamp": "2026-05-03T22:14:47.842Z" }
+  ],
+  "approval_history": [],
+  "preview_path": null,
+  "error": null
+}</pre>
+
+<h2>Files to create / modify</h2>
+<table>
+  <thead><tr><th>Stage</th><th>File</th><th>Mode</th><th>LOC</th><th>Risk</th></tr></thead>
+  <tbody>
+    <tr><td>S1</td><td class="mono">harness/self-improvement/inputs.js</td><td><span class="b green">CREATE</span></td><td class="num">~180</td><td><span class="b green">LOW</span></td></tr>
+    <tr><td>S1</td><td class="mono">harness/self-improvement/report-writer.js</td><td><span class="b green">CREATE</span></td><td class="num">~150</td><td><span class="b green">LOW</span></td></tr>
+    <tr><td>S1</td><td class="mono">harness/self-improvement/learning-mind-writer.js</td><td><span class="b green">CREATE</span></td><td class="num">~110</td><td><span class="b green">LOW</span></td></tr>
+    <tr><td>S1</td><td class="mono">harness/self-improvement/__tests__/inputs.test.js</td><td><span class="b green">CREATE</span></td><td class="num">~120</td><td><span class="b green">LOW</span></td></tr>
+    <tr><td>S1</td><td class="mono">harness/self-improvement/__tests__/report-writer.test.js</td><td><span class="b green">CREATE</span></td><td class="num">~80</td><td><span class="b green">LOW</span></td></tr>
+    <tr><td>S1</td><td class="mono">harness/self-improvement/__tests__/learning-mind-writer.test.js</td><td><span class="b green">CREATE</span></td><td class="num">~100</td><td><span class="b green">LOW</span></td></tr>
+    <tr><td>S2</td><td class="mono">harness/self-improvement/analyzer.js</td><td><span class="b green">CREATE</span></td><td class="num">~220</td><td><span class="b green">LOW</span></td></tr>
+    <tr><td>S2</td><td class="mono">harness/self-improvement/self-improvement-harness.js</td><td><span class="b green">CREATE</span></td><td class="num">~280</td><td><span class="b green">LOW</span></td></tr>
+    <tr><td>S2</td><td class="mono">harness/self-improvement/README.md</td><td><span class="b green">CREATE</span></td><td class="num">~90</td><td><span class="b green">LOW</span></td></tr>
+    <tr><td>S3</td><td class="mono">intelligence/proposed-fixes/.gitkeep</td><td><span class="b green">CREATE</span></td><td class="num">0</td><td><span class="b green">LOW</span></td></tr>
+    <tr><td>S3</td><td class="mono">intelligence/harness-runs/self-improvement-harness.jsonl</td><td><span class="b teal">FIRST APPEND</span></td><td class="num">1 row</td><td><span class="b amber">MED</span></td></tr>
+    <tr><td>S3</td><td class="mono">intelligence/proposed-fixes/2026-05-03-self-improvement-run-001.md</td><td><span class="b green">CREATE</span></td><td class="num">~80 lines</td><td><span class="b amber">MED</span></td></tr>
+    <tr><td>S3</td><td class="mono">intelligence/LEARNING-MIND.md</td><td><span class="b teal">APPEND</span></td><td class="num">+1 section</td><td><span class="b amber">MED</span></td></tr>
+    <tr><td>S4</td><td class="mono">project/feature-registry.md</td><td><span class="b teal">EDIT 1 cell</span></td><td class="num">IN PROGRESS → DONE</td><td><span class="b green">LOW</span></td></tr>
+  </tbody>
+</table>
+
+<h2>Stage plan (Mode 3)</h2>
+<div class="card green">
+  <div class="card-head"><div class="card-icon green">S1</div><div class="card-title">Pure additions — readers + writers + tests</div></div>
+  <div class="card-body">
+    Six files. No imports yet from existing harness code. Cannot break anything because nothing depends on these new files.<br>
+    <strong>Test:</strong> Cat-2 — <code>node --test harness/self-improvement/__tests__/</code> · expected: all pass.<br>
+    <strong>Duration:</strong> 12-18 min. <strong>Risk:</strong> LOW.
+  </div>
+</div>
+<div class="card green">
+  <div class="card-head"><div class="card-icon green">S2</div><div class="card-title">Isolated new files — analyzer + entry point + README</div></div>
+  <div class="card-body">
+    Three files. Imports from S1 and from <code>harness/core/</code>. Created but not yet executed.<br>
+    <strong>Test:</strong> Cat-2 — <code>node -c harness/self-improvement/self-improvement-harness.js</code> + S1 tests still pass.<br>
+    <strong>Duration:</strong> 10-15 min. <strong>Risk:</strong> LOW.
+  </div>
+</div>
+<div class="card amber">
+  <div class="card-head"><div class="card-icon amber">S3</div><div class="card-title">Wiring — first dry-run + first real run</div></div>
+  <div class="card-body">
+    No new files of business code. Run the harness with <code>--dry-run</code> first; inspect the assembled prompt.
+    Then run for real; inspect <code>proposed-fixes/2026-05-03-self-improvement-run-001.md</code>, the LEARNING-MIND
+    append, the JSONL row, and Mission Control's <code>s-learn</code> stat increment.<br>
+    <strong>Test:</strong> Cat-4 — full integration — expect all 7 phases <code>complete</code> and the four post-run invariants.<br>
+    <strong>Duration:</strong> 8-12 min. <strong>Risk:</strong> MED.
+  </div>
+</div>
+<div class="card green">
+  <div class="card-head"><div class="card-icon green">S4</div><div class="card-title">Registry update</div></div>
+  <div class="card-body">
+    One file, one cell. Move <code>self-improvement-harness-v1</code> row status from <code>IN PROGRESS</code> → <code>DONE</code>.<br>
+    <strong>Test:</strong> Cat-1 — re-read row, confirm exact string match.<br>
+    <strong>Duration:</strong> 1 min. <strong>Risk:</strong> LOW.
+  </div>
+</div>
+
+<h2>Acceptance criteria (Mode 3 post-run)</h2>
+<ul>
+  <li><code>intelligence/proposed-fixes/2026-05-03-self-improvement-run-001.md</code> exists, ≥ 800 bytes, contains all 6 required sections.</li>
+  <li><code>intelligence/LEARNING-MIND.md</code> has one new section appended at bottom; previous content byte-equal at top.</li>
+  <li><code>intelligence/harness-runs/self-improvement-harness.jsonl</code> has one new line, valid JSON, <code>status: "complete"</code>.</li>
+  <li>Mission Control <code>s-learn</code> stat increments from 0 → 1 on next page refresh.</li>
+  <li>No file in <code>~/deassists/</code> was read or written.</li>
+  <li><code>git status</code> in the brain repo shows the expected new + modified files; nothing in production repo.</li>
+</ul>
+
+<h2>Security review (pre-merger)</h2>
+<table>
+  <thead><tr><th>Concern</th><th>Mitigation</th></tr></thead>
+  <tbody>
+    <tr><td>LLM prompt injection via SOP/ticket content</td><td>Inputs are read from controlled files Shon owns. No external user input flows in. Output schema bounded by structured prompt template.</td></tr>
+    <tr><td>Secret leakage in run log</td><td>JSONL records paths and counts only. SOP file content is never echoed to JSONL. Report markdown reproduces only excerpts.</td></tr>
+    <tr><td>Append-only invariant violation</td><td><code>learning-mind-writer.js</code> uses <code>fs.appendFile</code> exclusively. Tests assert previous content is byte-equal after write.</td></tr>
+    <tr><td>Path traversal</td><td>All paths constructed via <code>path.join(BRAIN_ROOT, ...)</code>; no user-supplied path components.</td></tr>
+    <tr><td><code>claude -p</code> shell injection</td><td>Same headless pattern as eagle-harness with arg array (no shell string concat).</td></tr>
+    <tr><td>Production-repo touch</td><td>Brain-only capability — no portal-side surface.</td></tr>
+  </tbody>
+</table>
+
+<h2>Edge cases (brainstormed)</h2>
+<ul>
+  <li><strong>Empty harness-runs log</strong> — analyzer must produce a valid report with "no patterns yet, baseline established" note. Tested in <code>__tests__/inputs.test.js</code>.</li>
+  <li><strong>Tier-1 SOP file missing</strong> — exit code 2, no report written, no LEARNING-MIND append, JSONL row records <code>status: "blocked"</code>.</li>
+  <li><strong>Claude binary not on PATH</strong> — exit code 1 at <code>invoke-analyzer</code> phase, JSONL row records <code>status: "failed"</code> with the binary path attempted.</li>
+  <li><strong>Disk full mid-write</strong> — partial files cleaned up in a <code>finally</code> block; LEARNING-MIND append uses temp-file-then-rename pattern.</li>
+  <li><strong>Concurrent invocations</strong> — second invocation aborts at workspace lock acquisition (uses same <code>workspace.js</code> primitive eagle-harness uses).</li>
+  <li><strong>LEARNING-MIND.md does not yet have a closing newline</strong> — writer prepends <code>\n\n</code> to ensure clean section separation.</li>
+  <li><strong>--dry-run combined with --skip-learning-mind</strong> — both honored; no file writes anywhere; prompt printed to stdout only.</li>
+</ul>
+
+<h2>What is explicitly out of scope for v1</h2>
+<ul>
+  <li>Cron / scheduled triggering — manual only.</li>
+  <li>Hook-based triggering (post-eagle-run, etc.) — manual only.</li>
+  <li>Google Doc input — waived.</li>
+  <li>Auto-applying proposed fixes — proposals only; Shon decides what to act on.</li>
+  <li>Auto-closing the harness's own ticket on success — explicit Mode 3 S4 step instead.</li>
+  <li>HTML output of the report — markdown only; Mission Control already renders the count.</li>
+  <li>MongoDB migration of run log — stays JSONL until June 2026 per <code>harness/README.md:46</code>.</li>
+</ul>
+
+<div class="approval">
+  <h3>MODE 2 COMPLETE — HTML PREVIEW READY</h3>
+  <p style="margin:6px 0 14px;color:var(--text-dim);">Awaiting approval phrase before Mode 3 can begin.</p>
+  <ul>
+    <li>Type <code>approved</code> to proceed.</li>
+    <li>Type <code>not approved</code> to revise.</li>
+    <li>Type <code>I have a doubt: [question]</code> to ask a question.</li>
+  </ul>
+  <div class="stop">EAGLE accepts only these exact phrases. Any other input — wait. Never interpret. Never proceed without the exact phrase.</div>
+</div>
+
+<footer>
+  <span>self-improvement-harness-v1 · Mode 2 spec + preview · 2026-05-03</span>
+  <span>EAGLE v2.1 · CAPABILITY mode · brain-only</span>
+</footer>
+
+</body>
+</html>

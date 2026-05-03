@@ -1,0 +1,140 @@
+Permission to write the file wasn't granted. I'll output the gap report inline below for your review — happy to write it to disk after you approve the location.
+
+---
+
+# EAGLE MODE 1 — GAP REPORT — self-improvement-harness-v1
+
+**Round:** 1 | **Date:** 2026-05-03 | **Run ID:** `f64428257aa78ef9`
+**Mode:** **CAPABILITY** (capability does not exist in production)
+**Owner:** Shon AJ
+
+## DATA STATE DECLARATION
+
+| Feature | Data State | Data Source | Latha Task Required |
+|---|---|---|---|
+| self-improvement-harness-v1 | **STATE 2A — with two hard prerequisites** | Mixed: 3 ready, 2 missing inputs from Shon, 1 trivial create | **NONE** — brain infrastructure |
+
+**Inputs:**
+
+| Input | Status | Notes |
+|---|---|---|
+| harness_runs JSONL + per-run output dirs | READY | `intelligence/harness-runs/` (8 runs, 6 output dirs) |
+| Brain SOP files (CODING-CONSTITUTION, EAGLESKILL, AGENTS, HOOKS, DATA-READINESS) | READY | brain repo |
+| Codebase (brain) | READY | `~/deassists-workspace/369-brain/` |
+| **SOP file path** (per ticket) | **MISSING** | Shon must specify which file(s) |
+| **Google Doc URL/ID** | **MISSING** | Shon must specify (or waive) |
+| `intelligence/proposed-fixes/` output dir | DOES NOT EXIST | trivial `mkdir -p` during build |
+
+Per Step 4: not State 3, so I proceeded to the gap report. But the two missing prerequisites still gate Mode 2.
+
+---
+
+## PROTOTYPE / SPEC INTENT (CAPABILITY mode)
+
+No formal HTML prototype exists. Spec intent assembled from:
+
+1. `harness/README.md` line 32: *"self-improvement-harness — meta-harness that fixes recurring failures"*
+2. `INTELLIGENCE-LAYER.md` Moment 5 + `LEARNING-MIND.md` format + `EAGLESKILL` Mode 4 (Postmortem)
+3. The ticket: *"Build harness/self-improvement/ folder. First analysis: read codebase + harness_runs + SOP + Google Doc. Output first-analysis report to 369-brain/intelligence/proposed-fixes/"*
+
+**Derived requirements (S1–S10):** folder + analyzer modules; reads harness_runs + brain SOP + scoped codebase + Google Doc via MCP; identifies recurring failure patterns; cross-references against rules; writes markdown report; logs its own run; inherits `harness/core/*`.
+
+---
+
+## CURRENT PRODUCTION STATE (brain repo)
+
+**EXISTS:** `harness/core/` (logger, workspace, patcher, orchestrator), `harness/eagle/eagle-harness.js` (~26KB), `intelligence/harness-runs/eagle-harness.jsonl` + `output/<feature>/`, all intelligence files, all SOP files.
+
+**DOES NOT EXIST:** `harness/self-improvement/`, `intelligence/proposed-fixes/`, `intelligence/harness-runs/self-improvement-harness.jsonl`, registry row for `self-improvement-harness-v1`.
+
+---
+
+## DATA SOURCE VERIFICATION
+
+| Input | Class | Status | Flag |
+|---|---|---|---|
+| harness_runs JSONL | Operational | EXISTS | IMPORT EXISTING |
+| Per-run output dirs | Operational | EXISTS | IMPORT EXISTING |
+| CODING-CONSTITUTION / EAGLESKILL / AGENTS / HOOKS / DATA-READINESS | Configuration | EXISTS | IMPORT EXISTING |
+| Specified "SOP" (per ticket) | Configuration | UNKNOWN | **NEEDS DISCUSSION** |
+| Google Doc | External content | UNKNOWN | **NEEDS DISCUSSION** |
+| `intelligence/proposed-fixes/` | Output target | DOES NOT EXIST | CREATE on build |
+
+No new MongoDB collections. No backend module. No Latha task.
+
+---
+
+## ISSUES FOUND — ROUND 1
+
+### ISSUE 1 — Folder does not exist (Cat 4, **HIGH**)
+`harness/self-improvement/` is the build target. Needs at minimum: `self-improvement-harness.js` (entry orchestrator inheriting `harness/core/*`) + analyzer module.
+
+### ISSUE 2 — Output directory does not exist (Cat 4, LOW)
+`intelligence/proposed-fixes/` — `mkdir -p` on first run.
+
+### ISSUE 3 — SOP source path unspecified (Cat 4, **HIGH — gates Mode 2**)
+Candidates: A) `CODING-CONSTITUTION.md` B) `skills/eagleskill/EAGLESKILL.md` C) `AGENTS.md` + `HOOKS.md` D) `patterns/DATA-READINESS.md` **E) ALL of A-D (recommended for v1)** F) Other file you have in mind.
+
+### ISSUE 4 — Google Doc unspecified (Cat 4, **HIGH — gates Mode 2**)
+MCP `mcp__claude_ai_Google_Drive__read_file_content` is available but needs file ID/URL. Options: A) you supply URL/ID; B) waive for v1 (defer to v2); C) supply title and harness searches Drive.
+
+### ISSUE 5 — Feature not in feature-registry.md (Cat 1, MEDIUM)
+Per CODING-CONSTITUTION B1, all features must exist in registry before build. Recommended row under BRAIN AND INFRASTRUCTURE:
+```
+| self-improvement-harness-v1 | NEXT | HIGH | Shon | SOP path + GDoc URL | Build harness/self-improvement/ + first-analysis report |
+```
+
+### ISSUE 6 — Recurring failure patterns visible but unaddressed (Cat 4, MEDIUM)
+Five patterns from 8 EAGLE runs that v1 analyzer should target as concrete first-analysis output:
+- **P1.** Mode 2 preview path missing (sidebar-restructure first attempt; fixed by marker contract `5eac0dd`)
+- **P2.** Mode 3 pre-flight aborts on dirty allowed paths (sidebar-restructure mode3-s1; required user "stash cleanup")
+- **P3.** Worker died during mode1 (github-actions-ci; no auto-retry)
+- **P4.** State 3 blocking with no Latha trail (playwright-full-test-suite, rag-foundation-v1 — both blocked, neither has written Latha task)
+- **P5.** Self-improvement loop itself isn't running yet — this Mode 1 report IS the manual stand-in until v1 ships
+
+### ISSUE 7 — Output sink ambiguity (Cat 1, LOW)
+Spec must declare BOTH sinks: per-run audit at `intelligence/harness-runs/output/<feature>/`, AND human deliverable at `intelligence/proposed-fixes/YYYY-MM-DD-first-analysis.md`.
+
+### ISSUE 8 — No learning hookup defined (Cat 4, MEDIUM)
+Per INTELLIGENCE-LAYER Moment 5, v1 should also append to `LEARNING-MIND.md` (template-conformant entry). `DECISIONS-LOG.md` append deferred until Shon approves a proposal.
+
+### ISSUE 9 — No verification/PASS criteria (Cat 2, MEDIUM)
+Recommend: build PASS = node script exits 0; output PASS = report file + ≥1 fix proposal + jsonl line; hardcoding PASS = grep clean; add-only PASS = only NEW files (+ append to intelligence files + 1 row to registry).
+
+### ISSUE 10 — Trigger semantics undefined (Cat 4, MEDIUM)
+Options: A) manual slash command B) session-close C) cron D) EAGLE on-completion. **Recommend v1 = A only.** Defer B/C/D to v2.
+
+---
+
+## RISK SUMMARY
+
+| # | Issue | Risk | Resolution |
+|---|---|---|---|
+| 1 | folder missing | HIGH | Stage A (pure additions) in Mode 3 |
+| 2 | output dir missing | LOW | `mkdir -p` in script |
+| 3 | SOP unspecified | **HIGH** | **NEEDS SHON ANSWER** |
+| 4 | GDoc unspecified | **HIGH** | **NEEDS SHON ANSWER (or waiver)** |
+| 5 | registry row missing | MEDIUM | Stage B in Mode 3 |
+| 6 | failure patterns unaddressed | MEDIUM | Spec analyzer to target P1–P5 |
+| 7 | output sink ambiguity | LOW | Spec both paths |
+| 8 | learning hookup missing | MEDIUM | Spec LEARNING-MIND append |
+| 9 | verification missing | MEDIUM | Spec PASS criteria |
+| 10 | trigger undefined | MEDIUM | v1 = manual only |
+
+**NEVER-TOUCH check:** Clean. All work brain repo, additive.
+
+---
+
+## MODE 1 COMPLETE — AWAITING SHON REVIEW
+
+To unblock Mode 2 I need:
+- **A.** Confirm CAPABILITY mode (default declared)
+- **B.** Resolve **Issue 3** — recommend option E: ALL of CODING-CONSTITUTION + EAGLESKILL + AGENTS + HOOKS + DATA-READINESS
+- **C.** Resolve **Issue 4** — Google Doc URL/ID, OR option B (waive for v1)
+- **D.** Confirm Issue 5 — register row in `feature-registry.md` as Mode 3 Stage B
+- **E.** Confirm Issue 10 (manual trigger only for v1) and Issue 8 (LEARNING-MIND append yes/no for v1)
+- **F.** Approval: `approved` / `not approved` / `I have a doubt: [...]`
+
+**DO NOT PROCEED TO MODE 2 WITHOUT EXPLICIT APPROVAL.**
+
+Also — should I save this gap report to `intelligence/harness-runs/output/self-improvement-harness-v1/eagle-mode1.txt` per existing harness convention?
