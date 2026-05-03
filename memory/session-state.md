@@ -1,4 +1,56 @@
-LAST UPDATED: 2 May 2026 — SESSION CLOSED (sidebar audit + 4 fixes applied, uncommitted)
+LAST UPDATED: 4 May 2026 — SESSION CLOSED (self-improvement-harness-v1 shipped + supporting brain artifacts committed and pushed)
+
+## SESSION 4 May 2026 — self-improvement-harness-v1 shipped (EAGLE Mode 1/2/3 complete)
+
+Last task completed: EAGLE Mode 3 — self-improvement-harness-v1 v1 capability shipped in 4 stages, committed as 5c2d546 and pushed to main.
+
+Capability summary:
+- 9 new code files in harness/self-improvement/ (1,858 LOC; 51 node:test cases all pass).
+- First analysis run produced 12 KB report citing 5 patterns + 6 proposed fixes + 5 open questions, all evidence-cited from real run_ids and ticket filenames.
+- LEARNING-MIND.md appended +1 dated section; byte-equal-at-top invariant verified.
+- JSONL run log live at intelligence/harness-runs/self-improvement-harness.jsonl (3 rows; all status:complete).
+- Mission Control s-learn stat now reads 3 from this JSONL.
+- Registry row self-improvement-harness-v1: IN PROGRESS → DONE.
+
+Bundled in same commit (one atomic brain push):
+- .gitignore: added node_modules/ rule (was missing — saved 583 dep files from leaking).
+- dashboard/ (4 files): local mission-control HTTP server source.
+- integrations/ (2 files): Dropbox sync helper.
+- mission-control-index.html: Build + Document Intelligence dashboard.
+- intelligence/video-research/xgPWCuqLoek-analysis.md: Claude Code Agentic RAG video — patterns directly applicable to DeAssists EDU search & RAG (see file for full DeAssists-connection section).
+- previews/harness-eagle-stage-marker-contract.html: earlier Mode 2 preview.
+- intelligence/harness-runs/output/* per-ticket phase output dirs.
+
+Brain commit: 5c2d546 (pushed)
+Branch: main (brain repo)
+
+Locked decisions from Mode 1 (re-confirmed during execution):
+- self-improvement-harness CAPABILITY mode (no UI; brain-only)
+- 5 SOP files: AGENTS.md, CLAUDE.md, CODING-CONSTITUTION.md, HOOKS.md, THE-DEASSISTS-OS.md
+- Google Doc input: WAIVED for v1
+- Trigger: MANUAL only for v1 (no cron, no hooks)
+- LEARNING-MIND: APPEND only (never edit existing entries)
+- Run log uses identical schema to eagle-harness.jsonl (one observability layer)
+
+Next task to start with:
+- Review intelligence/proposed-fixes/2026-05-03-self-improvement-run-001.md and decide which proposed fixes to action vs explicitly defer. The Run 001 challenge is exactly this: "prove Run 001 fixes were adopted before letting Run 002 propose more."
+- Top candidates from Run 001 (severity HIGH/MED):
+  1. (HIGH source-file fix) Codify harness self-modification carve-out in Mode 3 post-apply guard — references run b18cb4fea3eafbea failure
+  2. (MED source-file fix) Validate run_id before JSONL append; reject malformed run records
+  3. (MED source-file fix) Implement priority-ordered ticket selection in harness-worker (existing waiting ticket harness-worker-ticket-ordering.md)
+  4. (See report for fixes 4-6)
+
+Pending blockers (carried from prior sessions):
+- rag-foundation-v1 still blocked at data-check STATE 3 (Latha MongoDB collections)
+- Pre-existing portal-side: JWT rotation, AWS ACL fix, Stripe write-back, scope.guard L79, SSR permission bleed (Latha)
+- Pre-existing brain-side uncommitted (NOT this session's work): harness/eagle/eagle-harness.js, eagle-harness.jsonl, deleted skill files, session-lock.md, ecosystem.config.cjs
+
+GAN loop: still READY (Phase 6 setup unchanged from prior session).
+369-ECC: still operational (Phase 4 acceptance test still pending Latha permission.helper.ts resolution).
+
+---
+
+
 369-ECC BUILD STATUS:
 Phase 0 — COMPLETE (inventory done)
 Phase 1 — COMPLETE (25 files in ~/.claude/369/, all 10 tests passed)

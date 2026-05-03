@@ -10,10 +10,12 @@
 ---
 
 STATUS: IDLE
-LAST_CLOSED_BY: Claude Code
-LAST_CLOSED_AT: 2026-05-02T00:10:00+02:00
-LAST_TASK_COMPLETED: Phase 2B Service Catalog code complete
-NEXT_TASK: Fix permission.helper.ts typo, browser test, commit
+OPENED_BY: Claude Code (Opus 4.7) — FORCE_CLEAN override of orphaned lock
+OPENED_AT: 2026-05-03T13:47:00+02:00
+LAST_CLOSED_BY: Claude Code (Opus 4.7)
+LAST_CLOSED_AT: 2026-05-04T01:35:00+02:00
+LAST_TASK_COMPLETED: self-improvement-harness-v1 shipped — EAGLE Mode 1/2/3 complete, 4 stages executed, brain commit 5c2d546 pushed to main. First analysis run produced 12 KB report + LEARNING-MIND append + JSONL row. Registry row IN PROGRESS → DONE.
+CURRENT_TASK: Review intelligence/proposed-fixes/2026-05-03-self-improvement-run-001.md and decide which proposed fixes (Run 001) to adopt vs explicitly defer before letting Run 002 propose more.
 
 ---
 

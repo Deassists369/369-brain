@@ -1608,3 +1608,86 @@ The 369-ECC (Enforcement and Coding Constitution) enforcement engine was designe
 - This monorepo uses pnpm. npm install corrupts the lockfile. Always pnpm. Rule A19 now enforces this permanently.
 - The 369-ECC layer is a multiplier: it caught a real TypeScript bug (isPermitted), a real staging violation (CallLogModal.tsx), and a real lockfile error (npm vs pnpm) — all in the same day it was built.
 - CLAUDE.md does not need 1072 lines. 84 lines is enough if the skill map and boot sequence are correct.
+
+---
+
+## SESSION 4 May 2026 — self-improvement-harness-v1 shipped (EAGLE Mode 1/2/3)
+
+### What was done
+
+Started with intelligence + ops support work, then ran EAGLE end-to-end on self-improvement-harness-v1.
+
+**Intelligence + ops (early session):**
+- /watch skill on Claude Code Agentic RAG video (xgPWCuqLoek). 134-min video on building agentic RAG with Claude Code. Full structured analysis saved to intelligence/video-research/xgPWCuqLoek-analysis.md (10 sections: core topic, key concepts, architecture, tools/tech, implementation steps, key quotes, business use cases, costs, gaps, DeAssists connection). Patterns directly applicable: hybrid search > pure semantic for course codes / student IDs; database-level read-only Postgres role pattern for text-to-SQL; sub-agent for full-document analysis to keep main context clean; metadata extraction for course/syllabus/regulation classification.
+- Mission Control HTML inspection (twice). User confirmed file already matches spec on both passes; only restarted PM2 (mission-control-369 id 4).
+- Created Latha prereq ticket tickets/waiting/rag-foundation-latha-prereq.md (note: file no longer present at session close; may have been moved or actioned externally).
+- Confirmed rag-foundation-v1 still blocked at data-check STATE 3 (run d65b537434f90d64).
+
+**EAGLE Mode 1 (already done before this session, reviewed at start):**
+- All five answers locked: CAPABILITY · all 5 SOP files · Google Doc waived · registry row yes · MANUAL trigger only · LEARNING-MIND APPEND only.
+
+**EAGLE Mode 2 — spec + working HTML preview:**
+- Section 1: WHAT IS IDENTICAL (no work needed) — 7 items.
+- Section 2: WHAT IS BEING CREATED — 11 new files cataloged with paths and LOC estimates.
+- Section 3: FINAL OUTPUT — trigger surface, three artifacts (markdown report, LEARNING-MIND append, JSONL row).
+- Section 4: 4-stage plan with risk levels and matched-test categories.
+- Sections 5-8: locked decisions, blocking assumptions, security review, post-run invariants.
+- Preview: previews/self-improvement-harness-v1-preview.html (30,927 bytes) — capability-mode preview showing trigger surface, run-state pipeline, mock report, mock LEARNING-MIND append, mock JSONL row, stage cards, edge cases.
+- Approval phrase received: "approved".
+
+**EAGLE Mode 3 — 4 stages executed:**
+
+S1 — pure additions (LOW risk):
+- inputs.js (187 LOC) — readSops/readHarnessRuns/readTickets/readCodebaseSummary/gatherInputs, BRAIN_ROOT + frozen SOP_FILES constant
+- report-writer.js (188 LOC) — buildMarkdown / saveReport (refuses overwrites) / nextRunNumber
+- learning-mind-writer.js (130 LOC) — fs.appendFile only; byte-equal-at-top invariant test-enforced
+- 3 node:test files (612 LOC); 51 tests across 17 suites — all pass in 193 ms
+- Cat-2 test: PASS
+
+S2 — isolated new files (LOW risk):
+- analyzer.js (231 LOC) — buildPrompt with 200 KB ceiling and SOP-truncation fallback; <<<ANALYSIS_JSON_START/END>>> marker contract; spawnSync claude -p with 5 min timeout, 16 MB stdout buffer; validateShape gracefully handles partial JSON
+- self-improvement-harness.js (329 LOC) — CLI parser (--dry-run / --skip-learning-mind / --limit-runs / --help); file-based workspace lock; 7-phase orchestrator; exit codes 0/1/2 per spec
+- README.md (181 LOC)
+- Cat-2 test: syntax OK on both modules; S1 51/51 tests still pass
+
+S3 — wiring + first runs (MED risk):
+- Created intelligence/proposed-fixes/.gitkeep
+- Dry-run: prompt 74,492 bytes, run_number_planned=1, exits 0
+- Real run: 80,150 ms, 5 patterns, 6 proposed fixes, 5 open questions
+- Four post-run invariants verified: report ≥ 800 B (12,288 B) ✓ | LEARNING-MIND byte-equal at top after +6,427 B append ✓ | JSONL valid with status:complete and all 8 expected meta keys ✓ | Mission Control s-learn would render 3 ✓
+- Cat-4 integration test: PASS
+
+S4 — registry update (LOW risk):
+- project/feature-registry.md line 262: self-improvement-harness-v1 IN PROGRESS → DONE
+- Cat-1 test: PASS
+
+**Commit + push:**
+- Initial broad add pulled in 583 dashboard/node_modules/ files. Stopped, asked, fixed: git restore --staged dashboard/node_modules/ + appended node_modules/ rule to .gitignore. Down 616 → 34 staged.
+- Single atomic brain commit: 5c2d546 (34 files, multiple capabilities bundled)
+- Pushed: b78e376..5c2d546 main -> main on Deassists369/369-brain
+
+### Commits this session
+- `5c2d546` — brain: ship self-improvement-harness v1 + supporting brain artifacts — EAGLE self-improvement-harness-v1
+
+### Decisions locked this session
+- The five SOP files (canonical brain rules for the meta-harness) are: AGENTS.md, CLAUDE.md, CODING-CONSTITUTION.md, HOOKS.md, THE-DEASSISTS-OS.md. VEERABHADRA.md is identity/mission, NOT an SOP, and excluded from analyzer input.
+- Self-improvement run log shape is identical to eagle-harness.jsonl. One observability layer for the platform; Mission Control parses both with the same shape.
+- LEARNING-MIND.md is APPEND ONLY for any harness output. Byte-equal-at-top invariant is test-enforced; violating it is the only fail-loud failure mode for learning-mind-writer.
+- Capability mode harnesses produce markdown + JSONL only; no HTML output at runtime. Mode 2 HTML previews show the spec; the harness's own outputs are markdown-first.
+- Manual-trigger only for v1 self-improvement-harness. Cron / hook-based / auto-apply are deferred to v2 by explicit Mode 1 decision.
+- node_modules/ is now globally ignored at brain root via .gitignore. All future brain-side npm/pnpm projects benefit.
+- "Run 001 → Run 002" cadence rule (from the Run 001 Challenge): no Run 002 until Run 001's proposed fixes are explicitly adopted or rejected. Prevents proposal-pile-up.
+
+### Pending for next session
+- Review intelligence/proposed-fixes/2026-05-03-self-improvement-run-001.md and act on each proposed fix (adopt or explicitly defer with reasoning).
+- Highest-severity fix (HIGH): Mode 3 post-apply guard carve-out for harness self-modification — references run b18cb4fea3eafbea failure and ticket harness-eagle-stage-marker-contract.
+- Two MED fixes: validate run_id before JSONL append (reject malformed records); priority-ordered ticket selection in harness-worker (waiting ticket already drafted).
+- rag-foundation-v1 still blocked at data-check STATE 3 — waiting on Latha MongoDB collections per tickets/waiting/.
+- Pre-existing brain-side uncommitted items NOT touched this session: harness/eagle/eagle-harness.js, intelligence/harness-runs/eagle-harness.jsonl, memory/session-lock.md, deleted patterns/anti-ambiguity.md + skills/eagleskill/eagleskill-config.md + skills/session-start/SESSION-START-SKILL.md, tickets/open/harness-eagle-stage-marker-contract.md, ecosystem.config.cjs.
+
+### Lessons learned today
+- Pure additions + integration smoke tests is the right pattern for capability-mode harnesses. S1 gave us 51 fast unit tests; S3 gave us one 80-second end-to-end run that exercised every phase. No middle ground (mocked integration tests) was needed.
+- The marker-contract pattern for headless inner-Claude (HTML_PREVIEW_START/END for eagle-harness, ANALYSIS_JSON_START/END here) generalizes well. Future harnesses with structured LLM outputs should adopt this shape.
+- SOP truncation fallback (in analyzer.js buildPrompt) is correct insurance, but Run 001 came in at 74 KB — well below the 200 KB ceiling. The truncation path is untested in the wild. Worth a synthetic test in v2.
+- "Stop and ask" worked well twice this session: (a) when the file already had all 6 requested changes (avoided regressing live data binding); (b) when git add dashboard/ pulled in 583 node_modules files (avoided polluting brain history).
+- The /watch skill output is genuinely useful for cross-pollinating external research into the brain. The xgPWCuqLoek video analysis directly informs DeAssists EDU search architecture decisions.
