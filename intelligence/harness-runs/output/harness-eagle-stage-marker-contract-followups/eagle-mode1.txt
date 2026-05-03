@@ -1,0 +1,187 @@
+# EAGLE Mode 1 — Gap Report
+
+**Ticket:** `harness-eagle-stage-marker-contract-followups`
+**Round:** 1 (3 May 2026)
+**Mode declaration:** **CAPABILITY** — the production-grade v2 harness shape does not yet exist; the harness catches up to the ticket spec via add-only or controlled in-place edits (see Issue X below — flagged for Shon).
+
+---
+
+## STEP 1 — Files read this round
+
+- `369-brain/CLAUDE.md`, `CODING-CONSTITUTION.md` (Tier 1)
+- `memory/session-lock.md`, `memory/session-state.md`, `memory/decisions.md` (Tier 1)
+- `patterns/DATA-READINESS.md`, `project/feature-registry.md` (Tier 2)
+- `skills/eagleskill/EAGLESKILL.md`
+- `tickets/open/harness-eagle-stage-marker-contract.md` (one-line stub)
+- Full harness source:
+  - `harness/README.md`
+  - `harness/eagle/eagle-harness.js` (610 lines)
+  - `harness/core/patcher.js` (152 lines)
+  - `harness/core/orchestrator.js` (61 lines)
+  - `harness/core/logger.js` (135 lines)
+  - `harness/core/workspace.js` (99 lines)
+
+---
+
+## STEP 2 — Feature in scope
+
+The ARGUMENTS to `/eagle-mode1` explicitly name the harness ticket `harness-eagle-stage-marker-contract-followups`, so that ticket is the feature in scope — **overriding** the default "first NEXT item from feature-registry.md" (which today is *Activity tab in LeadDetailPanel* under Phase 2A).
+
+**Process note:** This ticket is **NOT** in `project/feature-registry.md`. It lives only in `tickets/open/harness-eagle-stage-marker-contract.md` (one-line stub) and a P1 bullet list inside Shon's prompt. Per registry discipline ("never delete rows, only update status"), the harness ticket should be appended to the registry under a new "BRAIN AND INFRASTRUCTURE → HARNESS" section before Mode 3 begins.
+
+---
+
+## STEP 3 — DATA STATE DECLARATION
+
+| Feature | Data State | Data Source | Latha Task Required |
+|---------|------------|-------------|---------------------|
+| `harness-eagle-stage-marker-contract-followups` | **STATE 1 — DATA READY** | (a) `STAGES_JSON` is produced by inner Claude during Mode 2 (no DB). (b) NEVER-TOUCH list lives in `369-brain/CODING-CONSTITUTION.md` rule A7 (file exists, on disk). (c) Run logs already in `intelligence/harness-runs/eagle-harness.jsonl`. (d) Test fixtures authored by us inline. | **None** — this ticket is meta-infrastructure improving brain-repo tooling. No backend collection, no portal endpoint, no Latha dependency. |
+
+**STATE 3 check:** None. Proceeding to gap report.
+
+---
+
+## STEP 4 — STOP-AND-ASK (raised before issue list, must resolve before Mode 2)
+
+═══ EAGLE STOP ═══
+**What I found:** 5 of the 8 ticket items require **modifying existing logic** in the harness:
+
+| Item | What changes | Add-only conflict |
+|---|---|---|
+| 1 | Replace hardcoded `MODE3_STAGES` const with marker-driven JSON parser | YES — replaces existing const + body of `runMode3Stage`/`approveStage` |
+| 2 | Replace hardcoded `NEVER_TOUCH_SUBSTRINGS` const with constitution parser | YES — replaces existing const, changes `validatePatch` semantics |
+| 5 | Rewrite `rejectStage` to walk back ALL applied patches in reverse | YES — rewrites existing function body |
+| 6 | Change `runSlashCommand(slashCommand, extraContext)` → `runSlashCommand(slashCommand, prompt, { allowedTools, model })` | YES — breaking signature change + every caller updated |
+| 8 | Modify post-apply guard to log preexisting-dirty list | BORDERLINE — adds one log line inside an existing function |
+
+Items 3, 4, 7 are pure additions (content-hash check, colorised diff hook, unit tests).
+
+**Why I stopped:** EAGLE's add-only rule (golden rules + "ADD-ONLY RULE — WHY IT EXISTS" section) prohibits modifying existing logic. The rule was forged to protect production portal code that real users at BCBT depend on. The harness is **brain-repo internal tooling, written 8 hours ago, that we explicitly need to evolve v1 → v2.**
+
+**Rule cited:** EAGLESKILL.md "ADD-ONLY RULE" + "WHEN ASKED TO MODIFY EXISTING LOGIC" — EAGLE refuses.
+
+**Options:**
+
+- **A. Lock a scoped exemption** in `memory/decisions.md`:
+  > *"EAGLE add-only rule does not apply to harness/* (brain-repo internal tooling) when the harness itself is the subject of the ticket. Production portal code remains add-only."*
+
+  Then proceed with all 8 items as in-place rewrites where the ticket calls for it. Cleanest, smallest diff, no v1/v2 cruft.
+
+- **B. Pure add-only rewrite** — keep v1 paths intact, add v2 paths alongside (`MODE3_STAGES_V2`, `runSlashCommandV2`, `validatePatchV2`, etc.), then flip a flag at top of `eagle-harness.js`. More files, more cruft, no real safety gain because the harness has zero external dependents.
+
+- **C. Carve harness out of EAGLE entirely** — declare harness improvements are NOT EAGLE's scope (per EAGLESKILL "SCOPE — WHAT EAGLE DOES AND DOES NOT COVER" — "Pure refactoring of existing code"). Build via the project's normal review workflow without EAGLE staging.
+
+**What I recommend:** **Option A**. The add-only rule's purpose is to protect users; the harness has zero users besides Shon. A scoped, documented exemption is honest about what the rule is for. The exemption is narrow (`harness/**` only, never portal, never brain memory/decisions/patterns).
+
+**What I need from Shon:** pick A, B, or C before Mode 2 begins. The decision determines the shape of the spec.
+═══════════════════
+
+---
+
+## STEP 5 — Issue list (assuming Option A is chosen — re-classify if B or C)
+
+### Issue 1 — `MODE3_STAGES` hardcoded registry blocks every new ticket
+- **Category:** 4 (integration/runtime)
+- **Risk:** MEDIUM — silent friction on every new ticket; harness file edits become a hidden prerequisite
+- **Where:** `harness/eagle/eagle-harness.js:35-58` — only `'sidebar-restructure'` is registered
+- **Desired:** Mode 2 spec emits stages between `<<<STAGES_JSON>>>` / `<<<STAGES_JSON_END>>>` markers; `eagle-harness.js` parses + persists per-run
+- **Files touched:** `eagle-harness.js` (delete `MODE3_STAGES`, add `extractStagesJson`, `loadStagesForRun`); Mode 2 prompt block (instruction to emit JSON); spec template doc
+- **Match-test:** Round-trip JSON parser test (Cat 2) + run a real ticket end-to-end (Cat 4)
+
+### Issue 2 — NEVER-TOUCH list duplicated, drift inevitable
+- **Category:** 1 (naming/constant alignment)
+- **Risk:** HIGH — silent drift between `CODING-CONSTITUTION.md` rule A7 and `patcher.js:21-35` will eventually allow a NEVER-TOUCH path through. Same pattern that caused 3 critical Phase 1 string-drift bugs.
+- **Where:** `harness/core/patcher.js:21-35` (13 substrings) vs `369-brain/CODING-CONSTITUTION.md` Part A → A7 (`PRODUCTION REPO` + `BRAIN REPO` blocks)
+- **Desired:** parse the A7 section once on `require('./patcher')`, expose `NEVER_TOUCH_SUBSTRINGS` as a getter
+- **Files touched:** `patcher.js` (add `parseNeverTouchFromConstitution`, replace const)
+- **Match-test:** Snapshot test: parsed list matches expected entries (Cat 1) + intentional drift test: edit constitution, restart, confirm parser picks it up (Cat 4)
+
+### Issue 3 — No content-hash check before `git apply`
+- **Category:** 4 (integration/runtime)
+- **Risk:** MEDIUM — Mode 2→Mode 3 race window. If Latha pushes to `feature/portal.shon369` between Mode 2 spec and stage execution, patch hunks may apply against drifted bytes
+- **Where:** `harness/eagle/eagle-harness.js:267-318` `buildStagePrompt` embeds file content; `patcher.js:94` `applyPatch` runs `git apply` with no pre-check beyond `--check`
+- **Desired:** SHA-256 each `context_files` entry at prompt-build time; before `git apply`, re-hash and compare; on mismatch, abort with `STAGE_FILE_DRIFTED: <path>`
+- **Files touched:** `patcher.js` (add `hashFile`, `verifyContextHashes`); `eagle-harness.js` (carry hashes through `buildStagePrompt` → `runMode3Stage`)
+- **Match-test:** Drift simulation — snapshot file, edit between calls, confirm abort fires (Cat 4)
+- **Add-only:** **PURE ADDITION**
+
+### Issue 4 — No inter-stage colourised diff
+- **Category:** 3 (visual/UX)
+- **Risk:** LOW — UX-only
+- **Where:** `eagle-harness.js:451` only logs `patchPath`; Shon must `cat` manually
+- **Desired:** `--show-diff` flag (default off in CI, default on in interactive); render `git --no-pager diff --color` of staged patch
+- **Files touched:** `eagle-harness.js` (after successful apply, before recordPhase complete) or `patcher.js` (add `renderColorDiff`)
+- **Match-test:** Visual eyeball on next real run (Cat 3)
+- **Add-only:** **PURE ADDITION**
+
+### Issue 5 — `rejectStage` reverts only the last patch
+- **Category:** 4 (integration/runtime)
+- **Risk:** MEDIUM — multi-stage rejection mid-flow leaves earlier stages applied with no clean recovery; Shon discovers this only via `git status` later
+- **Where:** `eagle-harness.js:561-578` reads only `meta.last_patch_path`
+- **Desired:** Track every applied patch path on the run (`meta.applied_patches: [{stageIndex, repo, patchPath}]`). `rejectStage` walks the list in reverse with per-revert confirmation prompt
+- **Files touched:** `eagle-harness.js` (`runMode3Stage` appends to applied_patches; `rejectStage` rewritten); `logger.js` (no schema change needed — `meta` is free-form)
+- **Match-test:** Two-stage run; reject at stage 2; confirm both reverted (Cat 4)
+
+### Issue 6 — `runSlashCommand` has no per-phase tool/model override
+- **Category:** 4 (integration/runtime)
+- **Risk:** LOW-MEDIUM — security hardening; today inner Claude has full default toolset for Mode 1/2 where it should not need write tools
+- **Where:** `eagle-harness.js:92-105`
+- **Desired:** `runSlashCommand(slashCommand, prompt, { allowedTools, model } = {})`. Default = today's behavior (`claude -p`). Mode 1/2 callers pass `{ allowedTools: 'Read' }`; Mode 3 stage caller may pass a different model.
+- **Files touched:** `eagle-harness.js` (signature + every internal caller — 4 call sites)
+- **Match-test:** Mode 1 should fail loudly if it tries to Write (Cat 4)
+
+### Issue 7 — Zero tests on harness
+- **Category:** 2 (schema/type) + 4 (integration)
+- **Risk:** HIGH — `extractPatchBetweenMarkers`, `validatePatch`, `parsePorcelainPaths` are silent-failure traps. Ship a regression and we won't know until the next ticket apply silently corrupts.
+- **Where:** no `__tests__/` or `*.test.js` exists under `harness/`
+- **Desired:** `node --test harness/` passes
+  - `patcher.test.js`: extractPatchBetweenMarkers (happy / missing markers / empty body / multiple files) ; validatePatch (NEVER-TOUCH, out-of-scope, allow-list pass) ; parsePorcelainPaths (M, A, D, ??) ; parsePatchPaths (new file `--- /dev/null`, deleted file `+++ /dev/null`)
+- **Files touched:** NEW `harness/__tests__/patcher.test.js`; root `package.json` script `"test:harness": "node --test harness/"`
+- **Match-test:** `node --test harness/` returns exit 0 (Cat 2)
+- **Add-only:** **PURE ADDITION**
+
+### Issue 8 — Post-apply guard silently swallows preexisting-dirty files
+- **Category:** 4 (integration/runtime)
+- **Risk:** LOW — observability
+- **Where:** `eagle-harness.js:421-426` filters `preexistingDirty` out of `outOfScope` with no log
+- **Desired:** at stage start, log explicitly:
+  > `Pre-flight: N files were already dirty before this stage and will be ignored by the post-apply guard: [path1, path2, ...]`
+- **Files touched:** `eagle-harness.js:344-351` (one log line + record on `meta.preexisting_dirty`)
+- **Match-test:** Run with intentionally-dirty file outside allowed_paths; confirm log appears (Cat 4)
+
+---
+
+## STEP 6 — Convergence delta
+
+N/A — Round 1.
+
+---
+
+## STEP 7 — Risk summary
+
+| Risk | Issues | Note |
+|------|--------|------|
+| HIGH | 2, 7 | Constitution drift (silent permission failure) + zero test coverage on marker code |
+| MEDIUM | 1, 3, 5 | Per-ticket friction, drift race window, multi-stage rejection gap |
+| LOW-MEDIUM | 6 | Security hardening of inner agent |
+| LOW | 4, 8 | UX (diff render, dirty-file logging) |
+
+**Recommended Mode 2 stage order if Option A is approved:**
+1. Issue 7 (tests-first — establishes a safety net before any in-place edit)
+2. Issue 2 (HIGH risk; scoped to `patcher.js`)
+3. Issue 1 (touches both `eagle-harness.js` and Mode 2 prompt — biggest blast radius, do after tests)
+4. Issue 3 (pure addition; depends on Issue 1's prompt structure)
+5. Issues 5, 6, 8 (independent; can batch into one stage)
+6. Issue 4 (UX polish, last)
+
+---
+
+## MODE 1 COMPLETE — AWAITING SHON REVIEW
+
+**Decisions needed before Mode 2:**
+
+1. **Add-only carve-out** — pick **A** (scoped exemption + lock to `decisions.md`), **B** (v1/v2 parallel paths), or **C** (route harness work outside EAGLE).
+2. **Feature-registry append** — confirm I should add a `HARNESS` section to `project/feature-registry.md` listing this ticket + the three out-of-scope follow-ups (Mode 4 automation, multi-tenant `harness_runs`, JSONL→Mongo).
+3. **Issue list** — any issues you want dropped, added, or re-prioritised before I produce the spec.
+
+Do not proceed to Mode 2 without explicit approval.

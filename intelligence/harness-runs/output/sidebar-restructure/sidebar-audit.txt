@@ -1,0 +1,79 @@
+# SIDEBAR AUDIT RESULT
+
+Three-layer access audit replayed against `sidemenu.ts`, `permission.helper.ts`, and discoverable page guards in `apps/cms-next/pages/`. Layer 3 reflects the backend `role.permissions` contract documented in `patterns/permission-patterns.md` Rule 27 (cannot be re-asserted from the brain repo — assumed correctly assigned per tenant).
+
+| Role | Layer 1 Sidebar | Layer 2 Page Access | Layer 3 Data | Status |
+|---|---|---|---|---|
+| **SUPER_ADMIN** | All admin sections (Dashboard, Call Center 369, Sales CRM, Service Setup→Services+Email, Applications, Finance, Mission Control, Manage User Accounts). USER-only items hidden. | All 3 audited Call Center guards include SUPER_ADMIN. No bypass. | Requires explicit collection roles per patterns doc — SUPER_ADMIN does NOT auto-bypass. | **PASS** |
+| **ORG_ADMIN** | Dashboard, Call Center 369 (+5 children), Sales CRM, Service Setup→Services (12 leaves via SERVICE_SETUP_LEAF_ACCESS), Applications, Manage User Accounts (5/5 children). | All 3 audited Call Center guards include ORG_ADMIN. | Backend tenant-scoped via `role.permissions`. | **PASS** |
+| **MANAGER** | Dashboard, Call Center 369 (+5 children), Sales CRM, Service Setup→Services + Email Setup, Applications, Manage User Accounts (5/5 children). | All 3 audited Call Center guards include MANAGER. | Tenant-scoped. | **PASS** |
+| **TEAM_LEAD** | Dashboard, Call Center 369 (+5 children incl. new Service Catalog & Sales Library — Q4), Applications, Manage User Accounts (3/5: All Users, Service Users, Organization Users). Sales CRM hidden ✓ Q5. Service Setup hidden. | All 3 Call Center guards include TEAM_LEAD. | Scoped via Call Center DB role per patterns doc line 95. | **PASS** |
+| **STAFF** | Dashboard + Applications only ✓ Q6. Everything else hidden. | **MISMATCH** — STAFF appears in `ALLOWED_ROLES` of `dashboard/index.tsx:12`, `leads/index.tsx:15` despite being hidden from Call Center 369 sidebar. STAFF can deep-link to /dashboard and /leads. | n/a (should not reach). | **FAIL** |
+| **AGENT** | Dashboard, **Services** (`/service/*` only), Applications (scoped to referred — Q2 comment line 296), Manage User Accounts → only **Service Users** child (scoped — Q1 comment line 458). No internal/admin paths. ✓ | **MISMATCH** — AGENT is in `ALLOWED_ROLES` of `leads/new.tsx:26` but NOT in Call Center 369 sidebar. AGENT can deep-link to `/leads/new`. AGENT is also in `dashboard/index.tsx:12` but not in Call Center sidebar. | Backend scope to own users / referred students. | **FAIL** |
+| **ORG_OWNER** | Dashboard, Call Center 369 (+5), Sales CRM, Service Setup→Services + Email, Applications, Manage User Accounts (5/5). Per Q7. | **MISMATCH** — ORG_OWNER is **missing** from `ALLOWED_ROLES` in all 3 audited Call Center page guards (`dashboard/index.tsx:12`, `leads/index.tsx:15`, `leads/new.tsx:26`). Sidebar shows Call Center 369 but pages return access-denied. | Per Q7, read-only enforced via backend `role.permissions` — assumed correct. | **FAIL** |
+
+---
+
+## FINAL VERDICT: **FAIL**
+
+Sidebar (Layer 1) is consistent with the Mode 1 locked decisions Q1–Q9. Helper logic is correct (clone filter rule honoured at `permission.helper.ts:80, 157, 181`). The break is at **Layer 2 — page guards drifted from sidebar `permissionLevel`**.
+
+## Required fixes before any commit
+
+### FIX 1 — ORG_OWNER missing from Call Center page guards
+`apps/cms-next/pages/dashboard/index.tsx:12`
+```diff
+ const ALLOWED_ROLES = [
+   UserTypes.SUPER_ADMIN,
++  UserTypes.ORG_OWNER,
+   UserTypes.ORG_ADMIN,
+   UserTypes.MANAGER,
+   UserTypes.TEAM_LEAD,
+-  UserTypes.STAFF,
+-  UserTypes.AGENT,
+ ];
+```
+
+`apps/cms-next/pages/leads/index.tsx:15`
+```diff
+ const ALLOWED_ROLES = [
+   UserTypes.SUPER_ADMIN,
++  UserTypes.ORG_OWNER,
+   UserTypes.ORG_ADMIN,
+   UserTypes.MANAGER,
+   UserTypes.TEAM_LEAD,
+-  UserTypes.STAFF,
+ ];
+```
+
+`apps/cms-next/pages/leads/new.tsx:26`
+```diff
+ const ALLOWED_ROLES = [
+   UserTypes.SUPER_ADMIN,
++  UserTypes.ORG_OWNER,
+   UserTypes.ORG_ADMIN,
+   UserTypes.MANAGER,
+   UserTypes.TEAM_LEAD,
+-  UserTypes.AGENT,
+ ];
+```
+
+### FIX 2 — Missing page guards on remaining Call Center children
+`/catalog` and `/page-workinprogress?status=saleslibrary` have **no `ALLOWED_ROLES` guard**. Add one matching the Call Center 369 sidebar `permissionLevel` `[SUPER_ADMIN, ORG_OWNER, ORG_ADMIN, MANAGER, TEAM_LEAD]`. File: `apps/cms-next/pages/catalog/index.tsx` (or wherever `/catalog` resolves — confirm before editing).
+
+### FIX 3 — Latent CLONE FILTER RULE violation (advisory, not blocking this ticket)
+`libs/shared/functions/permission.helper.ts:106`
+```js
+if (userType === UserTypes.SUPER_ADMIN) newItem.children = x.children;
+```
+Re-binds the deep-cloned `newItem.children` to the original `x.children` reference. No mutation occurs downstream today, but this violates the rule documented at `patterns/permission-patterns.md:39-49`. Replace with:
+```js
+if (userType === UserTypes.SUPER_ADMIN) {
+  // newItem is already a deep clone — leave its children intact.
+}
+```
+Filed as `tickets/open/clone-filter-rule-superadmin.md` candidate; not a Mode 3 blocker for sidebar-restructure unless touched.
+
+---
+
+**Re-run required:** after Fix 1 + Fix 2, re-run `/sidebar-audit` and verify ORG_OWNER, AGENT, STAFF rows flip to PASS. Then trigger restart sequence (`pm2 restart backend` per patterns doc line 27) and proceed to `/latha-handover`.

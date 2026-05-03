@@ -1,0 +1,51 @@
+I've read both files. Stopping before producing the handover — there's a one-capability-per-commit problem.
+
+## Stop signal — staged work spans three layers
+
+Per `memory/session-state.md` SESSION 2 May 2026, four portal files are uncommitted:
+
+| File | Layer | Risk |
+|------|-------|------|
+| `libs/shared/functions/permission.helper.ts` | Function (libs/shared) | **MAXIMUM** — Latha must review in isolation per pattern doc |
+| `libs/shared/models/sidemenu.ts` | Data / sidebar config | Medium — AGENT pattern violation fix |
+| `apps/cms-next/pages/catalog/index.tsx` | Component (page guard) | Low |
+| `apps/cms-next/pages/leads/index.tsx` | Component (page guard) | Low |
+
+These cannot ride one commit. **Constitution A1** requires constants/functions/data layers commit *before* components. Pattern doc requires `permission.helper.ts` get its own commit so Latha can review the MAXIMUM RISK change in isolation. Mixing them into one commit makes the diff unreviewable for Latha.
+
+## Required split — three commits, in this order
+
+**Commit 1 — function layer (Latha-priority review)**
+```
+libs/shared/functions/permission.helper.ts
+```
+Capability: remove dead/broken arrow block (lines 205-218) — behavior unchanged, trap removed.
+
+**Commit 2 — data layer**
+```
+libs/shared/models/sidemenu.ts
+```
+Capability: AGENT "Courses" path corrected to `/service/${CollectionNames.Courses}` per AGENT pattern rule.
+
+**Commit 3 — component layer**
+```
+apps/cms-next/pages/catalog/index.tsx
+apps/cms-next/pages/leads/index.tsx
+```
+Capability: page-level `ALLOWED_ROLES` guards aligned with sidebar visibility (catalog: drop STAFF, add ORG_ADMIN; leads: drop STAFF — closes deep-link bypass).
+
+## Also note — ticket vs. uncommitted scope mismatch
+
+The `sidebar-restructure` ticket has Mode 1 *just approved* (3 May 17:14 UTC+2). Mode 2 (spec + HTML preview) and Mode 3 (execute) have **not run yet** — so the ticket's actual code changes do not exist on disk. The 4 uncommitted fixes are from the prior **2 May audit-fix session**, not from this ticket's Mode 3.
+
+If you want the handover for the *audit fixes* (what's actually on disk), it should be filed under a different change-log header (e.g. `sidebar-audit-fixes-2-may`), not under `sidebar-restructure`. The `sidebar-restructure` handover comes after Mode 3 generates the actual diff.
+
+## What I need from you before producing outputs
+
+Pick one and reply:
+
+1. **"Handover for Commit 1 (permission.helper.ts) — file under sidebar-audit-fixes-2-may"** — I produce the three artifacts for that single commit, then stop. You repeat `/latha-handover` for Commits 2 and 3.
+2. **"Handover for all 3 commits as a sequence — one PR, three commits"** — I produce a unified PR description covering all three commits, change-log entries for each, and one WhatsApp message. You commit them in order.
+3. **"Wait — run Mode 2 first, this handover is for the wrong scope"** — I stand down until Mode 2 + Mode 3 produce the sidebar-restructure diff.
+
+Which one?

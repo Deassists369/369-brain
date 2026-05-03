@@ -1,0 +1,66 @@
+# DATA-READINESS Classification — sidebar-restructure
+
+**Note on feature selection:** The active ticket is `sidebar-restructure` (provided by the harness). This overrides the "first NEXT row" rule because EAGLE is running on this ticket explicitly. The first NEXT row in the registry (Activity tab in LeadDetailPanel) is not in scope for this run.
+
+---
+
+## 5-Question Audit
+
+**Q1 — What data does this feature display?**
+
+The "data" for this feature is permission/menu configuration, not user records:
+
+- Menu node fields: `title`, `icon`, `path`, `permissionLevel[]`, `requiredRole`, `children[]`
+- User type roles: `SUPER_ADMIN`, `ORG_ADMIN`, `ORG_OWNER`, `MANAGER`, `TEAM_LEAD`, `STAFF`, `AGENT`, `ORG_AGENT`, `USER`
+- Role-name gating: `SidebarRole.CallCenter`, `SidebarRole.SalesSetup`, `SidebarRole.Finance` (etc.)
+- Collection-permission gating from `user.roles[].permissions[].collection` + `actions`
+- Org-service gating from `user.organization[0].orgServices[].service`
+
+**Q2 — Where does that data live today?**
+
+Option A — **TypeScript constants in the codebase**, all confirmed present:
+
+| Artefact | Location | Status |
+|---|---|---|
+| `SideMenu` registry | `libs/shared/models/sidemenu.ts` (528 lines) | LIVE |
+| `exclusivePermission` filter | `libs/shared/functions/permission.helper.ts` (245 lines) | LIVE |
+| `UserTypes` enum | `libs/shared/constants/user.types.ts` | LIVE |
+| `SidebarRole` enum | `libs/shared/constants/lead.constants.ts` | LIVE (Phase 1 DONE) |
+| `CollectionNames` | `libs/shared/constants/collections.ts` | LIVE |
+| `user.roles[].permissions[]` | Mongo `users` collection | LIVE |
+
+No Google Sheets dependency. No external source. No missing collection.
+
+**Q3 — Is there a working endpoint today?**
+
+Not applicable for the sidebar config itself — sidebar resolution is **client-side**, computed from the imported `SideMenu` constant filtered through `exclusivePermission(SideMenu, user, referredUser, agentUser)`. The only backend dependency is the existing user-with-roles fetch, which is already LIVE.
+
+**Q4 — Can we enter this data ourselves?**
+
+The question does not apply in the standard sense — this is configuration code, not user-entered data. Shon edits `sidemenu.ts` and `permission.helper.ts` directly. No data-entry UI needed. No empty state needed (every role always has at least one menu item).
+
+**Q5 — What is the Latha task?**
+
+**No data task for Latha.** The portal-side change set produced by Mode 3 will be handed to Latha for review/merge via `/latha-handover` (one capability per commit), but there is no collection to create, no endpoint to add, and no data import.
+
+---
+
+## DATA STATE DECLARATION
+
+| Feature | Data State | Data Source | Latha Task |
+|---|---|---|---|
+| sidebar-restructure | **STATE 1 — DATA READY** | TypeScript constants: `SideMenu`, `UserTypes`, `SidebarRole`, `CollectionNames`, plus live `user.roles` from Mongo | None — code review/merge only via `/latha-handover` |
+
+---
+
+## RECOMMENDATION
+
+### STATE 1 — proceed to `/eagle-mode1` immediately.
+
+Rationale:
+- All inputs (menu registry, role enums, permission filter, user roles) exist and are wired up today.
+- Constitution A1 ("constants exist before components") is already satisfied — Phase 1 enums (incl. `SidebarRole.Finance`) are DONE.
+- No empty state required; this is a permission/visibility refactor, not a new data display.
+- No blocker, no Latha pre-dependency.
+
+**Next step:** run `/eagle-mode1 sidebar-restructure` — the gap report should compare current `SideMenu` + `exclusivePermission` behaviour against the role→menu map across all 7 roles (SUPER_ADMIN, ORG_ADMIN, ORG_OWNER, MANAGER, TEAM_LEAD, STAFF, AGENT) plus the inherited ORG_AGENT/USER cases, and flag drift on the three layers: `permissionLevel`, `requiredRole`, and per-leaf collection/role checks. Then PAUSE for the approval phrase.

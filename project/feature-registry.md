@@ -46,6 +46,7 @@ Priority values:
 | Security guard fix | LATHA | HIGH | Latha | — | scope.guard.ts L79 |
 | SSR permission bleed fix | LATHA | HIGH | Latha | — | Before Sept production |
 | Universal Lead Capture Form | PENDING | HIGH | Shon | Phase 2A done | Works for DeAssists + BCBT |
+| sidebar-split-internal-student | DEFERRED | MEDIUM | Shon | sidebar-restructure done | Split SideMenu into Internal + Student menus — deferred from sidebar-restructure Q8 |
 
 ---
 

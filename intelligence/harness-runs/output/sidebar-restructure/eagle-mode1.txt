@@ -1,0 +1,189 @@
+File save was blocked. Outputting the gap report inline per the request.
+
+---
+
+# EAGLE Mode 1 — Round 1 — sidebar-restructure
+**Date:** 3 May 2026  |  **Owner:** Shon AJ  |  **Brain:** VEERABHADRA  |  **Harness:** eagle-harness
+**Mode declaration:** MIGRATION (capability already exists; corrections re-shape role gates and re-align constants)
+
+---
+
+## DATA STATE DECLARATION
+
+| Feature | Data State | Data Source | Latha Task Required |
+|---------|-----------|-------------|---------------------|
+| sidebar-restructure | **State 1 — DATA READY** | TS constants only: `libs/shared/models/sidemenu.ts` (menu config), `libs/shared/functions/permission.helper.ts` (filter logic), `libs/shared/constants/lead.constants.ts` → `SidebarRole` enum (4 values), `libs/shared/constants/user.types.ts` → `UserTypes` enum (10 values) | **None** — sidebar config is configuration per DATA-READINESS.md Step 1 (enums, registries, roles, sidebar config → TypeScript constant. Never database. Stop here.) |
+
+No State 3 features. Proceeding to gap report.
+
+---
+
+## WHAT WAS READ THIS ROUND
+
+Production (read-only):
+- `libs/shared/models/sidemenu.ts` (528 lines)
+- `libs/shared/functions/permission.helper.ts` (246 lines)
+- `libs/shared/interfaces/sidemenu.interface.ts`
+- `libs/shared/constants/lead.constants.ts` (`SidebarRole`)
+- `libs/shared/constants/user.types.ts` (`UserTypes`, `UserTypesMapping`)
+- `apps/cms-next/components/AppFrame/AppFrame.tsx` (consumer)
+- `apps/cms-next/components/SideMenuItem/SideMenuItem.tsx` (renderer)
+
+Brain (read-only): `patterns/DATA-READINESS.md`, `project/feature-registry.md`, `skills/eagleskill/EAGLESKILL.md`.
+
+**NEVER-TOUCH check:** PASS — no in-scope file appears in CLAUDE.md NEVER-TOUCH list.
+
+---
+
+## CURRENT ROLE × MENU MATRIX (derived from `sidemenu.ts`)
+
+SA = SUPER_ADMIN, OO = ORG_OWNER, OA = ORG_ADMIN, M = MANAGER, TL = TEAM_LEAD, S = STAFF, A = AGENT, OAg = ORG_AGENT, U = USER
+
+| Top-level item            | SA | OO | OA | M | TL | S | A | OAg | U | requiredRole              |
+|---------------------------|----|----|----|---|----|---|---|-----|---|---------------------------|
+| Dashboard                 | ✓  | ✓  | ✓  | ✓ | ✓  | ✓ | ✓ | ✓   | — | —                         |
+| Call Center 369           | ✓  | —  | ✓  | ✓ | —  | — | — | —   | — | SidebarRole.CallCenter    |
+| Sales Guide               | ✓  | —  | ✓  | ✓ | —  | — | — | —   | — | —                         |
+| Sales CRM                 | ✓  | —  | ✓  | ✓ | —  | — | — | —   | — | SidebarRole.SalesSetup    |
+| Home                      | —  | —  | —  | — | —  | — | — | —   | ✓ | —                         |
+| Service Setup             | ✓  | ✓  | ✓  | ✓ | —  | — | — | —   | — | —                         |
+| Services (agent variant)  | —  | —  | —  | — | —  | — | ✓ | ✓   | — | —                         |
+| Applications              | ✓  | ✓  | ✓  | ✓ | ✓  | ✓ | ✓ | ✓   | — | —                         |
+| Programs & Courses        | —  | —  | —  | — | —  | — | — | —   | ✓ | —                         |
+| Our Services              | —  | —  | —  | — | —  | — | — | —   | ✓ | —                         |
+| My Applications           | —  | —  | —  | — | —  | — | — | —   | ✓ | —                         |
+| My Documents              | —  | —  | —  | — | —  | — | — | —   | ✓ | —                         |
+| Finance                   | ✓  | —  | —  | — | —  | — | — | —   | — | —                         |
+| My Payments               | —  | —  | —  | — | —  | — | — | —   | ✓ | —                         |
+| Mission Control           | ✓  | —  | —  | — | —  | — | — | —   | — | —                         |
+| Manage User Accounts      | ✓  | ✓  | ✓  | ✓ | ✓  | — | ✓ | ✓   | — | —                         |
+
+---
+
+## ISSUES FOUND — ONE PER ELEMENT, ONE MATCHED-TEST CATEGORY
+
+### ISSUE 1 — AGENT exposed to internal sidebar item (CRITICAL — locked-decision violation)
+- **Element:** `SideMenu` → `'Manage User Accounts'`, `permissionLevel`
+  `libs/shared/models/sidemenu.ts:446-520`
+- **Symptom:** `permissionLevel` includes `UserTypes.AGENT` and `UserTypes.ORG_AGENT`. Agent sees a top-level "Manage User Accounts" with leaf "Service Users".
+- **Locked decision violated:** AGENT must never see internal portal sections (per ticket `## Why` + `## Acceptance criteria`).
+- **Category:** 4 (integration/runtime) · **Risk:** HIGH (audit blocker)
+- **Test after correction:** localhost as AGENT → "Manage User Accounts" must be absent.
+
+### ISSUE 2 — AGENT sees internal Applications tree (HIGH)
+- **Element:** `SideMenu` → `'Applications'`, `permissionLevel`
+  `libs/shared/models/sidemenu.ts:282-352`
+- **Symptom:** AGENT and ORG_AGENT in parent `permissionLevel`. The 11 child paths point to internal collection routes (`/${CollectionNames.ApartmentApplications}` etc.), not the agent-scoped `/service/...` variant used by the "Services (agent variant)" tree.
+- **Concern:** Either backend filters scope this per-agent (intentional) or this is a parallel leak to Issue 1.
+- **Category:** 4 · **Risk:** HIGH (potential cross-tenant data leak)
+- **Question Q2 below.**
+
+### ISSUE 3 — `requiredRole` only used by 2 of 4 SidebarRole enum values (MEDIUM)
+- **Element:** `SidebarRole.Finance`, `SidebarRole.Vendor`
+  `libs/shared/constants/lead.constants.ts:54-59`
+- **Symptom:** Defined and DONE per Phase 1, but no menu binds them. Finance menu still gates via `permissionLevel: [SUPER_ADMIN]` only.
+- **Category:** 1 (naming) · **Risk:** LOW now, MEDIUM at BCBT cut.
+
+### ISSUE 4 — `Sales Guide` lacks `requiredRole` while siblings have it (MEDIUM)
+- **Element:** `SideMenu` → `'Sales Guide'`
+  `libs/shared/models/sidemenu.ts:49-79`
+- **Symptom:** `Call Center 369` requires `CallCenter`, `Sales CRM` requires `SalesSetup`, `Sales Guide` requires nothing — every MANAGER sees it.
+- **Category:** 1 + 4 · **Risk:** MEDIUM (BCBT external tenants)
+
+### ISSUE 5 — TEAM_LEAD has no CRM menu access (MEDIUM)
+- **Element:** TEAM_LEAD missing from `permissionLevel` of Call Center / Sales Guide / Sales CRM / Service Setup
+- **Symptom:** TEAM_LEAD sees Dashboard + Applications + Manage User Accounts only.
+- **Category:** 4 · **Risk:** MEDIUM
+
+### ISSUE 6 — STAFF has near-empty sidebar (MEDIUM)
+- **Element:** STAFF in only `Dashboard` + `Applications` permissionLevel
+- **Symptom:** STAFF cannot see Manage User Accounts, no CRM tools.
+- **Category:** 4 · **Risk:** LOW today, MEDIUM by BCBT cut
+
+### ISSUE 7 — ORG_OWNER missing CRM menus (MEDIUM)
+- **Element:** ORG_OWNER missing from Call Center / Sales Guide / Sales CRM permissionLevel
+- **Symptom:** Tenant owner cannot see CRM activity in their own tenant.
+- **Category:** 4 · **Risk:** MEDIUM (BCBT September 2026 cut)
+
+### ISSUE 8 — USER-only items interleaved with internal items in flat array (LOW now / HIGH for BCBT)
+- **Element:** `Home`, `Programs & Courses`, `Our Services`, `My Applications`, `My Documents`, `My Payments` mixed with internal items in single `SideMenu` array
+  `libs/shared/models/sidemenu.ts:98-102, 354-377, 421-426`
+- **Symptom:** No structural separation between student portal and internal portal sidebars; BCBT inheritance ships both in one bundle.
+- **Category:** 3 · **Risk:** HIGH for BCBT inheritance hygiene
+- **Add-only impact:** Splitting into two named constants would REMOVE the `SideMenu` export → requires explicit Shon override of the add-only rule.
+
+### ISSUE 9 — `requiredRole` matched against `role.name` string equality, no type safety (LOW)
+- **Element:** `permission.helper.ts:197` — `role.name === x.requiredRole`
+- **Symptom:** `SidebarRole.CallCenter = 'Call Center'` is compared to backend-seeded `role.name`. Drift between seed string and enum value would silently break the gate.
+- **Category:** 1 · **Risk:** MEDIUM
+- **Test:** grep backend role seed for `'Call Center'`, `'Sales Setup'`; confirm exact match.
+
+### ISSUE 10 — `UserTypes.ALL` branch is dead in helper (LOW)
+- **Element:** `permission.helper.ts:138, 192-194` — `permissionLevel?.includes(UserTypes.ALL)`
+- **Symptom:** No menu uses `UserTypes.ALL`. Dead branch.
+- **Category:** 2 · **Risk:** LOW · **Add-only:** flag only, do not delete.
+
+### ISSUE 11 — `Service Setup > Services` leaves have NO `permissionLevel`, fall back to role-collection match (MEDIUM)
+- **Element:** 12 leaves under `Service Setup > Services` (Apartments, Ausbildungs, ..., Visa Services)
+  `libs/shared/models/sidemenu.ts:122-183`
+- **Symptom:** Each leaf has no `permissionLevel`. `filterLeaf` falls through to `child.path?.includes(perm.collection)` against `role.permissions`. If MANAGER's seed lacks an `apartments` perm, MANAGER loses Apartments — silently.
+- **Category:** 4 · **Risk:** MEDIUM (BCBT will need its own role.permissions; silent menu loss likely).
+
+### ISSUE 12 — Three-level vs two-level menu gates have unequal strictness (LOW)
+- **Element:** `permission.helper.ts:162-171` (three-level path) vs `113-156` (two-level `filterLeaf`)
+- **Symptom:** A child-with-children is kept on `permissionLevel` only — no `role.permissions` cross-check. A two-level leaf cross-checks. Inconsistent.
+- **Category:** 4 · **Risk:** LOW today; MEDIUM as menu deepens.
+
+---
+
+## CONVERGENCE DELTA
+
+Round 1 — no prior round to compare. **Issue count opening at 12.**
+
+---
+
+## RISK SUMMARY
+
+| Severity | Count | Issues |
+|----------|------:|--------|
+| CRITICAL | 1 | Issue 1 |
+| HIGH     | 1 | Issue 2 |
+| MEDIUM   | 7 | Issues 3, 4, 5, 6, 7, 9, 11 |
+| LOW      | 3 | Issues 8 (today), 10, 12 |
+
+Issue 8 also carries HIGH risk for BCBT inheritance.
+
+---
+
+## QUESTIONS FOR SHON BEFORE MODE 2
+
+| # | Question |
+|---|----------|
+| Q1 | **Issue 1** — Confirm AGENT and ORG_AGENT must lose "Manage User Accounts" entirely? Or keep with leaf "Service Users" rebranded? |
+| Q2 | **Issue 2** — Should AGENT have an agent-scoped Applications tree (parallel to "Services (agent variant)"), or is the current shared tree intentional with backend filtering? |
+| Q3 | **Issue 3** — Keep `SidebarRole.Finance` and `SidebarRole.Vendor` as forward-looking, or remove until a menu binds them? |
+| Q4 | **Issue 4** — Should `Sales Guide` require a SidebarRole? Which — `CallCenter`, `SalesSetup`, or a new `SalesGuide`? |
+| Q5 | **Issue 5** — Should TEAM_LEAD see Call Center / Sales Guide / Sales CRM? |
+| Q6 | **Issue 6** — Confirm STAFF intended scope. Dashboard + Applications only, or extend? |
+| Q7 | **Issue 7** — Should ORG_OWNER see CRM menus for their tenant (read-only or full)? |
+| Q8 | **Issue 8** — Split `SideMenu` into two named constants (`InternalSideMenu` + `StudentSideMenu`)? Requires explicit add-only override. |
+| Q9 | **Issue 11** — Should `Service Setup > Services` leaves declare explicit `permissionLevel`, decoupling sidebar visibility from `role.permissions`? |
+
+---
+
+## ADD-ONLY RULE NOTES
+
+- Adding `permissionLevel` arrays / `requiredRole` fields / new `SidebarRole` members → permitted (additive).
+- **Removing** UserTypes from existing `permissionLevel` arrays (Issue 1, 2 fix) → strictest reading of add-only is "no". EAGLE will request explicit Shon confirmation before any subtractive change in Mode 3.
+- **Splitting `SideMenu`** (Issue 8 fix) → would change the export shape → STOP, requires explicit add-only override saved to `memory/decisions.md`.
+
+---
+
+## NEXT STEP
+
+**MODE 1 COMPLETE — AWAITING SHON REVIEW**
+Do not proceed to Mode 2 without explicit approval.
+
+Reply `approved mode1 sidebar-restructure` to enter Mode 2 (full spec + HTML preview at `369-brain/previews/sidebar-restructure.html`).
+
+If any answers to Q1–Q9 are needed before Mode 2 starts, provide them with the approval phrase or as a follow-up.

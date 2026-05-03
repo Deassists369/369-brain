@@ -1,0 +1,1 @@
+Build MongoDB documents and chunks collections. Document ingestion pipeline on portal upload event. Metadata extraction. SHA-256 deduplication. Search endpoint POST /api/v1/documents/search scoped to tenant_id.

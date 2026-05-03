@@ -1,0 +1,34 @@
+## DATA STATE DECLARATION
+
+**Ticket:** `harness-eagle-stage-marker-contract-followups`
+**Scope note:** This is a meta-tooling ticket on the brain repo (improves the EAGLE harness itself). It is **not** a portal feature in `feature-registry.md` — `DATA-READINESS.md` was written for portal features that display user data. Running the classification anyway since the framework still applies cleanly.
+
+| Question | Answer |
+|---|---|
+| **Q1 — What data does this feature display/consume?** | Four data inputs: (a) STAGES array per ticket, (b) NEVER-TOUCH path list, (c) inner-Claude patch content with markers, (d) per-stage `git diff` summary, (e) per-stage dirty-file baseline. No user-facing display. |
+| **Q2 — Where does that data live today?** | (a) STAGES → hardcoded TS-style registry in `harness/eagle/eagle-harness.js` (`MODE3_STAGES`); target source = Mode 2 stdout between `<<<STAGES_JSON>>>` markers. (b) NEVER-TOUCH → `369-brain/CODING-CONSTITUTION.md` rule A7 (canonical) + duplicated string array in `harness/core/patcher.js` (drift). (c) Patches → inner-Claude stdout. (d/e) Git working tree. **All sources exist in repo.** |
+| **Q3 — Is there a working endpoint today?** | N/A — local Node tooling, no backend controller. The "endpoint" equivalents are: `extractPatchBetweenMarkers`, `validatePatch`, `parsePorcelainPaths`, `runSlashCommand` — all already implemented in v1 form. |
+| **Q4 — Can we enter this data ourselves?** | N/A — no data entry. All inputs are already produced (Mode 2 output, constitution file, git state). Refactor only changes how the harness *reads* from existing sources. |
+| **Q5 — What is the Latha task?** | **None.** Brain-repo work. No portal collection, no endpoint, no Latha dependency. |
+
+---
+
+## CLASSIFICATION → **STATE 1 — DATA READY**
+
+Every input the harness needs already exists in the repo:
+- Mode 2 already emits stage data (currently as prose; this ticket adds a JSON marker contract).
+- `CODING-CONSTITUTION.md` rule A7 already exists as canonical NEVER-TOUCH source.
+- `git apply`, `git diff`, `git status --porcelain` already produce the run-time signals.
+- `node --test` is built-in (no new dep).
+
+No empty state, no Latha task, no external pipeline.
+
+---
+
+## RECOMMENDATION
+
+**Proceed to `/eagle-mode1` immediately.**
+
+Mode 1 should focus on the eight v1 limitations as gap items against the current harness code (`harness/eagle/eagle-harness.js`, `harness/core/patcher.js`), with particular attention to the architectural smell in limitation #2 (NEVER-TOUCH duplication violates the harness README's own "source of truth — never duplicate" principle).
+
+**Caveat to flag in Mode 1:** This ticket is not in `feature-registry.md`. The first NEXT item there is *Activity tab in LeadDetailPanel* (Phase 2A). If the intent was to run /data-check on that portal feature instead, say so and I'll re-run.

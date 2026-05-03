@@ -1,0 +1,746 @@
+# EAGLE Mode 2 — sidebar-restructure SPEC + HTML PREVIEW
+
+**Ticket:** sidebar-restructure
+**Brain:** VEERABHADRA | **Owner:** Shon AJ
+**Mode 1 approval:** `approved mode1 sidebar-restructure` (3 May 2026 17:14 UTC+2)
+**Source files audited:** `libs/shared/models/sidemenu.ts`, `libs/shared/functions/permission.helper.ts`, `libs/shared/constants/lead.constants.ts`
+
+---
+
+## 1 — Decision Lock Summary (from Mode 1)
+
+| # | Decision | Effect on `SideMenu` |
+|---|---|---|
+| Q1 | Keep AGENT in Manage User Accounts; backend scopes to own users | Add code comment, no code removal |
+| Q2 | Keep AGENT in Applications; backend scopes to referred students | Add code comment, no code removal |
+| Q3 | Keep `SidebarRole.Finance` and `SidebarRole.Vendor` | No change to `lead.constants.ts` |
+| Q4 | Remove "Sales Guide"; move Service Catalog + Sales Library under Call Center 369 | Structural restructure |
+| Q5 | TEAM_LEAD sees Call Center 369 + all children; NOT Sales CRM | Add TEAM_LEAD to Call Center 369 `permissionLevel` |
+| Q6 | STAFF sees Dashboard + Applications only — confirmed | No change |
+| Q7 | ORG_OWNER sees Call Center 369 + Sales CRM (read-only via backend) | Add ORG_OWNER to both `permissionLevel` arrays |
+| Q8 | Defer Internal/Student split | Add new ticket to `feature-registry.md` in Mode 3 |
+| Q9 | Explicit `permissionLevel` on every Service Setup > Services leaf | 12 leaves get explicit array |
+
+---
+
+## 2 — File-Level Change Set
+
+### 2.1 — `libs/shared/models/sidemenu.ts` (PRIMARY CHANGE)
+
+**Block A — Call Center 369** (currently lines 22–48). Replace with:
+
+```ts
+{
+  title: 'Call Center 369',
+  icon: 'mdi:headset',
+  permissionLevel: [
+    UserTypes.SUPER_ADMIN,
+    UserTypes.ORG_OWNER,
+    UserTypes.ORG_ADMIN,
+    UserTypes.MANAGER,
+    UserTypes.TEAM_LEAD,
+  ],
+  requiredRole: SidebarRole.CallCenter,
+  children: [
+    {
+      title: 'Sales Dashboard',
+      icon: 'material-symbols:space-dashboard-outline',
+      path: '/dashboard',
+    },
+    {
+      title: 'All Leads',
+      icon: 'mdi:account-arrow-right-outline',
+      path: '/leads',
+    },
+    {
+      title: '+ Add Lead',
+      icon: 'mdi:account-plus-outline',
+      path: '/leads/new',
+    },
+    {
+      title: 'Service Catalog',
+      icon: 'mdi:view-grid-outline',
+      path: '/catalog',
+    },
+    {
+      title: 'Sales Library',
+      icon: 'mdi:library-outline',
+      path: '/page-workinprogress?status=saleslibrary',
+    },
+  ],
+},
+```
+
+**Block B — Sales Guide** (currently lines 49–79). **DELETE** entire block.
+
+**Block C — Sales CRM** (currently lines 80–96). Replace with:
+
+```ts
+{
+  title: 'Sales CRM',
+  icon: 'mdi:handshake-outline',
+  permissionLevel: [
+    UserTypes.SUPER_ADMIN,
+    UserTypes.ORG_OWNER,
+    UserTypes.ORG_ADMIN,
+    UserTypes.MANAGER,
+  ],
+  requiredRole: SidebarRole.SalesSetup,
+  children: [
+    {
+      title: 'Sales Setup',
+      icon: 'mdi:cog-outline',
+      path: '/page-workinprogress?status=salessetup',
+    },
+  ],
+},
+```
+
+**Block D — Service Setup > Services leaves** (currently lines 122–183). Each of the 12 leaves gets an explicit `permissionLevel`. Per A1 (Constants before Components), define the constant once at the top of `sidemenu.ts`:
+
+```ts
+// Sidebar visibility for Service Setup > Services leaves.
+// Decoupled from role.permissions so BCBT and other tenants do not
+// silently lose menu items when role grants drift.
+const SERVICE_SETUP_LEAF_ACCESS = [
+  UserTypes.SUPER_ADMIN,
+  UserTypes.ORG_OWNER,
+  UserTypes.ORG_ADMIN,
+  UserTypes.MANAGER,
+] as const;
+```
+
+Then on each of the 12 leaves (Apartments, Ausbildungs, APS and Document Translations, Blocked Accounts, Courses, Insurances, Full-time Jobs, Part-time Jobs, Legal Supports, Post Landing Services, Universities, Visa Services) append:
+
+```ts
+permissionLevel: [...SERVICE_SETUP_LEAF_ACCESS],
+```
+
+**Block E — Applications** (currently lines 282–294). Add comment above AGENT line in `permissionLevel`:
+
+```ts
+permissionLevel: [
+  UserTypes.SUPER_ADMIN,
+  UserTypes.STAFF,
+  UserTypes.MANAGER,
+  UserTypes.TEAM_LEAD,
+  UserTypes.ORG_ADMIN,
+  UserTypes.ORG_OWNER,
+  // AGENT — scoped to referred students only via role.permissions.
+  UserTypes.AGENT,
+  UserTypes.ORG_AGENT,
+],
+```
+
+**Block F — Manage User Accounts** (currently lines 446–457). Add comment above AGENT line in `permissionLevel`:
+
+```ts
+permissionLevel: [
+  UserTypes.SUPER_ADMIN,
+  UserTypes.ORG_OWNER,
+  UserTypes.ORG_ADMIN,
+  // AGENT — scoped to own users only via role.permissions.
+  UserTypes.AGENT,
+  UserTypes.ORG_AGENT,
+  UserTypes.MANAGER,
+  UserTypes.TEAM_LEAD,
+],
+```
+
+### 2.2 — `libs/shared/constants/lead.constants.ts`
+**No change.** `SidebarRole.Finance` and `SidebarRole.Vendor` retained as forward-looking.
+
+### 2.3 — `libs/shared/functions/permission.helper.ts`
+**No change required by this ticket.** Existing `filterLeaf` already handles explicit `permissionLevel` arrays correctly (line 124–132), and the dead block was already removed in the 2 May fix.
+
+### 2.4 — Portal consumers
+**No code changes.** The sidebar consumers in `apps/cms-next/components` are data-driven from `SideMenu` — restructure flows through automatically.
+
+---
+
+## 3 — Role × Visibility Matrix (post-restructure)
+
+| Top-level item | SUPER_ADMIN | ORG_OWNER | ORG_ADMIN | MANAGER | TEAM_LEAD | STAFF | AGENT |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| Dashboard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Call Center 369 | ✓ | ✓ (RO) | ✓ | ✓ | ✓ | — | — |
+| Sales CRM | ✓ | ✓ (RO) | ✓ | ✓ | — | — | — |
+| Service Setup | ✓ | ✓ | ✓ | ✓ | — | — | — |
+| Services (agent menu) | — | — | — | — | — | — | ✓ |
+| Applications | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ (scoped) |
+| Finance | ✓ | — | — | — | — | — | — |
+| Mission Control | ✓ | — | — | — | — | — | — |
+| Manage User Accounts | ✓ | ✓ | ✓ | ✓ | ✓ | — | ✓ (scoped, Service Users only) |
+
+(RO) = ORG_OWNER read-only enforced by backend `role.permissions`.
+
+---
+
+## 4 — Acceptance Criteria for `/sidebar-audit` (Mode 3 gate)
+
+1. SUPER_ADMIN — sees every internal item (8 top-level, all children).
+2. ORG_OWNER — sees Call Center 369 with 5 children, Sales CRM with 1 child, Service Setup, Applications, Manage User Accounts. **Does not** see Finance, Mission Control.
+3. ORG_ADMIN, MANAGER — same as ORG_OWNER **plus** Mission Control hidden.
+4. TEAM_LEAD — sees Dashboard, Call Center 369 (5 children including Service Catalog + Sales Library), Applications, Manage User Accounts (3 of 5 leaves). **Does not** see Sales CRM, Service Setup.
+5. STAFF — sees Dashboard + Applications only.
+6. AGENT, ORG_AGENT — sees Dashboard, Services (agent menu), Applications, Manage User Accounts > Service Users only. **Never** sees Call Center 369, Sales CRM, Service Setup, Finance, Mission Control.
+7. Three-layer audit (Sidebar + Page guard + Data permission) PASS for every role.
+
+---
+
+## 5 — Mode 3 Triggers
+
+`sidemenu.ts` is changing → **full restart sequence required** after Mode 3:
+1. `npx nx build shared --skip-nx-cache`
+2. `pm2 stop cms backend`
+3. `pm2 start cms backend`
+4. `/sidebar-audit` (must PASS for all 7 roles)
+5. Browser smoke test (TEAM_LEAD reaches Service Catalog + Sales Library; STAFF blocked from /catalog and /leads)
+6. `/latha-handover`
+
+---
+
+<<<HTML_PREVIEW_START>>>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sidebar Restructure — EAGLE Mode 2 Preview</title>
+<style>
+  :root {
+    --bg: #0b0e14;
+    --panel: #11151d;
+    --panel-2: #161b25;
+    --border: #232a37;
+    --border-2: #2c3544;
+    --text: #e6edf3;
+    --muted: #8a94a6;
+    --accent: #4cc2ff;
+    --accent-2: #7aa2f7;
+    --added: #16a34a;
+    --added-bg: rgba(22,163,74,0.10);
+    --moved: #d97706;
+    --moved-bg: rgba(217,119,6,0.10);
+    --removed: #dc2626;
+    --removed-bg: rgba(220,38,38,0.10);
+    --kept: #6b7280;
+    --kept-bg: rgba(107,114,128,0.10);
+    --hidden: #3a4252;
+    --pill-radius: 999px;
+    --card-radius: 12px;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  body { line-height: 1.5; padding: 32px clamp(16px, 4vw, 48px); max-width: 1440px; margin: 0 auto; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 32px; }
+  header .eyebrow { color: var(--accent); font-family: var(--mono); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; }
+  header h1 { margin: 8px 0 4px; font-size: clamp(28px, 4vw, 44px); letter-spacing: -0.02em; line-height: 1.1; }
+  header .meta { color: var(--muted); font-size: 14px; font-family: var(--mono); }
+  .badges { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--pill-radius); font-size: 12px; font-family: var(--mono); border: 1px solid var(--border-2); background: var(--panel-2); color: var(--muted); }
+  .badge.added { color: var(--added); border-color: rgba(22,163,74,0.4); background: var(--added-bg); }
+  .badge.moved { color: var(--moved); border-color: rgba(217,119,6,0.4); background: var(--moved-bg); }
+  .badge.removed { color: var(--removed); border-color: rgba(220,38,38,0.4); background: var(--removed-bg); }
+  .badge.kept { color: var(--kept); }
+  section { margin-bottom: 48px; }
+  h2 { font-size: 20px; letter-spacing: -0.01em; margin: 0 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 15px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin: 24px 0 12px; font-weight: 600; }
+  .grid { display: grid; gap: 16px; }
+  .change-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .change-card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 16px; }
+  .change-card .tag { font-size: 11px; font-family: var(--mono); letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; border-radius: var(--pill-radius); display: inline-block; margin-bottom: 10px; border: 1px solid; }
+  .change-card .tag.added { color: var(--added); background: var(--added-bg); border-color: rgba(22,163,74,0.4); }
+  .change-card .tag.moved { color: var(--moved); background: var(--moved-bg); border-color: rgba(217,119,6,0.4); }
+  .change-card .tag.removed { color: var(--removed); background: var(--removed-bg); border-color: rgba(220,38,38,0.4); }
+  .change-card .tag.kept { color: var(--kept); background: var(--kept-bg); border-color: rgba(107,114,128,0.4); }
+  .change-card h4 { margin: 0 0 6px; font-size: 14px; }
+  .change-card p { margin: 0; color: var(--muted); font-size: 13px; }
+  .role-tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--card-radius); margin-bottom: 16px; }
+  .role-tab { flex: 1 1 auto; min-width: 110px; padding: 10px 12px; border-radius: 8px; background: transparent; color: var(--muted); border: 0; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 150ms ease; }
+  .role-tab:hover { color: var(--text); background: var(--panel-2); }
+  .role-tab.active { color: var(--bg); background: var(--accent); font-weight: 600; }
+  .preview-shell { display: grid; grid-template-columns: 320px 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 800px) { .preview-shell { grid-template-columns: 1fr; } }
+  .sidebar { background: var(--panel); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 12px; min-height: 420px; }
+  .sidebar .header-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 12px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .sidebar .brand { font-weight: 700; letter-spacing: -0.01em; font-size: 14px; }
+  .role-pill { font-family: var(--mono); font-size: 10px; padding: 3px 8px; border-radius: var(--pill-radius); background: var(--panel-2); color: var(--accent-2); border: 1px solid var(--border-2); }
+  .nav-item { padding: 8px 10px; border-radius: 6px; font-size: 13px; display: flex; align-items: center; gap: 8px; cursor: default; position: relative; transition: background 120ms; }
+  .nav-item:hover { background: var(--panel-2); }
+  .nav-item.parent { font-weight: 600; }
+  .nav-item.indent-1 { margin-left: 14px; font-size: 12.5px; color: var(--text); }
+  .nav-item.indent-2 { margin-left: 28px; font-size: 12px; color: var(--muted); }
+  .nav-item.hidden { color: var(--hidden); }
+  .nav-item.hidden::after { content: 'hidden'; font-family: var(--mono); font-size: 9px; padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); margin-left: auto; }
+  .nav-item.added { color: var(--added); }
+  .nav-item.added::before { content: '+'; color: var(--added); font-family: var(--mono); font-weight: 700; font-size: 12px; width: 14px; display: inline-block; }
+  .nav-item.moved { color: var(--moved); }
+  .nav-item.moved::before { content: '↪'; color: var(--moved); font-family: var(--mono); font-weight: 700; font-size: 12px; width: 14px; display: inline-block; }
+  .nav-item.scoped::after { content: 'scoped'; font-family: var(--mono); font-size: 9px; padding: 1px 6px; border-radius: 4px; background: rgba(76,194,255,0.10); color: var(--accent); border: 1px solid rgba(76,194,255,0.2); margin-left: auto; }
+  .nav-item.ro::after { content: 'read-only'; font-family: var(--mono); font-size: 9px; padding: 1px 6px; border-radius: 4px; background: rgba(217,119,6,0.10); color: var(--moved); border: 1px solid rgba(217,119,6,0.3); margin-left: auto; }
+  .icon { width: 16px; height: 16px; display: inline-block; flex-shrink: 0; opacity: 0.75; }
+  .icon::before { content: '▣'; font-size: 11px; }
+  .role-info { background: var(--panel); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 20px; }
+  .role-info h3 { margin-top: 0; }
+  .role-info dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; column-gap: 16px; row-gap: 8px; font-size: 13px; }
+  .role-info dt { color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .role-info dd { margin: 0; }
+  .role-info .visible-count { font-weight: 700; color: var(--accent); }
+  .role-info .hidden-count { color: var(--removed); }
+  .matrix { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--card-radius); overflow: hidden; }
+  .matrix th, .matrix td { padding: 10px 12px; text-align: center; border-bottom: 1px solid var(--border); }
+  .matrix th { background: var(--panel-2); font-weight: 600; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .matrix th:first-child, .matrix td:first-child { text-align: left; }
+  .matrix tr:last-child td { border-bottom: 0; }
+  .matrix .yes { color: var(--added); font-weight: 700; }
+  .matrix .no { color: var(--hidden); }
+  .matrix .ro { color: var(--moved); font-weight: 600; font-family: var(--mono); font-size: 11px; }
+  .matrix .scoped { color: var(--accent); font-weight: 600; font-family: var(--mono); font-size: 11px; }
+  pre.code { background: #06080d; border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.55; color: #d8e0ec; }
+  pre.code .k { color: #c678dd; }
+  pre.code .s { color: #98c379; }
+  pre.code .c { color: #5c6370; font-style: italic; }
+  pre.code .p { color: #61afef; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 12px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .legend .dot.added { background: var(--added); }
+  .legend .dot.moved { background: var(--moved); }
+  .legend .dot.removed { background: var(--removed); }
+  .legend .dot.scoped { background: var(--accent); }
+  .legend .dot.ro { background: var(--moved); border: 1.5px solid var(--moved); background: transparent; }
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; font-family: var(--mono); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">EAGLE Mode 2 — Spec & Preview</div>
+  <h1>Sidebar Restructure</h1>
+  <div class="meta">ticket: sidebar-restructure · brain: VEERABHADRA · 3 May 2026</div>
+  <div class="badges">
+    <span class="badge removed">−1 top-level: Sales Guide</span>
+    <span class="badge moved">2 moved: Service Catalog, Sales Library</span>
+    <span class="badge added">+2 roles: TEAM_LEAD, ORG_OWNER on Call Center 369</span>
+    <span class="badge added">+1 role: ORG_OWNER on Sales CRM</span>
+    <span class="badge added">+12 leaf permissionLevel arrays</span>
+    <span class="badge kept">2 AGENT scopes preserved (commented)</span>
+  </div>
+</header>
+
+<section>
+  <h2>1 · Change Set</h2>
+  <div class="legend">
+    <span><span class="dot added"></span> Added</span>
+    <span><span class="dot moved"></span> Moved</span>
+    <span><span class="dot removed"></span> Removed</span>
+    <span><span class="dot scoped"></span> Scoped (backend filters)</span>
+    <span><span class="dot ro"></span> Read-only (backend gate)</span>
+  </div>
+  <div class="grid change-grid">
+    <div class="change-card"><span class="tag removed">Removed</span><h4>Sales Guide</h4><p>Top-level section deleted. Children re-parented to Call Center 369 (Q4).</p></div>
+    <div class="change-card"><span class="tag moved">Moved</span><h4>Service Catalog</h4><p>From Sales Guide → Call Center 369. Path /catalog unchanged.</p></div>
+    <div class="change-card"><span class="tag moved">Moved</span><h4>Sales Library</h4><p>From Sales Guide → Call Center 369. Path /page-workinprogress?status=saleslibrary unchanged.</p></div>
+    <div class="change-card"><span class="tag added">Added</span><h4>TEAM_LEAD → Call Center 369</h4><p>permissionLevel array now includes TEAM_LEAD. Inherits all 5 children incl. Service Catalog + Sales Library (Q5).</p></div>
+    <div class="change-card"><span class="tag added">Added</span><h4>ORG_OWNER → Call Center 369</h4><p>Read-only via backend role.permissions for ORG_OWNER (Q7).</p></div>
+    <div class="change-card"><span class="tag added">Added</span><h4>ORG_OWNER → Sales CRM</h4><p>Read-only via backend role.permissions for ORG_OWNER (Q7).</p></div>
+    <div class="change-card"><span class="tag added">Added</span><h4>Explicit permissionLevel × 12 leaves</h4><p>Service Setup &gt; Services every leaf gets [SUPER_ADMIN, ORG_OWNER, ORG_ADMIN, MANAGER]. Decouples sidebar visibility from role.permissions (Q9).</p></div>
+    <div class="change-card"><span class="tag kept">Kept · commented</span><h4>AGENT in Manage User Accounts</h4><p>// AGENT — scoped to own users only via role.permissions. (Q1)</p></div>
+    <div class="change-card"><span class="tag kept">Kept · commented</span><h4>AGENT in Applications</h4><p>// AGENT — scoped to referred students only via role.permissions. (Q2)</p></div>
+    <div class="change-card"><span class="tag kept">Kept</span><h4>SidebarRole.Finance / .Vendor</h4><p>Forward-looking constants retained in lead.constants.ts (Q3).</p></div>
+    <div class="change-card"><span class="tag kept">Kept</span><h4>STAFF visibility</h4><p>Dashboard + Applications only — confirmed (Q6).</p></div>
+    <div class="change-card"><span class="tag kept">Deferred</span><h4>SideMenu split</h4><p>Internal vs Student split deferred → new ticket sidebar-split-internal-student appended to feature-registry in Mode 3 (Q8).</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>2 · Role × Visibility Matrix</h2>
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th>Top-level</th>
+        <th>SUPER_ADMIN</th>
+        <th>ORG_OWNER</th>
+        <th>ORG_ADMIN</th>
+        <th>MANAGER</th>
+        <th>TEAM_LEAD</th>
+        <th>STAFF</th>
+        <th>AGENT</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Dashboard</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Call Center 369</td><td class="yes">✓</td><td class="ro">RO</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Sales CRM</td><td class="yes">✓</td><td class="ro">RO</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Service Setup</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Services (agent menu)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+      <tr><td>Applications</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="scoped">SCOPED</td></tr>
+      <tr><td>Finance</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Mission Control</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Manage User Accounts</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="scoped">SCOPED</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>3 · Interactive Sidebar Preview</h2>
+  <div class="role-tabs" id="roleTabs">
+    <button class="role-tab active" data-role="SUPER_ADMIN">SUPER_ADMIN</button>
+    <button class="role-tab" data-role="ORG_OWNER">ORG_OWNER</button>
+    <button class="role-tab" data-role="ORG_ADMIN">ORG_ADMIN</button>
+    <button class="role-tab" data-role="MANAGER">MANAGER</button>
+    <button class="role-tab" data-role="TEAM_LEAD">TEAM_LEAD</button>
+    <button class="role-tab" data-role="STAFF">STAFF</button>
+    <button class="role-tab" data-role="AGENT">AGENT</button>
+  </div>
+  <div class="preview-shell">
+    <aside class="sidebar" id="sidebarPreview">
+      <div class="header-row">
+        <span class="brand">DeAssists Portal</span>
+        <span class="role-pill" id="rolePill">SUPER_ADMIN</span>
+      </div>
+      <div id="navList"></div>
+    </aside>
+    <div class="role-info">
+      <h3 id="roleInfoTitle">SUPER_ADMIN</h3>
+      <dl id="roleDl"></dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>4 · Code Spec — Key Blocks</h2>
+
+  <h3>Block A — Call Center 369 (replace lines 22–48)</h3>
+<pre class="code">{
+  <span class="p">title</span>: <span class="s">'Call Center 369'</span>,
+  <span class="p">icon</span>: <span class="s">'mdi:headset'</span>,
+  <span class="p">permissionLevel</span>: [
+    UserTypes.SUPER_ADMIN,
+    UserTypes.ORG_OWNER,
+    UserTypes.ORG_ADMIN,
+    UserTypes.MANAGER,
+    UserTypes.TEAM_LEAD,
+  ],
+  <span class="p">requiredRole</span>: SidebarRole.CallCenter,
+  <span class="p">children</span>: [
+    { title: <span class="s">'Sales Dashboard'</span>, icon: <span class="s">'material-symbols:space-dashboard-outline'</span>, path: <span class="s">'/dashboard'</span> },
+    { title: <span class="s">'All Leads'</span>,       icon: <span class="s">'mdi:account-arrow-right-outline'</span>,    path: <span class="s">'/leads'</span> },
+    { title: <span class="s">'+ Add Lead'</span>,      icon: <span class="s">'mdi:account-plus-outline'</span>,         path: <span class="s">'/leads/new'</span> },
+    { title: <span class="s">'Service Catalog'</span>, icon: <span class="s">'mdi:view-grid-outline'</span>,            path: <span class="s">'/catalog'</span> },
+    { title: <span class="s">'Sales Library'</span>,   icon: <span class="s">'mdi:library-outline'</span>,              path: <span class="s">'/page-workinprogress?status=saleslibrary'</span> },
+  ],
+},</pre>
+
+  <h3>Block B — DELETE Sales Guide block (lines 49–79)</h3>
+<pre class="code"><span class="c">// REMOVED ENTIRELY — Service Catalog + Sales Library re-parented above.</span></pre>
+
+  <h3>Block C — Sales CRM (replace lines 80–96)</h3>
+<pre class="code">{
+  <span class="p">title</span>: <span class="s">'Sales CRM'</span>,
+  <span class="p">icon</span>: <span class="s">'mdi:handshake-outline'</span>,
+  <span class="p">permissionLevel</span>: [
+    UserTypes.SUPER_ADMIN,
+    UserTypes.ORG_OWNER,
+    UserTypes.ORG_ADMIN,
+    UserTypes.MANAGER,
+  ],
+  <span class="p">requiredRole</span>: SidebarRole.SalesSetup,
+  <span class="p">children</span>: [
+    { title: <span class="s">'Sales Setup'</span>, icon: <span class="s">'mdi:cog-outline'</span>, path: <span class="s">'/page-workinprogress?status=salessetup'</span> },
+  ],
+},</pre>
+
+  <h3>Block D — Constant + 12 leaf permissionLevel arrays</h3>
+<pre class="code"><span class="c">// At top of file, before SideMenu export:</span>
+<span class="c">// Sidebar visibility for Service Setup &gt; Services leaves.</span>
+<span class="c">// Decoupled from role.permissions so BCBT and other tenants do not</span>
+<span class="c">// silently lose menu items when role grants drift.</span>
+<span class="k">const</span> SERVICE_SETUP_LEAF_ACCESS = [
+  UserTypes.SUPER_ADMIN,
+  UserTypes.ORG_OWNER,
+  UserTypes.ORG_ADMIN,
+  UserTypes.MANAGER,
+] <span class="k">as const</span>;
+
+<span class="c">// On each of the 12 leaves under Service Setup &gt; Services:</span>
+{
+  title: <span class="s">'Apartments'</span>,
+  icon: <span class="s">'material-symbols:apartment-rounded'</span>,
+  path: <span class="p">`/${CollectionNames.Apartments}`</span>,
+  <span class="p">permissionLevel</span>: [...SERVICE_SETUP_LEAF_ACCESS],
+},
+<span class="c">// repeat for: Ausbildungs, APS and Document Translations, Blocked Accounts,</span>
+<span class="c">// Courses, Insurances, Full-time Jobs, Part-time Jobs, Legal Supports,</span>
+<span class="c">// Post Landing Services, Universities, Visa Services.</span></pre>
+
+  <h3>Block E — Applications (add comment above AGENT line)</h3>
+<pre class="code">{
+  title: <span class="s">'Applications'</span>,
+  icon: <span class="s">'material-symbols:ballot-outline'</span>,
+  permissionLevel: [
+    UserTypes.SUPER_ADMIN,
+    UserTypes.STAFF,
+    UserTypes.MANAGER,
+    UserTypes.TEAM_LEAD,
+    UserTypes.ORG_ADMIN,
+    UserTypes.ORG_OWNER,
+    <span class="c">// AGENT — scoped to referred students only via role.permissions.</span>
+    UserTypes.AGENT,
+    UserTypes.ORG_AGENT,
+  ],
+  <span class="c">// children unchanged</span>
+}</pre>
+
+  <h3>Block F — Manage User Accounts (add comment above AGENT line)</h3>
+<pre class="code">{
+  title: <span class="s">'Manage User Accounts'</span>,
+  icon: <span class="s">'material-symbols:manage-accounts-outline'</span>,
+  permissionLevel: [
+    UserTypes.SUPER_ADMIN,
+    UserTypes.ORG_OWNER,
+    UserTypes.ORG_ADMIN,
+    <span class="c">// AGENT — scoped to own users only via role.permissions.</span>
+    UserTypes.AGENT,
+    UserTypes.ORG_AGENT,
+    UserTypes.MANAGER,
+    UserTypes.TEAM_LEAD,
+  ],
+  <span class="c">// children unchanged</span>
+}</pre>
+</section>
+
+<section>
+  <h2>5 · Acceptance Criteria — gate to Mode 3</h2>
+  <ol>
+    <li>Build green: <code>npx nx build shared --skip-nx-cache</code>.</li>
+    <li><code>/sidebar-audit</code> three-layer PASS for all 7 roles.</li>
+    <li>Browser smoke: TEAM_LEAD reaches /catalog AND /page-workinprogress?status=saleslibrary.</li>
+    <li>Browser smoke: STAFF blocked from /catalog and /leads.</li>
+    <li>Browser smoke: AGENT cannot see Call Center 369, Sales CRM, Service Setup, Finance, Mission Control.</li>
+    <li>Browser smoke: ORG_OWNER sees Call Center 369 + Sales CRM (read-only enforced by backend).</li>
+    <li>No file in NEVER-TOUCH list modified.</li>
+    <li>One capability per commit; <code>/latha-handover</code> package generated.</li>
+  </ol>
+</section>
+
+<footer>
+  EAGLE Mode 2 · sidebar-restructure · awaiting approval phrase: <strong>approved sidebar-restructure</strong>
+</footer>
+
+<script>
+  const ROLE_DATA = {
+    SUPER_ADMIN: {
+      label: 'SUPER_ADMIN',
+      summary: 'Full DeAssists internal access. Sees everything.',
+      visible: 8, hidden: 1,
+      stack: [
+        { t: 'Dashboard', d: 0 },
+        { t: 'Call Center 369', d: 0, p: true },
+          { t: 'Sales Dashboard', d: 1 },
+          { t: 'All Leads', d: 1 },
+          { t: '+ Add Lead', d: 1 },
+          { t: 'Service Catalog', d: 1, moved: true },
+          { t: 'Sales Library', d: 1, moved: true },
+        { t: 'Sales CRM', d: 0, p: true },
+          { t: 'Sales Setup', d: 1 },
+        { t: 'Service Setup', d: 0, p: true },
+          { t: 'Services', d: 1, p: true },
+            { t: 'Apartments', d: 2 },
+            { t: 'Ausbildungs', d: 2 },
+            { t: '(+10 more services…)', d: 2 },
+          { t: 'Email Setup', d: 1, p: true },
+            { t: 'Automated Emails', d: 2 },
+            { t: 'Custom Emails', d: 2 },
+        { t: 'Applications', d: 0, p: true },
+          { t: 'Apartments · Ausbildungs · APS · Blocked Accts · Courses · …', d: 1 },
+        { t: 'Finance', d: 0, p: true },
+          { t: 'Payments', d: 1 },
+          { t: 'Finance Dashboard', d: 1 },
+        { t: 'Mission Control', d: 0, p: true },
+          { t: 'Organizations', d: 1 },
+          { t: 'Auth & Permissions', d: 1 },
+        { t: 'Manage User Accounts', d: 0, p: true },
+          { t: 'All Users · Service Users · Org Users · Org Agents · DA Agents', d: 1 },
+      ],
+    },
+    ORG_OWNER: {
+      label: 'ORG_OWNER',
+      summary: 'Tenant owner. Sees CRM + Sales CRM as read-only via backend role.permissions.',
+      visible: 6, hidden: 3,
+      stack: [
+        { t: 'Dashboard', d: 0 },
+        { t: 'Call Center 369', d: 0, p: true, ro: true, added: true },
+          { t: 'Sales Dashboard', d: 1 },
+          { t: 'All Leads', d: 1 },
+          { t: '+ Add Lead', d: 1 },
+          { t: 'Service Catalog', d: 1, moved: true },
+          { t: 'Sales Library', d: 1, moved: true },
+        { t: 'Sales CRM', d: 0, p: true, ro: true, added: true },
+          { t: 'Sales Setup', d: 1 },
+        { t: 'Service Setup', d: 0, p: true },
+          { t: 'Services (12 leaves with explicit permissionLevel)', d: 1 },
+          { t: 'Email Setup', d: 1 },
+        { t: 'Applications', d: 0, p: true },
+          { t: '(all 11 leaves)', d: 1 },
+        { t: 'Finance', d: 0, hidden: true },
+        { t: 'Mission Control', d: 0, hidden: true },
+        { t: 'Manage User Accounts', d: 0, p: true },
+          { t: 'All Users · Service Users · Org Users · Org Agents · DA Agents', d: 1 },
+      ],
+    },
+    ORG_ADMIN: {
+      label: 'ORG_ADMIN',
+      summary: 'Tenant admin. Full operational access within tenant. No Finance/Mission Control.',
+      visible: 6, hidden: 3,
+      stack: [
+        { t: 'Dashboard', d: 0 },
+        { t: 'Call Center 369', d: 0, p: true },
+          { t: 'Sales Dashboard', d: 1 },
+          { t: 'All Leads', d: 1 },
+          { t: '+ Add Lead', d: 1 },
+          { t: 'Service Catalog', d: 1, moved: true },
+          { t: 'Sales Library', d: 1, moved: true },
+        { t: 'Sales CRM', d: 0, p: true },
+          { t: 'Sales Setup', d: 1 },
+        { t: 'Service Setup', d: 0, p: true },
+          { t: 'Services (12 leaves)', d: 1 },
+          { t: 'Email Setup', d: 1 },
+        { t: 'Applications', d: 0, p: true },
+          { t: '(all 11 leaves)', d: 1 },
+        { t: 'Finance', d: 0, hidden: true },
+        { t: 'Mission Control', d: 0, hidden: true },
+        { t: 'Manage User Accounts', d: 0, p: true },
+          { t: '(5 user-tabs)', d: 1 },
+      ],
+    },
+    MANAGER: {
+      label: 'MANAGER',
+      summary: 'Internal manager. Same as ORG_ADMIN within DeAssists tenant.',
+      visible: 6, hidden: 3,
+      stack: [
+        { t: 'Dashboard', d: 0 },
+        { t: 'Call Center 369', d: 0, p: true },
+          { t: 'Sales Dashboard · All Leads · + Add Lead', d: 1 },
+          { t: 'Service Catalog', d: 1, moved: true },
+          { t: 'Sales Library', d: 1, moved: true },
+        { t: 'Sales CRM', d: 0, p: true },
+          { t: 'Sales Setup', d: 1 },
+        { t: 'Service Setup', d: 0, p: true },
+          { t: 'Services (12 leaves) · Email Setup', d: 1 },
+        { t: 'Applications', d: 0, p: true },
+          { t: '(all 11 leaves)', d: 1 },
+        { t: 'Finance', d: 0, hidden: true },
+        { t: 'Mission Control', d: 0, hidden: true },
+        { t: 'Manage User Accounts', d: 0, p: true },
+          { t: '(5 user-tabs)', d: 1 },
+      ],
+    },
+    TEAM_LEAD: {
+      label: 'TEAM_LEAD',
+      summary: 'Call center team lead. Inherits Service Catalog + Sales Library via Q4 restructure. Does NOT see Sales CRM.',
+      visible: 4, hidden: 5,
+      stack: [
+        { t: 'Dashboard', d: 0 },
+        { t: 'Call Center 369', d: 0, p: true, added: true },
+          { t: 'Sales Dashboard', d: 1 },
+          { t: 'All Leads', d: 1 },
+          { t: '+ Add Lead', d: 1 },
+          { t: 'Service Catalog', d: 1, moved: true, added: true },
+          { t: 'Sales Library', d: 1, moved: true, added: true },
+        { t: 'Sales CRM', d: 0, hidden: true },
+        { t: 'Service Setup', d: 0, hidden: true },
+        { t: 'Applications', d: 0, p: true },
+          { t: '(all 11 leaves)', d: 1 },
+        { t: 'Finance', d: 0, hidden: true },
+        { t: 'Mission Control', d: 0, hidden: true },
+        { t: 'Manage User Accounts', d: 0, p: true },
+          { t: 'All Users · Service Users · Organization Users', d: 1 },
+      ],
+    },
+    STAFF: {
+      label: 'STAFF',
+      summary: 'Internal staff (data entry / processing). Dashboard + Applications only — confirmed Q6.',
+      visible: 2, hidden: 7,
+      stack: [
+        { t: 'Dashboard', d: 0 },
+        { t: 'Call Center 369', d: 0, hidden: true },
+        { t: 'Sales CRM', d: 0, hidden: true },
+        { t: 'Service Setup', d: 0, hidden: true },
+        { t: 'Applications', d: 0, p: true },
+          { t: '(all 11 leaves)', d: 1 },
+        { t: 'Finance', d: 0, hidden: true },
+        { t: 'Mission Control', d: 0, hidden: true },
+        { t: 'Manage User Accounts', d: 0, hidden: true },
+      ],
+    },
+    AGENT: {
+      label: 'AGENT',
+      summary: 'External sub-agent. Backend scopes Applications and Service Users to own data only. Locked decision: zero internal portal access.',
+      visible: 4, hidden: 5,
+      stack: [
+        { t: 'Dashboard', d: 0 },
+        { t: 'Call Center 369', d: 0, hidden: true },
+        { t: 'Sales CRM', d: 0, hidden: true },
+        { t: 'Service Setup', d: 0, hidden: true },
+        { t: 'Services (agent menu)', d: 0, p: true },
+          { t: 'Apartments · Ausbildungs · APS · Blocked Acct · Courses · …', d: 1 },
+        { t: 'Applications', d: 0, p: true, scoped: true },
+          { t: '(scoped to referred students)', d: 1 },
+        { t: 'Finance', d: 0, hidden: true },
+        { t: 'Mission Control', d: 0, hidden: true },
+        { t: 'Manage User Accounts', d: 0, p: true, scoped: true },
+          { t: 'Service Users only (own users)', d: 1 },
+      ],
+    },
+  };
+
+  const tabs = document.getElementById('roleTabs');
+  const navList = document.getElementById('navList');
+  const rolePill = document.getElementById('rolePill');
+  const roleTitle = document.getElementById('roleInfoTitle');
+  const roleDl = document.getElementById('roleDl');
+
+  function render(role) {
+    const data = ROLE_DATA[role];
+    rolePill.textContent = role;
+    roleTitle.textContent = data.label;
+    roleDl.innerHTML = `
+      <dt>Summary</dt><dd>${data.summary}</dd>
+      <dt>Top-level visible</dt><dd class="visible-count">${data.visible} of 9</dd>
+      <dt>Top-level hidden</dt><dd class="hidden-count">${data.hidden}</dd>
+    `;
+    navList.innerHTML = data.stack.map(item => {
+      const cls = ['nav-item', `indent-${item.d}`];
+      if (item.p) cls.push('parent');
+      if (item.hidden) cls.push('hidden');
+      if (item.added) cls.push('added');
+      if (item.moved) cls.push('moved');
+      if (item.scoped) cls.push('scoped');
+      if (item.ro) cls.push('ro');
+      return `<div class="${cls.join(' ')}"><span class="icon"></span><span>${item.t}</span></div>`;
+    }).join('');
+  }
+
+  tabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('.role-tab');
+    if (!btn) return;
+    [...tabs.querySelectorAll('.role-tab')].forEach(b => b.classList.toggle('active', b === btn));
+    render(btn.dataset.role);
+  });
+
+  render('SUPER_ADMIN');
+</script>
+
+</body>
+</html>
+<<<HTML_PREVIEW_END>>>
+
+---
+
+**Mode 2 complete.** Spec covers all 9 Mode 1 decisions with file-level change blocks, role × visibility matrix, code snippets, and acceptance criteria. The HTML preview is interactive — click any of the 7 role tabs to see exactly what that role will see in the restructured sidebar.
+
+**Awaiting approval phrase to proceed to Mode 3:** `approved sidebar-restructure`

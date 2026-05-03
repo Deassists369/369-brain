@@ -1,0 +1,66 @@
+## DATA-CHECK — Classification Run
+
+### Scope clarification
+
+The ticket passed as args (**harness-eagle-stage-marker-contract**) is **brain/harness infrastructure**, not a DeAssists portal feature. DATA-READINESS applies only to features that display or accept portal data. This ticket builds a patch-contract protocol between Claude and the local harness — it has no MongoDB collection, no endpoint, no user-facing data fields. **DATA-READINESS does not apply to this ticket.**
+
+Per the skill instructions, the current feature in scope is the **first NEXT item in feature-registry.md**.
+
+---
+
+### Current Feature Identified
+
+**Activity tab in LeadDetailPanel** (Layer 2, Phase 2A — first NEXT row, line 82)
+
+> Full call history timeline — Details, Comments, Activity tabs
+
+---
+
+### Five Questions
+
+**1. What data does this feature display?**
+- `outcome` — call outcome (per CallLogModal write path)
+- `note` — quick note text
+- `agent` / `loggedBy` — which agent logged the call
+- `timestamp` / `loggedAt` — when call happened
+- `callbackDate` (optional) — scheduled callback if set
+- `leadId` — context binding
+- Tab structure: Details, Comments, Activity
+
+**2. Where does that data live today?**
+MongoDB. Calls are already being **written** via `POST /v1/leads/:id/call-log` (used by `useLogCall` — DONE in Phase 2A). Storage collection is owned by Latha (likely embedded on the lead document or a `lead_calls` collection — needs backend verification).
+
+**3. Is there a working endpoint today?**
+- **WRITE: confirmed** → `POST /v1/leads/:id/call-log` (exists, in production use via CallLogModal)
+- **READ: needs verification** → either `useLeadDetails` already returns the calls array on the lead document, or a dedicated `GET /v1/leads/:id/call-log` endpoint is needed
+- I have not opened `apps/backend-nest/src/leads/leads.controller.ts` in this run to confirm
+
+**4. Can we enter this data ourselves?**
+**Yes — already happening.** CallLogModal is DONE and writes through the portal. Data accumulates as agents log calls.
+
+**5. What is the Latha task?**
+Conditional on Q3 verification:
+- If GET already returns calls on the lead detail payload → **no Latha task**
+- If not → small Latha task: expose `GET /v1/leads/:id/call-log` returning array sorted by `loggedAt DESC`, scoped by lead role guard
+
+---
+
+### DATA STATE DECLARATION
+
+| Feature | Data State | Data Source | Latha Task |
+|---|---|---|---|
+| Activity tab in LeadDetailPanel | **STATE 1** (likely) / STATE 2B (fallback) | MongoDB — call logs written by existing `POST /v1/leads/:id/call-log` | None if GET already exists; otherwise expose `GET /v1/leads/:id/call-log` |
+
+---
+
+### Recommendation
+
+**STATE 1 — proceed to /eagle-mode1 immediately**, with one verification step in Mode 1:
+
+> Mode 1 must confirm whether `useLeadDetails` already returns the `calls` array. If yes → State 1 confirmed, build the timeline display directly. If no → demote to State 2B, raise the GET endpoint as a Latha task in parallel, build with empty state.
+
+The data is already flowing into the system (writes work, agents are logging). Worst case is a thin GET endpoint — not a foundation block. **Not blocked.** Proceed.
+
+### Side note on the harness ticket
+
+If you want **harness-eagle-stage-marker-contract** triaged, that belongs to a different gate (harness/tooling design review), not data-check. Say the word and I'll switch to that lane — likely `/eagle-mode1` directly with no DATA-READINESS step, or a plan-mode design pass.
