@@ -25,6 +25,22 @@ const PREVIEWS_DIR = path.join(BRAIN_ROOT, 'previews');
 const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 const CLAUDE_HEADLESS_FLAG = process.env.CLAUDE_HEADLESS_FLAG || '-p';
 
+// Mode 2 stdout-marker contract. The inner Claude emits the HTML preview between
+// these exact markers; the harness extracts and writes the file itself. This avoids
+// the headless permission-prompt deadlock for the Write tool in Mode 2.
+const HTML_START_MARKER = '<<<HTML_PREVIEW_START>>>';
+const HTML_END_MARKER = '<<<HTML_PREVIEW_END>>>';
+
+function extractHtmlBetweenMarkers(text) {
+  const start = text.indexOf(HTML_START_MARKER);
+  if (start === -1) return null;
+  const after = start + HTML_START_MARKER.length;
+  const end = text.indexOf(HTML_END_MARKER, after);
+  if (end === -1) return null;
+  const body = text.slice(after, end).trim();
+  return body.length ? body : null;
+}
+
 // ---------- internal helpers ----------
 
 function tsLog(runId, msg) {
@@ -128,15 +144,29 @@ async function approveMode1(runId) {
 
   const previewAbsPath = workspace.previewPath(ticketName);
 
-  // Mode 2 prompt: explicit instruction to save HTML preview using Write tool.
+  // Mode 2 prompt: stdout-marker contract. Inner Claude prints the spec freely,
+  // then emits the FULL HTML preview between exact markers on their own lines.
+  // The harness extracts the HTML and writes the file — inner Claude does NOT
+  // call the Write tool (avoids the headless permission-prompt deadlock).
   const mode2Instruction = [
     `TICKET: ${ticketName}`,
     '',
     workspace.readTicket(ticketName, 'open') || '',
     '',
-    'CRITICAL — Use the Write tool to save the HTML preview to the absolute path below.',
-    'Do not echo HTML to stdout. Do not create the file in any other location.',
-    `Preview path: ${previewAbsPath}`,
+    'CRITICAL — HTML PREVIEW CONTRACT',
+    'Do NOT use the Write tool. Do NOT save to any file. The harness will save the file.',
+    '',
+    'After you finish the spec, emit the FULL standalone HTML preview between these',
+    'EXACT markers, each on its own line, with NO other text between the markers:',
+    '',
+    `${HTML_START_MARKER}`,
+    '<!doctype html>',
+    '<html>...full HTML document, complete and self-contained...</html>',
+    `${HTML_END_MARKER}`,
+    '',
+    'The HTML must be a complete standalone document that opens in any browser.',
+    'Inline all CSS. No external assets. No script tags fetching remote resources.',
+    `The harness will write it to: ${previewAbsPath}`,
   ].join('\n');
 
   try {
@@ -145,8 +175,18 @@ async function approveMode1(runId) {
     const out = runSlashCommand('/eagle-mode2', mode2Instruction);
     workspace.savePhaseOutput(ticketName, 'eagle-mode2', out);
 
+    const html = extractHtmlBetweenMarkers(out);
+    if (!html) {
+      const detail = `HTML markers ${HTML_START_MARKER} / ${HTML_END_MARKER} not found in Mode 2 stdout`;
+      recordPhase(runId, 'eagle-mode2', 'failed', detail);
+      logger.updateRun(HARNESS_NAME, runId, { status: 'failed', error: detail });
+      throw new Error(detail);
+    }
+    workspace.savePreview(ticketName, html);
+    log(`Wrote ${html.length} bytes of HTML preview`);
+
     if (!workspace.previewExists(ticketName)) {
-      const detail = `Preview missing at ${previewAbsPath}`;
+      const detail = `Preview missing at ${previewAbsPath} after savePreview()`;
       recordPhase(runId, 'eagle-mode2', 'failed', detail);
       logger.updateRun(HARNESS_NAME, runId, { status: 'failed', error: detail });
       throw new Error(detail);
@@ -156,15 +196,17 @@ async function approveMode1(runId) {
     logger.updateRun(HARNESS_NAME, runId, {
       status: 'awaiting-approval',
       preview_path: previewAbsPath,
+      error: null,
       meta: { ...(run.meta || {}), awaiting: 'mode2-approval' },
     });
-    recordPhase(runId, 'eagle-mode2', 'complete', `preview saved: ${previewAbsPath}`);
+    recordPhase(runId, 'eagle-mode2', 'complete', `preview saved: ${previewAbsPath} (${html.length} bytes)`);
     log(`Phase: /eagle-mode2 complete — preview at ${previewAbsPath}`);
     return { runId, status: 'awaiting-approval', awaiting: 'mode2-approval', previewPath: previewAbsPath };
   } catch (e) {
-    if (!String(e.message || '').startsWith('Preview missing')) {
-      recordPhase(runId, 'eagle-mode2', 'failed', String(e.message || e));
-      logger.updateRun(HARNESS_NAME, runId, { status: 'failed', error: String(e.message || e) });
+    const msg = String(e.message || '');
+    if (!msg.startsWith('HTML markers') && !msg.startsWith('Preview missing')) {
+      recordPhase(runId, 'eagle-mode2', 'failed', msg);
+      logger.updateRun(HARNESS_NAME, runId, { status: 'failed', error: msg });
     }
     throw e;
   }
