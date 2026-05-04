@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>369 Mission Vault</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --red:#C0392B;
+  --red-deep:#8B1A1A;
+  --red-light:#E74C3C;
+  --cream:#F5F0E8;
+  --cream-dark:#E8E0D0;
+  --leather:#C4A882;
+  --chrome:#B8B8B8;
+  --dark:#1A0A0A;
+  --gauge:#2C1810;
+}
+html,body{
+  height:100%;
+  background:var(--dark);
+  font-family:'Cormorant Garamond',serif;
+  overflow:hidden;
+}
+
+/* Grain texture overlay */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:100;opacity:.6;
+}
+
+/* Background — deep dark with subtle red vignette */
+.bg{
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 100%, #3D0A0A 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 0%, #1A0505 0%, transparent 50%),
+    #0D0404;
+}
+
+/* Pinstripe lines — like classic car bodywork */
+.pinstripes{
+  position:fixed;inset:0;
+  background-image:repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 60px,
+    rgba(192,57,43,.04) 60px,
+    rgba(192,57,43,.04) 61px
+  );
+  pointer-events:none;
+}
+
+body{display:flex;align-items:center;justify-content:center;min-height:100vh;position:relative}
+
+.wrap{
+  position:relative;z-index:10;
+  width:min(380px,92vw);
+  padding:0 0 40px;
+}
+
+/* Hood ornament / badge area */
+.badge-wrap{
+  text-align:center;
+  margin-bottom:32px;
+  animation:fadeDown .8s ease both;
+}
+
+.badge{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+}
+
+/* The crest — classic Porsche-style roundel */
+.crest{
+  width:64px;height:64px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 35%, var(--red-light), var(--red-deep));
+  border:2px solid var(--chrome);
+  box-shadow:
+    0 0 0 4px rgba(184,184,184,.15),
+    0 8px 32px rgba(192,57,43,.4),
+    inset 0 1px 0 rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:4px;
+  position:relative;
+}
+
+.crest-inner{
+  font-family:'Courier Prime',monospace;
+  font-size:18px;font-weight:700;
+  color:var(--cream);
+  letter-spacing:-1px;
+  text-shadow:0 1px 2px rgba(0,0,0,.5);
+}
+
+/* Chrome ring pulse */
+.crest::after{
+  content:'';position:absolute;inset:-6px;
+  border-radius:50%;
+  border:1px solid rgba(192,57,43,.3);
+  animation:ringPulse 3s ease-in-out infinite;
+}
+
+.brand{
+  font-family:'Courier Prime',monospace;
+  font-size:10px;letter-spacing:.25em;
+  color:var(--chrome);
+  text-transform:uppercase;
+  opacity:.7;
+}
+
+/* Main card — like the leather dashboard */
+.card{
+  background:
+    linear-gradient(160deg, #1C0C0C 0%, #120808 40%, #0E0606 100%);
+  border:1px solid rgba(192,57,43,.25);
+  border-radius:4px;
+  padding:36px 32px 32px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:
+    0 32px 80px rgba(0,0,0,.8),
+    0 0 0 1px rgba(255,255,255,.04),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  animation:fadeUp .9s ease .1s both;
+}
+
+/* Top red racing stripe */
+.card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg, transparent, var(--red), var(--red-light), var(--red), transparent);
+}
+
+/* Leather texture hint */
+.card::after{
+  content:'';
+  position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,transparent 2px,
+      rgba(255,255,255,.008) 2px,rgba(255,255,255,.008) 4px
+    );
+  pointer-events:none;
+}
+
+.title{
+  font-size:26px;font-weight:300;
+  color:var(--cream);
+  letter-spacing:.02em;
+  line-height:1.2;
+  margin-bottom:4px;
+  font-style:italic;
+}
+
+.title strong{
+  font-weight:600;font-style:normal;
+  color:#fff;
+}
+
+.sub{
+  font-family:'Courier Prime',monospace;
+  font-size:10px;letter-spacing:.2em;
+  color:rgba(192,57,43,.8);
+  text-transform:uppercase;
+  margin-bottom:32px;
+  padding-bottom:24px;
+  border-bottom:1px solid rgba(192,57,43,.15);
+}
+
+/* Gauge-style divider */
+.gauge-line{
+  display:flex;align-items:center;gap:0;
+  margin-bottom:20px;
+}
+
+.gauge-tick{
+  height:8px;width:1px;
+  background:rgba(192,57,43,.4);
+  margin-right:4px;
+  flex-shrink:0;
+}
+.gauge-tick:nth-child(5n){height:14px;background:rgba(192,57,43,.7);}
+
+/* Buttons */
+.btn{
+  display:flex;align-items:center;gap:12px;
+  width:100%;padding:14px 18px;
+  border-radius:2px;
+  border:1px solid rgba(196,168,130,.2);
+  background:rgba(196,168,130,.04);
+  color:var(--cream);
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;font-weight:400;
+  cursor:pointer;
+  transition:all .25s ease;
+  text-decoration:none;
+  margin-bottom:10px;
+  position:relative;
+  overflow:hidden;
+  letter-spacing:.04em;
+}
+
+.btn::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;width:0;
+  background:linear-gradient(90deg,rgba(192,57,43,.15),transparent);
+  transition:width .3s ease;
+}
+
+.btn:hover::before{width:100%;}
+.btn:hover{
+  border-color:rgba(192,57,43,.5);
+  color:#fff;
+  transform:translateX(2px);
+}
+
+.btn-icon{
+  width:28px;height:28px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+
+.btn-text{flex:1}
+.btn-arrow{
+  font-size:16px;color:rgba(192,57,43,.6);
+  transition:transform .2s;font-style:italic;
+}
+.btn:hover .btn-arrow{transform:translateX(3px);color:var(--red-light);}
+
+.or-line{
+  display:flex;align-items:center;gap:12px;
+  margin:4px 0 14px;
+  font-family:'Courier Prime',monospace;
+  font-size:10px;color:rgba(196,168,130,.3);
+  letter-spacing:.1em;
+}
+.or-line::before,.or-line::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(196,168,130,.2),transparent);
+}
+
+/* Status row */
+.status-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:24px;padding-top:20px;
+  border-top:1px solid rgba(192,57,43,.1);
+}
+
+.status-dot{
+  display:flex;align-items:center;gap:6px;
+  font-family:'Courier Prime',monospace;
+  font-size:9px;letter-spacing:.15em;
+  color:rgba(196,168,130,.4);
+  text-transform:uppercase;
+}
+
+.dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#22c55e;
+  box-shadow:0 0 6px #22c55e;
+  animation:blink 2s ease-in-out infinite;
+}
+
+.access-note{
+  font-family:'Courier Prime',monospace;
+  font-size:9px;letter-spacing:.1em;
+  color:rgba(192,57,43,.4);
+  text-transform:uppercase;
+}
+
+@keyframes fadeDown{
+  from{opacity:0;transform:translateY(-20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes blink{
+  0%,100%{opacity:1}50%{opacity:.4}
+}
+@keyframes ringPulse{
+  0%,100%{transform:scale(1);opacity:.3}
+  50%{transform:scale(1.06);opacity:.7}
+}
+
+/* Mobile refinements */
+@media(max-width:400px){
+  .card{padding:28px 22px 24px}
+  .title{font-size:22px}
+  .crest{width:56px;height:56px}
+  .crest-inner{font-size:15px}
+}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="pinstripes"></div>
+
+<div class="wrap">
+  <div class="badge-wrap">
+    <div class="badge">
+      <div class="crest">
+        <div class="crest-inner">MV</div>
+      </div>
+      <div class="brand">Three Sixty Nine GmbH</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="title"><strong>Mission Vault</strong></div>
+    <div class="sub">CEO Operating System · Restricted Access</div>
+
+    <div class="gauge-line">
+      <!-- 24 ticks like a classic gauge -->
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+      <div class="gauge-tick"></div><div class="gauge-tick"></div>
+    </div>
+
+    <a class="btn google" href="/api/gmail/auth-start?mode=login">
+      <div class="btn-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+      </div>
+      <div class="btn-text">Continue with Google</div>
+      <div class="btn-arrow">→</div>
+    </a>
+
+    <div class="or-line">or</div>
+
+    <a class="btn apple" href="/api/apple/auth-start">
+      <div class="btn-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--cream)">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+      </div>
+      <div class="btn-text">Continue with Apple</div>
+      <div class="btn-arrow">→</div>
+    </a>
+
+    <div class="status-row">
+      <div class="status-dot">
+        <div class="dot"></div>
+        System online
+      </div>
+      <div class="access-note">Authorised access only</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

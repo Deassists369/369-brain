@@ -251,6 +251,92 @@ const server = http.createServer(async (req, res) => {
     if (url==='/api/data')         return json(res, 200, getData());
     if (url==='/api/status')       return json(res, 200, getStatus());
     if (url==='/api/rag/status')   return json(res, 200, rag.getStatus());
+    if (url==='/api/gmail/auth-start') {
+      try {
+        const credsPath = path.join(BRAIN,'integrations','gmail-credentials.json');
+        const creds = JSON.parse(fs.readFileSync(credsPath,'utf8'));
+        const c = creds.web || creds.installed;
+        const client = new (require('google-auth-library').OAuth2Client)(
+          c.client_id, c.client_secret,
+          'http://localhost:3369/api/gmail/auth-callback'
+        );
+        const authUrl = client.generateAuthUrl({
+          access_type: 'offline',
+          scope: ['https://www.googleapis.com/auth/gmail.readonly'],
+          prompt: 'consent'
+        });
+        return json(res, 200, { authUrl });
+      } catch(e) { return json(res, 500, { error: e.message }); }
+    }
+
+    if (req.url.startsWith('/api/gmail/auth-callback')) {
+      const qs = require('url').parse(req.url, true).query;
+      const code = qs.code;
+      if (!code) { res.writeHead(400); res.end('Missing code'); return; }
+      try {
+        const credsPath = path.join(BRAIN,'integrations','gmail-credentials.json');
+        const creds = JSON.parse(fs.readFileSync(credsPath,'utf8'));
+        const c = creds.web || creds.installed;
+        const client = new (require('google-auth-library').OAuth2Client)(
+          c.client_id, c.client_secret,
+          'http://localhost:3369/api/gmail/auth-callback'
+        );
+        const { tokens } = await client.getToken(code);
+        client.setCredentials(tokens);
+        const gmail = require('googleapis').google.gmail({ version:'v1', auth:client });
+        const profile = await gmail.users.getProfile({ userId:'me' });
+        const email = profile.data.emailAddress;
+        const tokenPath = path.join(BRAIN,'integrations',
+          '.gmail-token-'+email.replace('@','_at_')+'.json');
+        fs.writeFileSync(tokenPath, JSON.stringify(tokens,null,2));
+        const gmailDir = path.join(BRAIN,'intelligence','gmail',
+          email.replace('@','_at_'));
+        if (!fs.existsSync(gmailDir)) fs.mkdirSync(gmailDir,{recursive:true});
+        console.log('[Gmail] Connected:', email);
+        res.writeHead(200,{'Content-Type':'text/html'});
+        res.end(`<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:40px;text-align:center;background:#0d0d0d;color:#f5f5f5">
+          <div style="font-size:48px;margin-bottom:16px">✅</div>
+          <h2 style="color:#22c55e;margin-bottom:8px">Gmail Connected</h2>
+          <p style="color:#a0a0a0">${email}</p>
+          <p style="color:#606060;font-size:13px">Emails will be indexed into RAG shortly.<br>This window closes in 3 seconds.</p>
+          <script>
+            if(window.opener) window.opener.postMessage({type:'gmail-connected',email:'${email}'},'*');
+            setTimeout(()=>window.close(),3000);
+          </script>
+        </body></html>`);
+        // Start background sync
+        setImmediate(async () => {
+          try {
+            const gmailSync = require('../integrations/gmail-sync');
+            await gmailSync.syncAccount(email);
+            console.log('[Gmail] Initial sync complete for', email);
+          } catch(e) { console.error('[Gmail] Sync error:', e.message); }
+        });
+      } catch(e) {
+        res.writeHead(500,{'Content-Type':'text/html'});
+        res.end(`<html><body style="padding:40px;font-family:sans-serif;background:#0d0d0d;color:#f5f5f5">
+          <h2 style="color:#ef4444">Connection failed</h2>
+          <p style="color:#a0a0a0">${e.message}</p>
+          <p><a href="javascript:window.close()" style="color:#22c55e">Close</a></p>
+        </body></html>`);
+      }
+      return;
+    }
+
+    if (url==='/api/gmail/accounts') {
+      try {
+        const tokenFiles = fs.readdirSync(path.join(BRAIN,'integrations'))
+          .filter(f=>f.startsWith('.gmail-token-')&&f.endsWith('.json'));
+        const accounts = tokenFiles.map(f=>{
+          const email = f.replace('.gmail-token-','').replace('.json','').replace('_at_','@');
+          const gmailDir = path.join(BRAIN,'intelligence','gmail',f.replace('.gmail-token-','').replace('.json',''));
+          const count = fs.existsSync(gmailDir) ? fs.readdirSync(gmailDir).filter(x=>x.endsWith('.md')).length : 0;
+          return { email, indexed: count };
+        });
+        return json(res,200,{ connected: accounts.length>0, accounts });
+      } catch(e){ return json(res,500,{error:e.message}); }
+    }
+
     if (url==='/api/connections') {
       try {
         const registryPath = path.join(BRAIN,'intelligence','ai-registry.json');
@@ -304,7 +390,16 @@ const server = http.createServer(async (req, res) => {
           {id:'dropbox',label:'Dropbox CORTEX-369',icon:'📦',status:'blocked',
            reason:'App disabled in Dropbox console',
            fix:'dropbox.com/developers → enable → tick files.metadata.read → new token'},
-          {id:'gmail',   label:'Gmail',          icon:'📧',status:'coming_soon',reason:'Not yet connected'},
+          {id:'gmail', label:'Gmail', icon:'📧',
+            status: (() => {
+              try {
+                const hasToken = fs.readdirSync(path.join(BRAIN,'integrations'))
+                  .some(f=>f.startsWith('.gmail-token-'));
+                return hasToken ? 'connected' : 'coming_soon';
+              } catch { return 'coming_soon'; }
+            })(),
+            reason: 'Connect via Mission Vault Connections tab'
+          },
           {id:'whatsapp',label:'WhatsApp',        icon:'📱',status:'coming_soon',reason:'Phase 3'},
           {id:'telegram',label:'Telegram Control',icon:'📡',status:'coming_soon',reason:'Phase 3'},
           {id:'scraper', label:'Website Scraper', icon:'🌐',status:'coming_soon',reason:'Indexes any website into RAG'}
@@ -620,9 +715,16 @@ const server = http.createServer(async (req, res) => {
     }
     if (url==='/api/rag/index')   { rag.buildIndex(); return json(res,200,{ok:true,msg:'Re-indexing started'}); }
   }
-  // Serve HTML
+  // Serve HTML — login gate: show login page until first Gmail token exists
   try {
-    const html = fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
+    let pageFile = 'index.html';
+    try {
+      const tokenDir = path.join(BRAIN, 'integrations');
+      const hasToken = fs.existsSync(tokenDir) &&
+        fs.readdirSync(tokenDir).some(f => f.startsWith('.gmail-token-') && f.endsWith('.json'));
+      if (!hasToken) pageFile = 'login.html';
+    } catch {}
+    const html = fs.readFileSync(path.join(__dirname, pageFile),'utf8');
     cors(res); res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'}); res.end(html);
   } catch(e) { res.writeHead(500); res.end('Dashboard not found'); }
 });

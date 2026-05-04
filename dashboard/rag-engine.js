@@ -221,6 +221,37 @@ async function buildIndex() {
     INDEX.sources['pdf'] = { status: 'error', error: e.message, chunks: 0 };
   }
 
+  // 6. Index Gmail emails
+  try {
+    const gmailBase = path.join(os.homedir(),'deassists-workspace','369-brain','intelligence','gmail');
+    if(fs.existsSync(gmailBase)){
+      const gmailFiles=[];
+      fs.readdirSync(gmailBase).forEach(account=>{
+        const accountDir=path.join(gmailBase,account);
+        try{
+          if(fs.statSync(accountDir).isDirectory()){
+            fs.readdirSync(accountDir)
+              .filter(f=>f.endsWith('.md'))
+              .forEach(f=>gmailFiles.push(path.join(accountDir,f)));
+          }
+        }catch{}
+      });
+      const gmailChunks=gmailFiles.flatMap(f=>parseFile(f,'gmail'));
+      INDEX.chunks.push(...gmailChunks);
+      INDEX.sources['gmail']={
+        status:gmailChunks.length?'indexed':'empty',
+        files:gmailFiles.length,
+        chunks:gmailChunks.length,
+        indexed_at:now
+      };
+      console.log(`[RAG] Gmail: ${gmailFiles.length} emails → ${gmailChunks.length} chunks`);
+    } else {
+      INDEX.sources['gmail']={status:'empty',files:0,chunks:0};
+    }
+  }catch(e){
+    INDEX.sources['gmail']={status:'error',error:e.message,chunks:0};
+  }
+
   INDEX.built_at = now;
   INDEX.building = false;
   console.log(`[RAG] Index built: ${INDEX.chunks.length} chunks from ${Object.keys(INDEX.sources).length} sources`);
