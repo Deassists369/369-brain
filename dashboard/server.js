@@ -251,6 +251,15 @@ const server = http.createServer(async (req, res) => {
     if (url==='/api/data')         return json(res, 200, getData());
     if (url==='/api/status')       return json(res, 200, getStatus());
     if (url==='/api/rag/status')   return json(res, 200, rag.getStatus());
+    if (url==='/porsche-911.jpg') {
+      try {
+        const imgPath = path.join(__dirname,'porsche-911.jpg');
+        const img = fs.readFileSync(imgPath);
+        res.writeHead(200,{'Content-Type':'image/jpeg','Cache-Control':'public,max-age=86400'});
+        res.end(img);
+      } catch(e){ res.writeHead(404);res.end('Not found'); }
+      return;
+    }
     if (url==='/api/logout' && req.method==='POST') {
       try {
         const intDir = path.join(BRAIN,'integrations');

@@ -16,3 +16,4 @@ integrations/*-credentials.json
 integrations/.dropbox-cursor
 integrations/.gmail-token*.json
 *.credentials.json
+dashboard/porsche-911.jpg
