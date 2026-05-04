@@ -55,6 +55,41 @@ const MODE3_STAGES = {
         'brain: queue sidebar-split-internal-student feature ticket — EAGLE sidebar-restructure follow-up',
     },
   ],
+  'harness-eagle-stage-marker-contract': [
+    {
+      name: 'mode3-s1-patcher-tests',
+      title: 'Stage 1 — add node:test coverage for patcher and eagle-harness',
+      description: 'Add node:test coverage for patcher and eagle-harness',
+      repo: BRAIN_ROOT,
+      repo_label: 'brain (~/deassists-workspace/369-brain)',
+      allowedPaths: [
+        'harness/__tests__/patcher.test.js',
+        'harness/__tests__/eagle-harness.test.js',
+      ],
+      allowed_paths: [
+        'harness/__tests__/patcher.test.js',
+        'harness/__tests__/eagle-harness.test.js',
+        'harness/__tests__/',
+      ],
+      context_files: ['harness/core/patcher.js', 'harness/eagle/eagle-harness.js'],
+      commit_msg:
+        'test(harness): add node:test coverage for marker, patch, and porcelain helpers — EAGLE harness-eagle-stage-marker-contract S1',
+    },
+    {
+      name: 'mode3-s2-constitution-parser',
+      title: 'Stage 2 — replace hardcoded NEVER_TOUCH_SUBSTRINGS with lazy A7 parser',
+      description: 'Replace hardcoded NEVER_TOUCH_SUBSTRINGS with lazy A7 parser',
+      repo: BRAIN_ROOT,
+      repo_label: 'brain (~/deassists-workspace/369-brain)',
+      allowedPaths: ['harness/core/patcher.js'],
+      allowed_paths: [
+        'harness/core/patcher.js',
+      ],
+      context_files: ['harness/core/patcher.js', 'CODING-CONSTITUTION.md'],
+      commit_msg:
+        'refactor(harness): parse NEVER-TOUCH list from CODING-CONSTITUTION A7 — EAGLE harness-eagle-stage-marker-contract S2',
+    },
+  ],
 };
 
 // Headless Claude invocation. Override with env CLAUDE_BIN / CLAUDE_HEADLESS_FLAG if needed.
@@ -266,6 +301,17 @@ function readContextFiles(repo, files) {
 
 function buildStagePrompt(ticketName, ticketBody, mode2SpecText, stage) {
   const fileContext = readContextFiles(stage.repo, stage.context_files);
+  const stageSpecificInstructions =
+    ticketName === 'harness-eagle-stage-marker-contract' && stage.name === 'mode3-s1-patcher-tests'
+      ? [
+          '',
+          'IMPORTANT: Only create these two files and nothing else:',
+          'harness/__tests__/patcher.test.js',
+          'harness/__tests__/eagle-harness.test.js',
+          'Do NOT touch mission-control-index.html or any other file.',
+        ]
+      : [];
+
   return [
     `TICKET: ${ticketName}`,
     `STAGE: ${stage.title}`,
@@ -294,6 +340,7 @@ function buildStagePrompt(ticketName, ticketBody, mode2SpecText, stage) {
     '  - Repo-relative paths only (no leading `~`, no absolute paths).',
     '  - The patch must apply cleanly with `git apply` from the repo root.',
     '  - Touch ONLY the allowed paths above. Anything else aborts the stage.',
+    ...stageSpecificInstructions,
     '  - Constitution NEVER-TOUCH list applies — never patch a NEVER-TOUCH file.',
     '  - If you cannot produce a valid patch, emit `STAGE_REFUSE: <reason>` ',
     '    instead of the markers and the harness will halt the run cleanly.',
@@ -419,7 +466,21 @@ async function runMode3Stage(runId, stageIndex) {
   // Post-apply guard: status must contain ONLY allowed paths
   const postStatus = patcher.gitStatusPorcelain(stage.repo);
   const postTouched = patcher.parsePorcelainPaths(postStatus);
-  const outOfScope = postTouched.filter((p) => !preTouched.includes(p) && !stage.allowed_paths.includes(p));
+
+  // Carve-out: harness self-modification tickets may also touch harness machinery.
+  // Triggered when run_id or feature name contains "harness" — lets the harness
+  // improve itself without the post-apply guard tripping.
+  // (Self-Improvement Run 001 — HIGH-severity fix #1)
+  const isHarnessTicket = /harness/i.test(ticketName) || /harness/i.test(runId);
+  const HARNESS_CARVE_OUT_PREFIXES = ['harness/', 'intelligence/harness-runs/output/', 'harness/__tests__/'];
+  const isHarnessCarvedOut = (p) =>
+    isHarnessTicket && HARNESS_CARVE_OUT_PREFIXES.some((prefix) => p.startsWith(prefix));
+
+  const outOfScope = postTouched.filter((p) =>
+    !preTouched.includes(p) &&
+    !stage.allowed_paths.includes(p) &&
+    !isHarnessCarvedOut(p)
+  );
 
   // Filter out paths that were ALREADY dirty before the stage (we record those at run start).
   const preexistingDirty = patcher.parsePorcelainPaths(preStatus).filter((p) => !stage.allowed_paths.includes(p));

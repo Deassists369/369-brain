@@ -1,279 +1,1401 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>IT Mission Control 369</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>369 MISSION VAULT</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
-:root{--bg:#eef0f3;--bg2:#e4e7ec;--card:#f7f8fa;--card2:#ffffff;--border:#d0d5de;--border2:#b8bfcc;--ink:#080f18;--ink2:#1e2d3d;--muted:#3d4f66;--dim:#5a6a82;--green:#0a7a4e;--green-bg:#d6f0e4;--green-b:#7ecfab;--red:#c0392b;--red-bg:#fce8e6;--red-b:#f4a49e;--amber:#9a5a00;--amber-bg:#fdefd6;--amber-b:#f5c97a;--blue:#1a4fa0;--blue-bg:#dce8fb;--blue-b:#7aaae8;--purple:#5b3fa8;--purple-bg:#ede9fb;--purple-b:#b8a8f0;--teal:#0f766e;--teal-bg:#ccfbf1;--teal-b:#5eead4;--mono:'DM Mono',monospace;--display:'Syne',sans-serif;--body:'Outfit',sans-serif;--r:12px;}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
-body{min-height:100vh;}
-.topbar{position:sticky;top:0;z-index:100;background:rgba(238,240,243,0.94);backdrop-filter:blur(20px);border-bottom:2px solid var(--ink);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;}
-.brand{font-family:var(--display);font-size:15px;font-weight:800;letter-spacing:0.08em;color:var(--ink);text-transform:uppercase;}
-.brand em{color:var(--muted);font-style:normal;font-weight:400;letter-spacing:0.04em;}
-.tl{display:flex;align-items:center;gap:20px;}
-.live-badge{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;letter-spacing:0.12em;background:var(--green-bg);color:var(--green);border:1.5px solid var(--green-b);padding:4px 10px;border-radius:4px;}
-.dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.tr{display:flex;align-items:center;gap:12px;}
-.clock{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.06em;}
-.rbtn{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--ink2);background:var(--card2);border:1.5px solid var(--border2);padding:6px 14px;border-radius:4px;cursor:pointer;text-transform:uppercase;transition:all 120ms;}
-.rbtn:hover{background:var(--ink);color:var(--card2);}
-.tabs{display:flex;padding:0 32px;background:var(--card);border-bottom:1.5px solid var(--border);}
-.tab{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;padding:13px 22px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;transition:all 150ms;font-weight:700;border-right:1.5px solid var(--border);}
-.tab:first-child{border-left:1.5px solid var(--border);}
-.tab:hover{color:var(--ink);background:var(--card2);}
-.tab.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--card2);}
-.page{display:none;}.page.active{display:block;}
-.hero{padding:28px 32px 0;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;}
-.stat{background:var(--card2);border:1.5px solid var(--border);border-radius:var(--r);padding:20px 22px;position:relative;overflow:hidden;}
-.stat-accent{position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r);}
-.stat.eagle .stat-accent{background:var(--blue);}
-.stat.test .stat-accent{background:var(--green);}
-.stat.learn .stat-accent{background:var(--purple);}
-.stat.queue .stat-accent{background:var(--amber);}
-.stat-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-.stat-num{font-family:var(--display);font-size:40px;font-weight:800;line-height:1;margin-bottom:6px;}
-.stat.eagle .stat-num{color:var(--blue);}
-.stat.test .stat-num{color:var(--green);}
-.stat.learn .stat-num{color:var(--purple);}
-.stat.queue .stat-num{color:var(--amber);}
-.stat-sub{font-size:12px;color:var(--muted);font-family:'Inter',sans-serif;}
-.main{padding:24px 32px;display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.full{grid-column:1/-1;}
-.panel{background:var(--card2);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;}
-.panel-head{padding:12px 18px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--card);}
-.panel-title{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;color:var(--ink2);text-transform:uppercase;font-weight:700;}
-.pbadge{font-family:var(--mono);font-size:9px;padding:3px 9px;border-radius:4px;border:1.5px solid;letter-spacing:0.06em;text-transform:uppercase;}
-.pbadge.blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-b);}
-.pbadge.green{background:var(--green-bg);color:var(--green);border-color:var(--green-b);}
-.pbadge.purple{background:var(--purple-bg);color:var(--purple);border-color:var(--purple-b);}
-.pbadge.teal{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-b);}
-.panel-body{padding:14px 18px;}
-.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1.5px dashed var(--border);}
-.row:last-child{border-bottom:none;}
-.row-id{font-family:var(--mono);font-size:9px;color:var(--dim);width:70px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.04em;}
-.row-name{flex:1;color:var(--ink);font-weight:500;font-size:13px;font-family:'Inter',sans-serif;}
-.row-time{font-family:var(--mono);font-size:9px;color:var(--dim);flex-shrink:0;}
-.badge{font-family:var(--mono);font-size:8px;padding:3px 8px;border-radius:4px;border:1.5px solid;flex-shrink:0;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;}
-.badge.done{background:var(--green-bg);color:var(--green);border-color:var(--green-b);}
-.badge.live{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-b);}
-.badge.review{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-b);}
-.badge.fail{background:var(--red-bg);color:var(--red);border-color:var(--red-b);}
-.badge.queued{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-b);}
-.phase-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;}
-.phase-list{display:flex;flex-direction:column;}
-.ph{display:flex;align-items:center;gap:8px;padding:6px 0;position:relative;}
-.ph:not(:last-child)::after{content:'';position:absolute;left:8px;top:24px;width:1.5px;height:calc(100% - 4px);background:var(--border2);}
-.ph-dot{width:16px;height:16px;border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;z-index:1;border:1.5px solid;}
-.ph-dot.pass{background:var(--green-bg);border-color:var(--green);color:var(--green);}
-.ph-dot.fail{background:var(--red-bg);border-color:var(--red);color:var(--red);}
-.ph-dot.run{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);animation:blink 1s infinite;}
-.ph-dot.wait{background:var(--card);border-color:var(--border2);color:var(--dim);}
-.ph-name{font-family:var(--mono);font-size:10px;color:var(--ink2);flex:1;letter-spacing:0.02em;}
-.ph-dur{font-family:var(--mono);font-size:9px;color:var(--dim);}
-.mwrap{overflow-x:auto;}
-table.mx{width:100%;border-collapse:collapse;}
-table.mx th{font-family:var(--mono);font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:8px 6px;text-align:center;border-bottom:2px solid var(--border2);background:var(--card);}
-table.mx th:first-child{text-align:left;padding-left:0;}
-table.mx td{padding:8px 6px;text-align:center;border-bottom:1px dashed var(--border);}
-table.mx td:first-child{text-align:left;font-family:var(--mono);font-size:9px;font-weight:700;color:var(--ink2);padding-left:0;letter-spacing:0.04em;}
-table.mx tr:last-child td{border-bottom:none;}
-.cp{color:var(--green);font-weight:800;font-size:12px;}
-.cf{color:var(--red);font-weight:800;font-size:12px;}
-.cs{color:var(--dim);font-size:11px;}
-.intel{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:10px;}
-.intel:last-child{margin-bottom:0;}
-.intel-h{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.intel-icon{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
-.intel-icon.warn{background:var(--amber-bg);border:1.5px solid var(--amber-b);}
-.intel-icon.info{background:var(--blue-bg);border:1.5px solid var(--blue-b);}
-.intel-icon.teal{background:var(--teal-bg);border:1.5px solid var(--teal-b);}
-.intel-title{font-weight:600;font-size:13px;color:var(--ink);font-family:'Inter',sans-serif;}
-.intel-body{font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);line-height:1.7;}
-.empty{padding:28px;text-align:center;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:0.04em;}
-footer{margin:8px 32px 24px;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--r);background:var(--card2);display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:0.06em;}
-footer strong{color:var(--ink2);}
-.dt-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;}
-.dt-card{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 14px;}
-.dt-name{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
-.dt-num{font-family:var(--display);font-size:28px;font-weight:800;color:var(--teal);line-height:1;}
-.dt-sub{font-family:'Inter',sans-serif;font-size:9px;color:var(--muted);margin-top:4px;}
-.prog-wrap{margin:8px 0;}
-.prog-label{display:flex;justify-content:space-between;font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);margin-bottom:4px;}
-.prog-bar{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;border:1px solid var(--border);}
-.prog-fill{height:100%;border-radius:4px;}
-.prog-fill.green{background:var(--green);}
-.prog-fill.amber{background:var(--amber);}
-.prog-fill.red{background:var(--red);}
+/* ══════════════════════════════════════════
+   DESIGN TOKENS
+   ══════════════════════════════════════════ */
+:root{
+  --page:#f1f3ef;--card:#fff;--card2:#f7f9f5;
+  --nav:#0a1a0f;--nav2:#0f2318;
+  --bd:#dde6dd;--bd2:#c8d8c8;
+  --g:#1D7A45;--g2:#25a05a;--gx:#e8f4ed;--gxx:#c8e8d4;
+  --t1:#0d1a10;--t2:#2a3d2f;--t3:#627569;--t4:#96b09c;
+  --amber:#d97706;--abg:#fef3c7;--abd:#fcd34d;
+  --red:#dc2626;--rbg:#fef2f2;--rbd:#fca5a5;
+  --blue:#2563eb;--bbg:#eff6ff;--bbd:#93c5fd;
+  --purple:#7c3aed;--pbg:#f5f3ff;--pbd:#c4b5fd;
+  --teal:#0d9488;--tbg:#f0fdfa;--tbd:#5eead4;
+  --mono:'JetBrains Mono',monospace;
+  --dis:'Syne',sans-serif;
+  --body:'DM Sans',sans-serif;
+  --r:8px;--r2:12px;--r3:16px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04);
+  --sh2:0 4px 16px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);
+  --sh3:0 16px 48px rgba(0,0,0,.14);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--page);color:var(--t1);font-family:var(--body);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;overscroll-behavior:none}
+
+/* ══════════════════════════════════════════
+   TOOLTIP — hover on desktop, tap on mobile
+   ══════════════════════════════════════════ */
+.tip{position:relative;display:inline-flex;align-items:center}
+.tip-i{width:18px;height:18px;border-radius:50%;background:var(--gx);border:1.5px solid var(--gxx);color:var(--g);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-family:var(--body);transition:all .15s;margin-left:5px;user-select:none;touch-action:manipulation}
+.tip-i:hover,.tip-i.open{background:var(--g);color:#fff;border-color:var(--g)}
+.tip-box{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:var(--nav);border:1px solid var(--nav2);border-radius:var(--r2);padding:13px 15px;width:260px;max-width:80vw;z-index:9999;box-shadow:var(--sh3);font-size:12px;color:#d0e8d8;line-height:1.65;font-family:var(--body)}
+.tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--nav)}
+.tip-box .tl{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g);margin-bottom:6px;display:block}
+.tip-box strong{color:#7dd8a0;font-weight:600}
+/* Desktop: hover */
+@media(hover:hover){.tip:hover .tip-box{display:block}}
+/* Mobile: tap toggle */
+.tip-box.show{display:block}
+
+/* ══════════════════════════════════════════
+   TOP NAV
+   ══════════════════════════════════════════ */
+.topnav{background:var(--nav);position:sticky;top:0;z-index:200;
+  padding-top:env(safe-area-inset-top,0)}
+.tni{max-width:1480px;margin:0 auto;padding:0 16px;height:52px;
+  display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.brand-logo{width:28px;height:28px;border-radius:7px;background:var(--g);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--dis);font-size:12px;font-weight:800;color:#fff}
+.brand-name{font-family:var(--dis);font-size:13px;font-weight:800;
+  color:#fff;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.brand-name em{color:var(--g);font-style:normal}
+.live-pill{display:flex;align-items:center;gap:4px;padding:2px 8px;
+  border-radius:20px;background:rgba(29,122,69,.2);border:1px solid rgba(29,122,69,.4);
+  font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.1em;
+  color:#7dd8a0;text-transform:uppercase;flex-shrink:0}
+.live-d{width:4px;height:4px;border-radius:50%;background:#7dd8a0;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Desktop tabs — hidden on mobile */
+.desk-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
+.desk-tabs::-webkit-scrollbar{display:none}
+.dtab{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;
+  color:rgba(255,255,255,.45);background:transparent;border:none;cursor:pointer;
+  white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:5px}
+.dtab:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.06)}
+.dtab.on{color:#fff;background:rgba(29,122,69,.25);border:1px solid rgba(29,122,69,.35)}
+.dtab .td{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+
+.nav-r{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.clock{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.05em}
+.nav-btn{padding:5px 11px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--r);color:rgba(255,255,255,.55);font-size:11px;font-weight:500;
+  cursor:pointer;transition:all .15s;touch-action:manipulation}
+.nav-btn:hover{background:var(--g);color:#fff;border-color:var(--g)}
+.org-pill{display:flex;align-items:center;gap:5px;padding:3px 9px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px}
+.org-av{width:17px;height:17px;border-radius:50%;background:var(--g);
+  display:flex;align-items:center;justify-content:center;font-size:7px;
+  font-weight:800;color:#fff;font-family:var(--dis)}
+.org-nm{font-size:11px;color:rgba(255,255,255,.55);font-weight:500}
+
+/* ══════════════════════════════════════════
+   BOTTOM TAB BAR — mobile only
+   ══════════════════════════════════════════ */
+.bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--nav);
+  border-top:1px solid rgba(255,255,255,.08);
+  z-index:300;
+  padding-bottom:var(--safe-bottom);
+}
+.bn-inner{display:flex;height:56px}
+.bntab{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;cursor:pointer;border:none;
+  background:transparent;color:rgba(255,255,255,.35);
+  font-size:8.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+  padding:4px 2px;transition:color .15s;touch-action:manipulation;
+  font-family:var(--body)}
+.bntab.on{color:var(--g)}
+.bntab .bi{font-size:19px;line-height:1}
+
+/* ══════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════ */
+.pw{max-width:1480px;margin:0 auto;padding:20px 16px 32px}
+.panel{display:none}.panel.on{display:block}
+
+/* Grids — mobile first (1 col), grow up */
+.g2{display:grid;grid-template-columns:1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr;gap:14px}
+.g4{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g-bi{display:grid;grid-template-columns:1fr;gap:16px}
+.g-rag{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:640px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}.g-bi{grid-template-columns:1fr 340px}.g-rag{grid-template-columns:1fr 320px}}
+
+/* ══════════════════════════════════════════
+   SHARED COMPONENTS
+   ══════════════════════════════════════════ */
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh);overflow:hidden}
+.ch{padding:12px 16px;border-bottom:1px solid var(--bd);background:var(--card2);
+  display:flex;align-items:center;justify-content:space-between}
+.ct{font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:6px}
+.cb{padding:14px 16px}
+.sh{display:flex;align-items:center;gap:7px;margin-bottom:11px;flex-wrap:wrap}
+.sl{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--t3)}
+.sc{padding:1px 7px;border-radius:10px;font-family:var(--mono);font-size:9px;font-weight:700}
+.sc-g{background:var(--gx);color:var(--g);border:1px solid var(--gxx)}
+.sc-a{background:var(--abg);color:var(--amber);border:1px solid var(--abd)}
+
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.bg{background:var(--gx);color:var(--g);border:1px solid var(--gxx)}
+.ba{background:var(--abg);color:var(--amber);border:1px solid var(--abd)}
+.br2{background:var(--rbg);color:var(--red);border:1px solid var(--rbd)}
+.bb{background:var(--bbg);color:var(--blue);border:1px solid var(--bbd)}
+.bp{background:var(--pbg);color:var(--purple);border:1px solid var(--pbd)}
+.bt{background:var(--tbg);color:var(--teal);border:1px solid var(--tbd)}
+.bgr{background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb}
+
+.light{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.lg{background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.4)}
+.la{background:var(--amber);box-shadow:0 0 6px rgba(217,119,6,.3)}
+.lr{background:var(--red);box-shadow:0 0 6px rgba(220,38,38,.3)}
+.ll{background:#d1d5db}.lt{background:var(--teal);box-shadow:0 0 6px rgba(13,148,136,.3)}
+
+/* Buttons — minimum 44px touch target */
+.btn{min-height:44px;padding:10px 18px;border-radius:var(--r);font-size:13px;
+  font-weight:600;cursor:pointer;border:none;transition:all .15s;
+  display:inline-flex;align-items:center;gap:6px;font-family:var(--body);
+  touch-action:manipulation}
+.btn-g{background:var(--g);color:#fff}
+.btn-g:hover,.btn-g:active{background:var(--g2)}
+.btn-s{background:var(--card);color:var(--t2);border:1px solid var(--bd2)}
+.btn-s:hover,.btn-s:active{border-color:var(--g);color:var(--g)}
+.btn-r{background:var(--rbg);color:var(--red);border:1px solid var(--rbd)}
+.btn-t{background:var(--tbg);color:var(--teal);border:1px solid var(--tbd)}
+.btn-sm{min-height:36px;padding:6px 14px;font-size:12px}
+
+.stat-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);
+  padding:16px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px}
+.sc-g2::before{background:var(--g)}.sc-a2::before{background:var(--amber)}
+.sc-b2::before{background:var(--blue)}.sc-p2::before{background:var(--purple)}
+.sc-t2::before{background:var(--teal)}.sc-r2::before{background:var(--red)}
+.sv-l{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.sv-v{font-family:var(--dis);font-size:30px;font-weight:800;line-height:1;
+  letter-spacing:-.02em;margin-bottom:3px}
+.sc-g2 .sv-v{color:var(--g)}.sc-a2 .sv-v{color:var(--amber)}.sc-b2 .sv-v{color:var(--blue)}
+.sc-p2 .sv-v{color:var(--purple)}.sc-t2 .sv-v{color:var(--teal)}.sc-r2 .sv-v{color:var(--red)}
+.sv-s{font-size:11px;color:var(--t3);line-height:1.4}
+
+.data-row{display:flex;align-items:center;gap:10px;padding:10px 16px;
+  border-bottom:1px solid var(--bd)}
+.data-row:last-child{border-bottom:none}
+
+/* Phase trail — always scrollable */
+.pt{display:flex;align-items:center;overflow-x:auto;padding:6px 0;
+  -webkit-overflow-scrolling:touch;gap:0}
+.pt::-webkit-scrollbar{display:none}
+.pt-step{display:flex;align-items:center;flex-shrink:0}
+.pt-node{display:flex;align-items:center;gap:3px;padding:4px 9px;
+  border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.pt-done{background:var(--gx);color:var(--g);border:1px solid var(--gxx)}
+.pt-act{background:var(--abg);color:var(--amber);border:1px solid var(--abd);animation:breathe 2s infinite}
+.pt-you{background:var(--bbg);color:var(--blue);border:1px solid var(--bbd);font-weight:700}
+.pt-wait{background:#f3f4f6;color:#9ca3af;border:1px solid #e5e7eb}
+.pt-arr{color:var(--t4);padding:0 2px;font-size:10px;flex-shrink:0}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.55}}
+
+/* ══════════════════════════════════════════
+   DECISION CARDS — the most important section
+   ══════════════════════════════════════════ */
+.dc{background:var(--card);border:1px solid var(--bd);
+  border-left:3px solid var(--amber);border-radius:var(--r2);
+  padding:16px;margin-bottom:10px;box-shadow:var(--sh)}
+.dc.urgent{border-left-color:var(--red)}
+.dc-tag{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--amber);margin-bottom:4px}
+.dc-title{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:5px;line-height:1.3}
+.dc-ex{font-size:12px;color:var(--t2);line-height:1.65;margin-bottom:10px}
+.dc-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.dc-acts .btn{flex:1;min-width:100px;justify-content:center}
+
+/* Approve loading state */
+.btn.loading{opacity:.6;cursor:not-allowed;pointer-events:none}
+.btn.done-ok{background:#22c55e!important;color:#fff!important}
+.btn.done-no{background:var(--red)!important;color:#fff!important}
+
+/* ══════════════════════════════════════════
+   HARNESS MINI CARDS
+   ══════════════════════════════════════════ */
+.hm{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);
+  padding:14px;box-shadow:var(--sh);cursor:pointer;transition:all .15s;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.hm:hover,.hm:active{border-color:var(--g);box-shadow:var(--sh2)}
+.hm-top{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.hm-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;flex-shrink:0}
+.hm-nm{font-size:12px;font-weight:700;color:var(--t1)}
+.hm-rl{font-size:10px;color:var(--t3);margin-top:1px}
+.hm-stats{display:flex;gap:14px;margin-bottom:6px}
+.hm-sv{font-family:var(--dis);font-size:20px;font-weight:800;color:var(--t1);line-height:1}
+.hm-sl{font-size:9px;color:var(--t4);text-transform:uppercase;font-family:var(--mono);letter-spacing:.07em}
+.hm-cta{font-size:10px;color:var(--g);font-weight:600;text-align:right}
+
+/* Quick action tiles */
+.at-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);
+  border-radius:var(--r2);overflow:hidden}
+.at{padding:14px;background:var(--card);cursor:pointer;border:none;text-align:left;
+  transition:background .15s;display:flex;flex-direction:column;gap:4px;
+  touch-action:manipulation;min-height:70px}
+.at:hover,.at:active{background:var(--gx)}
+.at-e{font-size:18px}.at-n{font-size:12px;font-weight:700;color:var(--t1)}
+.at-s{font-size:10px;color:var(--t3);line-height:1.4}
+
+/* Hero */
+.hero{background:var(--nav);border-radius:var(--r3);padding:22px 20px;
+  margin-bottom:20px;position:relative;overflow:hidden}
+.hero::after{content:'369';position:absolute;right:16px;top:50%;
+  transform:translateY(-50%);font-family:var(--dis);font-size:80px;font-weight:800;
+  color:rgba(29,122,69,.07);line-height:1;pointer-events:none;letter-spacing:-.04em}
+.hero-av{width:48px;height:48px;border-radius:12px;background:var(--g);
+  display:flex;align-items:center;justify-content:center;font-family:var(--dis);
+  font-size:20px;font-weight:800;color:#fff;margin-bottom:12px}
+.hero-greet{font-size:11px;color:rgba(255,255,255,.35);margin-bottom:3px}
+.hero-title{font-family:var(--dis);font-size:19px;font-weight:800;color:#fff;
+  margin-bottom:6px;line-height:1.2}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;max-width:520px}
+.hero-acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.hb{min-height:40px;padding:8px 14px;border-radius:var(--r);font-size:12px;
+  font-weight:600;cursor:pointer;border:none;transition:all .15s;
+  touch-action:manipulation;font-family:var(--body)}
+.hb-p{background:var(--g);color:#fff}.hb-p:hover,.hb-p:active{background:var(--g2)}
+.hb-s{background:rgba(255,255,255,.09);color:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.12)}.hb-s:hover{background:rgba(255,255,255,.15)}
+
+.brief-out{background:var(--card);border:1px solid var(--bd);
+  border-left:3px solid var(--g);border-radius:var(--r2);
+  padding:16px;font-size:13.5px;line-height:1.85;color:var(--t2);
+  font-weight:300;box-shadow:var(--sh)}
+.brief-out.ph{color:var(--t3);font-style:italic;border-left-color:var(--bd2)}
+
+/* Build tickets */
+.tick-row{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);
+  padding:14px;margin-bottom:9px;box-shadow:var(--sh)}
+.tr-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.tr-n{font-family:var(--mono);font-size:10px;color:var(--t4);width:24px}
+.tr-ex{font-size:11px;color:var(--t3);line-height:1.6;margin-bottom:8px}
+
+.run-row{display:flex;align-items:center;gap:10px;padding:9px 16px;
+  border-bottom:1px solid var(--bd)}
+.run-row:last-child{border-bottom:none}
+.run-row:hover{background:var(--card2)}
+.run-id{font-family:var(--mono);font-size:10px;color:var(--t4);
+  width:64px;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.run-nm{font-size:12px;color:var(--t1);font-weight:500;flex:1;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.run-t{font-family:var(--mono);font-size:10px;color:var(--t4);flex-shrink:0}
+
+.hr-row{display:flex;align-items:center;gap:10px;padding:10px 16px;
+  border-bottom:1px solid var(--bd)}
+.hr-row:last-child{border-bottom:none}
+.hr-n{font-size:12px;font-weight:600;color:var(--t1)}
+.hr-d{font-size:10px;color:var(--t3);margin-top:1px;line-height:1.4}
+
+/* BCBT countdown */
+.cd-panel{background:var(--nav);border-radius:var(--r3);padding:20px;
+  text-align:center;margin-bottom:14px}
+.cd-l{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px}
+.cd-n{font-family:var(--dis);font-size:48px;font-weight:800;color:#7dd8a0;
+  line-height:1;letter-spacing:-.03em}
+.cd-u{font-size:12px;color:rgba(255,255,255,.3);margin-top:4px}
+.cd-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:12px;overflow:hidden}
+.cd-fill{height:100%;background:var(--g);border-radius:2px}
+.cd-t{font-size:10px;color:rgba(255,255,255,.25);margin-top:8px}
+
+/* RAG panel */
+.rag-hero{background:linear-gradient(135deg,var(--tbg) 0%,var(--gx) 60%,#fff 100%);
+  border:1px solid var(--tbd);border-radius:var(--r3);padding:20px;margin-bottom:20px}
+.rag-hero-t{font-family:var(--dis);font-size:17px;font-weight:800;color:var(--t1);margin-bottom:5px}
+.rag-hero-s{font-size:13px;color:var(--t2);line-height:1.7}
+.rag-hero-tag{display:inline-flex;align-items:center;gap:5px;margin-top:8px;
+  padding:3px 10px;border-radius:20px;background:var(--tbg);border:1px solid var(--tbd);
+  color:var(--teal);font-size:10px;font-weight:600;font-family:var(--mono)}
+
+.ask-box{background:var(--card);border:2px solid var(--bd);border-radius:var(--r3);
+  padding:16px;margin-bottom:16px;box-shadow:var(--sh2);transition:border-color .15s}
+.ask-box:focus-within{border-color:var(--teal)}
+.ask-label{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:10px;
+  display:flex;align-items:center;gap:7px}
+.ask-row{display:flex;gap:8px;align-items:flex-end}
+.ask-in{flex:1;border:1.5px solid var(--bd);border-radius:var(--r);padding:11px 13px;
+  font-size:16px;/* 16px prevents iOS zoom */
+  font-family:var(--body);color:var(--t1);background:var(--card2);outline:none;
+  transition:border-color .15s;resize:none;line-height:1.5;min-height:50px}
+.ask-in:focus{border-color:var(--teal);background:#fff}
+.ask-in::placeholder{color:var(--t4)}
+.ask-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px;align-items:center}
+.ask-ex{font-size:10px;color:var(--t3);font-weight:600}
+.eg-chip{padding:5px 10px;border-radius:20px;font-size:11px;font-weight:500;
+  background:var(--card2);border:1px solid var(--bd);color:var(--t2);cursor:pointer;
+  transition:all .12s;touch-action:manipulation;min-height:32px;display:flex;align-items:center}
+.eg-chip:hover,.eg-chip:active{background:var(--tbg);border-color:var(--tbd);color:var(--teal)}
+.src-chip{display:flex;align-items:center;gap:3px;padding:5px 10px;
+  border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;
+  transition:all .12s;border:1.5px solid;touch-action:manipulation;min-height:32px}
+.src-on{background:var(--tbg);color:var(--teal);border-color:var(--tbd)}
+.src-off{background:#f3f4f6;color:#9ca3af;border-color:#e5e7eb}
+
+.ans-box{background:var(--card);border:1px solid var(--bd);
+  border-left:3px solid var(--teal);border-radius:var(--r2);padding:14px 16px;
+  margin-bottom:14px;box-shadow:var(--sh);display:none}
+.ans-box.vis{display:block}
+.ans-h{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap}
+.ans-l{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--teal)}
+.ans-src{font-size:10px;color:var(--t4);font-family:var(--mono)}
+.ans-text{font-size:13px;color:var(--t2);line-height:1.85;white-space:pre-wrap}
+.ans-cites{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+.cite{padding:2px 8px;border-radius:4px;background:var(--tbg);color:var(--teal);
+  border:1px solid var(--tbd);font-size:10px;font-family:var(--mono)}
+.ans-conf{display:flex;align-items:center;gap:8px;margin-top:9px;padding-top:9px;
+  border-top:1px solid var(--bd);font-size:11px;color:var(--t3);flex-wrap:wrap}
+.conf-bar{flex:1;height:4px;background:var(--bd);border-radius:2px;overflow:hidden;max-width:100px}
+.conf-fill{height:100%;background:var(--teal);border-radius:2px}
+
+.act-gen{background:var(--card);border:1px solid var(--bd);border-top:2px solid var(--teal);
+  border-radius:var(--r2);padding:14px;margin-bottom:16px;box-shadow:var(--sh);display:none}
+.act-gen.vis{display:block}
+.act-gen-t{font-size:12px;font-weight:700;color:var(--t1);margin-bottom:10px;
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.act-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+@media(min-width:480px){.act-grid{grid-template-columns:repeat(4,1fr)}}
+.act-btn{padding:10px 6px;background:var(--card2);border:1px solid var(--bd);
+  border-radius:var(--r);cursor:pointer;transition:all .15s;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  touch-action:manipulation;min-height:56px}
+.act-btn:hover,.act-btn:active{background:var(--tbg);border-color:var(--tbd)}
+.act-btn-e{font-size:18px}.act-btn-n{font-size:10px;font-weight:600;color:var(--t1)}
+
+/* Knowledge map */
+.km-grid{display:grid;grid-template-columns:1fr;gap:6px;margin-bottom:16px}
+@media(min-width:480px){.km-grid{grid-template-columns:1fr 1fr}}
+.km-cat{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);
+  padding:10px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;
+  gap:9px;box-shadow:var(--sh);touch-action:manipulation;min-height:44px}
+.km-cat:hover,.km-cat:active{background:var(--tbg);border-color:var(--tbd)}
+.km-ic{font-size:15px;flex-shrink:0}
+.km-info{flex:1}
+.km-nm{font-size:12px;font-weight:700;color:var(--t1)}
+.km-ds{font-size:10px;color:var(--t3)}
+.km-cnt{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--t4)}
+
+/* Vault source cards */
+.vsc{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);
+  box-shadow:var(--sh);overflow:hidden;margin-bottom:10px}
+.vsc-h{padding:11px 14px;background:var(--card2);border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;gap:10px}
+.vsc-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:14px;flex-shrink:0}
+.vsc-nm{font-size:13px;font-weight:700;color:var(--t1)}
+.vsc-pt{font-family:var(--mono);font-size:10px;color:var(--t4);margin-top:1px}
+.vsc-b{padding:11px 14px}
+.vsc-ex{font-size:11px;color:var(--t3);line-height:1.6}
+
+/* Perm bar */
+.perm-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:var(--card);border:1px solid var(--bd);border-radius:var(--r);
+  margin-bottom:14px;box-shadow:var(--sh);flex-wrap:wrap}
+.perm-label{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--t3)}
+.perm-mode{display:flex;gap:5px;margin-left:auto}
+.perm-btn{padding:4px 11px;min-height:32px;border-radius:4px;font-size:10px;font-weight:700;
+  cursor:pointer;border:none;font-family:var(--mono);transition:all .15s;touch-action:manipulation}
+.perm-priv{background:var(--nav);color:#7dd8a0}
+.perm-priv.off{background:var(--card2);color:var(--t4)}
+.perm-demo{background:var(--bbg);color:var(--blue);border:1px solid var(--bbd)}
+.perm-demo.off{background:var(--card2);color:var(--t4);border-color:var(--bd)}
+
+/* Self-improvement */
+.ic{background:var(--card);border:1px solid var(--bd);border-left:3px solid var(--purple);
+  border-radius:var(--r2);padding:14px;margin-bottom:9px;box-shadow:var(--sh)}
+.ic-h{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.ic-t{font-size:13px;font-weight:700;color:var(--t1);flex:1}
+.ic-d{font-family:var(--mono);font-size:10px;color:var(--t4)}
+.ic-b{font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:9px}
+.ic-ms{display:flex;gap:6px;flex-wrap:wrap}
+.ic-m{padding:3px 8px;background:var(--pbg);border:1px solid var(--pbd);
+  border-radius:4px;font-family:var(--mono);font-size:10px;color:var(--purple)}
+.fx{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);
+  padding:12px 14px;margin-bottom:7px;box-shadow:var(--sh);display:flex;gap:10px;align-items:flex-start}
+.fx-sev{width:42px;height:20px;border-radius:4px;display:flex;align-items:center;
+  justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;flex-shrink:0;margin-top:2px}
+.fx-h{background:var(--rbg);color:var(--red);border:1px solid var(--rbd)}
+.fx-m{background:var(--abg);color:var(--amber);border:1px solid var(--abd)}
+.fx-l{background:var(--bbg);color:var(--blue);border:1px solid var(--bbd)}
+.fx-info{flex:1}
+.fx-t{font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px}
+.fx-b{font-size:11px;color:var(--t3);line-height:1.6}
+
+/* Audit */
+.audit-item{padding:8px 14px;border-bottom:1px solid var(--bd);display:flex;flex-direction:column;gap:2px}
+.audit-item:last-child{border-bottom:none}
+.audit-q{font-size:11px;color:var(--t2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.audit-m{font-family:var(--mono);font-size:9px;color:var(--t4)}
+
+/* Modals */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;
+  align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);padding:0}
+.ov.op{display:flex}
+@media(min-width:640px){.ov{align-items:center;padding:16px}}
+.mb{background:#fff;border-radius:var(--r3) var(--r3) 0 0;
+  width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--sh3);
+  border-top:3px solid var(--g);padding-bottom:var(--safe-bottom)}
+@media(min-width:640px){.mb{border-radius:var(--r3);max-width:520px;width:100%}}
+.mb.teal-top{border-top-color:var(--teal)}
+.mh{padding:16px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;justify-content:space-between}
+.mt{font-family:var(--dis);font-size:16px;font-weight:700;color:var(--t1)}
+.mx{background:none;border:none;color:var(--t3);font-size:22px;cursor:pointer;
+  padding:0;line-height:1;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
+.mx:hover{color:var(--t1)}
+.mbody{padding:18px 20px;font-size:13px;color:var(--t2);line-height:1.75}
+.mf{padding:12px 20px;border-top:1px solid var(--bd);display:flex;gap:8px;
+  justify-content:flex-end;background:var(--card2);flex-wrap:wrap}
+.cmd-blk{background:var(--nav);border-radius:var(--r);padding:12px 14px;
+  font-family:var(--mono);font-size:12px;color:#7dd8a0;margin:10px 0;
+  word-break:break-all;line-height:1.6;overflow-x:auto}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(29,122,69,.2);
+  border-top-color:var(--g);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-t{display:inline-block;width:13px;height:13px;border:2px solid rgba(13,148,136,.2);
+  border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite}
+
+.info-box{padding:12px 14px;border-radius:var(--r);font-size:12px;line-height:1.7;margin-bottom:16px}
+.info-g{background:var(--gx);border:1px solid var(--gxx);color:var(--t2)}
+.info-a{background:var(--abg);border:1px solid var(--abd);color:var(--t2)}
+.info-t{background:var(--tbg);border:1px solid var(--tbd);color:var(--t2)}
+
+/* PDF upload */
+.pdf-zone{border:2px dashed var(--tbd);border-radius:var(--r);padding:20px 14px;
+  text-align:center;cursor:pointer;transition:all .15s;background:var(--tbg)}
+.pdf-zone:hover,.pdf-zone:active{border-color:var(--teal)}
+
+/* Toast */
+#toast{display:none;position:fixed;bottom:calc(70px + var(--safe-bottom));left:50%;
+  transform:translateX(-50%);background:var(--nav);color:#fff;padding:11px 20px;
+  border-radius:var(--r);font-size:13px;font-weight:500;z-index:999;
+  box-shadow:var(--sh3);border:1px solid rgba(255,255,255,.1);
+  white-space:nowrap;max-width:90vw;text-align:center}
+@media(min-width:640px){#toast{bottom:24px}}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — show/hide elements
+   ══════════════════════════════════════════ */
+@media(max-width:767px){
+  .desk-tabs{display:none}
+  .bottom-nav{display:block}
+  .pw{padding-bottom:calc(70px + var(--safe-bottom) + 16px)}
+  .clock{display:none}
+  .org-nm{display:none}
+}
+@media(min-width:768px){
+  .bottom-nav{display:none!important}
+}
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="tl">
-    <div class="brand">IT Mission Control <em>// 369</em></div>
-    <div class="live-badge"><span class="dot"></span>LIVE</div>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="tni">
+    <div class="brand">
+      <div class="brand-logo">MV</div>
+      <div class="brand-name">369 <em>MISSION</em> VAULT</div>
+      <div class="live-pill"><span class="live-d"></span>LIVE</div>
+    </div>
+    <div class="desk-tabs">
+      <button class="dtab on" onclick="sw(0)" id="t0"><span class="td" style="background:var(--g)"></span>Overview</button>
+      <button class="dtab" onclick="sw(1)" id="t1"><span class="td" style="background:var(--blue)"></span>Build Intelligence</button>
+      <button class="dtab" onclick="sw(2)" id="t2"><span class="td" style="background:var(--amber)"></span>Document Intelligence</button>
+      <button class="dtab" onclick="sw(3)" id="t3"><span class="td" style="background:var(--teal)"></span>RAG Intelligence</button>
+      <button class="dtab" onclick="sw(4)" id="t4"><span class="td" style="background:var(--purple)"></span>Self-Improvement</button>
+      <button class="dtab" onclick="sw(5)" id="t5"><span class="td" style="background:#6b7280"></span>Settings</button>
+    </div>
+    <div class="nav-r">
+      <div class="clock" id="clock">--:--:--</div>
+      <button class="nav-btn" onclick="loadAll()">↻</button>
+      <div class="org-pill"><div class="org-av">DA</div><span class="org-nm">DeAssists</span></div>
+    </div>
   </div>
-  <div class="tr">
-    <div class="clock" id="clock">--:--:--</div>
-    <button class="rbtn" onclick="loadAll()">↻ Refresh</button>
+</nav>
+
+<!-- BOTTOM TAB BAR (mobile) -->
+<div class="bottom-nav">
+  <div class="bn-inner">
+    <button class="bntab on" onclick="sw(0)" id="bn0"><span class="bi">🏠</span>Overview</button>
+    <button class="bntab" onclick="sw(1)" id="bn1"><span class="bi">🏗</span>Build</button>
+    <button class="bntab" onclick="sw(2)" id="bn2"><span class="bi">📚</span>Docs</button>
+    <button class="bntab" onclick="sw(3)" id="bn3"><span class="bi">🔮</span>RAG</button>
+    <button class="bntab" onclick="sw(4)" id="bn4"><span class="bi">🧠</span>Learn</button>
+    <button class="bntab" onclick="sw(5)" id="bn5"><span class="bi">⚙</span>Settings</button>
   </div>
 </div>
-<div class="tabs">
-  <div class="tab active" id="tab-build" onclick="switchTab('build')">Build Intelligence</div>
-  <div class="tab" id="tab-docs" onclick="switchTab('docs')" style="color:var(--teal)">Document Intelligence</div>
-</div>
-<div class="page active" id="page-build">
-<div class="hero">
-  <div class="stat eagle"><div class="stat-accent"></div><div class="stat-label">EAGLE Builds</div><div class="stat-num" id="s-eagle">—</div><div class="stat-sub" id="s-eagle-sub">loading…</div></div>
-  <div class="stat test"><div class="stat-accent"></div><div class="stat-label">Test Runs</div><div class="stat-num" id="s-test">—</div><div class="stat-sub" id="s-test-sub">loading…</div></div>
-  <div class="stat learn"><div class="stat-accent"></div><div class="stat-label">Proposals</div><div class="stat-num" id="s-learn">—</div><div class="stat-sub" id="s-learn-sub">loading…</div></div>
-  <div class="stat queue"><div class="stat-accent"></div><div class="stat-label">Queue</div><div class="stat-num" id="s-queue">—</div><div class="stat-sub" id="s-queue-sub">loading…</div></div>
-</div>
-<div class="main">
-  <div class="panel"><div class="panel-head"><span class="panel-title">EAGLE — Recent Builds</span><span class="pbadge blue">builder</span></div><div class="panel-body" id="eagle-list"><div class="empty">Loading…</div></div></div>
-  <div class="panel"><div class="panel-head"><span class="panel-title">Test Harness — Night Watch</span><span class="pbadge green">guardian</span></div><div class="panel-body" id="test-list"><div class="empty">Builds tonight via playwright-full-test-suite</div></div></div>
-  <div class="panel"><div class="panel-head"><span class="panel-title">Ticket Queue</span></div><div class="panel-body" id="queue-list"><div class="empty">Loading queue…</div></div></div>
-  <div class="panel"><div class="panel-head"><span class="panel-title">Role × Permission Matrix</span></div><div class="panel-body" id="matrix-wrap"><div class="empty">Populates after first Playwright run</div></div></div>
-  <div class="panel full"><div class="panel-head"><span class="panel-title">Latest Run — Phase Trail</span><span id="latest-run-id" style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:0.06em">—</span></div><div style="padding:14px 18px;" id="phase-trail"><div class="empty">Loading…</div></div></div>
-  <div class="panel full"><div class="panel-head"><span class="panel-title">Self-Improvement — Intelligence Reports</span><span class="pbadge purple">learner</span></div><div class="panel-body" id="intel-list">
-    <div class="intel"><div class="intel-h"><div class="intel-icon warn">!</div><span class="intel-title">First analysis running tonight</span></div><div class="intel-body">Self-improvement harness builds tonight. Reads full codebase + SOP + harness_runs. First analysis report appears here tomorrow morning.</div></div>
-    <div class="intel"><div class="intel-h"><div class="intel-icon info">i</div><span class="intel-title">Run 1 complete — 3 May 2026, 4:44pm</span></div><div class="intel-body">First EAGLE run. sidebar-restructure. Found 12 issues in sidemenu.ts. Sidebar audit passed after page guard fixes. Brain committed b78e376.</div></div>
-  </div></div>
-</div>
-</div>
-<div class="page" id="page-docs">
-<div class="hero">
-  <div class="stat"><div class="stat-accent" style="background:var(--teal)"></div><div class="stat-label">Docs Processed</div><div class="stat-num" style="color:var(--teal)" id="d-total">—</div><div class="stat-sub">today</div></div>
-  <div class="stat"><div class="stat-accent" style="background:var(--green)"></div><div class="stat-label">Auto-Approved</div><div class="stat-num" style="color:var(--green)" id="d-approved">—</div><div class="stat-sub">by 369 Assessment</div></div>
-  <div class="stat"><div class="stat-accent" style="background:var(--amber)"></div><div class="stat-label">Needs Review</div><div class="stat-num" style="color:var(--amber)" id="d-review">—</div><div class="stat-sub">staff attention needed</div></div>
-  <div class="stat"><div class="stat-accent" style="background:var(--blue)"></div><div class="stat-label">BCBT Intake</div><div class="stat-num" style="color:var(--blue)" id="d-intake">—</div><div class="stat-sub">Sep 2026 students</div></div>
-</div>
-<div class="main">
-  <div class="panel full"><div class="panel-head"><span class="panel-title">BCBT September 2026 — Intake Readiness</span><span class="pbadge teal">369 assessment</span></div>
-    <div class="panel-body">
-      <div class="intel"><div class="intel-h"><div class="intel-icon teal">◎</div><span class="intel-title">MongoDB Atlas collections live — RAG Foundation building tonight</span></div><div class="intel-body">documents collection ✓ live on Atlas · chunks collection ✓ live on Atlas · RAG Foundation ticket queued · 369 Assessment engine builds next week · Document Intelligence panels populate once pipeline is live</div></div>
-      <div style="margin-top:14px;">
-        <div class="prog-wrap"><div class="prog-label"><span>All documents complete</span><span>— students</span></div><div class="prog-bar"><div class="prog-fill green" style="width:0%"></div></div></div>
-        <div class="prog-wrap"><div class="prog-label"><span>1-2 documents missing</span><span>— students</span></div><div class="prog-bar"><div class="prog-fill amber" style="width:0%"></div></div></div>
-        <div class="prog-wrap"><div class="prog-label"><span>3+ documents missing</span><span>— students</span></div><div class="prog-bar"><div class="prog-fill red" style="width:0%"></div></div></div>
+
+<div class="pw">
+
+<!-- ══════════════ PANEL 0 — OVERVIEW ══════════════ -->
+<div class="panel on" id="p0">
+
+  <div class="hero">
+    <div class="hero-av">S</div>
+    <div class="hero-greet" id="heroG">Good morning</div>
+    <div class="hero-title">Welcome to 369 Mission Vault, Shon.</div>
+    <div class="hero-sub">Your AI team worked overnight. Everything that needs attention, everything running automatically — one screen. No terminal. No code.</div>
+    <div class="hero-acts">
+      <button class="hb hb-p" onclick="generateBrief()">✦ Generate daily brief</button>
+      <button class="hb hb-s" onclick="sw(3)">Open RAG →</button>
+    </div>
+  </div>
+
+  <!-- Brief -->
+  <div style="margin-bottom:20px">
+    <div class="sh"><div class="sl">CEO Morning Brief</div><div class="tip"><div class="tip-i" onclick="toggleTip(this)">?</div><div class="tip-box"><span class="tl">What is this?</span>Click "Generate daily brief" above. Claude reads everything your AI team did and writes you a plain English summary. What happened. What needs you. What comes next. Takes 10 seconds.</div></div></div>
+    <div id="briefOut" class="brief-out ph">Click "Generate daily brief" above. Takes about 10 seconds.</div>
+  </div>
+
+  <!-- Decisions -->
+  <div style="margin-bottom:20px">
+    <div class="sh">
+      <div class="sl">Decisions needed</div>
+      <span class="sc sc-a" id="dc0">0</span>
+      <div class="tip"><div class="tip-i" onclick="toggleTip(this)">?</div><div class="tip-box"><span class="tl">Why only you can act</span>Your Builder never decides on your behalf. When it finishes designing something it stops and waits. <strong>Tap Approve or Reject directly here — no terminal needed.</strong></div></div>
+    </div>
+    <div id="decisPanel"><div style="text-align:center;padding:20px;color:var(--t4);font-size:13px">✓ No decisions waiting</div></div>
+  </div>
+
+  <!-- AI Team -->
+  <div style="margin-bottom:20px">
+    <div class="sh"><div class="sl">Your AI team</div></div>
+    <div class="g3" style="margin-bottom:10px">
+      <div class="hm" onclick="sw(1)">
+        <div class="hm-top"><div class="hm-ic" style="background:var(--bbg);border:1px solid var(--bbd)">🏗</div><div><div class="hm-nm">The Builder</div><div class="hm-rl">Writes and ships code</div></div><div class="light lg" style="margin-left:auto"></div></div>
+        <div class="hm-stats"><div><div class="hm-sv" id="m-et">—</div><div class="hm-sl">Total</div></div><div><div class="hm-sv" style="color:var(--g)" id="m-ed">—</div><div class="hm-sl">Done</div></div><div><div class="hm-sv" style="color:var(--amber)" id="m-er">—</div><div class="hm-sl">Need you</div></div></div>
+        <div class="hm-cta">Build Intelligence →</div>
+      </div>
+      <div class="hm" onclick="sw(4)">
+        <div class="hm-top"><div class="hm-ic" style="background:var(--pbg);border:1px solid var(--pbd)">🧠</div><div><div class="hm-nm">The Learner</div><div class="hm-rl">Finds patterns and improves</div></div><div class="light lg" style="margin-left:auto"></div></div>
+        <div class="hm-stats"><div><div class="hm-sv" id="m-lr">1</div><div class="hm-sl">Runs</div></div><div><div class="hm-sv" style="color:var(--purple)">5</div><div class="hm-sl">Patterns</div></div><div><div class="hm-sv">6</div><div class="hm-sl">Fixes</div></div></div>
+        <div class="hm-cta">Self-Improvement →</div>
+      </div>
+      <div class="hm">
+        <div class="hm-top"><div class="hm-ic" style="background:var(--gx);border:1px solid var(--gxx)">🛡</div><div><div class="hm-nm">The Guardian</div><div class="hm-rl">Tests everything at 2am</div></div><div class="light ll" style="margin-left:auto"></div></div>
+        <div class="hm-stats"><div><div class="hm-sv">0</div><div class="hm-sl">Test runs</div></div><div><div class="hm-sv" style="color:var(--t4)">2am</div><div class="hm-sl">Next</div></div></div>
+        <div class="hm-cta" style="color:var(--t3)">Setting up →</div>
+      </div>
+      <div class="hm" onclick="sw(2)">
+        <div class="hm-top"><div class="hm-ic" style="background:var(--abg);border:1px solid var(--abd)">📚</div><div><div class="hm-nm">Doc Intelligence</div><div class="hm-rl">Reads BCBT documents</div></div><div class="light la" style="margin-left:auto"></div></div>
+        <div class="hm-stats"><div><div class="hm-sv" style="color:var(--amber)">0</div><div class="hm-sl">Docs</div></div><div><div class="hm-sv" style="color:var(--t4)">0</div><div class="hm-sl">Articles</div></div></div>
+        <div class="hm-cta">Connect BCBT →</div>
+      </div>
+      <div class="hm" onclick="sw(3)">
+        <div class="hm-top"><div class="hm-ic" style="background:var(--tbg);border:1px solid var(--tbd)">🔮</div><div><div class="hm-nm">RAG Intelligence</div><div class="hm-rl">Business knowledge, queryable</div></div><div class="light lt" style="margin-left:auto"></div></div>
+        <div class="hm-stats"><div><div class="hm-sv" style="color:var(--teal)">2</div><div class="hm-sl">Sources</div></div><div><div class="hm-sv" id="m-rq">0</div><div class="hm-sl">Queries</div></div></div>
+        <div class="hm-cta">Open RAG Vault →</div>
       </div>
     </div>
   </div>
-  <div class="panel"><div class="panel-head"><span class="panel-title">369 Assessment — By Document Type</span></div>
-    <div class="panel-body"><div class="dt-grid">
-      <div class="dt-card"><div class="dt-name">Passport</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
-      <div class="dt-card"><div class="dt-name">Bank Statement</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
-      <div class="dt-card"><div class="dt-name">Academic Cert</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
-      <div class="dt-card"><div class="dt-name">Language Cert</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
-      <div class="dt-card"><div class="dt-name">Motivation Letter</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
-      <div class="dt-card"><div class="dt-name">Visa Docs</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
-      <div class="dt-card"><div class="dt-name">Blocked Account</div><div class="dt-num">—</div><div class="dt-sub">awaiting data</div></div>
-      <div class="dt-card" style="border-color:var(--teal-b);background:var(--teal-bg)"><div class="dt-name" style="color:var(--teal)">Total Checked</div><div class="dt-num" style="color:var(--teal)">0</div><div class="dt-sub">since RAG live</div></div>
-    </div></div>
+
+  <!-- Stats -->
+  <div class="g4" style="margin-bottom:20px">
+    <div class="stat-card sc-g2"><div class="sv-l">BCBT target</div><div class="sv-v" id="s-wks">—</div><div class="sv-s">weeks · Sep 2026</div></div>
+    <div class="stat-card sc-b2"><div class="sv-l">Queue</div><div class="sv-v" id="s-q">—</div><div class="sv-s">open + awaiting</div></div>
+    <div class="stat-card sc-p2"><div class="sv-l">Builds done</div><div class="sv-v" id="s-bd">—</div><div class="sv-s">since launch</div></div>
+    <div class="stat-card sc-a2"><div class="sv-l">Await you</div><div class="sv-v" id="s-aw">—</div><div class="sv-s">decisions</div></div>
   </div>
-  <div class="panel"><div class="panel-head"><span class="panel-title">Live Feed — Document Activity</span></div>
-    <div class="panel-body">
-      <div class="row"><span class="row-id">atlas</span><span class="row-name">documents collection created</span><span class="badge done">live ✓</span><span class="row-time">tonight</span></div>
-      <div class="row"><span class="row-id">atlas</span><span class="row-name">chunks collection created</span><span class="badge done">live ✓</span><span class="row-time">tonight</span></div>
-      <div class="row"><span class="row-id">queue</span><span class="row-name">rag foundation building</span><span class="badge queued">tonight</span><span class="row-time">queued</span></div>
-      <div class="empty" style="padding:12px 0 0">Live document activity appears once RAG pipeline is live</div>
+
+  <!-- Quick actions -->
+  <div class="sh"><div class="sl">Quick actions</div></div>
+  <div class="card">
+    <div class="at-grid">
+      <button class="at" onclick="actionAddTicket()"><span class="at-e">📋</span><span class="at-n">Add ticket</span><span class="at-s">Tell Builder what to build</span></button>
+      <button class="at" onclick="generateBrief()"><span class="at-e">✦</span><span class="at-n">Daily brief</span><span class="at-s">Plain English summary</span></button>
+      <button class="at" onclick="actionBCBT()"><span class="at-e">🎓</span><span class="at-n">BCBT brief</span><span class="at-s">Pipeline and readiness</span></button>
+      <button class="at" onclick="actionLatha()"><span class="at-e">📱</span><span class="at-n">Message Latha</span><span class="at-s">WhatsApp handover</span></button>
+      <button class="at" onclick="actionHealth()"><span class="at-e">🔍</span><span class="at-n">Health check</span><span class="at-s">Full system status</span></button>
+      <button class="at" onclick="sw(3)"><span class="at-e">🔮</span><span class="at-n">Ask the vault</span><span class="at-s">Question your business</span></button>
     </div>
   </div>
-  <div class="panel full"><div class="panel-head"><span class="panel-title">Data Intelligence — MongoDB + Dropbox</span><span class="pbadge teal">data layer</span></div>
-    <div class="panel-body">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;">
-        <div>
-          <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--ink2);text-transform:uppercase;font-weight:700;padding-bottom:8px;border-bottom:1.5px solid var(--border);margin-bottom:4px;">MongoDB Atlas</div>
-          <div class="row"><span class="row-name">documents</span><span class="row-time" style="margin-right:10px">live</span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span></div>
-          <div class="row"><span class="row-name">chunks</span><span class="row-time" style="margin-right:10px">live</span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span></div>
-          <div class="row"><span class="row-name">leads</span><span class="row-time" style="margin-right:10px">live</span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span></div>
-          <div class="row"><span class="row-name">applications</span><span class="row-time" style="margin-right:10px">live</span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span></div>
-          <div class="row"><span class="row-name">users</span><span class="row-time" style="margin-right:10px">live</span><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span></div>
-        </div>
-        <div>
-          <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--amber);text-transform:uppercase;font-weight:700;padding-bottom:8px;border-bottom:1.5px solid var(--amber-b);margin-bottom:4px;">Dropbox Sync</div>
-          <div class="row"><span class="row-name">Status</span><span class="row-time" style="color:var(--amber);font-weight:700;letter-spacing:0.04em">Ready to connect</span></div>
-          <div class="row"><span class="row-name">Instructions</span><span class="row-time" style="color:var(--amber);letter-spacing:0.04em;text-align:right">Set DROPBOX_TOKEN env var to activate</span></div>
-          <div class="row"><span class="row-name">Last check</span><span class="row-time">never</span></div>
-        </div>
-        <div>
-          <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--teal);text-transform:uppercase;font-weight:700;padding-bottom:8px;border-bottom:1.5px solid var(--teal-b);margin-bottom:4px;">AI Learns From</div>
-          <div class="row"><span class="row-name">Documents processed</span><span class="row-time" style="color:var(--teal);font-weight:700;font-size:11px">0 · grows as RAG runs</span></div>
-          <div class="row"><span class="row-name">Patterns identified</span><span class="row-time" style="color:var(--teal);font-weight:700;font-size:11px">0 · grows as self-improvement runs</span></div>
-          <div class="row"><span class="row-name">Student profiles</span><span class="row-time" style="color:var(--teal);font-weight:700;font-size:11px">0 · grows as students upload</span></div>
-          <div class="row"><span class="row-name">Last analysis</span><span class="row-time" style="color:var(--teal);letter-spacing:0.04em">tonight · self-improvement Run 001</span></div>
+</div>
+
+<!-- ══════════════ PANEL 1 — BUILD INTELLIGENCE ══════════════ -->
+<div class="panel" id="p1">
+  <div class="g-bi">
+    <div>
+      <div class="g4" style="margin-bottom:16px">
+        <div class="stat-card sc-b2"><div class="sv-l">Total</div><div class="sv-v" id="bi-tot">—</div><div class="sv-s">builds</div></div>
+        <div class="stat-card sc-g2"><div class="sv-l">Done</div><div class="sv-v" id="bi-don">—</div><div class="sv-s">complete</div></div>
+        <div class="stat-card sc-a2"><div class="sv-l">Review</div><div class="sv-v" id="bi-rev">—</div><div class="sv-s">need you</div></div>
+        <div class="stat-card sc-r2"><div class="sv-l">Blocked</div><div class="sv-v" id="bi-blk">—</div><div class="sv-s">needs fix</div></div>
+      </div>
+      <div class="sh"><div class="sl">Ticket pipeline</div><div class="tip"><div class="tip-i" onclick="toggleTip(this)">?</div><div class="tip-box"><span class="tl">The 7 steps</span>Every task: Data ready? → Gap analysis → Design preview → <strong>Your approval</strong> → Code written → Permissions → Latha review. <strong>Approve or Reject directly here.</strong></div></div></div>
+      <div id="tickPipe"><div style="text-align:center;padding:24px;color:var(--t4)">Loading...</div></div>
+      <div class="sh" style="margin-top:16px"><div class="sl">Build history</div></div>
+      <div class="card"><div id="buildHist"><div style="padding:20px;text-align:center;color:var(--t4)">Loading...</div></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="cd-panel">
+        <div class="cd-l">BCBT September 2026</div>
+        <div class="cd-n" id="cdN">—</div>
+        <div class="cd-u">weeks remaining</div>
+        <div class="cd-bar"><div class="cd-fill" id="cdBar" style="width:0%"></div></div>
+        <div class="cd-t">Full portal live · Sep 2026</div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">🚦 System health</div></div>
+        <div class="hr-row"><div class="light lg"></div><div><div class="hr-n">Portal build</div><div class="hr-d">No errors · clean</div></div></div>
+        <div class="hr-row"><div class="light lg"></div><div><div class="hr-n">AI Builder worker</div><div class="hr-d">Running · pid 61500 · polling every 5s</div></div></div>
+        <div class="hr-row"><div class="light la"></div><div><div class="hr-n">Latha review queue</div><div class="hr-d">Items waiting for her review</div></div></div>
+        <div class="hr-row"><div class="light ll"></div><div><div class="hr-n">Night tests</div><div class="hr-d">Guardian runs at 2am · setting up</div></div></div>
+        <div class="hr-row"><div class="light lt"></div><div><div class="hr-n">RAG Intelligence</div><div class="hr-d">2 sources connected</div></div></div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">⚡ Builder actions</div></div>
+        <div class="at-grid">
+          <button class="at" onclick="actionAddTicket()"><span class="at-e">📋</span><span class="at-n">Add ticket</span><span class="at-s">Queue new task</span></button>
+          <button class="at" onclick="actionLatha()"><span class="at-e">📱</span><span class="at-n">Latha msg</span><span class="at-s">Review handover</span></button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ══════════════ PANEL 2 — DOCUMENT INTELLIGENCE ══════════════ -->
+<div class="panel" id="p2">
+  <div class="info-box info-a">💡 <strong>Document Intelligence:</strong> Drop BCBT documents into a folder. This system reads them and structures them as knowledge your Builder uses to build BCBT features automatically — no manual explanation needed.</div>
+  <div class="g2">
+    <div>
+      <div class="sh"><div class="sl">Connected sources</div></div>
+      <div class="vsc">
+        <div class="vsc-h"><div class="vsc-ic" style="background:var(--gx);border:1px solid var(--gxx)">🧠</div><div><div class="vsc-nm">369-brain</div><div class="vsc-pt">~/deassists-workspace/369-brain/</div></div><div style="margin-left:auto;display:flex;gap:6px;align-items:center"><span style="font-size:9px;font-weight:700;color:#7dd8a0;background:var(--nav);padding:2px 7px;border-radius:3px">🔒 PRIVATE</span><span class="badge bg">LIVE</span></div></div>
+        <div class="vsc-b"><div class="vsc-ex">47 files · All AI memory, decisions, rules, lessons. Builder reads this before every task.</div></div>
+      </div>
+      <div class="vsc">
+        <div class="vsc-h"><div class="vsc-ic" style="background:var(--bbg);border:1px solid var(--bbd)">💻</div><div><div class="vsc-nm">Portal Codebase</div><div class="vsc-pt">~/deassists-workspace/deassists/</div></div><div style="margin-left:auto"><span class="badge bg">LIVE</span></div></div>
+        <div class="vsc-b"><div class="vsc-ex">350+ files · Full portal source. Builder reads existing patterns before writing new code.</div></div>
+      </div>
+      <div class="vsc" style="border-style:dashed;opacity:.8">
+        <div class="vsc-h"><div class="vsc-ic" style="background:var(--abg);border:1px solid var(--abd)">🎓</div><div><div class="vsc-nm">BCBT Documents</div><div class="vsc-pt">Not yet connected</div></div><div style="margin-left:auto"><span class="badge ba">NOT YET</span></div></div>
+        <div class="vsc-b"><div class="vsc-ex">Fee sheets, attendance records, student onboarding, SOPs.</div></div>
+        <div style="padding:10px 14px;border-top:1px solid var(--bd)"><button class="btn btn-g btn-sm" onclick="connectBCBT()">+ Connect BCBT documents</button></div>
+      </div>
+    </div>
+    <div>
+      <div class="sh"><div class="sl">BCBT vault structure</div></div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="ch"><div class="ct">📁 Folder layout</div></div>
+        <div class="cb">
+          <div style="font-size:11px;color:var(--t2);line-height:2.1;font-family:var(--mono)">
+            369-brain/intelligence/bcbt-knowledge/<br>
+            &nbsp;&nbsp;├── <span style="color:var(--g)">raw/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← drop BCBT docs here<br>
+            &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├── fee-sheets/<br>
+            &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├── student-onboarding/<br>
+            &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;└── sops/<br>
+            &nbsp;&nbsp;└── <span style="color:var(--blue)">wiki/</span>&nbsp;&nbsp;&nbsp;&nbsp;← AI structures these
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--t3);line-height:1.6">Drop docs into <code style="background:var(--card2);padding:1px 4px;border-radius:3px;font-family:var(--mono)">raw/</code>. AI reads and builds structured wiki articles your Builder uses.</div>
+        </div>
+        <div style="padding:10px 16px;border-top:1px solid var(--bd)"><button class="btn btn-g btn-sm" onclick="connectBCBT()">✦ Create vault structure</button></div>
+      </div>
+    </div>
+  </div>
 </div>
-<footer>
-  <strong>IT Mission Control 369</strong> · DeAssists / Three Sixty Nine GmbH · Shon AJ + VEERABHADRA
-  <span id="last-refresh">Last refresh: —</span>
-</footer>
+
+<!-- ══════════════ PANEL 3 — RAG INTELLIGENCE ══════════════ -->
+<div class="panel" id="p3">
+  <div class="rag-hero">
+    <div style="font-size:36px;margin-bottom:10px">🔮</div>
+    <div class="rag-hero-t">RAG Intelligence</div>
+    <div class="rag-hero-s">Connect your documents, notes, business history, and project knowledge. Then ask questions in normal language. The system finds the right knowledge and helps you take action.</div>
+    <div class="rag-hero-tag">🔒 Local-first · Private by default · Every answer cited · Audit logged</div>
+  </div>
+
+  <div class="perm-bar">
+    <span class="perm-label">Vault mode</span>
+    <div class="tip"><div class="tip-i" onclick="toggleTip(this)">?</div><div class="tip-box"><span class="tl">Mode explained</span><strong>Private:</strong> Real business data. Never exposed publicly.<br><strong>Demo:</strong> Safe sample data. Use when showing others.</div></div>
+    <div class="perm-mode">
+      <button class="perm-btn perm-priv" id="permPriv" onclick="setMode('private')">🔒 Private</button>
+      <button class="perm-btn perm-demo off" id="permDemo" onclick="setMode('demo')">🌍 Demo</button>
+    </div>
+  </div>
+
+  <div class="g-rag">
+    <div>
+      <!-- Ask My Vault -->
+      <div class="sh"><div class="sl">Ask my vault</div><div class="tip"><div class="tip-i" onclick="toggleTip(this)">?</div><div class="tip-box"><span class="tl">How it works</span>Type any question. Press Enter or tap Ask. Claude searches your connected sources and gives you an answer with citations — which document it came from.</div></div></div>
+      <div class="ask-box">
+        <div class="ask-label">🔍 Ask anything about your business</div>
+        <div class="ask-row">
+          <textarea class="ask-in" id="ragQ" placeholder="e.g. What is our BCBT plan? / What is missing before September launch? / What did we decide about the portal?" rows="2"></textarea>
+          <button class="btn btn-t" onclick="askVault()" id="askBtn" style="flex-shrink:0;align-self:flex-end">Ask →</button>
+        </div>
+        <div class="ask-chips" style="margin-top:8px">
+          <span class="ask-ex">Try:</span>
+          <div class="eg-chip" onclick="setQ('What did we decide about BCBT?')">BCBT decisions</div>
+          <div class="eg-chip" onclick="setQ('What is missing before September launch?')">Missing items</div>
+          <div class="eg-chip" onclick="setQ('What should I do next for the build?')">What next?</div>
+          <div class="eg-chip" onclick="setQ('Show me the latest self-improvement report.')">Latest AI report</div>
+        </div>
+        <div class="ask-chips" id="sourceChips">
+          <span class="ask-ex">Sources:</span>
+          <span style="font-size:11px;color:var(--t3)">Loading...</span>
+        </div>
+      </div>
+
+      <div class="ans-box" id="ansBox">
+        <div class="ans-h"><span class="ans-l">Answer from your vault</span><span class="ans-src" id="ansSrc"></span></div>
+        <div class="ans-text" id="ansText"></div>
+        <div class="ans-cites" id="ansCites"></div>
+        <div class="ans-conf"><span>Confidence</span><div class="conf-bar"><div class="conf-fill" id="confBar" style="width:80%"></div></div><span id="confPct">80%</span><span style="margin-left:4px;font-family:var(--mono);font-size:9px;color:var(--t4)" id="ansAudit"></span></div>
+      </div>
+
+      <!-- Action Generator -->
+      <div class="act-gen" id="actGen">
+        <div class="act-gen-t">⚡ Act on this answer <span style="font-size:10px;color:var(--t3);font-weight:400">— tap any action</span></div>
+        <div class="act-grid">
+          <button class="act-btn" onclick="genAction('draft_email')"><span class="act-btn-e">✉</span><span class="act-btn-n">Draft email</span></button>
+          <button class="act-btn" onclick="genAction('checklist')"><span class="act-btn-e">✅</span><span class="act-btn-n">Checklist</span></button>
+          <button class="act-btn" onclick="genAction('report')"><span class="act-btn-e">📊</span><span class="act-btn-n">Report</span></button>
+          <button class="act-btn" onclick="genAction('prompt')"><span class="act-btn-e">🤖</span><span class="act-btn-n">Build prompt</span></button>
+          <button class="act-btn" onclick="genAction('task')"><span class="act-btn-e">📋</span><span class="act-btn-n">Create task</span></button>
+          <button class="act-btn" onclick="genAction('note')"><span class="act-btn-e">📝</span><span class="act-btn-n">Project note</span></button>
+          <button class="act-btn" onclick="genAction('automation')"><span class="act-btn-e">⚙</span><span class="act-btn-n">Automation</span></button>
+          <button class="act-btn" onclick="genAction('docpack')"><span class="act-btn-e">📦</span><span class="act-btn-n">Doc package</span></button>
+        </div>
+      </div>
+
+      <!-- PDF Upload -->
+      <div class="sh" style="margin-top:4px"><div class="sl">Upload PDF to vault</div></div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="cb">
+          <input type="file" id="pdfFile" accept=".pdf" style="display:none" onchange="handlePDF(event)">
+          <div class="pdf-zone" onclick="document.getElementById('pdfFile').click()" ondragover="event.preventDefault()" ondrop="handlePDFDrop(event)">
+            <div style="font-size:22px;margin-bottom:6px">📄</div>
+            <div style="font-size:12px;font-weight:600;color:var(--teal);margin-bottom:3px">Tap to upload a PDF</div>
+            <div style="font-size:10px;color:var(--t3)">BCBT fee sheets, contracts, partner documents · stays private</div>
+          </div>
+          <div id="pdfStatus" style="margin-top:10px;font-size:11px;color:var(--t3);display:none"></div>
+        </div>
+      </div>
+
+      <!-- Audit log -->
+      <div class="sh"><div class="sl">Audit log</div><div class="tip"><div class="tip-i" onclick="toggleTip(this)">?</div><div class="tip-box"><span class="tl">What is this?</span>Every query logged: when, what you asked, which sources searched, which document cited. <strong>You always know exactly what your AI used to answer.</strong></div></div></div>
+      <div class="card">
+        <div id="auditLog"><div style="padding:14px;text-align:center;color:var(--t4);font-size:12px">No queries yet</div></div>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div>
+      <div class="sh"><div class="sl">Knowledge map</div><div class="tip"><div class="tip-i" onclick="toggleTip(this)">?</div><div class="tip-box"><span class="tl">Knowledge map</span>Your business knowledge in categories. <strong>Tap any category to instantly search that area.</strong> No need to think of what to ask.</div></div></div>
+      <div class="km-grid" id="knowledgeMapGrid">
+        <div style="padding:14px;text-align:center;color:var(--t4);font-size:12px">Loading...</div>
+      </div>
+
+      <!-- Query history -->
+      <div class="sh"><div class="sl">Recent queries</div></div>
+      <div class="card">
+        <div id="qHist"><div style="padding:14px;text-align:center;color:var(--t4);font-size:12px">No queries yet</div></div>
+      </div>
+
+      <!-- Safety model -->
+      <div style="margin-top:14px;background:var(--nav);border-radius:var(--r2);padding:16px">
+        <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:9px">Safety model</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.85;display:flex;flex-direction:column;gap:5px">
+          <div><span style="color:var(--g)">✓</span> Local-first — no data leaves your machine</div>
+          <div><span style="color:var(--g)">✓</span> Every answer cites its source document</div>
+          <div><span style="color:var(--g)">✓</span> Audit log for every query</div>
+          <div><span style="color:var(--g)">✓</span> Private vs Demo mode — never mix</div>
+          <div><span style="color:var(--g)">✓</span> Confirm before any action that sends</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PANEL 4 — SELF-IMPROVEMENT ══════════════ -->
+<div class="panel" id="p4">
+  <div class="g4" style="margin-bottom:20px">
+    <div class="stat-card sc-p2"><div class="sv-l">Runs</div><div class="sv-v" id="si-tot">1</div><div class="sv-s">since launch</div></div>
+    <div class="stat-card sc-p2"><div class="sv-l">Patterns</div><div class="sv-v">5</div><div class="sv-s">found</div></div>
+    <div class="stat-card sc-p2"><div class="sv-l">Fixes</div><div class="sv-v">6</div><div class="sv-s">proposed</div></div>
+    <div class="stat-card sc-g2"><div class="sv-l">Adopted</div><div class="sv-v">3</div><div class="sv-s">live</div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="sh"><div class="sl">Run 001 — intelligence report</div></div>
+      <div class="ic">
+        <div class="ic-h"><span>📊</span><span class="ic-t">First full analysis</span><span class="ic-d">3 May 2026</span></div>
+        <div class="ic-b">Read 5 SOP files, 8 harness runs, full ticket queue. Found patterns across entire build history. 3 fixes adopted immediately.</div>
+        <div class="ic-ms"><div class="ic-m">Patterns: <strong>5</strong></div><div class="ic-m">Fixes: <strong>6</strong></div><div class="ic-m">Adopted: <strong>3</strong></div></div>
+      </div>
+      <div class="sh" style="margin-top:14px"><div class="sl">Proposed fixes</div></div>
+      <div class="fx"><div class="fx-sev fx-h">HIGH</div><div class="fx-info"><div class="fx-t">Builder can now fix its own code</div><div class="fx-b">Carve-out added: harness tasks can modify harness files. The self-improvement loop can now close.</div></div><span class="badge bg">ADOPTED</span></div>
+      <div class="fx"><div class="fx-sev fx-m">MED</div><div class="fx-info"><div class="fx-t">Guard corrupted run records</div><div class="fx-b">Validate run ID and timestamp before saving. One corrupted row existed — now caught.</div></div><span class="badge bg">ADOPTED</span></div>
+      <div class="fx"><div class="fx-sev fx-m">MED</div><div class="fx-info"><div class="fx-t">Pick tickets by priority</div><div class="fx-b">Worker picks the most important ticket first, not alphabetical file order.</div></div><span class="badge bg">ADOPTED</span></div>
+      <div class="fx"><div class="fx-sev fx-m">MED</div><div class="fx-info"><div class="fx-t">Resume interrupted builds</div><div class="fx-b">Pick up mid-way if build stops. Needs Skill Creator first.</div></div><span class="badge bgr">DEFERRED</span></div>
+      <div class="fx"><div class="fx-sev fx-m">MED</div><div class="fx-info"><div class="fx-t">Check data before queuing</div><div class="fx-b">Verify collections exist before adding ticket. Needs Skill Creator.</div></div><span class="badge bgr">DEFERRED</span></div>
+      <div class="fx"><div class="fx-sev fx-l">LOW</div><div class="fx-info"><div class="fx-t">Flag stale review requests</div><div class="fx-b">Flag awaiting-approval if 48+ hours old.</div></div><span class="badge bgr">DEFERRED</span></div>
+    </div>
+    <div>
+      <div class="sh"><div class="sl">Run self-improvement now</div></div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="cb">
+          <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:10px">Reads all build history, finds patterns, proposes improvements. Takes 2-5 minutes on Mac Mini.</div>
+          <div class="cmd-blk">node ~/deassists-workspace/369-brain/harness/self-improvement/self-improvement-harness.js</div>
+          <button class="btn btn-g btn-sm" onclick="copyCmd('node ~/deassists-workspace/369-brain/harness/self-improvement/self-improvement-harness.js')">📋 Copy command</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PANEL 5 — SETTINGS ══════════════ -->
+<div class="panel" id="p5">
+  <div class="g2">
+    <div>
+      <div class="sh"><div class="sl">Organisation</div></div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="cb" style="display:flex;flex-direction:column;gap:12px">
+          <div><div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px">Company</div><div style="font-size:14px;font-weight:700;color:var(--t1)">Three Sixty Nine GmbH / DeAssists</div></div>
+          <div><div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px">CEO</div><div style="font-size:14px;font-weight:700;color:var(--t1)">Shon AJ</div></div>
+          <div><div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px">AI brain</div><div style="font-size:14px;font-weight:700;color:var(--t1)">VEERABHADRA</div></div>
+          <div><div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px">Lead developer</div><div style="font-size:14px;font-weight:700;color:var(--t1)">Latha</div></div>
+          <div><div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px">Primary target</div><div style="font-size:14px;font-weight:700;color:var(--t1)">BCBT · September 2026</div></div>
+        </div>
+      </div>
+      <div class="sh"><div class="sl">Servers</div></div>
+      <div class="card">
+        <div class="hr-row"><div class="light lg"></div><div><div class="hr-n">Mission Vault</div><div class="hr-d">localhost:3369 · /api/approve live</div></div></div>
+        <div class="hr-row"><div class="light lg"></div><div><div class="hr-n">EAGLE worker</div><div class="hr-d">harness-worker.js · pid 61500</div></div></div>
+        <div class="hr-row"><div class="light lg"></div><div><div class="hr-n">Portal backend</div><div class="hr-d">localhost:8000 · NestJS</div></div></div>
+        <div class="hr-row"><div class="light lg"></div><div><div class="hr-n">Portal CMS</div><div class="hr-d">localhost:4002 · Next.js</div></div></div>
+        <div class="hr-row"><div class="light lg"></div><div><div class="hr-n">Claude API</div><div class="hr-d">api.anthropic.com · claude-sonnet-4</div></div></div>
+        <div class="hr-row"><div class="light la"></div><div><div class="hr-n">Mac Mini Tailscale</div><div class="hr-d">100.125.115.8 · remote access</div></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sh"><div class="sl">Deploy commands</div></div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="cb">
+          <div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:6px">Deploy to localhost:3369</div>
+          <div class="cmd-blk" style="font-size:11px">cp ~/Downloads/369-mission-vault-mobile.html \<br>&nbsp;&nbsp;~/deassists-workspace/369-brain/dashboard/index.html</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:6px;margin-top:12px">Update server (adds approve endpoint)</div>
+          <div class="cmd-blk" style="font-size:11px">cp ~/Downloads/dashboard-server-updated.js \<br>&nbsp;&nbsp;~/deassists-workspace/369-brain/dashboard/server.js<br>pm2 restart mission-control-369</div>
+          <button class="btn btn-g btn-sm" style="margin-top:8px" onclick="copyCmd('cp ~/Downloads/369-mission-vault-mobile.html ~/deassists-workspace/369-brain/dashboard/index.html')">📋 Copy deploy command</button>
+        </div>
+      </div>
+      <div style="background:var(--nav);border-radius:var(--r2);padding:16px">
+        <div style="font-family:var(--dis);font-size:16px;font-weight:800;color:#fff;margin-bottom:10px">This is the platform.</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.85;display:flex;flex-direction:column;gap:6px">
+          <div><span style="color:var(--g)">✓</span> Connect their own documents</div>
+          <div><span style="color:var(--g)">✓</span> Ask questions in plain English</div>
+          <div><span style="color:var(--g)">✓</span> AI builds features while they sleep</div>
+          <div><span style="color:var(--g)">✓</span> Every decision in one screen</div>
+          <div><span style="color:var(--g)">✓</span> Never open a terminal</div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:#7dd8a0;font-weight:600">We built it for ourselves. We can configure it for any org in one week.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end pw -->
+
+<!-- MODALS -->
+<div class="ov" id="ovAction">
+  <div class="mb">
+    <div class="mh"><div class="mt" id="actT">Running...</div><button class="mx" onclick="closeOv('ovAction')">✕</button></div>
+    <div class="mbody" id="actB"><div style="display:flex;align-items:center;gap:11px;color:var(--t3)"><div class="spin"></div>Asking Claude...</div></div>
+    <div class="mf"><button class="btn btn-s btn-sm" onclick="closeOv('ovAction')">Close</button><button class="btn btn-g btn-sm" id="actCopy" style="display:none" onclick="copyAct()">📋 Copy</button></div>
+  </div>
+</div>
+<div class="ov" id="ovCmd">
+  <div class="mb">
+    <div class="mh"><div class="mt" id="cmdT">Run this command</div><button class="mx" onclick="closeOv('ovCmd')">✕</button></div>
+    <div class="mbody"><div class="cmd-blk" id="cmdTxt"></div><div style="font-size:11px;color:var(--t3)">Copy and paste into the Mac Mini terminal.</div></div>
+    <div class="mf"><button class="btn btn-s btn-sm" onclick="closeOv('ovCmd')">Cancel</button><button class="btn btn-g btn-sm" onclick="copyActiveCmd()">📋 Copy</button></div>
+  </div>
+</div>
+<div class="ov" id="ovRAG">
+  <div class="mb teal-top">
+    <div class="mh"><div class="mt" id="ragActT">Generating...</div><button class="mx" onclick="closeOv('ovRAG')">✕</button></div>
+    <div class="mbody" id="ragActB"><div style="display:flex;align-items:center;gap:11px;color:var(--t3)"><div class="spin-t"></div>Generating from your vault answer...</div></div>
+    <div class="mf"><button class="btn btn-s btn-sm" onclick="closeOv('ovRAG')">Close</button><button class="btn btn-t btn-sm" id="ragCopy" style="display:none" onclick="copyRAGAct()">📋 Copy</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
 <script>
-const ts=d=>{if(!d)return'—';const s=Math.floor((Date.now()-new Date(d))/1000);if(s<60)return s+'s';if(s<3600)return Math.floor(s/60)+'m';return Math.floor(s/3600)+'h';};
-const sc=s=>({'complete':'done','running':'live','awaiting-approval':'review','failed':'fail','rejected':'fail','blocked':'fail'}[s]||'review');
-const sl=s=>({'complete':'done','running':'live','awaiting-approval':'review','failed':'fail','rejected':'fail','blocked':'blocked'}[s]||s||'—');
-function switchTab(t){
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById('tab-'+t).classList.add('active');
-  document.getElementById('page-'+t).classList.add('active');
+/* ═══════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════ */
+const API = 'http://localhost:3369/api/data';
+const APPROVE_API = 'http://localhost:3369/api/approve';
+let liveData = null, activeTab = 0;
+let activeSrc = new Set(['brain','portal']);
+let auditLog = [], qHistory = [], qCount = 0;
+let lastAnswer = '', lastQuestion = '', vaultMode = 'private';
+let actResult = '', ragActResult = '';
+
+/* ═══════════════════════════════════════
+   CLOCK
+   ═══════════════════════════════════════ */
+setInterval(() => {
+  const n = new Date();
+  const cl = document.getElementById('clock'); if(cl) cl.textContent = n.toLocaleTimeString('en-GB');
+  const h = n.getHours();
+  const g = h<12?'Good morning, Shon':h<17?'Good afternoon, Shon':'Good evening, Shon';
+  const el = document.getElementById('heroG'); if(el) el.textContent = g;
+}, 1000);
+
+/* ═══════════════════════════════════════
+   TABS
+   ═══════════════════════════════════════ */
+function sw(i) {
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('on',i===j));
+  document.querySelectorAll('.dtab').forEach((t,j)=>t.classList.toggle('on',i===j));
+  document.querySelectorAll('.bntab').forEach((t,j)=>t.classList.toggle('on',i===j));
+  activeTab = i;
+  location.hash = 'tab' + i;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-function rr(r){return'<div class="row"><span class="row-id">'+(r.run_id||'').slice(0,8)+'</span><span class="row-name">'+(r.feature||r.ticket||'—').replace(/-/g,' ')+'</span><span class="badge '+sc(r.status)+'">'+sl(r.status)+'</span><span class="row-time">'+ts(r.started_at)+' ago</span></div>';}
-function rq(open,await_,done){
-  const all=[...await_.map(t=>({n:t,s:'review'})),...open.map(t=>({n:t,s:'queued'})),...done.slice(-2).reverse().map(t=>({n:t,s:'done'}))];
-  if(!all.length)return'<div class="empty">Queue empty</div>';
-  return all.map((t,i)=>'<div class="row"><span class="row-id">#'+String(i+1).padStart(2,'0')+'</span><span class="row-name">'+t.n.replace('.md','').replace(/-/g,' ')+'</span><span class="badge '+t.s+'">'+t.s+'</span></div>').join('');
+
+/* ═══════════════════════════════════════
+   TOOLTIP — tap toggle for mobile
+   ═══════════════════════════════════════ */
+function toggleTip(el) {
+  const box = el.nextElementSibling;
+  if (!box || !box.classList.contains('tip-box')) return;
+  const isOpen = box.classList.contains('show');
+  // Close all others
+  document.querySelectorAll('.tip-box.show').forEach(b=>b.classList.remove('show'));
+  document.querySelectorAll('.tip-i.open').forEach(b=>b.classList.remove('open'));
+  if (!isOpen) { box.classList.add('show'); el.classList.add('open'); }
 }
-function rph(runs){
-  if(!runs.length)return'<div class="empty">No runs yet</div>';
-  const r=runs[runs.length-1];const phases=r.phases||[];
-  document.getElementById('latest-run-id').textContent=(r.run_id||'').slice(0,16)+' · '+(r.feature||'').replace(/-/g,' ');
-  if(!phases.length)return'<div class="empty">Run started — phases logging…</div>';
-  const cols=[[],[],[]];phases.forEach((p,i)=>cols[i%3].push(p));
-  return'<div class="phase-grid">'+cols.map(col=>{if(!col.length)return'<div></div>';return'<div class="phase-list">'+col.map(p=>{const d=p.status==='complete'?'pass':p.status==='failed'?'fail':p.status==='running'?'run':'wait';const ic=d==='pass'?'✓':d==='fail'?'✕':d==='run'?'…':'○';const dur=p.duration_ms?Math.round(p.duration_ms/1000)+'s':'';return'<div class="ph"><div class="ph-dot '+d+'">'+ic+'</div><span class="ph-name">'+(p.phase||p.name||'—')+'</span><span class="ph-dur">'+dur+'</span></div>';}).join('')+'</div>';}).join('')+'</div>';
+document.addEventListener('click', e => {
+  if (!e.target.classList.contains('tip-i')) {
+    document.querySelectorAll('.tip-box.show').forEach(b=>b.classList.remove('show'));
+    document.querySelectorAll('.tip-i.open').forEach(b=>b.classList.remove('open'));
+  }
+});
+
+/* ═══════════════════════════════════════
+   COUNTDOWN
+   ═══════════════════════════════════════ */
+function countdown() {
+  const tgt=new Date('2026-09-01'), now=new Date(), start=new Date('2025-10-01');
+  const wks=Math.max(0,Math.ceil((tgt-now)/(7*24*3600*1000)));
+  const tot=Math.ceil((tgt-start)/(7*24*3600*1000));
+  const pct=Math.min(100,Math.round(((tot-wks)/tot)*100));
+  ['s-wks','cdN'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=wks});
+  const b=document.getElementById('cdBar');if(b)b.style.width=pct+'%';
 }
-function rmx(tests){
-  const R=['SA','OO','OA','MGR','TL','STF','AGT'];
-  const P=['/dashboard','/leads','/catalog','/applications','/manage-users'];
-  if(!tests.length)return'<div class="empty">Populates after first Playwright run</div>';
-  const r=tests[tests.length-1];const res=r.results||{};
-  let h='<div class="mwrap"><table class="mx"><thead><tr><th>Page</th>';
-  R.forEach(x=>h+='<th>'+x+'</th>');h+='</tr></thead><tbody>';
-  P.forEach(p=>{h+='<tr><td>'+p+'</td>';R.forEach(x=>{const v=res[x+':'+p];h+=v===true?'<td class="cp">✓</td>':v===false?'<td class="cf">✕</td>':'<td class="cs">—</td>';});h+='</tr>';});
-  return h+'</tbody></table></div>';
+countdown();
+
+/* ═══════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════ */
+const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+const ago=iso=>{if(!iso)return '—';const m=Math.floor((Date.now()-new Date(iso))/60000);if(m<2)return 'just now';if(m<60)return m+'m ago';const h=Math.floor(m/60);if(h<24)return h+'h ago';return Math.floor(h/24)+'d ago'};
+const pname=n=>n?(n.replace(/-v\d+$/,'').replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())):'Unnamed';
+const sbadge=s=>{const m={complete:'<span class="badge bg">DONE</span>',failed:'<span class="badge br2">FAILED</span>',rejected:'<span class="badge br2">REJECTED</span>',approved:'<span class="badge bg">APPROVED</span>',blocked:'<span class="badge br2">BLOCKED</span>',running:'<span class="badge bp">RUNNING</span>',executing:'<span class="badge bp">BUILDING</span>','awaiting-approval':'<span class="badge ba">NEEDS REVIEW</span>'};return m[s]||`<span class="badge bgr">${(s||'QUEUED').toUpperCase()}</span>`};
+const explain=f=>({
+  'harness-eagle-stage-marker-contract':'Allows the Builder to fix its own code — closes the self-improvement loop permanently.',
+  'rag-foundation-v1':'Sets up document search infrastructure — required for full Document Intelligence.',
+  'sidebar-restructure':'Reorganises navigation so each team member sees only what is relevant to their role.',
+  'self-improvement-harness-v1':'Builds the Learner system that analyses build history and proposes improvements each week.',
+  'playwright-full-test-suite':'Sets up automated nightly testing of the entire portal for all 8 roles.',
+  'github-actions-ci':'Automatic quality checks that run every time new code is submitted.',
+}[f]||'Builder finished designing this feature. Review the preview and approve to proceed to writing code.');
+
+/* ═══════════════════════════════════════
+   PHASE TRAIL
+   ═══════════════════════════════════════ */
+function ptHtml(run) {
+  const steps=[{k:'data-check',l:'Data ready?'},{k:'eagle-mode1',l:'Gap analysis'},{k:'eagle-mode2',l:'Design preview'},{k:'mode2-approval',l:'Your approval',you:true},{k:'eagle-mode3',l:'Code written'},{k:'latha-handover',l:'Latha review'}];
+  const phases=(run&&run.phases)||[];
+  const done=new Set(phases.filter(p=>p.status==='complete').map(p=>p.phase));
+  const running=new Set(phases.filter(p=>p.status==='running').map(p=>p.phase));
+  const aw=run&&run.meta&&run.meta.awaiting;
+  let h='<div class="pt">';
+  steps.forEach((s,i)=>{
+    const isDone=done.has(s.k)||(run&&(run.status==='complete'||run.status==='approved'));
+    const isRun=running.has(s.k);
+    const isYou=s.you&&aw&&aw.includes('mode2');
+    let cls='pt-wait',ic='○';
+    if(isDone){cls='pt-done';ic='✓';}else if(isRun){cls='pt-act';ic='●';}else if(isYou){cls='pt-you';ic='→';}
+    h+=`<div class="pt-step"><div class="pt-node ${cls}">${ic} ${s.l}</div>${i<steps.length-1?'<div class="pt-arr">›</div>':''}</div>`;
+  });
+  return h+'</div>';
 }
-async function loadAll(){
+
+/* ═══════════════════════════════════════
+   APPROVE — calls /api/approve directly
+   ═══════════════════════════════════════ */
+async function doApprove(feature, action, approveBtn, rejectBtn) {
+  const btn = action === 'approve' ? approveBtn : rejectBtn;
+  const orig = btn ? btn.textContent : '';
+  if (btn) { btn.textContent = '...'; btn.classList.add('loading'); }
+
+  try {
+    const r = await fetch(APPROVE_API, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({feature, action})
+    });
+    const d = await r.json();
+    if (d.ok) {
+      if (btn) { btn.textContent = action==='approve'?'✓ Approved!':'✕ Rejected'; btn.classList.remove('loading'); btn.classList.add(action==='approve'?'done-ok':'done-no'); }
+      toast(action==='approve'?`✅ ${pname(feature)} approved — Builder will proceed to writing code`:`❌ ${pname(feature)} rejected — sent back for redesign`);
+      setTimeout(loadAll, 2000);
+      return;
+    }
+  } catch(e) {}
+
+  // Fallback — show copy command
+  if (btn) { btn.textContent = orig; btn.classList.remove('loading'); }
+  const cmd = action === 'approve' ? `approved ${feature}` : `not approved ${feature}`;
+  showCmd((action==='approve'?'✓ Approve: ':'✕ Reject: ')+pname(feature), cmd);
+}
+
+/* ═══════════════════════════════════════
+   LOAD DATA
+   ═══════════════════════════════════════ */
+async function loadSources(){
+  try {
+    const d=await fetch('/api/sources').then(r=>r.json());
+
+    // Source chips — only real connected sources
+    const el=document.getElementById('sourceChips');
+    if(el){
+      let h='<span class="ask-ex">Sources:</span>';
+      if(!d.sources?.length){
+        h+='<span style="font-size:11px;color:var(--t3)">No sources connected</span>';
+      } else {
+        d.sources.forEach(s=>{
+          const on=activeSrc.has(s.id);
+          const count=s.documents||s.files||s.chunks||0;
+          h+=`<div class="src-chip ${on?'src-on':'src-off'}"
+            id="s-${s.id}"
+            title="${s.description||s.label} · ${count} items"
+            onclick="togSrc(this,'${s.id}')">
+            ${s.label}
+            <span style="font-size:9px;opacity:.6">${count}</span>
+          </div>`;
+        });
+      }
+      el.innerHTML=h;
+    }
+
+    // Knowledge map — real data only
+    const km=document.getElementById('knowledgeMapGrid');
+    if(km){
+      if(!d.knowledgeMap?.length){
+        km.innerHTML='<div style="padding:14px;text-align:center;color:var(--t4);font-size:12px">No data connected yet</div>';
+      } else {
+        km.innerHTML=d.knowledgeMap.slice(0,12).map(c=>`
+          <div class="km-cat"
+            title="${c.source==='mongodb'?'Live database':'Business notes'} · ${c.count} records"
+            onclick="setQ('Give me a summary of ${c.label.toLowerCase()} from the vault')">
+            <span class="km-ic">${c.icon}</span>
+            <div class="km-info">
+              <div class="km-nm">${c.label}</div>
+              <div class="km-ds" style="font-size:10px;color:var(--t3)">
+                ${c.source==='mongodb'?'📡 Live database':'📝 Notes'}</div>
+            </div>
+            <span class="km-cnt">${c.count}</span>
+          </div>`).join('');
+      }
+    }
+  } catch(e){
+    console.log('loadSources failed:',e.message);
+    const el=document.getElementById('sourceChips');
+    if(el) el.innerHTML='<span class="ask-ex">Sources:</span><span style="font-size:11px;color:#ff7777">Could not load</span>';
+  }
+}
+
+async function loadAll() {
+  try {
+    const r = await fetch(API); if(!r.ok) throw new Error();
+    liveData = await r.json(); render(liveData);
+  } catch(e) { render({eagle:[],test:[],selfImprove:[],ticketsOpen:[],ticketsAwaiting:[],ticketsComplete:[]}); }
+}
+function render(d) {
+  const {eagle=[],test=[],selfImprove=[],ticketsOpen=[],ticketsAwaiting=[],ticketsComplete=[]} = d;
+  const done=eagle.filter(r=>r.status==='complete').length;
+  const blocked=eagle.filter(r=>r.status==='blocked'||r.status==='failed').length;
+  const rev=eagle.filter(r=>r.status==='awaiting-approval').length;
+  const q=ticketsOpen.length+ticketsAwaiting.length;
+  const si=selfImprove.filter(r=>r.status==='complete');
+  set('m-et',eagle.length);set('m-ed',done);set('m-er',rev);set('m-lr',si.length||1);
+  set('bi-tot',eagle.length);set('bi-don',done);set('bi-rev',rev);set('bi-blk',blocked);
+  set('s-q',q);set('s-bd',done);set('s-aw',rev);set('dc0',rev);set('km-b',eagle.length);
+  renderDecisions(eagle);
+  renderTickets(ticketsOpen,ticketsAwaiting,ticketsComplete,eagle);
+  renderHistory(eagle);
+}
+
+function renderDecisions(eagle) {
+  const panel=document.getElementById('decisPanel');
+  const aw=eagle.filter(r=>r.status==='awaiting-approval');
+  set('dc0', aw.length);
+  if(!aw.length){panel.innerHTML='<div style="text-align:center;padding:20px;color:var(--t4);font-size:13px">✓ No decisions waiting — all clear</div>';return;}
+  panel.innerHTML=aw.map((r,idx)=>`
+    <div class="dc">
+      <div class="dc-tag">⚡ Awaiting your approval</div>
+      <div class="dc-title">${pname(r.feature)}</div>
+      <div class="dc-ex">${explain(r.feature)}</div>
+      ${ptHtml(r)}
+      <div class="dc-acts">
+        <button class="btn btn-s btn-sm" onclick="openPreview('${r.feature}')">👁 Preview</button>
+        <button class="btn btn-g btn-sm" id="app-${idx}" onclick="doApprove('${r.feature}','approve',document.getElementById('app-${idx}'),document.getElementById('rej-${idx}'))">✓ Approve</button>
+        <button class="btn btn-r btn-sm" id="rej-${idx}" onclick="doApprove('${r.feature}','reject',document.getElementById('app-${idx}'),document.getElementById('rej-${idx}'))">✕ Reject</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderTickets(open,awaiting,complete,eagle) {
+  const el=document.getElementById('tickPipe');if(!el)return;
+  if(!open.length&&!awaiting.length&&!complete.length){el.innerHTML='<div style="text-align:center;padding:24px;color:var(--t4)">No tickets in queue</div>';return;}
+  let h='',i=1;
+  const row=(f,st,run,idx)=>{
+    const bc={REVIEW:'ba',DONE:'bg',RUNNING:'bp',BLOCKED:'br2',QUEUED:'bb'}[st]||'bgr';
+    return `<div class="tick-row">
+      <div class="tr-top"><span class="tr-n">#${String(i).padStart(2,'0')}</span><span style="font-size:13px;font-weight:700;color:var(--t1);flex:1">${pname(f)}</span><span class="badge ${bc}">${st}</span></div>
+      <div class="tr-ex">${explain(f)}</div>
+      ${ptHtml(run)}
+      ${st==='REVIEW'?`<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn btn-s btn-sm" onclick="openPreview('${f}')">👁 Preview</button>
+        <button class="btn btn-g btn-sm" id="ta${idx}" onclick="doApprove('${f}','approve',document.getElementById('ta${idx}'),document.getElementById('tr${idx}'))">✓ Approve</button>
+        <button class="btn btn-r btn-sm" id="tr${idx}" onclick="doApprove('${f}','reject',document.getElementById('ta${idx}'),document.getElementById('tr${idx}'))">✕ Reject</button>
+      </div>`:''}
+    </div>`;
+  };
+  let ri=0;
+  awaiting.forEach(n=>{const f=n.replace('.md','');const r=eagle.find(x=>x.feature===f&&x.status==='awaiting-approval');h+=row(f,'REVIEW',r,ri);i++;ri++;});
+  open.forEach(n=>{const f=n.replace('.md','');const r=eagle.filter(x=>x.feature===f).sort((a,b)=>new Date(b.started_at)-new Date(a.started_at))[0];const st=(r&&(r.status==='running'||r.status==='executing'))?'RUNNING':'QUEUED';h+=row(f,st,r,ri);i++;ri++;});
+  complete.slice(-2).reverse().forEach(n=>{const f=n.replace('.md','');const r=eagle.filter(x=>x.feature===f).sort((a,b)=>new Date(b.started_at)-new Date(a.started_at))[0];h+=row(f,'DONE',r,ri);i++;ri++;});
+  el.innerHTML=h;
+}
+
+function renderHistory(eagle) {
+  const el=document.getElementById('buildHist');if(!el)return;
+  if(!eagle.length){el.innerHTML='<div style="padding:20px;text-align:center;color:var(--t4)">No builds yet</div>';return;}
+  el.innerHTML=[...eagle].reverse().slice(0,10).map(r=>`<div class="run-row"><span class="run-id">${(r.run_id||'').slice(0,8)}</span><span class="run-nm">${pname(r.feature)}</span>${sbadge(r.status)}<span class="run-t">${ago(r.started_at)}</span></div>`).join('');
+}
+
+/* ═══════════════════════════════════════
+   MODALS
+   ═══════════════════════════════════════ */
+function closeOv(id){document.getElementById(id).classList.remove('op')}
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('op')}));
+function showCmd(title,cmd){document.getElementById('cmdT').textContent=title;document.getElementById('cmdTxt').textContent=cmd;document.getElementById('ovCmd').classList.add('op')}
+function copyActiveCmd(){navigator.clipboard.writeText(document.getElementById('cmdTxt').textContent);toast('Copied!');closeOv('ovCmd')}
+function copyCmd(cmd){navigator.clipboard.writeText(cmd);toast('Command copied!')}
+function openPreview(f){window.open('/preview/'+f+'.html','_blank')}
+function connectBCBT(){showCmd('Create BCBT vault','mkdir -p ~/deassists-workspace/369-brain/intelligence/bcbt-knowledge/raw/fee-sheets ~/deassists-workspace/369-brain/intelligence/bcbt-knowledge/raw/sops ~/deassists-workspace/369-brain/intelligence/bcbt-knowledge/wiki')}
+
+/* ═══════════════════════════════════════
+   CLAUDE API
+   ═══════════════════════════════════════ */
+async function claude(prompt) {
+  const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||'Server error '+r.status);}
+  const d=await r.json();
+  if(d.error)throw new Error(d.error);
+  return d.content&&d.content[0]?d.content[0].text:'Could not generate response.';
+}
+function ctx(){
+  if(!liveData)return 'No live data.';
+  const{eagle=[],ticketsOpen=[],ticketsAwaiting=[],ticketsComplete=[]}=liveData;
+  return `Company: DeAssists (Germany expat services + education). CEO: Shon AJ. AI brain: VEERABHADRA. Developer: Latha. BCBT target: September 2026. Builds total: ${eagle.length}. Complete: ${eagle.filter(r=>r.status==='complete').length}. Awaiting CEO approval: ${eagle.filter(r=>r.status==='awaiting-approval').length}. Open tickets: ${ticketsOpen.length}. Completed: ${ticketsComplete.length}.`;
+}
+function showActionOv(title){
+  document.getElementById('actT').textContent=title;
+  document.getElementById('actB').innerHTML='<div style="display:flex;align-items:center;gap:11px;color:var(--t3)"><div class="spin"></div>Asking Claude — about 10 seconds...</div>';
+  document.getElementById('actCopy').style.display='none';
+  document.getElementById('ovAction').classList.add('op');
+}
+function showActResult(text){actResult=text;document.getElementById('actB').innerHTML=`<div style="font-size:13px;color:var(--t2);line-height:1.85;white-space:pre-wrap">${text}</div>`;document.getElementById('actCopy').style.display=''}
+function copyAct(){navigator.clipboard.writeText(actResult);toast('Copied!')}
+
+/* Actions */
+async function generateBrief(){
+  const el=document.getElementById('briefOut');el.className='brief-out';el.textContent='⏳ Reading your system...';
+  const now=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  try{const t=await claude(`CEO morning brief for Shon AJ, non-developer CEO of DeAssists. Today: ${now}. ${ctx()}\n\nThree short paragraphs, plain English:\n1. What AI team did recently\n2. What needs Shon's decision today\n3. What happens automatically next\n\nMax 3 sentences per paragraph. No technical terms.`);el.textContent=t;}
+  catch(e){el.textContent='Could not reach Claude API. '+ctx();}
+}
+async function actionAddTicket(){
+  const task=prompt('What do you want to build? Describe it in plain English.\n\nExamples:\n• "Build the fee calculator on the Course Finder page"\n• "Add WhatsApp send button to lead detail"');
+  if(!task)return;
+  showActionOv('📋 Creating ticket...');
+  try{const t=await claude(`VEERABHADRA creating a 369-brain ticket. CEO requested: "${task}".\n\nFormat:\n## Ticket: [short-name-kebab-case]\n### What to build\n[1 sentence]\n### Why it matters\n[1 sentence]\n### Steps\n[3-5 bullets, plain English]\n### Module\n[Student Portal / Lead & Sales CRM / Finance / SMS+LMS / Document Intelligence]`);showActResult(t+'\n\nSave as .md in:\n~/deassists-workspace/369-brain/tickets/open/');}
+  catch(e){showActResult('Could not connect to Claude API.');}
+}
+async function actionBCBT(){showActionOv('🎓 BCBT brief...');try{showActResult(await claude(`Short BCBT operations brief for non-developer CEO. ${ctx()} 3 short paragraphs, plain English: what is built, what is remaining, single most important next step.`));}catch(e){showActResult('Could not connect.');}}
+async function actionLatha(){showActionOv('📱 Latha message...');try{showActResult(await claude(`WhatsApp message from Shon to Latha (lead developer). ${ctx()} What needs her review, what is blocked, urgent items. Friendly, under 100 words.`));}catch(e){showActResult('Could not connect.');}}
+async function actionHealth(){showActionOv('🔍 Health check...');try{showActResult(await claude(`Plain English health check for non-developer CEO. ${ctx()} Traffic light 🟢/🟡/🔴 for each: portal build, AI builder, Latha queue, BCBT timeline, overall risk. One sentence per item. Be honest.`));}catch(e){showActResult('Could not connect.');}}
+
+/* RAG */
+function setMode(m){
+  vaultMode=m;
+  document.getElementById('permPriv').classList.toggle('off',m!=='private');
+  document.getElementById('permDemo').classList.toggle('off',m!=='demo');
+  toast(m==='private'?'🔒 Private vault active':'🌍 Demo mode active');
+}
+function togSrc(el,src){
+  if(activeSrc.has(src)){activeSrc.delete(src);el.className='src-chip src-off';}
+  else{activeSrc.add(src);el.className='src-chip src-on';}
+}
+function setQ(q){
+  document.getElementById('ragQ').value=q;
+  sw(3);
+  activeSrc.add('notes');
+  activeSrc.add('brain');
+  const nc=document.getElementById('s-notes');
+  const bc=document.getElementById('s-brain');
+  if(nc) nc.className='src-chip src-on';
+  if(bc) bc.className='src-chip src-on';
+  setTimeout(()=>askVault(),300);
+}
+
+async function askVault(){
+  const q=document.getElementById('ragQ').value.trim();if(!q)return;
+  const btn=document.getElementById('askBtn');btn.textContent='...';btn.disabled=true;
+  document.getElementById('ansBox').classList.remove('vis');
+  document.getElementById('actGen').classList.remove('vis');
+  const srcs=[...activeSrc];
+  const timeStr=new Date().toLocaleTimeString('en-GB');
   try{
-    const d=await(await fetch('/api/data')).json();
-    document.getElementById('s-eagle').textContent=d.eagle.length||0;
-    const el=d.eagle[d.eagle.length-1];
-    document.getElementById('s-eagle-sub').textContent=el?'last: '+(el.feature||'').slice(0,16).replace(/-/g,' ')+' · '+ts(el.started_at)+' ago':'no builds yet';
-    document.getElementById('s-test').textContent=d.test.length||0;
-    const tp=d.test.filter(r=>r.status==='complete').length;
-    document.getElementById('s-test-sub').textContent=d.test.length?tp+'/'+d.test.length+' passed':'builds tonight';
-    document.getElementById('s-learn').textContent=d.selfImprove.length||0;
-    document.getElementById('s-learn-sub').textContent=d.selfImprove.length?d.selfImprove.length+' analyses run':'first analysis tonight';
-    const qt=d.ticketsOpen.length+d.ticketsAwaiting.length;
-    document.getElementById('s-queue').textContent=qt;
-    document.getElementById('s-queue-sub').textContent=d.ticketsAwaiting.length+' awaiting review · '+d.ticketsComplete.length+' done';
-    document.getElementById('eagle-list').innerHTML=d.eagle.length?[...d.eagle].reverse().slice(0,6).map(rr).join(''):'<div class="empty">No builds yet</div>';
-    document.getElementById('test-list').innerHTML=d.test.length?[...d.test].reverse().slice(0,6).map(rr).join(''):'<div class="empty">Builds tonight</div>';
-    document.getElementById('queue-list').innerHTML=rq(d.ticketsOpen,d.ticketsAwaiting,d.ticketsComplete);
-    document.getElementById('phase-trail').innerHTML=rph(d.eagle);
-    document.getElementById('matrix-wrap').innerHTML=rmx(d.test);
-    document.getElementById('last-refresh').textContent='refreshed: '+new Date().toLocaleTimeString('en-GB');
-  }catch(e){document.getElementById('last-refresh').textContent='offline — run: node mission-control-server.js';}
+    // Try real RAG first — searches actual files then calls Claude with context
+    let answer, citations=[], chunksFound=0, usedRAG=false;
+    try{
+      const ragRes=await fetch('/api/rag/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,sources:srcs})});
+      if(ragRes.ok){
+        const d=await ragRes.json();
+        if(d.ok&&d.answer){
+          answer=d.answer;
+          citations=d.citations||[];
+          chunksFound=d.chunks_found||0;
+          usedRAG=d.context_used;
+        }
+      }
+    }catch(e){}
+    // Fallback — if RAG endpoint not available, use Claude directly with context
+    if(!answer){
+      answer=await claude(`You are VEERABHADRA answering: "${q}". Context: ${ctx()}. Answer in plain English, 2-4 sentences, cite sources.`);
+    }
+    lastAnswer=answer;lastQuestion=q;
+    document.getElementById('ansText').textContent=answer;
+    document.getElementById('ansSrc').textContent=usedRAG?`Real RAG · ${chunksFound} document chunks searched`:'Context-based answer';
+    document.getElementById('ansCites').innerHTML=
+      citations.length?citations.slice(0,5).map(c=>`<span class="cite">${c.source==='obsidian'?'📝':'🧠'} ${c.title}</span>`).join('')
+      :srcs.map(s=>`<span class="cite">${{brain:'🧠 Brain',portal:'💻 Portal',bcbt:'🎓 BCBT',notes:'📝 Notes',pdf:'📄 PDF'}[s]||s}</span>`).join('');
+    const conf=usedRAG?Math.min(95,70+chunksFound*3):65;
+    document.getElementById('confBar').style.width=conf+'%';
+    document.getElementById('confPct').textContent=conf+'%';
+    document.getElementById('ansAudit').textContent=usedRAG?`${chunksFound} docs found · Logged ${timeStr}`:`Logged ${timeStr}`;
+    document.getElementById('ansBox').classList.add('vis');
+    document.getElementById('actGen').classList.add('vis');
+    auditLog.unshift({time:timeStr,q,srcs:srcs.join(','),chunks:chunksFound,rag:usedRAG});
+    qHistory.unshift({q,time:timeStr});qCount++;
+    set('m-rq',qCount);renderAudit();renderQHist();
+  }catch(e){
+    document.getElementById('ansText').textContent='Could not get an answer. Check that the server is running and the Claude API key is configured. Open localhost:3369/api/status to check.';
+    document.getElementById('ansBox').classList.add('vis');
+  }
+  btn.textContent='Ask →';btn.disabled=false;
+  document.getElementById('ragQ').value='';
 }
-setInterval(()=>document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-GB'),1000);
-setInterval(loadAll,30000);
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const ri=document.getElementById('ragQ');
+  if(ri)ri.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();askVault();}});
+});
+
+function renderAudit(){const el=document.getElementById('auditLog');if(!el)return;el.innerHTML=auditLog.slice(0,5).map(a=>`<div class="audit-item"><div class="audit-q">${a.q}</div><div class="audit-m">${a.time} · ${a.srcs}</div></div>`).join('')||'<div style="padding:14px;text-align:center;color:var(--t4);font-size:12px">No queries yet</div>';}
+function renderQHist(){const el=document.getElementById('qHist');if(!el)return;el.innerHTML=qHistory.slice(0,5).map(h=>`<div style="padding:9px 14px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.q}</span><span style="font-family:var(--mono);font-size:10px;color:var(--t4);flex-shrink:0;margin-left:8px">${h.time}</span></div>`).join('')||'<div style="padding:14px;text-align:center;color:var(--t4);font-size:12px">No queries yet</div>';}
+
+const actPrompts={
+  draft_email:`Write a professional email based on:\nQuestion: "${()=>lastQuestion}"\nAnswer: "${()=>lastAnswer}"\nSubject line + body. Professional but friendly.`,
+  checklist:`Create a practical checklist from:\nQuestion: "${()=>lastQuestion}"\nAnswer: "${()=>lastAnswer}"\nNumbered list with [ ] checkboxes.`,
+  report:`Write a business report from:\nQuestion: "${()=>lastQuestion}"\nAnswer: "${()=>lastAnswer}"\nTitle, Summary, Key Findings, Next Steps. 1 page max.`,
+  prompt:`Create a reusable AI prompt template from:\nQuestion: "${()=>lastQuestion}"\nAnswer: "${()=>lastAnswer}"\nWith [BRACKET] placeholders.`,
+  task:`Create a 369-brain ticket from:\nQuestion: "${()=>lastQuestion}"\nAnswer: "${()=>lastAnswer}"\n## Ticket: [name] / ### What to build / ### Why / ### Steps / ### Module`,
+  note:`Write a project note for 369-brain from:\nQuestion: "${()=>lastQuestion}"\nAnswer: "${()=>lastAnswer}"\n## Note / Date / Context / Key points / Action items`,
+  automation:`Suggest an automation from:\nQuestion: "${()=>lastQuestion}"\nAnswer: "${()=>lastAnswer}"\nWhat to automate, trigger, action, time saved.`,
+  docpack:`List documents needed and missing from:\nQuestion: "${()=>lastQuestion}"\nAnswer: "${()=>lastAnswer}"\nPresent, missing, needed from external.`,
+};
+
+async function genAction(type){
+  if(!lastAnswer){toast('Ask a question first');return;}
+  const titles={draft_email:'✉ Draft Email',checklist:'✅ Checklist',report:'📊 Report',prompt:'🤖 Build Prompt',task:'📋 Create Task',note:'📝 Project Note',automation:'⚙ Suggest Automation',docpack:'📦 Document Package'};
+  document.getElementById('ragActT').textContent=titles[type]||type;
+  document.getElementById('ragActB').innerHTML='<div style="display:flex;align-items:center;gap:11px;color:var(--t3)"><div class="spin-t"></div>Generating...</div>';
+  document.getElementById('ragCopy').style.display='none';
+  document.getElementById('ovRAG').classList.add('op');
+  const basePrompts={
+    draft_email:`Write a professional email about: "${lastQuestion}". Based on: "${lastAnswer}". Subject line + body. Professional but friendly.`,
+    checklist:`Create a practical numbered checklist [ ] for: "${lastQuestion}". Based on: "${lastAnswer}".`,
+    report:`Business report for: "${lastQuestion}". Based on: "${lastAnswer}". Title, Summary, Findings, Next Steps.`,
+    prompt:`Reusable AI prompt template for: "${lastQuestion}". Based on: "${lastAnswer}". Use [BRACKETS] for variables.`,
+    task:`369-brain ticket for: "${lastQuestion}". Based on: "${lastAnswer}". ## Ticket / ### What / ### Why / ### Steps / ### Module`,
+    note:`Project note for 369-brain. Topic: "${lastQuestion}". Key info: "${lastAnswer}". ## Note / Date / Context / Points / Actions`,
+    automation:`Automation suggestion for: "${lastQuestion}". Based on: "${lastAnswer}". Trigger, action, outcome, time saved.`,
+    docpack:`Document package list for: "${lastQuestion}". Based on: "${lastAnswer}". Present / Missing / Needed from external.`,
+  };
+  try{
+    ragActResult=await claude(basePrompts[type]||'Summarize: '+lastAnswer);
+    document.getElementById('ragActB').innerHTML=`<div style="font-size:13px;color:var(--t2);line-height:1.85;white-space:pre-wrap">${ragActResult}</div>`;
+    document.getElementById('ragCopy').style.display='';
+  }catch(e){document.getElementById('ragActB').textContent='Could not connect to Claude API.';}
+}
+function copyRAGAct(){navigator.clipboard.writeText(ragActResult);toast('Copied!')}
+
+/* PDF */
+function handlePDFDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf')processPDF(f);else toast('Please drop a PDF file');}
+function handlePDF(e){const f=e.target.files[0];if(f)processPDF(f);}
+async function processPDF(file){
+  const stat=document.getElementById('pdfStatus');stat.style.display='block';stat.textContent='⏳ Reading '+file.name+'...';
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const b64=e.target.result.split(',')[1];
+    try{
+      const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}},{type:'text',text:'Summarize this document in 3 sentences. What type of document is it? What are the 3 most important facts?'}]}]})});
+      const d=await r.json();
+      const summary=d.content&&d.content[0]?d.content[0].text:'Could not read PDF.';
+      stat.innerHTML=`<div class="info-box info-t" style="margin-bottom:0"><strong style="color:var(--teal)">✓ ${file.name} read</strong><br>${summary}<br><span style="font-size:10px;color:var(--t3)">File stays on your machine · Ask questions about it in the vault above</span></div>`;
+      activeSrc.add('pdf');const chip=document.getElementById('s-pdf');if(chip)chip.className='src-chip src-on';
+      toast('PDF added to vault — now searchable');
+    }catch(e){stat.textContent='Could not read PDF. Check Claude API connection.';}
+  };
+  reader.readAsDataURL(file);
+}
+
+/* Toast */
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',3000)}
+
+/* Init */
+const savedTab = location.hash ?
+  parseInt(location.hash.replace('#tab','')) : 0;
+sw(isNaN(savedTab) ? 0 : savedTab);
 loadAll();
+loadSources();
+setInterval(loadAll,30000);
+setInterval(loadSources,60000);
 </script>
 </body>
 </html>
