@@ -251,6 +251,44 @@ const server = http.createServer(async (req, res) => {
     if (url==='/api/data')         return json(res, 200, getData());
     if (url==='/api/status')       return json(res, 200, getStatus());
     if (url==='/api/rag/status')   return json(res, 200, rag.getStatus());
+    if (url==='/api/guardian/status') {
+      try {
+        const testRunsDir = path.join(BRAIN,'intelligence','test-runs');
+        const latestFile = path.join(testRunsDir,'latest.json');
+        if (!fs.existsSync(latestFile)) {
+          return json(res,200,{
+            connected:false,status:'never_run',last_run:null,
+            run_count:0,summary:{total:0,passed:0,failed:0,skipped:0},
+            trigger:{reason:null},features:[],accounts:{},history:[],
+            message:'No test runs yet.'
+          });
+        }
+        const latest = JSON.parse(fs.readFileSync(latestFile,'utf8'));
+        const runFiles = fs.readdirSync(testRunsDir)
+          .filter(f=>f.endsWith('.json')&&f!=='latest.json'&&f!=='latest-report.json')
+          .sort().reverse().slice(0,5);
+        const history = runFiles.map(f=>{
+          try{return JSON.parse(fs.readFileSync(path.join(testRunsDir,f),'utf8'));}
+          catch{return null;}
+        }).filter(Boolean);
+        return json(res,200,{
+          connected:true,
+          status:latest.status,
+          last_run:latest.run_date,
+          last_run_at:latest.run_time,
+          run_count:runFiles.length||1,
+          summary:latest.summary,
+          trigger:latest.trigger||{reason:'unknown'},
+          features:latest.features||[],
+          accounts:latest.accounts||{},
+          history:history.map(h=>({
+            run_id:h.run_id,run_date:h.run_date,
+            status:h.status,summary:h.summary,
+            trigger:h.trigger
+          }))
+        });
+      } catch(e){return json(res,500,{error:e.message});}
+    }
     if (url==='/api/sources') {
       const ragStatus = rag.getStatus();
       const sources = [];
@@ -296,6 +334,25 @@ const server = http.createServer(async (req, res) => {
     if (url==='/api/claude')      return proxyClaude(body, res);
     if (url==='/api/approve')     return handleApprove(body, res);
     if (url==='/api/rag/search')  return handleRAGSearch(body, res);
+    if (url==='/api/guardian/run' && req.method==='POST') {
+      try {
+        const testRunsDir = path.join(BRAIN,'intelligence','test-runs');
+        const latestFile = path.join(testRunsDir,'latest.json');
+        if (fs.existsSync(latestFile)) {
+          const latest = JSON.parse(fs.readFileSync(latestFile,'utf8'));
+          const age = Date.now() - new Date(latest.run_time||0).getTime();
+          if (age < 60000) {
+            return json(res,200,{ok:true,message:'Tests ran '+Math.round(age/1000)+'s ago. Results are fresh.',fresh:true});
+          }
+        }
+        const {spawn}=require('child_process');
+        const child=spawn('node',[
+          path.join(BRAIN,'guardian-run-once.js')
+        ],{detached:true,stdio:'ignore',env:{...process.env}});
+        child.unref();
+        return json(res,200,{ok:true,message:'Guardian test run started. Results in ~60 seconds.'});
+      } catch(e){return json(res,500,{error:e.message});}
+    }
     if (url==='/api/rag/index')   { rag.buildIndex(); return json(res,200,{ok:true,msg:'Re-indexing started'}); }
   }
   // Serve HTML

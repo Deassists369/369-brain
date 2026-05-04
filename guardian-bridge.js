@@ -71,6 +71,43 @@ function runTests(reason = 'manual_or_initial', eagleEntry = null) {
     const failed  = parseInt((output.match(/(\d+)\s+failed/)  || [0,0])[1], 10) || 0;
     const skipped = parseInt((output.match(/(\d+)\s+skipped/) || [0,0])[1], 10) || 0;
 
+    // Parse per-account login results from Playwright output
+    const accounts = {};
+    const userTypes = ['super_admin','manager','team_lead','agent',
+      'staff','organization_owner','organization_admin','organization_agent'];
+    userTypes.forEach(type => {
+      const passReg = new RegExp('✓.*login.*'+type.replace(/_/g,'[_\\s]'),'i');
+      const failReg = new RegExp('(?:✘|×|FAILED).*login.*'+type.replace(/_/g,'[_\\s]'),'i');
+      if (passReg.test(output)) accounts[type] = 'passed';
+      else if (failReg.test(output)) accounts[type] = 'failed';
+      else accounts[type] = 'unknown';
+    });
+
+    // Parse per-suite results
+    const features = [];
+    if (passed > 0 || failed > 0) {
+      const portalPassed = userTypes.filter(t => accounts[t]==='passed').length;
+      const portalFailed = userTypes.filter(t => accounts[t]==='failed').length;
+      features.push({
+        name: 'Portal Login — All User Roles',
+        type: 'Portal',
+        passed: portalPassed,
+        failed: portalFailed,
+        total: userTypes.length
+      });
+      const availPassed = output.includes('portal loads') ? 1 : 0;
+      const apiPassed = output.includes('backend API') ? 1 : 0;
+      if (availPassed || apiPassed) {
+        features.push({
+          name: 'Portal Availability',
+          type: 'Availability',
+          passed: availPassed + apiPassed,
+          failed: 0,
+          total: 2
+        });
+      }
+    }
+
     const result = {
       run_id: `guardian-${Date.now()}`,
       run_date: runDate,
@@ -85,7 +122,9 @@ function runTests(reason = 'manual_or_initial', eagleEntry = null) {
       },
       summary: { total: passed+failed+skipped, passed, failed, skipped },
       status: failed === 0 ? 'passing' : 'failing',
-      output: output.slice(-2000)
+      output: output.slice(-2000),
+      accounts,
+      features
     };
 
     if (!fs.existsSync(TEST_RUNS)) fs.mkdirSync(TEST_RUNS, { recursive: true });

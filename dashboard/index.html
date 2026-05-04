@@ -520,7 +520,8 @@ body{min-height:100vh;overscroll-behavior:none}
       <button class="dtab" onclick="sw(2)" id="t2"><span class="td" style="background:var(--amber)"></span>Document Intelligence</button>
       <button class="dtab" onclick="sw(3)" id="t3"><span class="td" style="background:var(--teal)"></span>RAG Intelligence</button>
       <button class="dtab" onclick="sw(4)" id="t4"><span class="td" style="background:var(--purple)"></span>Self-Improvement</button>
-      <button class="dtab" onclick="sw(5)" id="t5"><span class="td" style="background:#6b7280"></span>Settings</button>
+      <button class="dtab" onclick="sw(5)" id="t5"><span class="td" style="background:#dc2626"></span>Guardian</button>
+      <button class="dtab" onclick="sw(6)" id="t6"><span class="td" style="background:#6b7280"></span>Settings</button>
     </div>
     <div class="nav-r">
       <div class="clock" id="clock">--:--:--</div>
@@ -538,7 +539,8 @@ body{min-height:100vh;overscroll-behavior:none}
     <button class="bntab" onclick="sw(2)" id="bn2"><span class="bi">📚</span>Docs</button>
     <button class="bntab" onclick="sw(3)" id="bn3"><span class="bi">🔮</span>RAG</button>
     <button class="bntab" onclick="sw(4)" id="bn4"><span class="bi">🧠</span>Learn</button>
-    <button class="bntab" onclick="sw(5)" id="bn5"><span class="bi">⚙</span>Settings</button>
+    <button class="bntab" onclick="sw(5)" id="bn5"><span class="bi">🛡</span>Guard</button>
+    <button class="bntab" onclick="sw(6)" id="bn6"><span class="bi">⚙</span>Settings</button>
   </div>
 </div>
 
@@ -588,10 +590,10 @@ body{min-height:100vh;overscroll-behavior:none}
         <div class="hm-stats"><div><div class="hm-sv" id="m-lr">1</div><div class="hm-sl">Runs</div></div><div><div class="hm-sv" style="color:var(--purple)">5</div><div class="hm-sl">Patterns</div></div><div><div class="hm-sv">6</div><div class="hm-sl">Fixes</div></div></div>
         <div class="hm-cta">Self-Improvement →</div>
       </div>
-      <div class="hm">
+      <div class="hm" onclick="sw(5)" style="cursor:pointer">
         <div class="hm-top"><div class="hm-ic" style="background:var(--gx);border:1px solid var(--gxx)">🛡</div><div><div class="hm-nm">The Guardian</div><div class="hm-rl">Tests everything at 2am</div></div><div class="light ll" style="margin-left:auto"></div></div>
-        <div class="hm-stats"><div><div class="hm-sv">0</div><div class="hm-sl">Test runs</div></div><div><div class="hm-sv" style="color:var(--t4)">2am</div><div class="hm-sl">Next</div></div></div>
-        <div class="hm-cta" style="color:var(--t3)">Setting up →</div>
+        <div class="hm-stats"><div><div class="hm-sv" id="g-run-count">0</div><div class="hm-sl">Runs</div></div><div><div class="hm-sv" id="g-pass-count" style="color:var(--t4)">—</div><div class="hm-sl">Passed</div></div><div><div class="hm-sv" id="g-fail-count" style="color:var(--t4)">—</div><div class="hm-sl">Failed</div></div></div>
+        <div class="hm-cta" id="g-card-status" style="color:var(--t3)">Setting up →</div>
       </div>
       <div class="hm" onclick="sw(2)">
         <div class="hm-top"><div class="hm-ic" style="background:var(--abg);border:1px solid var(--abd)">📚</div><div><div class="hm-nm">Doc Intelligence</div><div class="hm-rl">Reads BCBT documents</div></div><div class="light la" style="margin-left:auto"></div></div>
@@ -862,6 +864,51 @@ body{min-height:100vh;overscroll-behavior:none}
 
 <!-- ══════════════ PANEL 5 — SETTINGS ══════════════ -->
 <div class="panel" id="p5">
+<div style="max-width:860px;margin:0 auto;padding:0 0 40px">
+<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="light ll" id="g-status-dot" style="margin:0"></div>
+    <div><div style="font-size:14px;font-weight:600;color:var(--t1)">Guardian — Quality &amp; Testing</div><div style="font-size:12px;color:var(--t3)" id="g-status-sub">Loading...</div></div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <div style="display:flex;gap:14px;margin-right:10px">
+      <div style="text-align:center"><div style="font-size:18px;font-weight:600;color:#16a34a" id="g-top-passed">—</div><div style="font-size:10px;color:var(--t3);text-transform:uppercase">Passed</div></div>
+      <div style="text-align:center"><div style="font-size:18px;font-weight:600;color:#dc2626" id="g-top-failed">—</div><div style="font-size:10px;color:var(--t3);text-transform:uppercase">Failed</div></div>
+      <div style="text-align:center"><div style="font-size:18px;font-weight:600;color:#ca8a04" id="g-top-skipped">—</div><div style="font-size:10px;color:var(--t3);text-transform:uppercase">Skipped</div></div>
+    </div>
+    <button onclick="runGuardianNow(event)" style="font-size:12px;padding:6px 14px;background:var(--g);color:#fff;border:none;border-radius:8px;cursor:pointer" id="g-run-btn">Run now</button>
+  </div>
+</div>
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px">Features tested</div>
+<div id="g-feature-list" style="display:flex;flex-direction:column;gap:6px"><div style="padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--t3);font-size:12px">Loading...</div></div>
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px">Test accounts</div>
+<div style="display:flex;flex-direction:column;gap:4px" id="g-accounts">
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">SA</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Super Admin</div><div style="font-size:10px;color:var(--t3)">info@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-sa">— not tested</div></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">MG</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Manager</div><div style="font-size:10px;color:var(--t3)">infomanager@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-mg">— not tested</div></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">TL</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Team Lead</div><div style="font-size:10px;color:var(--t3)">infoteamlead@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-tl">— not tested</div></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">AG</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Agent</div><div style="font-size:10px;color:var(--t3)">infoagent@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-ag">— not tested</div></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">ST</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Staff</div><div style="font-size:10px;color:var(--t3)">infostaff@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-st">— not tested</div></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">OO</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Org Owner</div><div style="font-size:10px;color:var(--t3)">infoorgowner@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-oo">— not tested</div></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">OA</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Org Admin</div><div style="font-size:10px;color:var(--t3)">infoorgadmin@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-oa">— not tested</div></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">OG</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Org Agent</div><div style="font-size:10px;color:var(--t3)">infoorgagent@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-og">— not tested</div></div>
+</div>
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px">Run history</div>
+<div id="g-history"><div style="padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px;color:var(--t3)">No runs yet</div></div>
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px">EAGLE connection</div>
+<div style="background:var(--bg2);border-radius:8px;padding:10px 12px">
+  <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px"><span style="color:var(--t3)">Status</span><span style="color:var(--g);font-weight:500">Watching every 30 seconds</span></div>
+  <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px"><span style="color:var(--t3)">Last triggered by</span><span style="color:var(--t1);font-weight:500" id="g-eagle-reason">checking...</span></div>
+  <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px"><span style="color:var(--t3)">EAGLE build</span><span style="color:var(--t1);font-weight:500" id="g-eagle-build">checking...</span></div>
+  <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px"><span style="color:var(--t3)">Daily 2am run</span><span style="color:var(--g);font-weight:500">Scheduled</span></div>
+</div>
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px">How Guardian feeds self-learning</div>
+<div style="background:var(--bg2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--t3);line-height:1.6">
+  Every test run → written to intelligence/test-runs/ → RAG indexes within 10 minutes → Self-Improvement reads weekly → finds patterns → EAGLE gets smarter next build.
+</div>
+</div>
+</div>
+
+<div class="panel" id="p6">
   <div class="g2">
     <div>
       <div class="sh"><div class="sl">Organisation</div></div>
@@ -1392,10 +1439,100 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 const savedTab = location.hash ?
   parseInt(location.hash.replace('#tab','')) : 0;
 sw(isNaN(savedTab) ? 0 : savedTab);
+async function loadGuardian(){
+  try{
+    const d=await fetch('/api/guardian/status').then(r=>r.json());
+    const set=(id,val,col)=>{const e=document.getElementById(id);if(e){e.textContent=val;if(col)e.style.color=col;}};
+    if(!d.connected){
+      const dot=document.getElementById('g-status-dot');
+      if(dot)dot.style.background='#9ca3af';
+      set('g-status-sub','No test runs yet — click Run now');
+      set('g-top-passed','—');set('g-top-failed','—');set('g-top-skipped','—');
+      set('g-run-count','0');set('g-pass-count','—');set('g-fail-count','—');
+      set('g-card-status','Setting up →');
+      const fl=document.getElementById('g-feature-list');
+      if(fl)fl.innerHTML='<div style="padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--t3);font-size:12px">No test runs yet. Click Run now to start.</div>';
+    } else {
+      const ok=d.status==='passing';
+      const dot=document.getElementById('g-status-dot');
+      if(dot)dot.style.background=ok?'#22c55e':'#ef4444';
+      set('g-status-sub',(ok?'All tests passing':'Failures detected')+' — '+d.last_run);
+      set('g-top-passed',d.summary.passed,'#16a34a');
+      set('g-top-failed',d.summary.failed,d.summary.failed>0?'#dc2626':'#16a34a');
+      set('g-top-skipped',d.summary.skipped||0);
+      set('g-run-count',d.run_count||1);
+      set('g-pass-count',d.summary.passed,'#16a34a');
+      set('g-fail-count',d.summary.failed,d.summary.failed>0?'#dc2626':'#16a34a');
+      set('g-card-status',ok?'All tests passing ✓':''+d.summary.failed+' failed');
+      set('g-eagle-reason',d.trigger?.reason==='eagle_completed'?'EAGLE build':'Manual or scheduled');
+      set('g-eagle-build',d.trigger?.eagle_feature||d.last_run||'unknown');
+      const fl=document.getElementById('g-feature-list');
+      if(fl){
+        const features=d.features||[];
+        fl.innerHTML=features.length?features.map(f=>`
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="font-size:10px;padding:2px 7px;border-radius:999px;background:var(--gx);color:var(--g);font-weight:500">${f.type||'Test'}</div>
+              <div style="font-size:12px;font-weight:500;color:var(--t1);flex:1">${f.name}</div>
+              <div style="font-size:12px;font-weight:600;color:${f.failed>0?'#dc2626':'#16a34a'}">${f.failed>0?f.failed+' failed':f.passed+'/'+f.total+' ✓'}</div>
+            </div>
+          </div>`).join(''):'<div style="padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--t3);font-size:12px">No feature-level results yet. Run tests to populate.</div>';
+      }
+      const accMap={sa:'super_admin',mg:'manager',tl:'team_lead',ag:'agent',st:'staff',oo:'organization_owner',oa:'organization_admin',og:'organization_agent'};
+      const accounts=d.accounts||{};
+      Object.entries(accMap).forEach(([id,type])=>{
+        const el=document.getElementById('acc-'+id);
+        if(!el)return;
+        const s=accounts[type];
+        if(s==='passed'){el.textContent='✓ Login OK';el.style.color='#16a34a';}
+        else if(s==='failed'){el.textContent='✕ Failed';el.style.color='#dc2626';}
+        else{el.textContent='— not tested';el.style.color='var(--t3)';}
+      });
+      const hist=document.getElementById('g-history');
+      const history=d.history||[];
+      if(hist){
+        if(!history.length){
+          hist.innerHTML='<div style="padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px;color:var(--t3)">No history yet</div>';
+        } else {
+          hist.innerHTML='<div style="display:flex;flex-direction:column;gap:4px">'+history.map(h=>{
+            const pct=h.summary.total>0?Math.round(h.summary.passed/h.summary.total*100):0;
+            return `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px">
+              <div style="font-size:11px;font-weight:500;color:var(--t1);width:90px;flex-shrink:0">${h.run_date}</div>
+              <div style="flex:1;height:3px;border-radius:2px;background:var(--border);overflow:hidden"><div style="width:${pct}%;height:100%;background:${h.status==='passing'?'#22c55e':'#f59e0b'};border-radius:2px"></div></div>
+              <div style="font-size:10px;color:${h.status==='passing'?'#16a34a':'#ca8a04'};flex-shrink:0">${h.summary.passed}p ${h.summary.failed}f</div>
+            </div>`;
+          }).join('')+'</div>';
+        }
+      }
+    }
+  }catch(e){console.log('loadGuardian failed:',e.message);}
+}
+
+async function runGuardianNow(evt){
+  const btn=evt?evt.target:document.getElementById('g-run-btn');
+  if(btn){btn.textContent='Running...';btn.disabled=true;}
+  try{
+    const r=await fetch('/api/guardian/run',{method:'POST'}).then(x=>x.json());
+    if(r.fresh){
+      if(btn){btn.textContent='Run now';btn.disabled=false;}
+      loadGuardian();
+      return;
+    }
+    setTimeout(loadGuardian,5000);
+    setTimeout(loadGuardian,30000);
+    setTimeout(loadGuardian,90000);
+    setTimeout(()=>{loadGuardian();if(btn){btn.textContent='Run now';btn.disabled=false;}},130000);
+  }catch(e){
+    if(btn){btn.textContent='Run now';btn.disabled=false;}
+  }
+}
+
 loadAll();
 loadSources();
+loadGuardian();
 setInterval(loadAll,30000);
 setInterval(loadSources,60000);
+setInterval(loadGuardian,120000);
 </script>
 </body>
 </html>
