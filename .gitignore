@@ -8,3 +8,4 @@ credentials/
 
 # Dependency directories — never commit
 node_modules/
+ecosystem.config.cjs
