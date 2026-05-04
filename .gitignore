@@ -9,3 +9,10 @@ credentials/
 # Dependency directories — never commit
 node_modules/
 ecosystem.config.cjs
+
+# OAuth + API credentials — never commit
+integrations/gmail-credentials.json
+integrations/*-credentials.json
+integrations/.dropbox-cursor
+integrations/.gmail-token*.json
+*.credentials.json
