@@ -587,7 +587,7 @@ body{min-height:100vh;overscroll-behavior:none}
       </div>
       <div class="hm" onclick="sw(4)">
         <div class="hm-top"><div class="hm-ic" style="background:var(--pbg);border:1px solid var(--pbd)">🧠</div><div><div class="hm-nm">The Learner</div><div class="hm-rl">Finds patterns and improves</div></div><div class="light lg" style="margin-left:auto"></div></div>
-        <div class="hm-stats"><div><div class="hm-sv" id="m-lr">1</div><div class="hm-sl">Runs</div></div><div><div class="hm-sv" style="color:var(--purple)">5</div><div class="hm-sl">Patterns</div></div><div><div class="hm-sv">6</div><div class="hm-sl">Fixes</div></div></div>
+        <div class="hm-stats"><div><div class="hm-sv" id="m-lr">1</div><div class="hm-sl">Runs</div></div><div><div class="hm-sv" id="learner-patterns" style="color:var(--purple)">—</div><div class="hm-sl">Patterns</div></div><div><div class="hm-sv" id="learner-fixes">—</div><div class="hm-sl">Fixes</div></div></div>
         <div class="hm-cta">Self-Improvement →</div>
       </div>
       <div class="hm" onclick="sw(5)" style="cursor:pointer">
@@ -602,7 +602,7 @@ body{min-height:100vh;overscroll-behavior:none}
       </div>
       <div class="hm" onclick="sw(3)">
         <div class="hm-top"><div class="hm-ic" style="background:var(--tbg);border:1px solid var(--tbd)">🔮</div><div><div class="hm-nm">RAG Intelligence</div><div class="hm-rl">Business knowledge, queryable</div></div><div class="light lt" style="margin-left:auto"></div></div>
-        <div class="hm-stats"><div><div class="hm-sv" style="color:var(--teal)">2</div><div class="hm-sl">Sources</div></div><div><div class="hm-sv" id="m-rq">0</div><div class="hm-sl">Queries</div></div></div>
+        <div class="hm-stats"><div><div class="hm-sv" id="rag-sources" style="color:var(--teal)">—</div><div class="hm-sl">Sources</div></div><div><div class="hm-sv" id="m-rq">0</div><div class="hm-sl">Queries</div></div></div>
         <div class="hm-cta">Open RAG Vault →</div>
       </div>
     </div>
@@ -814,7 +814,7 @@ body{min-height:100vh;overscroll-behavior:none}
       <div style="margin-top:14px;background:var(--nav);border-radius:var(--r2);padding:16px">
         <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:9px">Safety model</div>
         <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.85;display:flex;flex-direction:column;gap:5px">
-          <div><span style="color:var(--g)">✓</span> Local-first — no data leaves your machine</div>
+          <div><span style="color:var(--g)">✓</span> Local-first storage — AI requests use configured model provider</div>
           <div><span style="color:var(--g)">✓</span> Every answer cites its source document</div>
           <div><span style="color:var(--g)">✓</span> Audit log for every query</div>
           <div><span style="color:var(--g)">✓</span> Private vs Demo mode — never mix</div>
@@ -862,7 +862,7 @@ body{min-height:100vh;overscroll-behavior:none}
   </div>
 </div>
 
-<!-- ══════════════ PANEL 5 — SETTINGS ══════════════ -->
+<!-- ══════════════ PANEL 5 — GUARDIAN ══════════════ -->
 <div class="panel" id="p5">
 <div style="max-width:860px;margin:0 auto;padding:0 0 40px">
 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px">
@@ -991,7 +991,7 @@ body{min-height:100vh;overscroll-behavior:none}
 const API = 'http://localhost:3369/api/data';
 const APPROVE_API = 'http://localhost:3369/api/approve';
 let liveData = null, activeTab = 0;
-let activeSrc = new Set(['brain','portal']);
+let activeSrc = new Set();
 let auditLog = [], qHistory = [], qCount = 0;
 let lastAnswer = '', lastQuestion = '', vaultMode = 'private';
 let actResult = '', ragActResult = '';
@@ -1131,6 +1131,9 @@ async function loadSources(){
       if(!d.sources?.length){
         h+='<span style="font-size:11px;color:var(--t3)">No sources connected</span>';
       } else {
+        if (activeSrc.size === 0) {
+          d.sources.forEach(s => activeSrc.add(s.id));
+        }
         d.sources.forEach(s=>{
           const on=activeSrc.has(s.id);
           const count=s.documents||s.files||s.chunks||0;
@@ -1426,7 +1429,7 @@ async function processPDF(file){
       const summary=d.content&&d.content[0]?d.content[0].text:'Could not read PDF.';
       stat.innerHTML=`<div class="info-box info-t" style="margin-bottom:0"><strong style="color:var(--teal)">✓ ${file.name} read</strong><br>${summary}<br><span style="font-size:10px;color:var(--t3)">File stays on your machine · Ask questions about it in the vault above</span></div>`;
       activeSrc.add('pdf');const chip=document.getElementById('s-pdf');if(chip)chip.className='src-chip src-on';
-      toast('PDF added to vault — now searchable');
+      toast('PDF summarised — vault indexing coming soon');
     }catch(e){stat.textContent='Could not read PDF. Check Claude API connection.';}
   };
   reader.readAsDataURL(file);
@@ -1527,12 +1530,39 @@ async function runGuardianNow(evt){
   }
 }
 
+async function loadOverview(){
+  try {
+    const d = await fetch('/api/mission/overview').then(r=>r.json());
+
+    // Learner card
+    const lp=document.getElementById('learner-patterns');
+    const lf=document.getElementById('learner-fixes');
+    if(lp)lp.textContent=d.learner.patterns!=null?d.learner.patterns:'—';
+    if(lf)lf.textContent=d.learner.fixes||'—';
+
+    // Guardian card
+    const grc=document.getElementById('g-run-count');
+    const gpc=document.getElementById('g-pass-count');
+    const gfc=document.getElementById('g-fail-count');
+    if(grc)grc.textContent=d.guardian.runs||0;
+    if(gpc){gpc.textContent=d.guardian.passed;gpc.style.color='#16a34a';}
+    if(gfc){gfc.textContent=d.guardian.failed;gfc.style.color=d.guardian.failed>0?'#dc2626':'#16a34a';}
+
+    // RAG card
+    const rs=document.getElementById('rag-sources');
+    if(rs)rs.textContent=d.rag.sources>0?d.rag.sources:'—';
+
+  } catch(e){console.log('loadOverview failed:',e.message);}
+}
+
 loadAll();
 loadSources();
 loadGuardian();
+loadOverview();
 setInterval(loadAll,30000);
 setInterval(loadSources,60000);
 setInterval(loadGuardian,120000);
+setInterval(loadOverview,60000);
 </script>
 </body>
 </html>

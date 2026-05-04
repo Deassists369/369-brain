@@ -251,6 +251,62 @@ const server = http.createServer(async (req, res) => {
     if (url==='/api/data')         return json(res, 200, getData());
     if (url==='/api/status')       return json(res, 200, getStatus());
     if (url==='/api/rag/status')   return json(res, 200, rag.getStatus());
+    if (url==='/api/mission/overview') {
+      try {
+        const ragStatus = rag.getStatus();
+        const testRunsDir = path.join(BRAIN,'intelligence','test-runs');
+        const latestGuardian = path.join(testRunsDir,'latest.json');
+        const fixesDir = path.join(BRAIN,'intelligence','proposed-fixes');
+        const ticketsDir = path.join(BRAIN,'tickets');
+
+        // Builder stats from tickets
+        let builderTotal=0, builderDone=0, builderReview=0;
+        try {
+          const open = fs.readdirSync(path.join(ticketsDir,'open')).filter(f=>f.endsWith('.md')).length;
+          const done = fs.readdirSync(path.join(ticketsDir,'complete')).filter(f=>f.endsWith('.md')).length;
+          builderTotal = open + done;
+          builderDone = done;
+          builderReview = 0;
+        } catch {}
+
+        // Guardian stats
+        let guardianRuns=0, guardianPassed=0, guardianFailed=0;
+        try {
+          if (fs.existsSync(latestGuardian)) {
+            const lg = JSON.parse(fs.readFileSync(latestGuardian,'utf8'));
+            guardianPassed = lg.summary.passed;
+            guardianFailed = lg.summary.failed;
+            guardianRuns = fs.readdirSync(testRunsDir)
+              .filter(f=>f.endsWith('.json')&&f!=='latest.json'&&f!=='latest-report.json').length || 1;
+          }
+        } catch {}
+
+        // Learner stats from proposed-fixes files
+        let learnerRuns=0, learnerPatterns=0, learnerFixes=0;
+        try {
+          const fixes = fs.readdirSync(fixesDir).filter(f=>f.endsWith('.md'));
+          learnerRuns = fixes.length;
+          // Count patterns by reading last file
+          if (fixes.length > 0) {
+            const last = fs.readFileSync(path.join(fixesDir,fixes[fixes.length-1]),'utf8');
+            const patternMatches = last.match(/##\s*Fix\s*\d+/gi) || [];
+            learnerFixes = patternMatches.length;
+            learnerPatterns = null;
+          }
+        } catch {}
+
+        // RAG stats
+        const ragSources = Object.keys(ragStatus.sources||{}).filter(k=>ragStatus.sources[k].chunks>0).length;
+
+        return json(res,200,{
+          learner: { runs:learnerRuns, patterns:learnerPatterns, fixes:learnerFixes },
+          guardian: { runs:guardianRuns, passed:guardianPassed, failed:guardianFailed },
+          rag: { sources:ragSources, chunks:ragStatus.total_chunks||0 },
+          documents: { connected:false, docs:0 },
+          timestamp: new Date().toISOString()
+        });
+      } catch(e) { return json(res,500,{error:e.message}); }
+    }
     if (url==='/api/guardian/status') {
       try {
         const testRunsDir = path.join(BRAIN,'intelligence','test-runs');
