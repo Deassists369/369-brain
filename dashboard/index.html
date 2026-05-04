@@ -530,7 +530,24 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
     <div class="nav-r">
       <div class="clock" id="clock">--:--:--</div>
       <button class="nav-btn" onclick="loadAll()">↻</button>
-      <div class="org-pill"><div class="org-av">DA</div><span class="org-nm">DeAssists</span></div>
+      <div class="org-pill" onclick="toggleUserMenu()" style="cursor:pointer;position:relative">
+        <div class="org-av">DA</div>
+        <span class="org-nm">DeAssists</span>
+        <span style="font-size:9px;color:var(--t3);margin-left:2px">▾</span>
+        <div id="user-menu" style="display:none;position:absolute;top:36px;right:0;
+          background:var(--card);border:1px solid var(--bd);border-radius:8px;
+          min-width:180px;padding:6px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.4)">
+          <div id="user-email" style="font-size:10px;color:var(--t3);font-family:var(--font-mono);
+            padding:6px 10px 8px;border-bottom:1px solid var(--bd);word-break:break-all"></div>
+          <button onclick="logout()" style="width:100%;text-align:left;padding:8px 10px;
+            background:none;border:none;color:#ef4444;font-size:12px;cursor:pointer;
+            font-family:var(--font-ui);border-radius:4px;margin-top:2px"
+            onmouseover="this.style.background='rgba(239,68,68,.1)'"
+            onmouseout="this.style.background='none'">
+            Sign out →
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
@@ -1674,6 +1691,17 @@ async function loadConnections(){
     const sc=document.getElementById('conn-sources');
     if(sc){
       const allSources=[...(d.sources||[]),...(d.comingSoon||[])];
+      const actionBtn = (s) => {
+        if(s.id==='dropbox' && s.status==='blocked')
+          return `<a href="https://dropbox.com/developers" target="_blank" style="font-size:10px;padding:3px 10px;background:#f59e0b;color:#fff;border-radius:6px;text-decoration:none;font-weight:500">Fix now →</a>`;
+        if(s.id==='gmail')
+          return `<button onclick="connectNewGmail()" style="font-size:10px;padding:3px 10px;background:var(--g);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:500">+ Connect Gmail</button>`;
+        if(s.id==='whatsapp')
+          return `<button onclick="showWhatsAppConnect()" style="font-size:10px;padding:3px 10px;background:#25d366;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:500">+ Connect</button>`;
+        if(s.id==='telegram')
+          return `<button onclick="showTelegramConnect()" style="font-size:10px;padding:3px 10px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:500">+ Connect</button>`;
+        return `<span style="font-size:10px;color:var(--t3)">${s.reason||'coming soon'}</span>`;
+      };
       sc.innerHTML=allSources.map(s=>{
         const isConn=s.status==='connected';
         const isBlocked=s.status==='blocked';
@@ -1698,6 +1726,7 @@ async function loadConnections(){
             </div>
             ${s.chunks>0?`<div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-mono)">${s.chunks.toLocaleString()} chunks</div>`:''}
             ${s.files>0?`<div style="font-size:10px;color:var(--t3);font-family:var(--font-mono)">${s.files} files</div>`:''}
+            ${!isConn?`<div style="margin-top:6px">${actionBtn(s)}</div>`:''}
           </div>
         </div>`;
       }).join('');
@@ -1761,11 +1790,114 @@ async function loadConnections(){
   }catch(e){console.log('loadConnections failed:',e.message);}
 }
 
+async function connectNewGmail(){
+  try {
+    const r = await fetch('/api/gmail/auth-start').then(x=>x.json());
+    if(r.error){ toast('Error: '+r.error); return; }
+    const popup = window.open(r.authUrl,'gmail-auth','width=500,height=650,scrollbars=yes');
+    document.getElementById('gmail-modal')?.remove();
+    toast('Sign in to Google in the popup. Return here when done.');
+    window.addEventListener('message', async function handler(e){
+      if(e.data?.type==='gmail-connected'){
+        window.removeEventListener('message',handler);
+        toast('✅ '+e.data.email+' connected — indexing emails...');
+        setTimeout(()=>{ loadSources(); loadConnections(); },5000);
+      }
+    });
+  } catch(e){ toast('Could not start Gmail auth: '+e.message); }
+}
+
+function showGmailConnect(){
+  const existing = document.querySelectorAll('.gmail-account-row');
+  const modal = document.createElement('div');
+  modal.id = 'gmail-modal';
+  modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = `
+    <div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:24px;width:480px;max-width:90vw">
+      <div style="font-size:15px;font-weight:600;color:var(--t1);margin-bottom:4px">Connect Gmail Accounts</div>
+      <div style="font-size:12px;color:var(--t3);margin-bottom:20px">Add multiple Gmail accounts — each will be indexed into RAG separately</div>
+
+      <div id="gmail-accounts-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+        <div style="font-size:11px;color:var(--t3);font-weight:500;text-transform:uppercase;letter-spacing:.05em">Connected accounts</div>
+        <div style="padding:10px 12px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;font-size:12px;color:var(--t3)">No Gmail accounts connected yet</div>
+      </div>
+
+      <div style="font-size:11px;color:var(--t3);font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Add account</div>
+      <input id="gmail-email-input" type="email" placeholder="info@deassists.com"
+        style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;color:var(--t1);font-size:13px;margin-bottom:8px;box-sizing:border-box">
+      <div style="font-size:11px;color:var(--t3);margin-bottom:16px">
+        Method: Google Takeout export → we index it into RAG<br>
+        Or: Gmail API with OAuth (coming soon)
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button onclick="document.getElementById('gmail-modal').remove()"
+          style="padding:7px 16px;background:none;border:1px solid var(--bd);border-radius:8px;color:var(--t3);font-size:12px;cursor:pointer">Cancel</button>
+        <button onclick="addGmailAccount()"
+          style="padding:7px 16px;background:var(--g);color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:500">Add account →</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
+}
+
+function addGmailAccount(){
+  const email = document.getElementById('gmail-email-input')?.value?.trim();
+  if(!email || !email.includes('@')){
+    toast('Please enter a valid email address');
+    return;
+  }
+  toast('Gmail account saved — connect via Google Takeout to index emails');
+  const list = document.getElementById('gmail-accounts-list');
+  if(list){
+    list.innerHTML = `
+      <div style="font-size:11px;color:var(--t3);font-weight:500;text-transform:uppercase;letter-spacing:.05em">Connected accounts</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border:1px solid var(--bd);border-radius:8px">
+        <span style="font-size:14px">📧</span>
+        <div style="flex:1;font-size:12px;color:var(--t1)">${email}</div>
+        <span style="font-size:10px;color:var(--amber)">● pending index</span>
+      </div>`;
+  }
+}
+
+function showWhatsAppConnect(){
+  toast('WhatsApp Business API — coming in Phase 3. Will connect via official API or WhatsApp Web bridge.');
+}
+
+function showTelegramConnect(){
+  toast('Telegram Control — coming in Phase 3. Bot token connection for remote control of Mission Vault.');
+}
+
+function toggleUserMenu(){
+  const m=document.getElementById('user-menu');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.org-pill'))
+    document.getElementById('user-menu').style.display='none';
+});
+async function logout(){
+  try{
+    await fetch('/api/logout',{method:'POST'});
+    window.location.href='/';
+  }catch(e){ toast('Logout failed: '+e.message); }
+}
+async function loadUserEmail(){
+  try{
+    const r=await fetch('/api/gmail/accounts').then(x=>x.json());
+    const el=document.getElementById('user-email');
+    if(el&&r.accounts&&r.accounts.length)
+      el.textContent=r.accounts[0].email;
+    else if(el) el.textContent='info@deassists.com';
+  }catch{}
+}
+
 loadAll();
 loadSources();
 loadGuardian();
 loadOverview();
 loadConnections();
+loadUserEmail();
 setInterval(loadAll,30000);
 setInterval(loadSources,60000);
 setInterval(loadGuardian,120000);

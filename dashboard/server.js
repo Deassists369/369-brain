@@ -251,6 +251,16 @@ const server = http.createServer(async (req, res) => {
     if (url==='/api/data')         return json(res, 200, getData());
     if (url==='/api/status')       return json(res, 200, getStatus());
     if (url==='/api/rag/status')   return json(res, 200, rag.getStatus());
+    if (url==='/api/logout' && req.method==='POST') {
+      try {
+        const intDir = path.join(BRAIN,'integrations');
+        const tokens = fs.readdirSync(intDir)
+          .filter(f=>f.startsWith('.gmail-token-')&&f.endsWith('.json'));
+        tokens.forEach(f=>fs.unlinkSync(path.join(intDir,f)));
+        console.log('[Auth] Logged out — removed',tokens.length,'token(s)');
+        return json(res,200,{ok:true});
+      } catch(e){ return json(res,500,{error:e.message}); }
+    }
     if (url==='/api/gmail/auth-start') {
       try {
         const credsPath = path.join(BRAIN,'integrations','gmail-credentials.json');
