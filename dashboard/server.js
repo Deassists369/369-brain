@@ -260,16 +260,6 @@ const server = http.createServer(async (req, res) => {
       } catch(e){ res.writeHead(404);res.end('Not found'); }
       return;
     }
-    if (url==='/api/logout' && req.method==='POST') {
-      try {
-        const intDir = path.join(BRAIN,'integrations');
-        const tokens = fs.readdirSync(intDir)
-          .filter(f=>f.startsWith('.gmail-token-')&&f.endsWith('.json'));
-        tokens.forEach(f=>fs.unlinkSync(path.join(intDir,f)));
-        console.log('[Auth] Logged out — removed',tokens.length,'token(s)');
-        return json(res,200,{ok:true});
-      } catch(e){ return json(res,500,{error:e.message}); }
-    }
     if (url==='/api/gmail/auth-start') {
       try {
         const credsPath = path.join(BRAIN,'integrations','gmail-credentials.json');
@@ -639,6 +629,16 @@ const server = http.createServer(async (req, res) => {
     if (url.startsWith('/preview/')) return servePreview(url.replace('/preview/',''), res);
   }
   if (req.method==='POST') {
+    if (url==='/api/logout') {
+      try {
+        const intDir = path.join(BRAIN,'integrations');
+        const tokens = fs.readdirSync(intDir)
+          .filter(f=>f.startsWith('.gmail-token-')&&f.endsWith('.json'));
+        tokens.forEach(f=>fs.unlinkSync(path.join(intDir,f)));
+        console.log('[Auth] Logged out — removed',tokens.length,'token(s)');
+        return json(res,200,{ok:true});
+      } catch(e){ return json(res,500,{error:e.message}); }
+    }
     if (url==='/api/rag/upload-pdf') {
       const chunks = [];
       req.on('data', chunk => chunks.push(chunk));
