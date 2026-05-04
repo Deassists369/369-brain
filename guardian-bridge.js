@@ -74,7 +74,8 @@ function runTests(reason = 'manual_or_initial', eagleEntry = null) {
     // Parse per-account login results from Playwright output
     const accounts = {};
     const userTypes = ['super_admin','manager','team_lead','agent',
-      'staff','organization_owner','organization_admin','organization_agent'];
+      'staff','organization_owner','organization_admin','organization_agent',
+      'organization_manager','organization_team_lead','organization_staff'];
     userTypes.forEach(type => {
       const passReg = new RegExp('✓.*login.*'+type.replace(/_/g,'[_\\s]'),'i');
       const failReg = new RegExp('(?:✘|×|FAILED).*login.*'+type.replace(/_/g,'[_\\s]'),'i');

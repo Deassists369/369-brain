@@ -25,7 +25,8 @@ const failed  = parseInt((output.match(/(\d+)\s+failed/)  || [0,0])[1], 10) || 0
 const skipped = parseInt((output.match(/(\d+)\s+skipped/) || [0,0])[1], 10) || 0;
 
 const userTypes = ['super_admin','manager','team_lead','agent',
-  'staff','organization_owner','organization_admin','organization_agent'];
+  'staff','organization_owner','organization_admin','organization_agent',
+  'organization_manager','organization_team_lead','organization_staff'];
 const accounts = {};
 userTypes.forEach(type => {
   const pr = new RegExp('✓.*login.*'+type.replace(/_/g,'[_\\s]'),'i');

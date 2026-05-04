@@ -22,9 +22,12 @@
   --blue:#2563eb;--bbg:#eff6ff;--bbd:#93c5fd;
   --purple:#7c3aed;--pbg:#f5f3ff;--pbd:#c4b5fd;
   --teal:#0d9488;--tbg:#f0fdfa;--tbd:#5eead4;
-  --mono:'JetBrains Mono',monospace;
-  --dis:'Syne',sans-serif;
-  --body:'DM Sans',sans-serif;
+  --font-ui: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  --font-display: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  --mono: var(--font-mono);
+  --dis: var(--font-display);
+  --body: var(--font-ui);
   --r:8px;--r2:12px;--r3:16px;
   --sh:0 1px 3px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04);
   --sh2:0 4px 16px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);
@@ -33,7 +36,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{background:var(--page);color:var(--t1);font-family:var(--body);-webkit-font-smoothing:antialiased}
-body{min-height:100vh;overscroll-behavior:none}
+body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
 
 /* ══════════════════════════════════════════
    TOOLTIP — hover on desktop, tap on mobile
@@ -238,7 +241,7 @@ body{min-height:100vh;overscroll-behavior:none}
 .hm-nm{font-size:12px;font-weight:700;color:var(--t1)}
 .hm-rl{font-size:10px;color:var(--t3);margin-top:1px}
 .hm-stats{display:flex;gap:14px;margin-bottom:6px}
-.hm-sv{font-family:var(--dis);font-size:20px;font-weight:800;color:var(--t1);line-height:1}
+.hm-sv{font-family:var(--font-mono);font-size:20px;font-weight:800;color:var(--t1);line-height:1;letter-spacing:-0.02em}
 .hm-sl{font-size:9px;color:var(--t4);text-transform:uppercase;font-family:var(--mono);letter-spacing:.07em}
 .hm-cta{font-size:10px;color:var(--g);font-weight:600;text-align:right}
 
@@ -519,9 +522,10 @@ body{min-height:100vh;overscroll-behavior:none}
       <button class="dtab" onclick="sw(1)" id="t1"><span class="td" style="background:var(--blue)"></span>Build Intelligence</button>
       <button class="dtab" onclick="sw(2)" id="t2"><span class="td" style="background:var(--amber)"></span>Document Intelligence</button>
       <button class="dtab" onclick="sw(3)" id="t3"><span class="td" style="background:var(--teal)"></span>RAG Intelligence</button>
-      <button class="dtab" onclick="sw(4)" id="t4"><span class="td" style="background:var(--purple)"></span>Self-Improvement</button>
-      <button class="dtab" onclick="sw(5)" id="t5"><span class="td" style="background:#dc2626"></span>Guardian</button>
-      <button class="dtab" onclick="sw(6)" id="t6"><span class="td" style="background:#6b7280"></span>Settings</button>
+      <button class="dtab" onclick="sw(4)" id="t4"><span class="td" style="background:#0ea5e9"></span>Connections</button>
+      <button class="dtab" onclick="sw(5)" id="t5"><span class="td" style="background:var(--purple)"></span>Self-Improvement</button>
+      <button class="dtab" onclick="sw(6)" id="t6"><span class="td" style="background:#dc2626"></span>Guardian</button>
+      <button class="dtab" onclick="sw(7)" id="t7"><span class="td" style="background:#6b7280"></span>Settings</button>
     </div>
     <div class="nav-r">
       <div class="clock" id="clock">--:--:--</div>
@@ -538,9 +542,10 @@ body{min-height:100vh;overscroll-behavior:none}
     <button class="bntab" onclick="sw(1)" id="bn1"><span class="bi">🏗</span>Build</button>
     <button class="bntab" onclick="sw(2)" id="bn2"><span class="bi">📚</span>Docs</button>
     <button class="bntab" onclick="sw(3)" id="bn3"><span class="bi">🔮</span>RAG</button>
-    <button class="bntab" onclick="sw(4)" id="bn4"><span class="bi">🧠</span>Learn</button>
-    <button class="bntab" onclick="sw(5)" id="bn5"><span class="bi">🛡</span>Guard</button>
-    <button class="bntab" onclick="sw(6)" id="bn6"><span class="bi">⚙</span>Settings</button>
+    <button class="bntab" onclick="sw(4)" id="bn4"><span class="bi">🔌</span>Connect</button>
+    <button class="bntab" onclick="sw(5)" id="bn5"><span class="bi">🧠</span>Learn</button>
+    <button class="bntab" onclick="sw(6)" id="bn6"><span class="bi">🛡</span>Guard</button>
+    <button class="bntab" onclick="sw(7)" id="bn7"><span class="bi">⚙</span>Settings</button>
   </div>
 </div>
 
@@ -585,12 +590,12 @@ body{min-height:100vh;overscroll-behavior:none}
         <div class="hm-stats"><div><div class="hm-sv" id="m-et">—</div><div class="hm-sl">Total</div></div><div><div class="hm-sv" style="color:var(--g)" id="m-ed">—</div><div class="hm-sl">Done</div></div><div><div class="hm-sv" style="color:var(--amber)" id="m-er">—</div><div class="hm-sl">Need you</div></div></div>
         <div class="hm-cta">Build Intelligence →</div>
       </div>
-      <div class="hm" onclick="sw(4)">
+      <div class="hm" onclick="sw(5)">
         <div class="hm-top"><div class="hm-ic" style="background:var(--pbg);border:1px solid var(--pbd)">🧠</div><div><div class="hm-nm">The Learner</div><div class="hm-rl">Finds patterns and improves</div></div><div class="light lg" style="margin-left:auto"></div></div>
         <div class="hm-stats"><div><div class="hm-sv" id="m-lr">1</div><div class="hm-sl">Runs</div></div><div><div class="hm-sv" id="learner-patterns" style="color:var(--purple)">—</div><div class="hm-sl">Patterns</div></div><div><div class="hm-sv" id="learner-fixes">—</div><div class="hm-sl">Fixes</div></div></div>
         <div class="hm-cta">Self-Improvement →</div>
       </div>
-      <div class="hm" onclick="sw(5)" style="cursor:pointer">
+      <div class="hm" onclick="sw(6)" style="cursor:pointer">
         <div class="hm-top"><div class="hm-ic" style="background:var(--gx);border:1px solid var(--gxx)">🛡</div><div><div class="hm-nm">The Guardian</div><div class="hm-rl">Tests everything at 2am</div></div><div class="light ll" style="margin-left:auto"></div></div>
         <div class="hm-stats"><div><div class="hm-sv" id="g-run-count">0</div><div class="hm-sl">Runs</div></div><div><div class="hm-sv" id="g-pass-count" style="color:var(--t4)">—</div><div class="hm-sl">Passed</div></div><div><div class="hm-sv" id="g-fail-count" style="color:var(--t4)">—</div><div class="hm-sl">Failed</div></div></div>
         <div class="hm-cta" id="g-card-status" style="color:var(--t3)">Setting up →</div>
@@ -827,6 +832,50 @@ body{min-height:100vh;overscroll-behavior:none}
 
 <!-- ══════════════ PANEL 4 — SELF-IMPROVEMENT ══════════════ -->
 <div class="panel" id="p4">
+<div style="max-width:960px;margin:0 auto;padding:0 0 40px">
+
+<div style="padding:12px 16px;background:var(--card);border:1px solid var(--bd);border-radius:12px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between">
+  <div>
+    <div style="font-size:14px;font-weight:600;color:var(--t1);font-family:var(--font-display)">Connections — AI Command Center</div>
+    <div style="font-size:12px;color:var(--t3);margin-top:2px">Every AI model, data source, harness, and routing rule in one place</div>
+  </div>
+  <div style="font-size:11px;color:var(--t3)" id="conn-timestamp">Loading...</div>
+</div>
+
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;font-family:var(--font-mono)">AI Models</div>
+<div id="conn-models" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-bottom:20px">
+  <div style="padding:12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;color:var(--t3);font-size:12px">Loading AI models...</div>
+</div>
+
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;font-family:var(--font-mono)">Hermes Agent — Gate 1 Operator</div>
+<div id="conn-agents" style="margin-bottom:20px">
+  <div style="padding:12px 14px;background:var(--card);border:1px solid var(--bd);border-radius:10px;color:var(--t3);font-size:12px">Loading...</div>
+</div>
+
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;font-family:var(--font-mono)">Data Sources</div>
+<div id="conn-sources" style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px">
+  <div style="padding:12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;color:var(--t3);font-size:12px">Loading data sources...</div>
+</div>
+
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;font-family:var(--font-mono)">Active Harnesses</div>
+<div id="conn-harnesses" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:20px">
+  <div style="padding:12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;color:var(--t3);font-size:12px">Loading...</div>
+</div>
+
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;font-family:var(--font-mono)">Routing Rules</div>
+<div id="conn-rules" style="display:flex;flex-direction:column;gap:4px;margin-bottom:20px">
+  <div style="padding:8px 12px;background:var(--card);border:1px solid var(--bd);border-radius:8px;color:var(--t3);font-size:12px">Loading...</div>
+</div>
+
+<div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;font-family:var(--font-mono)">Hard Blocks — Gate 4</div>
+<div id="conn-blocks" style="display:flex;flex-direction:column;gap:4px">
+  <div style="padding:8px 12px;background:var(--card);border:1px solid var(--bd);border-radius:8px;color:var(--t3);font-size:12px">Loading...</div>
+</div>
+
+</div>
+</div>
+
+<div class="panel" id="p5">
   <div class="g4" style="margin-bottom:20px">
     <div class="stat-card sc-p2"><div class="sv-l">Runs</div><div class="sv-v" id="si-tot">1</div><div class="sv-s">since launch</div></div>
     <div class="stat-card sc-p2"><div class="sv-l">Patterns</div><div class="sv-v">5</div><div class="sv-s">found</div></div>
@@ -863,7 +912,7 @@ body{min-height:100vh;overscroll-behavior:none}
 </div>
 
 <!-- ══════════════ PANEL 5 — GUARDIAN ══════════════ -->
-<div class="panel" id="p5">
+<div class="panel" id="p6">
 <div style="max-width:860px;margin:0 auto;padding:0 0 40px">
 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px">
   <div style="display:flex;align-items:center;gap:10px">
@@ -891,6 +940,9 @@ body{min-height:100vh;overscroll-behavior:none}
   <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">OO</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Org Owner</div><div style="font-size:10px;color:var(--t3)">infoorgowner@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-oo">— not tested</div></div>
   <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">OA</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Org Admin</div><div style="font-size:10px;color:var(--t3)">infoorgadmin@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-oa">— not tested</div></div>
   <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">OG</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Org Agent</div><div style="font-size:10px;color:var(--t3)">infoorgagent@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-og">— not tested</div></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">OM</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Org Manager</div><div style="font-size:10px;color:var(--t3)">infoorgmanager@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-om">— not tested</div></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">OT</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Org Team Lead</div><div style="font-size:10px;color:var(--t3)">infoorgteamlead@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-ot">— not tested</div></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border-radius:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--gx);color:var(--g);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">OS</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--t1)">Org Staff</div><div style="font-size:10px;color:var(--t3)">infoorgstaff@deassists.com</div></div><div style="font-size:11px;font-weight:500;color:var(--t3)" id="acc-os">— not tested</div></div>
 </div>
 <div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px">Run history</div>
 <div id="g-history"><div style="padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px;color:var(--t3)">No runs yet</div></div>
@@ -908,7 +960,7 @@ body{min-height:100vh;overscroll-behavior:none}
 </div>
 </div>
 
-<div class="panel" id="p6">
+<div class="panel" id="p7">
   <div class="g2">
     <div>
       <div class="sh"><div class="sl">Organisation</div></div>
@@ -1489,7 +1541,7 @@ async function loadGuardian(){
             </div>
           </div>`).join(''):'<div style="padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--t3);font-size:12px">No feature-level results yet. Run tests to populate.</div>';
       }
-      const accMap={sa:'super_admin',mg:'manager',tl:'team_lead',ag:'agent',st:'staff',oo:'organization_owner',oa:'organization_admin',og:'organization_agent'};
+      const accMap={sa:'super_admin',mg:'manager',tl:'team_lead',ag:'agent',st:'staff',oo:'organization_owner',oa:'organization_admin',og:'organization_agent',om:'organization_manager',ot:'organization_team_lead',os:'organization_staff'};
       const accounts=d.accounts||{};
       Object.entries(accMap).forEach(([id,type])=>{
         const el=document.getElementById('acc-'+id);
@@ -1563,14 +1615,162 @@ async function loadOverview(){
   } catch(e){console.log('loadOverview failed:',e.message);}
 }
 
+async function loadConnections(){
+  try{
+    const d=await fetch('/api/connections').then(r=>r.json());
+    const ts=document.getElementById('conn-timestamp');
+    if(ts)ts.textContent='Updated: '+new Date(d.timestamp).toLocaleTimeString();
+
+    // AI Models grid
+    const mc=document.getElementById('conn-models');
+    if(mc&&d.models){
+      mc.innerHTML=d.models.map(m=>{
+        const isLive=m.live;
+        const statusColor=isLive?'#22c55e':m.status==='coming_soon'?'#9ca3af':'#f59e0b';
+        const badge=m.local?'<span style="font-size:9px;padding:1px 6px;background:#e8f4ed;color:#1d7a45;border-radius:999px;font-weight:600">LOCAL</span>':'<span style="font-size:9px;padding:1px 6px;background:#eff6ff;color:#2563eb;border-radius:999px;font-weight:600">CLOUD</span>';
+        return `<div style="padding:12px 14px;background:var(--card);border:1px solid ${isLive?'#22c55e':'var(--bd)'};border-radius:10px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="font-size:18px">${m.icon}</span>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:12px;font-weight:600;color:var(--t1);font-family:var(--font-display)">${m.name}</div>
+              <div style="font-size:10px;color:var(--t3)">${m.provider}</div>
+            </div>
+            <div style="width:7px;height:7px;border-radius:50%;background:${statusColor};flex-shrink:0"></div>
+          </div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">
+            ${badge}
+            <span style="font-size:9px;padding:1px 6px;background:var(--card2);color:var(--t3);border-radius:999px">${m.speed||'—'}</span>
+            <span style="font-size:9px;padding:1px 6px;background:var(--card2);color:var(--t3);border-radius:999px">${m.cost||'—'}</span>
+          </div>
+          <div style="font-size:10px;color:var(--t3);line-height:1.4">${(m.strengths||[]).slice(0,3).join(' · ')}</div>
+          ${m.install&&!m.live?`<div style="margin-top:6px;font-size:9px;color:#9ca3af;font-family:var(--font-mono);word-break:break-all">${m.install}</div>`:''}
+          <div style="margin-top:6px;font-size:10px;font-weight:500;color:${isLive?'#16a34a':'#9ca3af'}">${isLive?'✓ Connected':'○ '+m.status.replace(/_/g,' ')}</div>
+        </div>`;
+      }).join('');
+    }
+
+    // Hermes Agent section
+    const ag=document.getElementById('conn-agents');
+    if(ag&&d.agent_frameworks){
+      ag.innerHTML=d.agent_frameworks.map(f=>`
+        <div style="padding:14px 16px;background:var(--card);border:1px solid var(--bd);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:22px">${f.icon||'🪽'}</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--t1);font-family:var(--font-display)">${f.name}</div>
+              <div style="font-size:11px;color:var(--t3)">${f.provider} · ${f.role.replace(/_/g,' ')}</div>
+            </div>
+            <div style="margin-left:auto;font-size:10px;padding:2px 8px;background:var(--card2);color:var(--t3);border-radius:999px">${f.status.replace(/_/g,' ')}</div>
+          </div>
+          <div style="font-size:11px;color:var(--t3);margin-bottom:8px;line-height:1.5">${f.description}</div>
+          <div style="font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;font-family:var(--font-mono)">Gate responsibilities</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px">
+            ${(f.gate_responsibilities||[]).map(r=>`<span style="font-size:9px;padding:2px 7px;background:var(--card2);color:var(--t3);border-radius:6px">${r}</span>`).join('')}
+          </div>
+        </div>`).join('');
+    }
+
+    // Data sources
+    const sc=document.getElementById('conn-sources');
+    if(sc){
+      const allSources=[...(d.sources||[]),...(d.comingSoon||[])];
+      sc.innerHTML=allSources.map(s=>{
+        const isConn=s.status==='connected';
+        const isBlocked=s.status==='blocked';
+        const dotColor=isConn?'#22c55e':isBlocked?'#f59e0b':'#9ca3af';
+        const privBadge=s.privacy_level?`<span style="font-size:9px;padding:1px 6px;background:${s.privacy_level.includes('pii')?'#fee2e2':'var(--card2)'};color:${s.privacy_level.includes('pii')?'#dc2626':'var(--t3)'};border-radius:999px">${s.privacy_level.replace(/_/g,' ')}</span>`:'';
+        const redactBadge=s.requires_cloud_redaction?'<span style="font-size:9px;padding:1px 6px;background:#fef3c7;color:#d97706;border-radius:999px">cloud redaction required</span>':'';
+        return `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border:1px solid var(--bd);border-radius:10px">
+          <span style="font-size:18px;flex-shrink:0">${s.icon||'📊'}</span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+              <div style="font-size:12px;font-weight:600;color:var(--t1);font-family:var(--font-display)">${s.label}</div>
+              ${privBadge}${redactBadge}
+            </div>
+            <div style="font-size:11px;color:var(--t3)">${s.desc||s.reason||''}</div>
+            ${s.fix?`<div style="font-size:10px;color:#f59e0b;margin-top:2px">Fix: ${s.fix}</div>`:''}
+            ${s.allowed_models?.length?`<div style="font-size:10px;color:var(--t3);margin-top:2px;font-family:var(--font-mono)">Allowed: ${s.allowed_models.join(', ')}</div>`:''}
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="display:flex;align-items:center;gap:4px;justify-content:flex-end;margin-bottom:2px">
+              <div style="width:6px;height:6px;border-radius:50%;background:${dotColor}"></div>
+              <span style="font-size:10px;color:var(--t3)">${s.status.replace(/_/g,' ')}</span>
+            </div>
+            ${s.chunks>0?`<div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-mono)">${s.chunks.toLocaleString()} chunks</div>`:''}
+            ${s.files>0?`<div style="font-size:10px;color:var(--t3);font-family:var(--font-mono)">${s.files} files</div>`:''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Harnesses
+    const hc=document.getElementById('conn-harnesses');
+    if(hc&&d.harnesses){
+      hc.innerHTML=d.harnesses.map(h=>{
+        const isUp=h.status==='online';
+        return `<div style="padding:12px 14px;background:var(--card);border:1px solid var(--bd);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="font-size:18px">${h.icon}</span>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:600;color:var(--t1);font-family:var(--font-display)">${h.label}</div>
+              <div style="font-size:10px;color:var(--t3)">pid ${h.pid||'—'} · ${h.memory_mb||0}MB</div>
+            </div>
+            <div style="width:7px;height:7px;border-radius:50%;background:${isUp?'#22c55e':'#ef4444'}"></div>
+          </div>
+          <div style="font-size:11px;color:var(--t3);margin-bottom:6px;line-height:1.4">${h.purpose}</div>
+          ${h.uses_ai?.length?`<div style="font-size:10px;color:var(--t3);font-family:var(--font-mono)">Uses: ${h.uses_ai.join(', ')}</div>`:'<div style="font-size:10px;color:var(--t3);font-family:var(--font-mono)">No AI required</div>'}
+          <div style="margin-top:4px;font-size:10px;font-weight:500;color:${isUp?'#16a34a':'#ef4444'}">${isUp?'✓ Running':'✗ '+h.status}</div>
+        </div>`;
+      }).join('');
+    }
+
+    // Routing rules
+    const rc=document.getElementById('conn-rules');
+    if(rc&&d.routing_rules){
+      const gateColors={'0':'#22c55e','1':'#f59e0b','2':'#2563eb','3':'#9ca3af','4':'#ef4444'};
+      rc.innerHTML=d.routing_rules.map(r=>`
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:var(--card);border:1px solid var(--bd);border-radius:8px">
+          <div style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:${gateColors[r.gate]||'#9ca3af'};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:var(--font-mono)">${r.gate}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-mono)">${r.task_type.replace(/_/g,' ')}</div>
+            <div style="font-size:10px;color:var(--t3);margin-top:1px">${r.reason}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:11px;font-weight:600;color:var(--t1)">${r.preferred||'—'}</div>
+            ${r.fallback?`<div style="font-size:9px;color:var(--t3)">fallback: ${r.fallback}</div>`:'<div style="font-size:9px;color:#ef4444">no fallback</div>'}
+            ${r.reviewer?`<div style="font-size:9px;color:#f59e0b">reviewed by: ${r.reviewer}</div>`:''}
+          </div>
+        </div>`).join('');
+    }
+
+    // Hard blocks
+    const bc=document.getElementById('conn-blocks');
+    if(bc&&d.hard_blocks){
+      bc.innerHTML=d.hard_blocks.map(b=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fee2e2;border:1px solid #fca5a5;border-radius:8px">
+          <div style="font-size:16px;flex-shrink:0">🚫</div>
+          <div style="flex:1">
+            <div style="font-size:11px;font-weight:600;color:#dc2626;font-family:var(--font-display)">${b.name}</div>
+            <div style="font-size:10px;color:#991b1b;margin-top:1px">${b.reason}</div>
+            <div style="font-size:9px;color:#9ca3af;margin-top:2px;font-family:var(--font-mono)">enforced by: ${(b.enforced_by||[]).join(', ')}</div>
+          </div>
+          <div style="font-size:9px;font-weight:700;color:#dc2626;font-family:var(--font-mono)">GATE 4</div>
+        </div>`).join('');
+    }
+
+  }catch(e){console.log('loadConnections failed:',e.message);}
+}
+
 loadAll();
 loadSources();
 loadGuardian();
 loadOverview();
+loadConnections();
 setInterval(loadAll,30000);
 setInterval(loadSources,60000);
 setInterval(loadGuardian,120000);
 setInterval(loadOverview,60000);
+setInterval(loadConnections,120000);
 </script>
 </body>
 </html>

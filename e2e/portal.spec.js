@@ -11,6 +11,9 @@ const TEST_USERS = [
   { type: 'organization_owner', email: 'infoorgowner@deassists.com', password: PASSWORD },
   { type: 'organization_admin', email: 'infoorgadmin@deassists.com', password: PASSWORD },
   { type: 'organization_agent', email: 'infoorgagent@deassists.com', password: PASSWORD },
+  { type: 'organization_manager',   email: 'infoorgmanager@deassists.com',  password: PASSWORD },
+  { type: 'organization_team_lead', email: 'infoorgteamlead@deassists.com', password: PASSWORD },
+  { type: 'organization_staff',     email: 'infoorgstaff@deassists.com',    password: PASSWORD },
 ];
 
 test('portal loads at localhost:4002', async ({ page }) => {
