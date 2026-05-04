@@ -6,25 +6,26 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>369 MISSION VAULT</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════════
    DESIGN TOKENS
    ══════════════════════════════════════════ */
 :root{
-  --page:#f1f3ef;--card:#fff;--card2:#f7f9f5;
-  --nav:#0a1a0f;--nav2:#0f2318;
-  --bd:#dde6dd;--bd2:#c8d8c8;
+  --page:#F5F2EC;--card:#FFFFFF;--card2:#f7f9f5;
+  --bg:#F5F2EC;--bg2:#EDEAE0;
+  --nav:#F5F2EC;--nav2:#EDEAE0;
+  --bd:rgba(0,0,0,.1);--bd2:#c8d8c8;
   --g:#1D7A45;--g2:#25a05a;--gx:#e8f4ed;--gxx:#c8e8d4;
-  --t1:#0d1a10;--t2:#2a3d2f;--t3:#627569;--t4:#96b09c;
+  --t1:#1A1208;--t2:#5C4A30;--t3:#8A7A60;--t4:#96b09c;
   --amber:#d97706;--abg:#fef3c7;--abd:#fcd34d;
   --red:#dc2626;--rbg:#fef2f2;--rbd:#fca5a5;
   --blue:#2563eb;--bbg:#eff6ff;--bbd:#93c5fd;
   --purple:#7c3aed;--pbg:#f5f3ff;--pbd:#c4b5fd;
   --teal:#0d9488;--tbg:#f0fdfa;--tbd:#5eead4;
-  --font-ui: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
-  --font-display: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-  --font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  --font-ui:      'Courier Prime', ui-monospace, monospace;
+  --font-display: 'Barlow Condensed', -apple-system, sans-serif;
+  --font-mono:    'Courier Prime', ui-monospace, monospace;
   --mono: var(--font-mono);
   --dis: var(--font-display);
   --body: var(--font-ui);
@@ -44,10 +45,10 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
 .tip{position:relative;display:inline-flex;align-items:center}
 .tip-i{width:18px;height:18px;border-radius:50%;background:var(--gx);border:1.5px solid var(--gxx);color:var(--g);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-family:var(--body);transition:all .15s;margin-left:5px;user-select:none;touch-action:manipulation}
 .tip-i:hover,.tip-i.open{background:var(--g);color:#fff;border-color:var(--g)}
-.tip-box{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:var(--nav);border:1px solid var(--nav2);border-radius:var(--r2);padding:13px 15px;width:260px;max-width:80vw;z-index:9999;box-shadow:var(--sh3);font-size:12px;color:#d0e8d8;line-height:1.65;font-family:var(--body)}
+.tip-box{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:var(--nav);border:1px solid var(--nav2);border-radius:var(--r2);padding:13px 15px;width:260px;max-width:80vw;z-index:9999;box-shadow:var(--sh3);font-size:12px;color:var(--t2);line-height:1.65;font-family:var(--body)}
 .tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--nav)}
 .tip-box .tl{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g);margin-bottom:6px;display:block}
-.tip-box strong{color:#7dd8a0;font-weight:600}
+.tip-box strong{color:var(--g);font-weight:600}
 /* Desktop: hover */
 @media(hover:hover){.tip:hover .tip-box{display:block}}
 /* Mobile: tap toggle */
@@ -65,23 +66,23 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
   display:flex;align-items:center;justify-content:center;
   font-family:var(--dis);font-size:12px;font-weight:800;color:#fff}
 .brand-name{font-family:var(--dis);font-size:13px;font-weight:800;
-  color:#fff;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+  color:#1D7A45;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
 .brand-name em{color:var(--g);font-style:normal}
 .live-pill{display:flex;align-items:center;gap:4px;padding:2px 8px;
   border-radius:20px;background:rgba(29,122,69,.2);border:1px solid rgba(29,122,69,.4);
   font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.1em;
-  color:#7dd8a0;text-transform:uppercase;flex-shrink:0}
-.live-d{width:4px;height:4px;border-radius:50%;background:#7dd8a0;animation:blink 2s infinite}
+  color:#1D7A45;text-transform:uppercase;flex-shrink:0}
+.live-d{width:4px;height:4px;border-radius:50%;background:#1D7A45;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* Desktop tabs — hidden on mobile */
 .desk-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
 .desk-tabs::-webkit-scrollbar{display:none}
 .dtab{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;
-  color:rgba(255,255,255,.45);background:transparent;border:none;cursor:pointer;
+  color:#1D7A45;background:transparent;border:none;cursor:pointer;
   white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:5px}
 .dtab:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.06)}
-.dtab.on{color:#fff;background:rgba(29,122,69,.25);border:1px solid rgba(29,122,69,.35)}
+.dtab.on{color:#0a1a0f;font-weight:700;background:rgba(29,122,69,.25);border:1px solid rgba(29,122,69,.35)}
 .dtab .td{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 
 .nav-r{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
