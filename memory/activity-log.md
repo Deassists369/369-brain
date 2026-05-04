@@ -1691,3 +1691,277 @@ S4 — registry update (LOW risk):
 - SOP truncation fallback (in analyzer.js buildPrompt) is correct insurance, but Run 001 came in at 74 KB — well below the 200 KB ceiling. The truncation path is untested in the wild. Worth a synthetic test in v2.
 - "Stop and ask" worked well twice this session: (a) when the file already had all 6 requested changes (avoided regressing live data binding); (b) when git add dashboard/ pulled in 583 node_modules files (avoided polluting brain history).
 - The /watch skill output is genuinely useful for cross-pollinating external research into the brain. The xgPWCuqLoek video analysis directly informs DeAssists EDU search architecture decisions.
+
+---
+
+## SESSION 4 May 2026 (afternoon) — Mission Vault v3 + Dropbox sync infrastructure
+
+**Mission Vault dashboard iterated to v3:**
+- Font swaps: Space Mono / Syne → DM Mono / Outfit / Syne (--mono, --display, --body vars).
+- Color contrast: --ink #0f1923 → #080f18, --muted #5a6a82 → #3d4f66, --dim #8a98ad → #5a6a82.
+- New "Data Intelligence — MongoDB + Dropbox" panel on Document Intelligence page (3 sections side-by-side: MongoDB Atlas with 5 collection rows + green dots, Dropbox Sync amber theme, AI Learns From teal theme).
+- Replaced dashboard/index.html three times: mission-vault-final → mobile → v2 → v3 (final 96,599 B). Server replaced twice: server-updated.js → v2 → v3 (final 9,841 B + 2 surgical edits).
+- v3 server boots with banner: `Claude API ✓ READY | RAG chunks 3264 | Previews 4`.
+- v3 endpoints live: /api/data, /api/status, /api/claude (Anthropic proxy), /api/rag/search, /api/rag/status, /api/rag/index, /api/approve, /preview/:f.
+
+**Two server fixes (final edits this session):**
+- `servePreview`: `path.basename(feature.replace(/\.html$/i,'')).replace(/[^a-z0-9_-]/gi,'')` — `/preview/foo` and `/preview/foo.html` both resolve to `previews/foo.html`. HTTP smoke test: both returned 200 · 20,676 B.
+- `handleApprove`: after writing signal, if `tickets/awaiting-approval/<feature>.md` exists, rename it to `tickets/open/<feature>.md` (approve) or `tickets/rejected/<feature>.md` (reject). `mkdirSync({recursive:true})` guards the destination.
+
+**Dropbox sync infrastructure:**
+- Created integrations/dropbox-sync.js (150 lines, zero npm deps; Node 22 global `fetch` + Dropbox v2 HTTP API; first call `files/list_folder` then `files/list_folder/continue` with cursor; 60s poll; appends to intelligence/dropbox-sync.jsonl; cursor persisted at integrations/.dropbox-cursor).
+- Created integrations/DROPBOX-SETUP.md (164 lines: app creation, scope ticking, ecosystem example, troubleshooting table).
+- Created ecosystem.config.cjs at brain root (Option A — single file, both apps share env block). DROPBOX_TOKEN + ANTHROPIC_API_KEY both live there. Added `ecosystem.config.cjs` to .gitignore as part of the same commit so the secret never gets staged.
+- Path tightened from `/DeAssists/Documents` (recursive) to `/CORTEX-369` (non-recursive) per user direction.
+- pm2 mission-control-369 re-registered under ecosystem (delete + start ecosystem.config.cjs --only mission-control-369 + pm2 save). Was bare-started id 4, now id 6.
+
+**Dropbox token churn (3 tokens, 0 successful API calls):**
+- Token #1 (app 7033907): `400 not permitted ... files.metadata.read` — original app, scope never enabled.
+- Token #2 (CORTEX-369 first gen): `401 missing_scope/files.metadata.read` — scope still not ticked + Submit not clicked. Different error format = different code path = confirms token swap took effect.
+- Token #3 (CORTEX-369 regen): `400 This app is currently disabled` — token works, app itself is disabled in console. Blocked here at session close.
+- Dropbox console gotcha: tokens are bound to scopes at generation time. Order must be: tick `files.metadata.read` → Submit at bottom of Permissions tab → reload to verify ticks persisted → Settings → Generate. Doing Generate first then ticking gives a permanently scopeless token.
+
+**Anthropic API key wired:**
+- Added `ANTHROPIC_API_KEY` to mission-control-369 env block in ecosystem.config.cjs.
+- /api/status flipped `MISSING — add ANTHROPIC_API_KEY...` → `READY`.
+- Banner went from `Claude API : ✗ MISSING KEY` → `Claude API : ✓ READY`.
+
+**Obsidian vault discovered:**
+- find -name ".obsidian" surfaced `/Users/deassists369/Documents/369 RAG/369 RAG/`.
+- v3 server's RAG engine auto-indexed it (1 file / 2 chunks — currently just default `Welcome.md`, 204 B).
+
+### Files created this session
+- `~/deassists-workspace/369-brain/integrations/dropbox-sync.js` (150 lines)
+- `~/deassists-workspace/369-brain/integrations/DROPBOX-SETUP.md` (164 lines)
+- `~/deassists-workspace/369-brain/ecosystem.config.cjs` (gitignored — DROPBOX_TOKEN + ANTHROPIC_API_KEY)
+- `~/deassists-workspace/369-brain/mission-vault/369-mission-vault.html` (1522 lines; archive of v3 vault)
+- `~/deassists-workspace/369-brain/dashboard/rag-engine.js` (cp from Downloads; uncommitted)
+
+### Files modified this session
+- `~/deassists-workspace/369-brain/dashboard/index.html` (final state: mission-vault-v3, 96,599 B; previously cycled through several intermediate vaults)
+- `~/deassists-workspace/369-brain/dashboard/server.js` (final state: dashboard-server-v3 + 2 surgical fixes)
+- `~/deassists-workspace/369-brain/mission-control-index.html` (replaced with mission-vault-final.html — committed in 63790ab)
+- `~/deassists-workspace/369-brain/.gitignore` (+1 line: `ecosystem.config.cjs`)
+- `~/deassists-workspace/369-brain/integrations/.dropbox-cursor` (briefly — cleared during a path change)
+
+### Commits this session
+- `63790ab` — feat: 369 MISSION VAULT final — 6 tabs, RAG Intelligence, action generator, PDF upload, knowledge map, audit log (3 files, +3022 / -229; 0e14072..63790ab on main; pushed to origin/main).
+
+### Decisions locked this session
+
+**Vision / strategic framing** (locked at session close):
+- **369BRAIN is the master intelligence layer** — single brain across DeAssists ops, code, harnesses, RAG, and dashboards. Mission Vault is the human-facing front of that brain.
+- **BCBT September 2026 intake = first external-entity test run** — first time the brain serves a real client tenant end-to-end (intake docs → 369 Assessment → student lifecycle). Treat BCBT as the proving ground for multi-tenant scoping.
+- **Platform pitch: any SME in Europe.** The architecture validated this session — Mission Vault + RAG (3,264 chunks live across brain + Obsidian) + document-ingestion daemon (Dropbox sync) + UI-driven approval flow + Claude API proxy — is the *productizable shape*. BCBT proves the model; the same model resells to any SME in Europe.
+- This session's headline (for the pitch deck): *Built 369 MISSION VAULT v3 — 6 tabs, mobile-first, Claude API connected, RAG engine live with 3,264 chunks, Obsidian vault indexed, approve/reject from UI working, preview fix deployed.*
+
+**Technical decisions:**
+- ecosystem.config.cjs holds all daemon secrets (DROPBOX_TOKEN, ANTHROPIC_API_KEY). Single file, multi-app — "Option A". Permanently gitignored.
+- pm2 mission-control-369 is owned by the ecosystem file going forward (was bare `pm2 start dashboard/server.js`). pm2 save committed the new shape to ~/.pm2/dump.pm2.
+- Dropbox watch path = `/CORTEX-369`, `recursive:false`. JSONL output at intelligence/dropbox-sync.jsonl. Cursor at integrations/.dropbox-cursor.
+- Mission Control is "swap-and-refresh": dashboard/server.js reads dashboard/index.html on every request — no pm2 restart needed for HTML-only changes (server.js changes still need restart).
+- Server diagnostic /api/status reports own configuration health (READY vs MISSING). Replicate this pattern for future daemons.
+
+### Pending for next session
+- Re-enable CORTEX-369 Dropbox app: console → Settings → Status → Enable; Permissions → tick `files.metadata.read` + `files.content.read` → Submit; Settings → Generate fresh token. Paste it; swap into ecosystem.config.cjs; `pm2 restart dropbox-sync --update-env`. Validate that intelligence/dropbox-sync.jsonl gains its first `Synced: …` entry.
+- Decide whether to commit the dashboard v3 stack (M dashboard/index.html, M dashboard/server.js, ?? dashboard/rag-engine.js) — currently only the mission-vault/ archive copy is committed.
+- Carried from morning session: triage of intelligence/proposed-fixes/2026-05-03-self-improvement-run-001.md (HIGH + 2 MED proposed fixes still untouched).
+
+### Lessons learned today (afternoon)
+- "Stop and ask before `git add .`" caught a public-repo secret leak. ecosystem.config.cjs was untracked and held a live Dropbox token; the brain repo's .gitignore had `*.env`/`*.key`/`*.token` patterns but not `ecosystem.config.cjs`. Worth standing rule: any new secret-bearing config file gets the .gitignore entry in the same diff that introduces the file.
+- Dropbox app console flow trapped us three times: (a) scope ticks aren't auto-saved (Submit button at the bottom of Permissions tab), (b) tokens are bound to scopes at generation time so ordering matters, (c) "App disabled" status is a separate state from missing scopes and produces a different error. Order is: tick → Submit → reload to verify → Generate.
+- Server boot banner that spells out config health (Claude API ✓/✗, RAG chunks N, Previews N) made post-deploy validation a 1-second glance instead of a curl loop. Worth replicating in dropbox-sync.
+- pm2 detail: --update-env on a process started bare can't read from an ecosystem file the process wasn't registered with. Re-registration (delete + start --only) is required, then pm2 save to persist across reboots.
+- HTTP smoke test (curl -sS -o /dev/null -w "HTTP %{http_code} · %{size_download}b") after every deploy is cheap and catches broken responses immediately. Especially valuable when tracking which exact bytes are being served (size match against source file).
+- The user's terse "Run" inputs sometimes mean "do the obvious next thing" but sometimes hide a missing decision (option A vs B + token). Re-stating the still-pending decisions in the response ensures we don't silently drift.
+
+---
+
+## 4 May 2026 (late evening) — Guardian test harness live (pm2-managed)
+
+**Branch:** main (369-brain) | portal untouched
+
+### What was done
+
+Stood up `guardian-bridge.js` as a permanent pm2 process inside 369-brain. Guardian now watches the EAGLE log (`intelligence/harness-runs/eagle-harness.jsonl`) every 30 s, runs the Playwright suite when an EAGLE entry transitions to `code_written` / `complete` / `approved`, also runs the suite at 02:00 local daily, and emits a structured run record + daily markdown + learning-log entry on every run. First initial-suite run completed: **10 tests, 10 passed, 0 failed, 54.7 s wall** (1 portal-loads + 1 backend-API + 8 user-role logins).
+
+### Per Shon's session-close brief
+
+Guardian test harness fully live. `guardian-bridge.js` built with all 8 improvements. **11/11 tests passing** (during dev run with the temporary inspect-login-form probe; steady-state baseline after probe removal is 10/10). All 8 user roles tested (super_admin, manager, team_lead, agent, staff, organization_owner, organization_admin, organization_agent). Guardian in pm2 permanently. Watches EAGLE every 30 seconds. Daily 2am run scheduled. Learning log connects to Self-Improvement. Every test result linked to triggering EAGLE build via `eagle_run_id`. Unique run files per test run (`guardian-<epoch>.json` immutable, `latest.json` overwritten). Guardian tab designed in Mission Vault.
+
+### Files created
+
+| File | Purpose |
+|------|---------|
+| `~/deassists-workspace/369-brain/e2e/portal.spec.js` | Playwright suite: portal-loads + backend-API + 8 user-role logins. Reads `process.env.TEST_PASSWORD`. |
+| `~/deassists-workspace/369-brain/playwright.config.js` | `testDir: ./e2e`, `baseURL: http://localhost:4002`, headless, list reporter, 30s test / 15s nav / 10s action timeouts. |
+| `~/deassists-workspace/369-brain/package.json` | Minimal `devDependencies: { "@playwright/test": "^1.48.0" }`, `npm test` script. |
+| `~/deassists-workspace/369-brain/package-lock.json` | npm install footprint. |
+| `~/deassists-workspace/369-brain/node_modules/` (3 pkgs) | `@playwright/test` and deps. Browsers cached at `~/Library/Caches/ms-playwright/` (NOT in repo). |
+| `~/deassists-workspace/369-brain/guardian-bridge.js` | The daemon. Triggers: EAGLE poll (30 s), daily 02:00, initial-startup (only if `latest.json` missing). Captures Playwright stdout, parses pass/fail/skip counts, writes per-run + latest + daily-md + learning-log. `isRunning` guard prevents overlap. |
+| `~/deassists-workspace/369-brain/logs/` + `guardian-error.log` + `guardian-out.log` | pm2 streams. |
+| `~/deassists-workspace/369-brain/intelligence/test-runs/latest.json` | First run snapshot (run_id `guardian-1777917775120`). |
+| `~/deassists-workspace/369-brain/intelligence/test-runs/guardian-1777917775120.json` | Immutable per-run record. |
+| `~/deassists-workspace/369-brain/intelligence/test-runs/2026-05-04.md` | Human-readable daily report. |
+| `~/deassists-workspace/369-brain/intelligence/learning-log.md` | New file; first dated entry written. Self-Improvement reads this weekly. |
+
+### Files modified
+
+| File | Change |
+|------|--------|
+| `~/deassists-workspace/369-brain/ecosystem.config.cjs` | Added `env.TEST_PASSWORD` to `harness-worker`; appended new `guardian` app entry (script `guardian-bridge.js`, cwd 369-brain, `autorestart: true`, `max_restarts: 5`, error/out logs in `./logs/`, env `{ NODE_ENV: 'production', TEST_PASSWORD }`). |
+| `~/.pm2/dump.pm2` | `pm2 save` persisted guardian (pid 52342) alongside harness-worker, mission-control-369, dropbox-sync, backend, cms, website. |
+
+### pm2 state at session close
+
+```
+guardian        | pid 52342 | online | 0 restarts | 48.4 MB
+harness-worker  | pid 10733 | online | 2 restarts (pre-existing)
+```
+
+### Notable debugging
+
+- Original `button[type="submit"]` selector failed all 8 logins (10s timeouts). DOM probe (added as temporary `inspect login form` test, since removed) revealed: button is `<button>Sign In</button>` with no `type` attribute, and there is no real `<form>` wrapping the inputs (the only `<form>` matched was a hidden Google Translate voting form). Replaced with a 9-selector union: `button[type="submit"], input[type="submit"], button:has-text("Sign in"|"Login"|"Log in"|"Continue"|"Submit"), [data-testid*="login"|"submit"]`. All 8 logins then passed.
+
+### Caveats / known issues
+
+- Login assertion is plumbing-level, not auth-level: each login post-click resolves to `http://localhost:4002/` and the test only checks the URL doesn't contain `/login` or `/signin`. A wrong password could theoretically pass if the SPA doesn't redirect on success. Tightening the assertion (cookie / post-login DOM element / `/api/me`) is on the next-session list.
+- `ecosystem.config.cjs` now contains `TEST_PASSWORD` in plaintext (in two places: `harness-worker` env and `guardian` env). Matches the existing plaintext-secret pattern in this file (Dropbox token line 14, Anthropic API key line 34) — flagged for future rotation to a gitignored `.env` referenced by pm2's `env_file`.
+- Guardian race: if EAGLE writes a `code_written`/`complete`/`approved` entry while a 2am run is already in progress (~55s window), `isRunning` causes the EAGLE-driven trigger to be silently dropped. Acceptable for now; a future improvement is a queued retry on the next 30-second poll.
+- Guardian does NOT replay history on boot — `lastProcessedId` initialises from the *current* last EAGLE entry, so existing entries do not retroactively trigger runs.
+
+### Pending for next session
+
+- Harden login assertions in `e2e/portal.spec.js`.
+- Build the Mission Vault **Guardian tab** to read `intelligence/test-runs/latest.json` + the daily markdown.
+- Move `TEST_PASSWORD` (and Dropbox/Anthropic secrets) out of `ecosystem.config.cjs` into a gitignored `.env` via pm2 `env_file`.
+- Carry over from earlier today: wire `approvals/*.signal` → harness-worker; re-enable CORTEX-369 Dropbox app; commit dashboard v3 stack + RAG MongoDB connector + harness-eagle.js carve-out.
+
+### Commits this session
+
+None. All work uncommitted; pm2 dump is the only persisted runtime state.
+
+---
+
+## 5 May 2026 — Mission Vault foundations: Guardian, Connections, Gmail, Login, Logout
+
+**Branch:** main (369-brain) | portal untouched
+
+### What was done
+
+Marathon brain-only build session. 13 commits pushed to main, all on the dashboard/server foundation. No portal touches.
+
+#### 1. Guardian test harness expanded (3 new org user types)
+- Added `organization_manager` / `organization_team_lead` / `organization_staff` to `e2e/portal.spec.js` TEST_USERS
+- Added 3 corresponding rows in Guardian tab UI (`acc-om`, `acc-ot`, `acc-os`)
+- Updated `accMap` in `loadGuardian()` with 3 new entries
+- Updated `userTypes` arrays in BOTH `guardian-bridge.js` AND `guardian-run-once.js` (the latter wasn't in your spec, but updating it kept "Run now" button parity with the EAGLE-watch parser)
+- Suite is now **13 tests** (1 portal-loads + 1 backend + 11 logins) — all passing in 1.3 min
+
+#### 2. Connections tab built end-to-end
+- New tab inserted as tab 4 between RAG and Self-Improvement
+- Synchronized renumbering across desktop dtabs / mobile bntabs / panels (`p4–p7`, `t4–t7`, `bn4–bn7`) + card sw() shifts (Learner sw(4)→sw(5), Guardian sw(5)→sw(6))
+- Created `intelligence/ai-registry.json` v1.1: 10 models (claude, openai, ollama-nous-hermes, mistral, llama3, deepseek, gemini, grok, perplexity, cohere) · 11 routing rules · 2 hard blocks · Hermes Agent framework as "Gate 1 operator"
+- New `GET /api/connections` endpoint reads registry + detects live status per model (env vars for cloud, `ollama list` for local) + `pm2 jlist` for harness state
+- New `GET /api/self-improvement/status` endpoint parses `intelligence/proposed-fixes/*.md` (regex on `Pattern A —` for 5, `## Fix 1` for 6)
+- Frontend `loadConnections()` renders 6 sections: AI Models · Hermes Agent · Data Sources · Active Harnesses · Routing Rules · Hard Blocks
+- Coming-soon source cards now have action buttons: Dropbox "Fix now →" link, Gmail/WhatsApp/Telegram "+ Connect" buttons
+
+#### 3. PDF upload pipeline
+- Hand-rolled multipart parser (single-file case) at `POST /api/rag/upload-pdf` — placed BEFORE `await readBody(req)` so the stream isn't consumed
+- `pdf-parse` package installed in `dashboard/`
+- Saves both `.pdf` and `.md` to `intelligence/uploads/pdf/`
+- Added 5th source block in `rag-engine.js`
+- Added `📄 PDFs` chip in `/api/sources`
+- Replaced theatrical client-side `processPDF` with real `uploadPDF(file)` calling the new route
+
+#### 4. Gmail OAuth connector
+- Moved web-type OAuth credentials to `integrations/gmail-credentials.json` (after replacing user's first desktop-type creds with web-type)
+- Added gitignore patterns for `integrations/*-credentials.json` and friends — pushed as separate security commit `ff061ca` so origin gets the protection
+- Wired three routes: `/api/gmail/auth-start` (returns Google authUrl with `gmail.readonly` scope) · `/api/gmail/auth-callback` (exchanges code, calls `gmail.users.getProfile()` for email, persists `.gmail-token-<email>.json`, returns close-popup HTML with postMessage signal) · `/api/gmail/accounts` (lists tokens)
+- Built `integrations/gmail-sync.js` — paginated message fetch up to 200 messages from inbox+sent, body extraction from `text/plain` part, dedup by msg ID, token-refresh handler auto-persists rotated refresh tokens
+- Added 6th source block in `rag-engine.js` walking `intelligence/gmail/<email_at_>/*.md`
+- `npm install googleapis google-auth-library` in `dashboard/`
+
+#### 5. Login gate + page
+- Server now serves `login.html` when no `.gmail-token-*.json` exists, `index.html` when one does (gate logic in HTML serve fallback)
+- Login page went through **3 designs in one session**:
+  - (a) Guards Red theme + hand-drawn 911 SVG — committed
+  - (b) Real Porsche photo (`~/Downloads/wallpapersden.com_porsche-red_3840x2160.jpg` → `dashboard/porsche-911.jpg`, compressed `sips -Z 1200` from 6.2 MB → 180 KB, removed from gitignore so it commits)
+  - (c) **Final**: Nous Research dark terminal aesthetic — `#0C1F16` deep green, Barlow Condensed 88px blinking 369, 52px pulsing red MISSION VAULT, Courier Prime mono labels, sign-in links with → arrows
+- Apple button shows honest "coming soon" alert (no fake redirect)
+- Google button opens centered popup, polls `popup.closed`, redirects on close + listens for postMessage from auth-callback
+
+#### 6. Logout flow
+- `org-pill` made clickable (id `org-pill-btn`) with dropdown showing connected email + red "Sign out →"
+- `loadUserEmail()` fetches `/api/gmail/accounts` and fills the dropdown
+- JS rewritten using `addEventListener` inside `DOMContentLoaded` with `e.stopPropagation()` (prior inline-onclick + document-listener race made first click no-op)
+- **Bug fix discovered last**: `/api/logout` was authored inside the GET block with `&& req.method==='POST'` guard — contradiction made the route unreachable. Frontend's POST hit catch-all HTML serve, JSON.parse threw silently, no redirect. Fix: moved route into POST block. Verified with curl: token deleted, HTTP 200.
+
+#### 7. Honesty cleanup
+- Removed all hardcoded fake numbers from Overview cards (Builder/Learner/Guardian/RAG)
+- Replaced fabricated `Math.ceil(fixes * 1.2)` for `learner.patterns` with real regex (3 iterations until matching the bullet-list format actually used)
+- Replaced "Local-first — no data leaves your machine" with accurate "Local-first storage — AI requests use configured model provider"
+- PDF toast: "PDF added to vault — now searchable" (lie before there was an upload pipeline) → "PDF summarised — vault indexing coming soon" → after pipeline shipped: real "PDF indexed into vault — now searchable" or fallback
+- `activeSrc` no longer hardcodes `['brain','portal']` — populates dynamically from `/api/sources` first response
+
+#### 8. Design system v2.0
+- `skills/MISSION-VAULT-STYLE.md` overwritten from "Batman Dark Knight" v1 to "Dark Terminal Nous Research" v2.0 (149 lines)
+- Documents palette, font stack, animation rules, gate colour map, login page recipe, key components
+
+### Commits this session (13, oldest first)
+
+| Hash | Title |
+|---|---|
+| `66d2916` | feat: Guardian tab live — full test harness, per-account results, EAGLE sync |
+| `64d4361` | fix: remove all hardcoded UI data — honest counts only |
+| `db2527d` | feat: all APIs live — connections, self-improvement, AI registry v1.1 |
+| `f075da4` | feat: add 3 missing org user types — org manager, org team lead, org staff |
+| `ff061ca` | security: protect gmail credentials and future integration secrets from git |
+| `a27d0e9` | feat: 911 Guards Red login page + Gmail full connector |
+| `299ed13` | feat: login page — 911 side profile SVG + Google popup fix |
+| `0b0cc0b` | feat: logout button in top nav — shows email, sign out clears token returns to login |
+| `697f72c` | feat: real Porsche 911 GT2 photo on login page |
+| `df52cc3` | asset: Porsche 911 GT2 login image — compressed for web |
+| `18eff5b` | fix: logout dropdown — proper event listeners, sign out clears token |
+| `2423770` | design: Nous Research aesthetic — dark green login, Barlow Condensed, Batman skill v2.0 |
+| `c0be272` | fix: move /api/logout route from GET block to POST block — was unreachable |
+
+### Decisions locked
+
+- Brain owns the Playwright test suite (never portal)
+- AI registry is read on every request (no caching) — JSON edits take effect on next API call
+- Hard blocks (`gate:4`) are enforced at the routing layer for student PII + private financial data — `blocked_model_privacy: ['cloud']`
+- Self-Improvement counts come from regex on the latest proposed-fixes report — `Pattern A —` and `## Fix \d+`
+- Login is gated by Gmail token presence — single token = full access, multi-user RBAC deferred
+- Apple Sign-In is "coming soon" alert until proper flow is built
+- `setImmediate` background sync after Gmail OAuth callback handles initial RAG indexing
+- Token refresh handler in `gmail-sync.js` auto-persists rotated refresh tokens — no re-auth long-term
+
+### Pending for next session
+
+- Restart guardian process to pick up the 3 new userTypes (still 8 in memory at pid 69756)
+- Commit `dashboard/package.json` + `package-lock.json` so fresh clones work (3 new deps: `pdf-parse`, `googleapis`, `google-auth-library`)
+- Re-OAuth Gmail (`info@deassists.com`) — token deleted by my curl verifying logout fix
+- Implement Gmail periodic sync (recommend `setInterval(syncAll, 600_000)` on server boot)
+- Decide: Apple Sign-In flow vs Hermes Agent build vs both
+- Decide what to do with `dashboard/porsche-911.jpg` (orphan asset, 180 KB committed, no HTML references it)
+
+### Lessons learned today
+
+- Multi-line edits with renames work cleanly only in REVERSE order — when shifting tabs sw(4)→sw(5)→sw(6)→sw(7), do sw(6)→sw(7) first, then sw(5)→sw(6), then sw(4)→sw(5). Forward order creates duplicate matches at each step (Edit tool fails on non-unique anchors).
+- Inline `style="display:none"` on a panel breaks the `.panel.on { display:block }` toggle — inline style has higher specificity than class rules. Always rely on the class system instead.
+- Routes inside the wrong method block become silently unreachable. The `req.method==='POST'` guard on a route inside the `if(req.method==='GET')` block looks correct on first read but is a permanent dead branch. Lesson: routes belong in the block matching their actual method, no exception guards.
+- Multipart upload routes must be placed BEFORE `await readBody(req)` — readBody drains the stream into a string before any URL routing happens, so the multipart parser's `req.on('data')` would never fire.
+- The user's "find/replace" anchors sometimes assume a different code state than reality (e.g., `panel5` vs the file's actual `p5`, `connectNewGmail` function that doesn't exist yet). Flag the deviation up front, adapt to actual file state, document in response.
+- Image compression matters: `sips -Z 1200` knocked the Porsche photo from 6.2 MB to 180 KB with no visible quality loss at the rendered size — 97% reduction, page-load weight back to reasonable.
+- Sign-in popups vs full-tab redirects need different completion strategies. Popup uses `postMessage` to opener + `setTimeout(close)`; tab login needs `window.location.href = '/'` redirect because there's no opener. Login page handles both via `window.opener` check + `popup.closed` polling.
+
+### Carry-over from prior sessions (not touched)
+
+- `approvals/*.signal` → harness-worker bridge still missing
+- CORTEX-369 Dropbox app still disabled (token won't fetch)
+- `harness/eagle/eagle-harness.js` carve-out, `dashboard/rag-engine.js` MongoDB tweaks, harness JSONL cleanup all still uncommitted
+- Latha portal review (4 fixes, permission.helper.ts, sidebar audit) still pending
+
+
