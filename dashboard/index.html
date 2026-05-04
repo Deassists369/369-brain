@@ -1416,23 +1416,31 @@ async function genAction(type){
 function copyRAGAct(){navigator.clipboard.writeText(ragActResult);toast('Copied!')}
 
 /* PDF */
-function handlePDFDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf')processPDF(f);else toast('Please drop a PDF file');}
-function handlePDF(e){const f=e.target.files[0];if(f)processPDF(f);}
-async function processPDF(file){
-  const stat=document.getElementById('pdfStatus');stat.style.display='block';stat.textContent='⏳ Reading '+file.name+'...';
-  const reader=new FileReader();
-  reader.onload=async(e)=>{
-    const b64=e.target.result.split(',')[1];
-    try{
-      const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}},{type:'text',text:'Summarize this document in 3 sentences. What type of document is it? What are the 3 most important facts?'}]}]})});
-      const d=await r.json();
-      const summary=d.content&&d.content[0]?d.content[0].text:'Could not read PDF.';
-      stat.innerHTML=`<div class="info-box info-t" style="margin-bottom:0"><strong style="color:var(--teal)">✓ ${file.name} read</strong><br>${summary}<br><span style="font-size:10px;color:var(--t3)">File stays on your machine · Ask questions about it in the vault above</span></div>`;
-      activeSrc.add('pdf');const chip=document.getElementById('s-pdf');if(chip)chip.className='src-chip src-on';
-      toast('PDF summarised — vault indexing coming soon');
-    }catch(e){stat.textContent='Could not read PDF. Check Claude API connection.';}
-  };
-  reader.readAsDataURL(file);
+function handlePDFDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf')uploadPDF(f);else toast('Please drop a PDF file');}
+function handlePDF(e){const f=e.target.files[0];if(f)uploadPDF(f);}
+async function uploadPDF(file) {
+  if (!file || !file.name.toLowerCase().endsWith('.pdf')) {
+    toast('Please select a PDF file');
+    return;
+  }
+  toast('Uploading PDF to vault...');
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const r = await fetch('/api/rag/upload-pdf', {
+      method: 'POST',
+      body: formData
+    });
+    const d = await r.json();
+    if (d.ok) {
+      toast(d.message + ' (' + file.name + ')');
+      setTimeout(() => { loadSources(); loadGuardian(); }, 3000);
+    } else {
+      toast('Upload failed: ' + (d.error || 'unknown error'));
+    }
+  } catch(e) {
+    toast('Upload error: ' + e.message);
+  }
 }
 
 /* Toast */

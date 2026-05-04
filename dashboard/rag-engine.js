@@ -198,6 +198,29 @@ async function buildIndex() {
     console.log('[RAG] Portal error:', e.message);
   }
 
+  // 5. Index PDF uploads
+  try {
+    const pdfUploadDir = path.join(os.homedir(), 'deassists-workspace', '369-brain', 'intelligence', 'uploads', 'pdf');
+    if (fs.existsSync(pdfUploadDir)) {
+      const pdfMdFiles = fs.readdirSync(pdfUploadDir)
+        .filter(f => f.endsWith('.md'))
+        .map(f => path.join(pdfUploadDir, f));
+      const pdfChunks = pdfMdFiles.flatMap(f => parseFile(f, 'pdf'));
+      INDEX.chunks.push(...pdfChunks);
+      INDEX.sources['pdf'] = {
+        status: pdfChunks.length ? 'indexed' : 'empty',
+        files: pdfMdFiles.length,
+        chunks: pdfChunks.length,
+        indexed_at: now,
+      };
+      console.log(`[RAG] PDF uploads: ${pdfMdFiles.length} files → ${pdfChunks.length} chunks`);
+    } else {
+      INDEX.sources['pdf'] = { status: 'empty', files: 0, chunks: 0 };
+    }
+  } catch(e) {
+    INDEX.sources['pdf'] = { status: 'error', error: e.message, chunks: 0 };
+  }
+
   INDEX.built_at = now;
   INDEX.building = false;
   console.log(`[RAG] Index built: ${INDEX.chunks.length} chunks from ${Object.keys(INDEX.sources).length} sources`);

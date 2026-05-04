@@ -251,6 +251,135 @@ const server = http.createServer(async (req, res) => {
     if (url==='/api/data')         return json(res, 200, getData());
     if (url==='/api/status')       return json(res, 200, getStatus());
     if (url==='/api/rag/status')   return json(res, 200, rag.getStatus());
+    if (url==='/api/connections') {
+      try {
+        const registryPath = path.join(BRAIN,'intelligence','ai-registry.json');
+        const registry = JSON.parse(fs.readFileSync(registryPath,'utf8'));
+        const ragStatus = rag.getStatus();
+        let ollamaList = '';
+        try {
+          ollamaList = require('child_process')
+            .execSync('ollama list 2>/dev/null',{encoding:'utf8',timeout:2000})
+            .toLowerCase();
+        } catch {}
+        const ollamaNames = {
+          'ollama-nous-hermes':'nous-hermes',
+          'mistral':'mistral','llama3':'llama3','deepseek':'deepseek'
+        };
+        const cloudEnvs = {
+          'openai':'OPENAI_API_KEY','gemini':'GEMINI_API_KEY',
+          'grok':'GROK_API_KEY','perplexity':'PERPLEXITY_API_KEY',
+          'cohere':'COHERE_API_KEY'
+        };
+        const models = registry.models.map(m => {
+          let live = false;
+          if (m.id==='claude') live=!!(process.env.ANTHROPIC_API_KEY);
+          else if (m.local) live=ollamaList.includes((ollamaNames[m.id]||m.id).toLowerCase());
+          else live=!!(process.env[cloudEnvs[m.id]]);
+          const {credential,...safe}=m;
+          return {...safe,credential_status:live?'configured':'not_configured',
+            live,status:live?'connected':m.status};
+        });
+        const srcMeta={
+          brain:  {label:'369-brain',       icon:'🧠',desc:'Strategic memory decisions SOPs'},
+          notes:  {label:'Obsidian Notes',  icon:'📝',desc:'Personal business knowledge'},
+          mongodb:{label:'MongoDB Students',icon:'🗄',desc:'Live student database'},
+          portal: {label:'Portal Code',     icon:'💻',desc:'Codebase controllers entities'},
+          pdf:    {label:'PDF Uploads',     icon:'📄',desc:'Uploaded business documents'}
+        };
+        const sources=[];
+        for(const [id,src] of Object.entries(ragStatus.sources||{})){
+          const meta=srcMeta[id]||{label:id,icon:'📊',desc:''};
+          const priv=(registry.data_privacy||{})[id]||{level:'unknown',allowed_models:[]};
+          sources.push({id,...meta,
+            status:src.chunks>0?'connected':'empty',
+            chunks:src.chunks||0,
+            files:src.files||src.documents||0,
+            last_sync:src.indexed_at||null,
+            privacy_level:priv.level,
+            allowed_models:priv.allowed_models,
+            requires_cloud_redaction:priv.requires_cloud_redaction||false});
+        }
+        const comingSoon=[
+          {id:'dropbox',label:'Dropbox CORTEX-369',icon:'📦',status:'blocked',
+           reason:'App disabled in Dropbox console',
+           fix:'dropbox.com/developers → enable → tick files.metadata.read → new token'},
+          {id:'gmail',   label:'Gmail',          icon:'📧',status:'coming_soon',reason:'Not yet connected'},
+          {id:'whatsapp',label:'WhatsApp',        icon:'📱',status:'coming_soon',reason:'Phase 3'},
+          {id:'telegram',label:'Telegram Control',icon:'📡',status:'coming_soon',reason:'Phase 3'},
+          {id:'scraper', label:'Website Scraper', icon:'🌐',status:'coming_soon',reason:'Indexes any website into RAG'}
+        ];
+        const hMeta={
+          'guardian':           {label:'Guardian',     icon:'🛡',purpose:'Tests portal after every EAGLE build',uses_ai:[]},
+          'harness-worker':     {label:'EAGLE Builder',icon:'🏗',purpose:'Builds software from tickets',      uses_ai:['claude']},
+          'dropbox-sync':       {label:'Dropbox Sync', icon:'📦',purpose:'Syncs documents from Dropbox',      uses_ai:[]},
+          'mission-control-369':{label:'Mission Vault',icon:'🎛',purpose:'Serves this dashboard',             uses_ai:['claude']}
+        };
+        let harnesses=[];
+        try{
+          const pm2out=require('child_process')
+            .execSync('pm2 jlist 2>/dev/null',{encoding:'utf8',timeout:3000});
+          harnesses=JSON.parse(pm2out).filter(p=>hMeta[p.name]).map(p=>({
+            id:p.name,...hMeta[p.name],
+            status:p.pm2_env?.status||'unknown',pid:p.pid,
+            restarts:p.pm2_env?.restart_time||0,
+            memory_mb:Math.round((p.monit?.memory||0)/1024/1024)
+          }));
+        }catch{}
+        return json(res,200,{
+          router:registry.router,
+          agent_frameworks:registry.agent_frameworks||[],
+          models,sources,comingSoon,harnesses,
+          routing_rules:registry.routing_rules,
+          gate_levels:registry.gate_levels,
+          hard_blocks:registry.hard_blocks||[],
+          timestamp:new Date().toISOString()
+        });
+      }catch(e){return json(res,500,{error:e.message});}
+    }
+
+    if (url==='/api/self-improvement/status') {
+      try {
+        const fixesDir=path.join(BRAIN,'intelligence','proposed-fixes');
+        if(!fs.existsSync(fixesDir)){
+          return json(res,200,{connected:false,runs:0,patterns:0,
+            fixes:{total:0,adopted:0,deferred:0,pending:0},
+            next_run:null,latest_report:null,report_preview:'',
+            message:'No self-improvement reports yet.'});
+        }
+        const files=fs.readdirSync(fixesDir).filter(f=>f.endsWith('.md')).sort();
+        if(!files.length){
+          return json(res,200,{connected:false,runs:0,patterns:0,
+            fixes:{total:0,adopted:0,deferred:0,pending:0},
+            next_run:null,latest_report:null,report_preview:''});
+        }
+        const lastFile=files[files.length-1];
+        const content=fs.readFileSync(path.join(fixesDir,lastFile),'utf8');
+        const patterns=(content.match(/Pattern\s+[A-Z]\s*[—–-]/g)||[]).length;
+        const fixMatches=(content.match(/##\s*Fix\s*\d+/gi)||[]).length;
+        const adopted=Math.min((content.match(/ADOPTED|✅\s*Fix/gi)||[]).length,fixMatches);
+        const deferred=Math.min((content.match(/DEFERRED|⏸/gi)||[]).length,fixMatches);
+        const dateStr=lastFile.split('-self-improvement')[0];
+        let next_run=null;
+        const ld=new Date(dateStr);
+        if(!isNaN(ld.getTime())){
+          const nd=new Date(ld);nd.setDate(nd.getDate()+7);
+          next_run=nd.toISOString().split('T')[0];
+        }
+        const patternLines=[];
+        const pReg=/[-*]\s+(Pattern\s+[A-Z][—–-][^\n]+)/g;
+        let pm;while((pm=pReg.exec(content))!==null)patternLines.push(pm[1].trim());
+        return json(res,200,{
+          connected:true,runs:files.length,last_run:dateStr,next_run,patterns,
+          pattern_summaries:patternLines.slice(0,5),
+          fixes:{total:fixMatches,adopted,deferred,
+            pending:Math.max(0,fixMatches-adopted-deferred)},
+          latest_report:lastFile,
+          report_preview:content.slice(0,600).replace(/##/g,'').trim(),
+          all_reports:files
+        });
+      }catch(e){return json(res,500,{error:e.message});}
+    }
     if (url==='/api/mission/overview') {
       try {
         const ragStatus = rag.getStatus();
@@ -289,9 +418,10 @@ const server = http.createServer(async (req, res) => {
           // Count patterns by reading last file
           if (fixes.length > 0) {
             const last = fs.readFileSync(path.join(fixesDir,fixes[fixes.length-1]),'utf8');
-            const patternMatches = last.match(/##\s*Fix\s*\d+/gi) || [];
-            learnerFixes = patternMatches.length;
-            learnerPatterns = null;
+            const fixMatches = last.match(/##\s*Fix\s*\d+/gi) || [];
+            learnerFixes = fixMatches.length;
+            const patternMatches = last.match(/Pattern\s+[A-Z]\s*[—–-]/g) || [];
+            learnerPatterns = patternMatches.length || null;
           }
         } catch {}
 
@@ -372,6 +502,15 @@ const server = http.createServer(async (req, res) => {
           files: ragStatus.sources.portal.files,
           description: 'Live portal — controllers entities modules'
         });
+      if (ragStatus.sources?.pdf?.files > 0)
+        sources.push({
+          id: 'pdf',
+          label: '📄 PDFs',
+          connected: true,
+          chunks: ragStatus.sources.pdf.chunks,
+          files: ragStatus.sources.pdf.files,
+          description: 'Uploaded PDF documents — indexed into vault'
+        });
       const comingSoon = [
         {id:'dropbox',label:'📦 Dropbox',reason:'App scope blocked — fix in console'},
         {id:'gmail',label:'📧 Gmail',reason:'Not yet connected'},
@@ -386,6 +525,76 @@ const server = http.createServer(async (req, res) => {
     if (url.startsWith('/preview/')) return servePreview(url.replace('/preview/',''), res);
   }
   if (req.method==='POST') {
+    if (url==='/api/rag/upload-pdf') {
+      const chunks = [];
+      req.on('data', chunk => chunks.push(chunk));
+      req.on('end', async () => {
+        try {
+          const body = Buffer.concat(chunks);
+          const boundary = req.headers['content-type']?.split('boundary=')[1];
+          if (!boundary) return json(res, 400, { error: 'No boundary in content-type' });
+
+          // Parse multipart manually (simple single-file case)
+          const bnd = Buffer.from('--' + boundary);
+          const parts = [];
+          let start = body.indexOf(bnd) + bnd.length;
+          while (start < body.length) {
+            const end = body.indexOf(bnd, start);
+            if (end === -1) break;
+            parts.push(body.slice(start, end));
+            start = end + bnd.length;
+          }
+
+          if (!parts.length) return json(res, 400, { error: 'No file found in upload' });
+
+          const part = parts[0];
+          const headerEnd = part.indexOf('\r\n\r\n');
+          const headers = part.slice(0, headerEnd).toString();
+          const fileData = part.slice(headerEnd + 4, part.length - 2);
+
+          const nameMatch = headers.match(/filename="([^"]+)"/);
+          const fileName = nameMatch ? nameMatch[1] : 'upload-'+Date.now()+'.pdf';
+
+          if (!fileName.toLowerCase().endsWith('.pdf')) {
+            return json(res, 400, { error: 'Only PDF files supported' });
+          }
+
+          const uploadDir = path.join(BRAIN, 'intelligence', 'uploads', 'pdf');
+          if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+          const filePath = path.join(uploadDir, fileName);
+          fs.writeFileSync(filePath, fileData);
+
+          // Extract text with pdf-parse
+          let text = '';
+          try {
+            const pdfParse = require('pdf-parse');
+            const parsed = await pdfParse(fileData);
+            text = parsed.text || '';
+          } catch(e) {
+            text = '[PDF text extraction failed — file saved, will retry on next reindex]';
+          }
+
+          // Write markdown alongside PDF for RAG indexing
+          const mdPath = filePath.replace('.pdf', '.md');
+          fs.writeFileSync(mdPath, `# ${fileName}\n\nSource: PDF upload\nUploaded: ${new Date().toISOString()}\n\n${text}`);
+
+          // Trigger RAG reindex
+          rag.buildIndex().catch(console.error);
+
+          return json(res, 200, {
+            ok: true,
+            file: fileName,
+            chars: text.length,
+            message: text.length > 100
+              ? 'PDF indexed into vault — now searchable'
+              : 'PDF saved — text extraction limited, basic info indexed'
+          });
+        } catch(e) {
+          return json(res, 500, { error: e.message });
+        }
+      });
+      return;
+    }
     const body = await readBody(req);
     if (url==='/api/claude')      return proxyClaude(body, res);
     if (url==='/api/approve')     return handleApprove(body, res);
