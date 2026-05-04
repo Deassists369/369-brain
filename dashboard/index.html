@@ -530,18 +530,23 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
     <div class="nav-r">
       <div class="clock" id="clock">--:--:--</div>
       <button class="nav-btn" onclick="loadAll()">↻</button>
-      <div class="org-pill" onclick="toggleUserMenu()" style="cursor:pointer;position:relative">
+      <div class="org-pill" id="org-pill-btn" style="cursor:pointer;position:relative">
         <div class="org-av">DA</div>
         <span class="org-nm">DeAssists</span>
         <span style="font-size:9px;color:var(--t3);margin-left:2px">▾</span>
-        <div id="user-menu" style="display:none;position:absolute;top:36px;right:0;
-          background:var(--card);border:1px solid var(--bd);border-radius:8px;
-          min-width:180px;padding:6px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.4)">
-          <div id="user-email" style="font-size:10px;color:var(--t3);font-family:var(--font-mono);
-            padding:6px 10px 8px;border-bottom:1px solid var(--bd);word-break:break-all"></div>
-          <button onclick="logout()" style="width:100%;text-align:left;padding:8px 10px;
-            background:none;border:none;color:#ef4444;font-size:12px;cursor:pointer;
-            font-family:var(--font-ui);border-radius:4px;margin-top:2px"
+        <div id="user-menu" style="display:none;position:absolute;top:40px;right:0;
+          background:var(--card);border:1px solid var(--bd);border-radius:10px;
+          min-width:200px;padding:8px;z-index:9999;
+          box-shadow:0 8px 32px rgba(0,0,0,.5)">
+          <div id="user-email" style="font-size:10px;color:var(--t3);
+            font-family:'SF Mono',monospace;
+            padding:8px 10px 10px;border-bottom:1px solid var(--bd);
+            word-break:break-all;line-height:1.4"></div>
+          <button id="signout-btn" style="width:100%;text-align:left;
+            padding:10px 10px;background:none;border:none;
+            color:#ef4444;font-size:13px;cursor:pointer;
+            border-radius:6px;margin-top:4px;
+            font-family:-apple-system,sans-serif"
             onmouseover="this.style.background='rgba(239,68,68,.1)'"
             onmouseout="this.style.background='none'">
             Sign out →
@@ -1870,18 +1875,40 @@ function showTelegramConnect(){
 
 function toggleUserMenu(){
   const m=document.getElementById('user-menu');
+  if(!m) return;
   m.style.display=m.style.display==='none'?'block':'none';
 }
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.org-pill'))
-    document.getElementById('user-menu').style.display='none';
+
+document.addEventListener('DOMContentLoaded',function(){
+  const pill=document.getElementById('org-pill-btn');
+  const menu=document.getElementById('user-menu');
+  const signout=document.getElementById('signout-btn');
+  if(pill) pill.addEventListener('click',function(e){
+    e.stopPropagation();
+    menu.style.display=menu.style.display==='none'?'block':'none';
+  });
+  if(signout) signout.addEventListener('click',async function(e){
+    e.stopPropagation();
+    try{
+      const r=await fetch('/api/logout',{method:'POST'});
+      const d=await r.json();
+      if(d.ok) window.location.href='/';
+      else alert('Logout failed');
+    }catch(err){ alert('Logout error: '+err.message); }
+  });
+  document.addEventListener('click',function(){
+    if(menu) menu.style.display='none';
+  });
 });
+
 async function logout(){
   try{
-    await fetch('/api/logout',{method:'POST'});
-    window.location.href='/';
-  }catch(e){ toast('Logout failed: '+e.message); }
+    const r=await fetch('/api/logout',{method:'POST'});
+    const d=await r.json();
+    if(d.ok) window.location.href='/';
+  }catch(e){ alert('Logout failed: '+e.message); }
 }
+
 async function loadUserEmail(){
   try{
     const r=await fetch('/api/gmail/accounts').then(x=>x.json());
