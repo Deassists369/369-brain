@@ -43,7 +43,7 @@ async function getClient(email){
   return client;
 }
 
-async function syncAccount(email, max=200){
+async function syncAccount(email, max=500){
   console.log('[Gmail] Syncing:',email);
   const client = await getClient(email);
   const gmail = google.gmail({version:'v1',auth:client});
