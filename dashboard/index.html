@@ -1131,6 +1131,108 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
   <div style="padding:12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;color:var(--t3);font-size:12px">Loading data sources...</div>
 </div>
 
+<div style="margin-bottom:20px">
+  <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.15em;margin-bottom:10px;font-family:var(--font-mono)">Sync Workers — Data Feed Layer</div>
+
+  <!-- W-06 Gmail Sync -->
+  <div style="padding:12px 14px;background:var(--card);border:1px solid var(--bd);border-radius:10px;margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:32px;height:32px;background:#fef2f2;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">📧</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+          <span style="font-size:12px;font-weight:700;color:var(--t1)">Gmail Sync</span>
+          <span style="font-size:9px;font-family:var(--font-mono);color:var(--t3);background:var(--card);border:1px solid var(--bd);padding:1px 5px;border-radius:4px">W-06</span>
+          <div id="sync-status-gmail" style="width:6px;height:6px;border-radius:50%;background:#9ca3af;flex-shrink:0"></div>
+        </div>
+        <div style="font-size:10px;color:var(--t3)">Fetches emails → indexes into RAG · auto every 15 min</div>
+      </div>
+      <button id="sync-btn-gmail" onclick="triggerSync('gmail')" style="font-size:10px;padding:5px 10px;background:var(--gx);color:var(--g);border:1px solid var(--gxx);border-radius:6px;cursor:pointer;font-family:var(--font-mono);white-space:nowrap">Sync now</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
+      <div style="padding:6px 8px;background:var(--card);border:1px solid var(--bd);border-radius:6px;text-align:center">
+        <div style="font-size:11px;font-weight:700;color:var(--t1);font-family:var(--font-mono)" id="sync-last-gmail">—</div>
+        <div style="font-size:8px;color:var(--t3);text-transform:uppercase;margin-top:1px">Last sync</div>
+      </div>
+      <div style="padding:6px 8px;background:var(--card);border:1px solid var(--bd);border-radius:6px;text-align:center">
+        <div style="font-size:11px;font-weight:700;color:var(--t1);font-family:var(--font-mono)" id="sync-next-gmail">—</div>
+        <div style="font-size:8px;color:var(--t3);text-transform:uppercase;margin-top:1px">Next sync</div>
+      </div>
+      <div style="padding:6px 8px;background:var(--card);border:1px solid var(--bd);border-radius:6px;text-align:center">
+        <div style="font-size:11px;font-weight:700;color:#0d9488;font-family:var(--font-mono)" id="sync-chunks-gmail">—</div>
+        <div style="font-size:8px;color:var(--t3);text-transform:uppercase;margin-top:1px">In RAG</div>
+      </div>
+      <div style="padding:6px 8px;background:var(--card);border:1px solid var(--bd);border-radius:6px;text-align:center">
+        <div style="font-size:11px;font-weight:700;color:var(--t1);font-family:var(--font-mono)" id="sync-files-gmail">—</div>
+        <div style="font-size:8px;color:var(--t3);text-transform:uppercase;margin-top:1px">Emails</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- W-07 Portal Sync -->
+  <div style="padding:12px 14px;background:var(--card);border:1px solid var(--bd);border-radius:10px;margin-bottom:8px;opacity:.7">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;background:#eff6ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">💻</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+          <span style="font-size:12px;font-weight:700;color:var(--t1)">Portal Sync</span>
+          <span style="font-size:9px;font-family:var(--font-mono);color:var(--t3);background:var(--card);border:1px solid var(--bd);padding:1px 5px;border-radius:4px">W-07</span>
+          <span style="font-size:9px;font-family:var(--font-mono);color:#9ca3af;background:#f3f4f6;padding:1px 6px;border-radius:4px">Coming next session</span>
+        </div>
+        <div style="font-size:10px;color:var(--t3)">Pulls portal main branch → runs Graphify → updates RAG · every 30 min</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;min-width:200px">
+        <div style="padding:5px 6px;background:var(--card);border:1px solid var(--bd);border-radius:6px;text-align:center">
+          <div style="font-size:10px;font-weight:700;color:var(--t2);font-family:var(--font-mono)" id="sync-last-portal">—</div>
+          <div style="font-size:7px;color:var(--t3);text-transform:uppercase">Last</div>
+        </div>
+        <div style="padding:5px 6px;background:var(--card);border:1px solid var(--bd);border-radius:6px;text-align:center">
+          <div style="font-size:10px;font-weight:700;color:var(--t2);font-family:var(--font-mono)" id="sync-next-portal">—</div>
+          <div style="font-size:7px;color:var(--t3);text-transform:uppercase">Next</div>
+        </div>
+        <div style="padding:5px 6px;background:var(--card);border:1px solid var(--bd);border-radius:6px;text-align:center">
+          <div style="font-size:10px;font-weight:700;color:#0d9488;font-family:var(--font-mono)" id="sync-chunks-portal">—</div>
+          <div style="font-size:7px;color:var(--t3);text-transform:uppercase">Chunks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- W-08 Dropbox Sync -->
+  <div style="padding:12px 14px;background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;background:#fee2e2;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">📦</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+          <span style="font-size:12px;font-weight:700;color:var(--t1)">Dropbox Sync</span>
+          <span style="font-size:9px;font-family:var(--font-mono);color:var(--t3);background:var(--card);border:1px solid var(--bd);padding:1px 5px;border-radius:4px">W-08</span>
+          <div id="sync-status-dropbox" style="width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0"></div>
+        </div>
+        <div style="font-size:10px;color:#dc2626;font-family:var(--font-mono)">CORTEX-369 blocked — dropbox.com/developers → enable app → tick files.metadata.read → new token</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- W-09 Obsidian Watcher -->
+  <div style="padding:12px 14px;background:var(--card);border:1px solid var(--bd);border-radius:10px;opacity:.7">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;background:#f0fdfa;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">📝</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+          <span style="font-size:12px;font-weight:700;color:var(--t1)">Obsidian Watcher</span>
+          <span style="font-size:9px;font-family:var(--font-mono);color:var(--t3);background:var(--card);border:1px solid var(--bd);padding:1px 5px;border-radius:4px">W-09</span>
+          <span style="font-size:9px;font-family:var(--font-mono);color:#9ca3af;background:#f3f4f6;padding:1px 6px;border-radius:4px">Coming next session</span>
+        </div>
+        <div style="font-size:10px;color:var(--t3)">Watches ~/Documents/369 RAG/ — instant RAG update on every note save</div>
+      </div>
+      <div style="padding:5px 8px;background:var(--card);border:1px solid var(--bd);border-radius:6px;text-align:center">
+        <div style="font-size:10px;font-weight:700;color:#0d9488;font-family:var(--font-mono)" id="sync-chunks-obsidian">—</div>
+        <div style="font-size:7px;color:var(--t3);text-transform:uppercase">Chunks</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 <div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;font-family:var(--font-mono)">Active Harnesses</div>
 <div id="conn-harnesses" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:20px">
   <div style="padding:12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;color:var(--t3);font-size:12px">Loading...</div>
@@ -2178,12 +2280,14 @@ loadOverview();
 loadConnections();
 loadUserEmail();
 loadWorkerStats();
+loadSyncStatus();
 setInterval(loadAll,30000);
 setInterval(loadSources,60000);
 setInterval(loadGuardian,120000);
 setInterval(loadOverview,60000);
 setInterval(loadConnections,120000);
 setInterval(loadWorkerStats,30000);
+setInterval(loadSyncStatus,30000);
 
 const WORKERS={
   eagle:{
@@ -2355,6 +2459,59 @@ function showWorker(id){
 }
 
 function closeWorker(){document.getElementById('worker-modal').style.display='none';}
+
+function timeAgo(iso){
+  if(!iso) return 'never';
+  const s = Math.round((Date.now()-new Date(iso))/1000);
+  if(s<60) return s+'s ago';
+  if(s<3600) return Math.round(s/60)+'m ago';
+  return Math.round(s/3600)+'h ago';
+}
+function timeUntil(iso){
+  if(!iso) return '—';
+  const s = Math.round((new Date(iso)-Date.now())/1000);
+  if(s<=0) return 'now';
+  if(s<60) return 'in '+s+'s';
+  if(s<3600) return 'in '+Math.round(s/60)+'m';
+  return 'in '+Math.round(s/3600)+'h';
+}
+
+function triggerSync(source){
+  const btn = document.getElementById('sync-btn-'+source);
+  if(btn){ btn.textContent='Syncing...'; btn.disabled=true; }
+  fetch('/api/sync/trigger',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({source})
+  }).then(r=>r.json()).then(d=>{
+    if(d.ok){
+      setTimeout(()=>loadSyncStatus(),3000);
+      setTimeout(()=>loadSyncStatus(),8000);
+    }
+    if(btn){ btn.textContent='Sync now'; btn.disabled=false; }
+  }).catch(()=>{ if(btn){ btn.textContent='Sync now'; btn.disabled=false; } });
+}
+
+function loadSyncStatus(){
+  fetch('/api/sync/status').then(r=>r.json()).then(d=>{
+    const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+    el('sync-last-gmail', timeAgo(d.gmail?.lastSync));
+    el('sync-next-gmail', timeUntil(d.gmail?.nextSync));
+    el('sync-chunks-gmail', d.gmail?.chunks ? d.gmail.chunks.toLocaleString()+' chunks' : '—');
+    el('sync-files-gmail', d.gmail?.files ? d.gmail.files+' emails' : '—');
+    const gs = document.getElementById('sync-status-gmail');
+    if(gs){
+      const st = d.gmail?.status;
+      gs.style.background = st==='ok'?'#22c55e':st==='syncing'?'#d97706':st==='error'?'#dc2626':'#9ca3af';
+    }
+    el('sync-last-portal', timeAgo(d.portal?.lastSync));
+    el('sync-next-portal', timeUntil(d.portal?.nextSync));
+    el('sync-chunks-portal', d.portal?.chunks ? d.portal.chunks.toLocaleString()+' chunks' : '—');
+    el('sync-chunks-obsidian', d.obsidian?.chunks ? d.obsidian.chunks.toLocaleString()+' chunks' : '—');
+    const db = document.getElementById('sync-status-dropbox');
+    if(db) db.style.background='#f59e0b';
+  }).catch(()=>{});
+}
 
 function loadWorkerStats(){
   const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};

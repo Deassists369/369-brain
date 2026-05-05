@@ -23,6 +23,37 @@ const BRAIN = path.join(os.homedir(), 'deassists-workspace', '369-brain');
 const RUNS  = path.join(BRAIN, 'intelligence', 'harness-runs');
 const PORT  = 3369;
 
+// Sync state tracker
+const syncState = {
+  gmail:    { lastSync: null, nextSync: null, count: 0, status: 'idle' },
+  portal:   { lastSync: null, nextSync: null, count: 0, status: 'idle' },
+  obsidian: { lastSync: null, nextSync: null, count: 0, status: 'idle' },
+  dropbox:  { lastSync: null, nextSync: null, count: 0, status: 'blocked' },
+};
+
+async function runGmailSync() {
+  try {
+    syncState.gmail.status = 'syncing';
+    const gmailSync = require('../integrations/gmail-sync');
+    const count = await gmailSync.syncAccount('info@deassists.com');
+    syncState.gmail.lastSync = new Date().toISOString();
+    syncState.gmail.nextSync = new Date(Date.now() + 15*60*1000).toISOString();
+    syncState.gmail.count = count || 0;
+    syncState.gmail.status = 'ok';
+    console.log('[Sync] Gmail: synced', count, 'messages');
+  } catch(e) {
+    syncState.gmail.status = 'error';
+    syncState.gmail.error = e.message;
+    console.log('[Sync] Gmail error:', e.message);
+  }
+}
+
+// Auto-sync Gmail every 15 minutes
+setInterval(runGmailSync, 15 * 60 * 1000);
+// Run once on startup after 30 seconds
+setTimeout(runGmailSync, 30000);
+syncState.gmail.nextSync = new Date(Date.now() + 30000).toISOString();
+
 // Load RAG engine
 const rag = require('./rag-engine');
 
@@ -250,7 +281,11 @@ const server = http.createServer(async (req, res) => {
   if (req.method==='GET') {
     if (url==='/api/data')         return json(res, 200, getData());
     if (url==='/api/status')       return json(res, 200, getStatus());
-    if (url==='/api/rag/status')   return json(res, 200, rag.getStatus());
+    if (url==='/api/rag/status') {
+      const s = rag.getStatus();
+      global.ragStatus = { sources: s.sources || {}, built_at: s.built_at };
+      return json(res, 200, s);
+    }
     if (url==='/porsche-911.jpg') {
       try {
         const imgPath = path.join(__dirname,'porsche-911.jpg');
@@ -641,6 +676,35 @@ const server = http.createServer(async (req, res) => {
         comingSoon, timestamp:new Date().toISOString()
       });
     }
+    if (url==='/api/sync/status') {
+      const ragStatus = global.ragStatus || {};
+      const sources = ragStatus.sources || {};
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({
+        gmail: {
+          ...syncState.gmail,
+          chunks: sources.gmail?.chunks || 0,
+          files: sources.gmail?.files || 0,
+        },
+        portal: {
+          ...syncState.portal,
+          chunks: sources.portal?.chunks || 0,
+          files: sources.portal?.files || 0,
+        },
+        obsidian: {
+          ...syncState.obsidian,
+          chunks: sources.notes?.chunks || 0,
+          files: sources.notes?.files || 0,
+        },
+        dropbox: {
+          ...syncState.dropbox,
+          chunks: 0,
+          files: 0,
+        },
+        timestamp: new Date().toISOString()
+      }));
+      return;
+    }
     if (url==='/brain-map') {
       const p=path.join(__dirname,'brain-map.html');
       res.writeHead(200,{'Content-Type':'text/html'});
@@ -650,6 +714,27 @@ const server = http.createServer(async (req, res) => {
     if (url.startsWith('/preview/')) return servePreview(url.replace('/preview/',''), res);
   }
   if (req.method==='POST') {
+    if (url==='/api/sync/trigger') {
+      let body='';
+      req.on('data',d=>body+=d);
+      req.on('end',async()=>{
+        try {
+          const {source} = JSON.parse(body||'{}');
+          if (source==='gmail') {
+            res.writeHead(200,{'Content-Type':'application/json'});
+            res.end(JSON.stringify({ok:true,message:'Gmail sync started'}));
+            runGmailSync();
+          } else {
+            res.writeHead(400,{'Content-Type':'application/json'});
+            res.end(JSON.stringify({ok:false,message:'Unknown source: '+source}));
+          }
+        } catch(e) {
+          res.writeHead(500,{'Content-Type':'application/json'});
+          res.end(JSON.stringify({ok:false,message:e.message}));
+        }
+      });
+      return;
+    }
     if (url==='/api/logout') {
       try {
         const intDir = path.join(BRAIN,'integrations');
