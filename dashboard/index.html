@@ -81,14 +81,14 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
 .dtab{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;
   color:#0a1a0f;background:transparent;border:none;cursor:pointer;
   white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:5px}
-.dtab:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.06)}
+.dtab:hover{color:#0a1a0f;;background:rgba(255,255,255,.06)}
 .dtab.on{color:#0a1a0f;font-weight:700;background:rgba(29,122,69,.25);border:1px solid rgba(29,122,69,.35)}
 .dtab .td{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 
 .nav-r{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
-.clock{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.05em}
+.clock{font-family:var(--mono);font-size:10px;color:#5C8C5C;;letter-spacing:.05em}
 .nav-btn{padding:5px 11px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-  border-radius:var(--r);color:rgba(255,255,255,.55);font-size:11px;font-weight:500;
+  border-radius:var(--r);color:#1D7A45;;font-size:11px;font-weight:500;
   cursor:pointer;transition:all .15s;touch-action:manipulation}
 .nav-btn:hover{background:var(--g);color:#fff;border-color:var(--g)}
 .org-pill{display:flex;align-items:center;gap:5px;padding:3px 9px;
@@ -96,7 +96,7 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
 .org-av{width:17px;height:17px;border-radius:50%;background:var(--g);
   display:flex;align-items:center;justify-content:center;font-size:7px;
   font-weight:800;color:#fff;font-family:var(--dis)}
-.org-nm{font-size:11px;color:rgba(255,255,255,.55);font-weight:500}
+.org-nm{font-size:11px;color:#1D7A45;;font-weight:500}
 
 /* ══════════════════════════════════════════
    BOTTOM TAB BAR — mobile only
@@ -268,7 +268,7 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
 .hero-greet{font-size:11px;color:rgba(255,255,255,.35);margin-bottom:3px}
 .hero-title{font-family:var(--dis);font-size:19px;font-weight:800;color:#fff;
   margin-bottom:6px;line-height:1.2}
-.hero-sub{font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;max-width:520px}
+.hero-sub{font-size:12px;color:#1D7A45;;line-height:1.6;max-width:520px}
 .hero-acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 .hb{min-height:40px;padding:8px 14px;border-radius:var(--r);font-size:12px;
   font-weight:600;cursor:pointer;border:none;transition:all .15s;
@@ -310,10 +310,10 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
 .cd-panel{background:var(--nav);border-radius:var(--r3);padding:20px;
   text-align:center;margin-bottom:14px}
 .cd-l{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;
-  text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px}
+  text-transform:uppercase;color:#5C8C5C;;margin-bottom:8px}
 .cd-n{font-family:var(--dis);font-size:48px;font-weight:800;color:#7dd8a0;
   line-height:1;letter-spacing:-.03em}
-.cd-u{font-size:12px;color:rgba(255,255,255,.3);margin-top:4px}
+.cd-u{font-size:12px;color:#5C8C5C;;margin-top:4px}
 .cd-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:12px;overflow:hidden}
 .cd-fill{height:100%;background:var(--g);border-radius:2px}
 .cd-t{font-size:10px;color:rgba(255,255,255,.25);margin-top:8px}
@@ -1072,7 +1072,7 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
       <!-- Audit log -->
       <div class="sh"><div class="sl">Audit log</div><div class="tip"><div class="tip-i" onclick="toggleTip(this)">?</div><div class="tip-box"><span class="tl">What is this?</span>Every query logged: when, what you asked, which sources searched, which document cited. <strong>You always know exactly what your AI used to answer.</strong></div></div></div>
       <div class="card">
-        <div id="auditLog"><div style="padding:14px;text-align:center;color:var(--t4);font-size:12px">No queries yet</div></div>
+        <div id="auditLog"><div style="padding:14px;text-align:center;color:var(--t2);font-size:12px">No queries yet</div></div>
       </div>
     </div>
 
@@ -1086,13 +1086,13 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
       <!-- Query history -->
       <div class="sh"><div class="sl">Recent queries</div></div>
       <div class="card">
-        <div id="qHist"><div style="padding:14px;text-align:center;color:var(--t4);font-size:12px">No queries yet</div></div>
+        <div id="qHist"><div style="padding:14px;text-align:center;color:var(--t2);font-size:12px">No queries yet</div></div>
       </div>
 
       <!-- Safety model -->
-      <div style="margin-top:14px;background:var(--nav);border-radius:var(--r2);padding:16px">
-        <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:9px">Safety model</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.85;display:flex;flex-direction:column;gap:5px">
+      <div style="margin-top:14px;background:#0a1a0f;border-radius:var(--r2);padding:16px">
+        <div style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7dd8a0;margin-bottom:9px">Safety model</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.85;display:flex;flex-direction:column;gap:5px">
           <div><span style="color:var(--g)">✓</span> Local-first storage — AI requests use configured model provider</div>
           <div><span style="color:var(--g)">✓</span> Every answer cites its source document</div>
           <div><span style="color:var(--g)">✓</span> Audit log for every query</div>
@@ -1268,9 +1268,9 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
           <button class="btn btn-g btn-sm" style="margin-top:8px" onclick="copyCmd('cp ~/Downloads/369-mission-vault-mobile.html ~/deassists-workspace/369-brain/dashboard/index.html')">📋 Copy deploy command</button>
         </div>
       </div>
-      <div style="background:var(--nav);border-radius:var(--r2);padding:16px">
+      <div style="background:#0a1a0f;border-radius:var(--r2);padding:16px">
         <div style="font-family:var(--dis);font-size:16px;font-weight:800;color:#fff;margin-bottom:10px">This is the platform.</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.85;display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.85;display:flex;flex-direction:column;gap:6px">
           <div><span style="color:var(--g)">✓</span> Connect their own documents</div>
           <div><span style="color:var(--g)">✓</span> Ask questions in plain English</div>
           <div><span style="color:var(--g)">✓</span> AI builds features while they sleep</div>
@@ -1702,8 +1702,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(ri)ri.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();askVault();}});
 });
 
-function renderAudit(){const el=document.getElementById('auditLog');if(!el)return;el.innerHTML=auditLog.slice(0,5).map(a=>`<div class="audit-item"><div class="audit-q">${a.q}</div><div class="audit-m">${a.time} · ${a.srcs}</div></div>`).join('')||'<div style="padding:14px;text-align:center;color:var(--t4);font-size:12px">No queries yet</div>';}
-function renderQHist(){const el=document.getElementById('qHist');if(!el)return;el.innerHTML=qHistory.slice(0,5).map(h=>`<div style="padding:9px 14px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.q}</span><span style="font-family:var(--mono);font-size:10px;color:var(--t4);flex-shrink:0;margin-left:8px">${h.time}</span></div>`).join('')||'<div style="padding:14px;text-align:center;color:var(--t4);font-size:12px">No queries yet</div>';}
+function renderAudit(){const el=document.getElementById('auditLog');if(!el)return;el.innerHTML=auditLog.slice(0,5).map(a=>`<div class="audit-item"><div class="audit-q">${a.q}</div><div class="audit-m">${a.time} · ${a.srcs}</div></div>`).join('')||'<div style="padding:14px;text-align:center;color:var(--t2);font-size:12px">No queries yet</div>';}
+function renderQHist(){const el=document.getElementById('qHist');if(!el)return;el.innerHTML=qHistory.slice(0,5).map(h=>`<div style="padding:9px 14px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.q}</span><span style="font-family:var(--mono);font-size:10px;color:var(--t4);flex-shrink:0;margin-left:8px">${h.time}</span></div>`).join('')||'<div style="padding:14px;text-align:center;color:var(--t2);font-size:12px">No queries yet</div>';}
 
 const actPrompts={
   draft_email:`Write a professional email based on:\nQuestion: "${()=>lastQuestion}"\nAnswer: "${()=>lastAnswer}"\nSubject line + body. Professional but friendly.`,
