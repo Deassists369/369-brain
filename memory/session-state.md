@@ -49,9 +49,24 @@ LAST UPDATED: 5 May 2026 (late) — Item 1 (Approval Signal Bridge) shipped: har
 - All tests scope cleanup by unique tags (`Date.now()`-based) and include defensive payload-based deletes
 - **Operating note for cross-agent test**: production guardian PM2 polls eagle-harness.jsonl every 30 seconds. The cross-agent test writes to that JSONL file as part of exercising the eagle path. To avoid the cross-process race (B-007), `pm2 stop guardian` before running the regression and `pm2 restart guardian` after. The test's defensive cleanup catches DB-level leaks but cannot undo the dashboard-state side effects (latest.json, daily .md) of an actual playwright run that production guardian might trigger.
 
+### Item 5 status
+
+- **Item 5 — Mode 3 Resume** → ✅ **DONE**
+- Step 5A — `last_completed_stage` / `last_completed_stage_name` / `last_completed_at` written into `runMode3Stage`'s success-meta block; new `resumeRun(feature)` function with 4 validation gates (no prior run / not resumable / no stage plan / all done); `runMode3Stage` signature relaxed to `(runId, startStageIndex = null)` with sensible fallback; `resumeRun` calls `module.exports.runMode3Stage(...)` so tests can monkey-patch
+- Step 5B — `resume <feature>` stdin command added to `parseCommand` + switch (fire-and-forget); new resume branch in `processSignalFile` between approve and unknown (priority: not approved → approved → resume → unknown); banner help text updated; `HARNESS_WORKER_TEST_MODE=1` exposes `processSignalFile` / `parseCommand` / `APPROVALS_DIR` / `PROCESSED_DIR` / `_resetProcessedSignals`
+- Step 5C — `recoverOrphanedRuns()` added to eagle-harness; called once on worker boot between banner and `pollOpenTickets`; marks any `executing` run as `failed` with `recoverable=true|false` flag, sets `orphaned_at`, force-clears `awaiting`, emits `orphan-detected` phase episode + `eagle.run.failed` via dispatcher
+- Step 5D — Cross-agent crash-resume integration test 7/7 PASS proving the full chain: pre-crash → orphan detected → resume signal → bridge dispatches → state flips → episodes auditable in seq order
+- Item 5 commit: **`<HASH-PLACEHOLDER>`** (this commit)
+
+### Test infrastructure (after Item 5)
+
+- 11 test suites in `memory/`: router, event-bus, integration, eagle-wiring, guardian-wiring, si-wiring, cross-agent-integration, resume-wiring, resume-dispatch, orphan-recovery, crash-resume-integration
+- Full regression: 5 iterations × 11 suites = **55 test runs per cycle**, all green
+- Operating note still applies: `pm2 stop guardian` before regression to avoid the cross-process JSONL race documented in B-007.
+
 ### Next task
 
-- **Item 5 — Mode 3 Resume** — resume an EAGLE Mode 3 stage from where a previous run failed (e.g., post-apply-guard violation, headless claude crash, network blip). Today the harness rejects/fails the run and Shon manually re-tickets. Resume should let the worker pick up after operator approval, replay the patch context, and continue the stage loop.
+- **Item 7 — RAG Trace** — make every Claude API / agent invocation observable: capture prompts, retrieved context, model response, token counts, and latency into the brain. Wire through MemoryRouter so Self-Improvement can analyze "what context produced what answer" patterns over time.
 
 
 

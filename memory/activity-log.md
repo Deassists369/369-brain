@@ -2150,4 +2150,48 @@ When running `for i in 1..5; node memory/test-X.js`, **stop guardian PM2 first**
 - **#B-007** — design a cross-process bus delivery mechanism (Guardian replay-poller or process-level singleton). Schedule when Guardian needs to react faster than 30s.
 - **Item 5 — Mode 3 Resume** — pick up an EAGLE Mode 3 stage after operator approval following a failed run. Today rejects/fails are terminal.
 
+---
+
+## 5 May 2026 (deep session continued) — Item 5: Mode 3 Resume
+
+**Branch:** main (369-brain)
+
+### What was done
+
+Rejected/failed EAGLE runs can now be resumed from the next stage after the last successfully completed one — no more re-ticketing from scratch. Worker boot detects orphans (status='executing' with no live process) and flags them for resume.
+
+- **Step 5A** — `runMode3Stage`'s success-meta block now writes `last_completed_stage` (0-indexed array index of the just-finished stage), `last_completed_stage_name`, and `last_completed_at`. The signature was relaxed to `(runId, startStageIndex = null)` with a fallback that derives `startStageIndex = current_stage_index + 1` when not provided. New `resumeRun(feature)` function: looks up the most recent run for the feature, validates resumable (`failed` / `rejected` / `executing`), validates a stage plan exists, validates not-all-done, then flips status to `executing` with `resumed_at` / `resumed_from_stage`, logs a `resume` phase episode (which fires `eagle.phase.complete` via the Step 4A dispatcher), and re-enters `module.exports.runMode3Stage(runId, lastStage + 1)`. The `module.exports` indirection lets tests monkey-patch without spinning up real headless Claude.
+- **Step 5B** — `resume <feature>` stdin command added to the worker's command parser and switch (fire-and-forget — `runMode3Stage` runs synchronous `execSync('claude -p')` for 5+ min per stage; awaiting it would block the stdin loop). The bridge's `processSignalFile` got a third match arm for `resume <feature>` with priority order: not approved → approved → resume → unknown. The banner now lists `resume <feature>` in the help text. `HARNESS_WORKER_TEST_MODE=1` opens a small testing seam (`processSignalFile`, `parseCommand`, `APPROVALS_DIR`, `PROCESSED_DIR`, `_resetProcessedSignals`); production exports stay `[]`.
+- **Step 5C** — `recoverOrphanedRuns()` runs once per worker boot between the banner and `pollOpenTickets`. Any run still `status='executing'` is marked `failed` with `error='worker-crashed-mid-stage'`, `meta.orphaned_at` set to now, `meta.recoverable` flagged based on whether at least one stage finished, `meta.awaiting` force-cleared, and `completed_at` set. An `orphan-detected` phase episode is emitted alongside the dispatcher's automatic `eagle.run.failed` bus event. Production boot log now reads `[worker] no orphaned runs on boot` (idle case) or a numbered listing with `✅ recoverable` / `⚠️ NOT recoverable` annotations and a "→ To resume:" hint per orphan.
+- **Step 5D** — Crash-resume integration test 7/7 PASS proving the full chain: pre-crash state at stage 1 of 5 → orphan detection flips status to failed (preserving `last_completed_stage`) → operator resume signal → bridge dispatches → resumeRun invokes runMode3Stage at stage 2 → state flips back to executing. T6 verifies the episode trace in seq order: 1× started, 3× executing, 1× failed, 2× phase.complete (orphan-detected + resume) — final executing arrives **after** failed in seq order, proving the resume-after-recovery transition.
+
+### Bugs caught and resolved this session
+
+None new. B-007 (in-process bus subscriber) and B-008 (guardian `reason` ReferenceError) were both surfaced during Item 4; B-008 was fixed inline; B-007 remains documented and deferred.
+
+### Verification
+
+- 11 test suites × 5 runs = **55 test runs per regression cycle**, all green
+- Cleanup invariant holds: `episodes=0, event_log=0, cursors=0, working_memory=0` after every cycle (with guardian stopped per B-007 operating note)
+- Production exports unchanged: `harness/eagle/eagle-harness.js` adds 2 (`resumeRun`, `recoverOrphanedRuns`); `harness-worker.js` production exports stay `[]`; logger.js production exports unchanged
+
+### Files touched
+
+| File | Change |
+|------|--------|
+| `harness/eagle/eagle-harness.js` | +115 lines net — `last_completed_stage` writes, `resumeRun(feature)`, `recoverOrphanedRuns()`, `runMode3Stage(runId, startStageIndex=null)` signature relaxation |
+| `harness-worker.js` | +50 lines net — `resume <feature>` stdin command + bridge dispatch (fire-and-forget), boot-time orphan check, banner help update, test-mode export gate |
+| `memory/test-resume-wiring.js` | NEW (~165 lines) — 6-test smoke for resumeRun (T1-T6) |
+| `memory/test-resume-dispatch.js` | NEW (~190 lines) — 5-test smoke for stdin/bridge resume routing (T1-T5) |
+| `memory/test-orphan-recovery.js` | NEW (~190 lines) — 6-test smoke for recoverOrphanedRuns (T1-T6) |
+| `memory/test-crash-resume-integration.js` | NEW (~225 lines) — 7-test integration covering the full crash → orphan → resume → executing flow |
+| `memory/session-state.md` | Item 5 status block, next task → Item 7 |
+| `memory/activity-log.md` | This entry |
+
+### Carry-forward
+
+- **B-007** still open — Guardian's bus subscriber only fires same-process. Mitigated by `pm2 stop guardian` before regression.
+- **Item 7 — RAG Trace** — capture prompt / context / response / latency for every Claude invocation, wire through MemoryRouter for Self-Improvement to analyze.
+- **Multi-process orphan safety** — current design marks any `executing` run as failed on boot. If the worker is restarted while a stage is genuinely in flight, the in-flight headless Claude could still complete and write to a run record the new worker has just marked failed. Acceptable today (workers don't restart often during a stage), but a per-run PID lockfile would let recovery skip orphans whose owning process is still alive.
+
 

@@ -372,7 +372,7 @@ function buildStagePrompt(ticketName, ticketBody, mode2SpecText, stage) {
 //   4. `git apply --check` then `git apply`
 //   5. Post-apply guard: `git status --porcelain` must contain ONLY allowed paths
 // Returns { ok, stage, patchPath } or throws on failure (logs + halts run).
-async function runMode3Stage(runId, stageIndex) {
+async function runMode3Stage(runId, startStageIndex = null) {
   const run = logger.getRun(HARNESS_NAME, runId);
   if (!run) throw new Error(`Run not found: ${runId}`);
   const ticketName = run.feature;
@@ -380,6 +380,17 @@ async function runMode3Stage(runId, stageIndex) {
   if (!stages) {
     throw new Error(`No Mode 3 stage registry entry for ticket "${ticketName}". Add an entry to MODE3_STAGES.`);
   }
+  // Step 5A — if startStageIndex provided, jump to that stage. Otherwise fall
+  // back to (current_stage_index + 1), which is "the next stage after the
+  // last successfully completed one". Existing callers (approveMode2 with 0,
+  // approveStage with currentIdx+1, resumeRun with lastStage+1) all pass an
+  // explicit value so the fallback only triggers if the function is called
+  // without arguments — which doesn't happen in production today.
+  const stageIndex = startStageIndex !== null
+    ? startStageIndex
+    : ((run.meta && typeof run.meta.current_stage_index === 'number')
+        ? run.meta.current_stage_index + 1
+        : 0);
   const stage = stages[stageIndex];
   if (!stage) throw new Error(`Stage index out of range: ${stageIndex} of ${stages.length}`);
 
@@ -505,6 +516,11 @@ async function runMode3Stage(runId, stageIndex) {
     last_patch_path: patchSavePath,
     last_stage_repo: stage.repo,
     last_stage_commit_msg: stage.commit_msg,
+    // Step 5A — durable stage progress, used by resumeRun to skip completed stages.
+    // 0-indexed array index of the most recent stage that finished cleanly.
+    last_completed_stage: stageIndex,
+    last_completed_stage_name: stage.name,
+    last_completed_at: new Date().toISOString(),
   };
   logger.updateRun(HARNESS_NAME, runId, { status: 'awaiting-approval', meta });
   recordPhase(runId, phaseName, 'complete', `applied ${validation.paths.length} path(s); commit msg: ${stage.commit_msg}`);
@@ -647,6 +663,122 @@ function reject(runId, gate /* 'mode1-review' | 'mode2-approval' */) {
   return { runId, status: 'rejected', gate };
 }
 
+/**
+ * Resume an EAGLE run paused mid-stage by failure or rejection.
+ * Looks up the most recent run for the feature, validates it's in a
+ * resumable state, advances meta, logs a "resume" phase episode (which
+ * fires eagle.phase.complete via the Step 4A dispatcher), then re-enters
+ * runMode3Stage at the next-after-last-completed stage index.
+ *
+ * Indexing: meta.last_completed_stage is the 0-indexed array index of
+ * the stage that completed last. Default -1 means no stages have run.
+ * Next stage to execute = lastStage + 1. All-done sentinel:
+ *   lastStage + 1 >= totalStages.
+ *
+ * runMode3Stage is invoked via `module.exports.runMode3Stage(...)` so
+ * tests can monkey-patch it without spinning up headless Claude.
+ */
+async function resumeRun(feature) {
+  const runs = logger.listRuns(HARNESS_NAME).filter((r) => r.feature === feature);
+  if (runs.length === 0) {
+    throw new Error(`No prior run for feature ${feature}`);
+  }
+  const latest = runs[runs.length - 1];
+
+  const resumableStatuses = ['failed', 'rejected', 'executing'];
+  if (!resumableStatuses.includes(latest.status)) {
+    throw new Error(`Cannot resume ${feature}: status=${latest.status}`);
+  }
+
+  const lastStage = (latest.meta && typeof latest.meta.last_completed_stage === 'number')
+    ? latest.meta.last_completed_stage
+    : -1;
+  const totalStages = (latest.meta && latest.meta.total_stages) || 0;
+
+  if (totalStages === 0) {
+    throw new Error(`Cannot resume ${feature}: no stage plan in run record`);
+  }
+  if (lastStage + 1 >= totalStages) {
+    throw new Error(`Cannot resume ${feature}: all stages already complete`);
+  }
+
+  logger.updateRun(HARNESS_NAME, latest.run_id, {
+    status: 'executing',
+    meta: {
+      ...(latest.meta || {}),
+      resumed_at: new Date().toISOString(),
+      resumed_from_stage: lastStage,
+      awaiting: null,
+    },
+  });
+
+  logger.logPhase(HARNESS_NAME, latest.run_id, {
+    phase: 'resume',
+    status: 'complete',
+    detail: `Resumed at stage ${lastStage + 1} of ${totalStages}`,
+  });
+
+  return await module.exports.runMode3Stage(latest.run_id, lastStage + 1);
+}
+
+/**
+ * On worker boot, scan eagle runs for orphans (status='executing' but no
+ * process is actually running them — proven by the fact that we just booted).
+ * Mark them 'failed' with `error='worker-crashed-mid-stage'` and a
+ * `recoverable` flag so Mission Vault / the operator knows whether resume
+ * is viable.
+ *
+ * recoverable = true  → at least one stage completed; resume can pick up
+ *                       at lastStage + 1.
+ * recoverable = false → no stage completed yet (lastStage = -1); the run
+ *                       is still marked failed but the operator should
+ *                       re-ticket from scratch instead of resuming.
+ *
+ * @returns {Array<{run_id:string, feature:string, last_completed_stage:number,
+ *                  total_stages:number, recoverable:boolean}>}
+ */
+function recoverOrphanedRuns() {
+  const allRuns = logger.listRuns(HARNESS_NAME);
+  const orphans = allRuns.filter((r) => r.status === 'executing');
+
+  const recovered = [];
+  for (const run of orphans) {
+    const lastStage = (run.meta && typeof run.meta.last_completed_stage === 'number')
+      ? run.meta.last_completed_stage
+      : -1;
+    const totalStages = (run.meta && run.meta.total_stages) || 0;
+    const recoverable = lastStage >= 0 && (lastStage + 1) < totalStages;
+
+    logger.updateRun(HARNESS_NAME, run.run_id, {
+      status: 'failed',
+      error: 'worker-crashed-mid-stage',
+      completed_at: new Date().toISOString(),
+      meta: {
+        ...(run.meta || {}),
+        orphaned_at: new Date().toISOString(),
+        recoverable,
+        awaiting: null,
+      },
+    });
+
+    logger.logPhase(HARNESS_NAME, run.run_id, {
+      phase: 'orphan-detected',
+      status: 'complete',
+      detail: `Worker boot detected orphaned executing run; last_completed_stage=${lastStage}, total_stages=${totalStages}`,
+    });
+
+    recovered.push({
+      run_id: run.run_id,
+      feature: run.feature,
+      last_completed_stage: lastStage,
+      total_stages: totalStages,
+      recoverable,
+    });
+  }
+
+  return recovered;
+}
+
 // Find the most recent run for a given ticket that is waiting on the named gate.
 function findWaitingRun(ticketName, gate) {
   const runs = logger.listRuns(HARNESS_NAME, { status: 'awaiting-approval' });
@@ -667,4 +799,6 @@ module.exports = {
   findWaitingRun,
   runMode3Stage,
   runPostStageSequence,
+  resumeRun,
+  recoverOrphanedRuns,
 };

@@ -36,6 +36,7 @@ function banner() {
     '    approved mode1 <ticket>   — proceed from Mode 1 to Mode 2',
     '    approved <ticket>          — proceed from Mode 2 preview to Mode 3',
     '    not approved <ticket>      — reject the current waiting phase',
+    '    resume <feature>           — resume a failed/rejected run from last completed stage',
     '    status                     — show all active runs',
     '    quit                       — stop the worker',
     '═══════════════════════════════════════════════════════════════════',
@@ -141,6 +142,10 @@ async function processSignalFile(filename) {
     const content = fs.readFileSync(fullPath, 'utf8').trim();
     console.log(`[Bridge] signal received: ${filename} → "${content}"`);
 
+    // Priority: not-approved > approved > resume > unknown.
+    // (a) "not approved" must match before "approved" because the
+    // "approved" pattern is a strict-prefix and would also match a
+    // "not approved" line if checked first without the negation.
     if (/^not\s+approved/i.test(content)) {
       console.log(`[Bridge] dispatching reject for ${ticket}`);
       handleReject(ticket);
@@ -159,6 +164,17 @@ async function processSignalFile(filename) {
         console.log(`[Bridge] dispatching approveMode2 for ${ticket} (phase=${lastPhase || 'unknown'})`);
         await handleApprovedMode2(ticket);
       }
+    } else if (/^resume\s+/i.test(content)) {
+      // Fire-and-forget: resumeRun kicks off a real Mode 3 stage
+      // (5+ min headless Claude). Don't block the bridge / fs.watch.
+      const resumeMatch = content.match(/^resume\s+(.+)$/i);
+      const feature = resumeMatch ? resumeMatch[1].trim() : ticket;
+      console.log(`[Bridge] dispatching resume for ${feature}`);
+      eagle.resumeRun(feature).then(() => {
+        console.log(`[Bridge] resume dispatched for ${feature}`);
+      }).catch((err) => {
+        console.error(`[Bridge] resume failed for ${feature}: ${err && err.message ? err.message : err}`);
+      });
     } else {
       console.log(`[Bridge] unrecognized signal content for ${ticket}: "${content}" — archiving without dispatch`);
     }
@@ -219,11 +235,40 @@ function parseCommand(line) {
   const r = trimmed.match(/^not\s+approved\s+(.+)$/i);
   if (r) return { type: 'reject', ticket: r[1].trim() };
 
+  const res = trimmed.match(/^resume\s+(.+)$/i);
+  if (res) return { type: 'resume', feature: res[1].trim() };
+
   return { type: 'unknown', raw: trimmed };
 }
 
 async function main() {
   banner();
+
+  // Step 5C — orphan detection runs ONCE per boot, before the polling
+  // loop and bridge come online. Any run still status='executing' must
+  // belong to a previous worker process (we just booted; nothing in this
+  // process started those). Mark them failed and tell the operator
+  // whether resume is viable.
+  try {
+    const orphans = eagle.recoverOrphanedRuns();
+    if (orphans.length > 0) {
+      console.log('═══════════════════════════════════════════════');
+      console.log(`[worker] ${orphans.length} orphaned run${orphans.length === 1 ? '' : 's'} detected on boot:`);
+      for (const o of orphans) {
+        const tag = o.recoverable ? '✅ recoverable' : '⚠️  NOT recoverable (no completed stages)';
+        console.log(`  • ${o.feature}  last_completed_stage=${o.last_completed_stage} of ${o.total_stages}  ${tag}`);
+        if (o.recoverable) {
+          console.log(`    → To resume: write "resume ${o.feature}" to a signal file, or stdin: resume ${o.feature}`);
+        }
+      }
+      console.log('═══════════════════════════════════════════════');
+    } else {
+      console.log('[worker] no orphaned runs on boot');
+    }
+  } catch (e) {
+    console.error('[worker] orphan recovery failed:', e && e.message ? e.message : e);
+  }
+
   pollOpenTickets();
   const interval = setInterval(pollOpenTickets, POLL_INTERVAL_MS);
   startApprovalBridge();
@@ -251,9 +296,18 @@ async function main() {
       case 'reject':
         handleReject(cmd.ticket);
         break;
+      case 'resume':
+        // Fire-and-forget — see processSignalFile resume branch comment.
+        console.log(`[worker] resume command received: feature=${cmd.feature}`);
+        eagle.resumeRun(cmd.feature).then(() => {
+          console.log(`[worker] resume dispatched for ${cmd.feature}`);
+        }).catch((err) => {
+          console.error(`[worker] resume failed for ${cmd.feature}: ${err && err.message ? err.message : err}`);
+        });
+        break;
       case 'unknown':
         console.log(`[worker] unknown command: "${cmd.raw}"`);
-        console.log('         expected: approved mode1 <ticket> | approved <ticket> | not approved <ticket> | status | quit');
+        console.log('         expected: approved mode1 <ticket> | approved <ticket> | not approved <ticket> | resume <feature> | status | quit');
         break;
     }
   });
@@ -270,4 +324,16 @@ if (require.main === module) {
     console.error('[worker] fatal:', e);
     process.exit(1);
   });
+}
+
+// Test-mode hooks — ABSENT in production exports. Used by Step 5B's resume
+// dispatch test to drive processSignalFile directly without spinning up
+// the polling loop, fs.watch, or stdin readline. Daemon mode is unaffected
+// because this file is required only when not run directly.
+if (process.env.HARNESS_WORKER_TEST_MODE === '1') {
+  module.exports.processSignalFile = processSignalFile;
+  module.exports.parseCommand = parseCommand;
+  module.exports.APPROVALS_DIR = APPROVALS_DIR;
+  module.exports.PROCESSED_DIR = PROCESSED_DIR;
+  module.exports._resetProcessedSignals = () => processedSignals.clear();
 }
