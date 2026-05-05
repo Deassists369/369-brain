@@ -45,10 +45,10 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
 .tip{position:relative;display:inline-flex;align-items:center}
 .tip-i{width:18px;height:18px;border-radius:50%;background:var(--gx);border:1.5px solid var(--gxx);color:var(--g);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-family:var(--body);transition:all .15s;margin-left:5px;user-select:none;touch-action:manipulation}
 .tip-i:hover,.tip-i.open{background:var(--g);color:#fff;border-color:var(--g)}
-.tip-box{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:var(--nav);border:1px solid var(--nav2);border-radius:var(--r2);padding:13px 15px;width:260px;max-width:80vw;z-index:9999;box-shadow:var(--sh3);font-size:12px;color:var(--t2);line-height:1.65;font-family:var(--body)}
+.tip-box{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:var(--nav);border:1px solid var(--nav2);border-radius:var(--r2);padding:13px 15px;width:260px;max-width:80vw;z-index:9999;box-shadow:var(--sh3);font-size:12px;color:#1a2e1a;line-height:1.65;font-family:var(--body)}
 .tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--nav)}
 .tip-box .tl{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g);margin-bottom:6px;display:block}
-.tip-box strong{color:var(--g);font-weight:600}
+.tip-box strong{color:#1D7A45;font-weight:600}
 /* Desktop: hover */
 @media(hover:hover){.tip:hover .tip-box{display:block}}
 /* Mobile: tap toggle */
@@ -66,7 +66,7 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
   display:flex;align-items:center;justify-content:center;
   font-family:var(--dis);font-size:12px;font-weight:800;color:#fff}
 .brand-name{font-family:var(--dis);font-size:13px;font-weight:800;
-  color:#1D7A45;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+  color:#0a1a0f;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
 .brand-name em{color:var(--g);font-style:normal}
 .live-pill{display:flex;align-items:center;gap:4px;padding:2px 8px;
   border-radius:20px;background:rgba(29,122,69,.2);border:1px solid rgba(29,122,69,.4);
@@ -79,7 +79,7 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
 .desk-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
 .desk-tabs::-webkit-scrollbar{display:none}
 .dtab{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;
-  color:#1D7A45;background:transparent;border:none;cursor:pointer;
+  color:#0a1a0f;background:transparent;border:none;cursor:pointer;
   white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:5px}
 .dtab:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.06)}
 .dtab.on{color:#0a1a0f;font-weight:700;background:rgba(29,122,69,.25);border:1px solid rgba(29,122,69,.35)}
@@ -520,6 +520,7 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
     </div>
     <div class="desk-tabs">
       <button class="dtab on" onclick="sw(0)" id="t0"><span class="td" style="background:var(--g)"></span>Overview</button>
+      <a href="/brain-map" target="_blank" style="display:flex;align-items:center;gap:4px;padding:6px 10px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:#1D7A45;text-decoration:none;border:1px solid rgba(29,122,69,.3);border-radius:4px;margin-right:8px;text-transform:uppercase">🧠 Brain Map</a>
       <button class="dtab" onclick="sw(1)" id="t1"><span class="td" style="background:var(--blue)"></span>Build Intelligence</button>
       <button class="dtab" onclick="sw(2)" id="t2"><span class="td" style="background:var(--amber)"></span>Document Intelligence</button>
       <button class="dtab" onclick="sw(3)" id="t3"><span class="td" style="background:var(--teal)"></span>RAG Intelligence</button>

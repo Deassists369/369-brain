@@ -626,6 +626,12 @@ const server = http.createServer(async (req, res) => {
         comingSoon, timestamp:new Date().toISOString()
       });
     }
+    if (url==='/brain-map') {
+      const p=path.join(__dirname,'brain-map.html');
+      res.writeHead(200,{'Content-Type':'text/html'});
+      res.end(fs.readFileSync(p));
+      return;
+    }
     if (url.startsWith('/preview/')) return servePreview(url.replace('/preview/',''), res);
   }
   if (req.method==='POST') {

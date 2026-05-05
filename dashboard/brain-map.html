@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>369 Brain Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a1a0f;overflow:hidden;font-family:'Courier Prime',monospace}
+canvas{display:block}
+#ui{position:fixed;top:0;left:0;right:0;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;z-index:10;background:linear-gradient(#0a1a0f,transparent)}
+.brand{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#22c55e;letter-spacing:.05em}
+.brand span{color:#ffffff;opacity:.4;font-size:13px;margin-left:8px;font-family:'Courier Prime',monospace;font-weight:400}
+.back{font-size:11px;letter-spacing:.15em;color:rgba(255,255,255,.35);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.back:hover{color:#22c55e}
+#tooltip{position:fixed;background:#0f2318;border:1px solid rgba(34,197,94,.3);border-radius:6px;padding:10px 14px;font-size:11px;color:#e8f4ed;pointer-events:none;display:none;z-index:20;max-width:220px}
+#tooltip .tt-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:#22c55e;margin-bottom:4px}
+#tooltip .tt-sub{color:rgba(255,255,255,.5);font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+#tooltip .tt-stat{color:#e8f4ed;font-size:11px}
+#legend{position:fixed;bottom:20px;left:20px;display:flex;flex-direction:column;gap:6px;z-index:10}
+.leg{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.4);text-transform:uppercase}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+#total{position:fixed;bottom:20px;right:20px;text-align:right}
+.tot-n{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:#22c55e;line-height:1}
+.tot-l{font-size:8px;letter-spacing:.2em;color:rgba(255,255,255,.3);text-transform:uppercase}
+</style>
+</head>
+<body>
+<div id="ui">
+  <div class="brand">369 BRAIN MAP <span>360° Business Route</span></div>
+  <a class="back" href="/">← Mission Vault</a>
+</div>
+
+<canvas id="c"></canvas>
+
+<div id="tooltip">
+  <div class="tt-title" id="tt-title"></div>
+  <div class="tt-sub" id="tt-sub"></div>
+  <div class="tt-stat" id="tt-stat"></div>
+</div>
+
+<div id="legend">
+  <div class="leg"><div class="leg-dot" style="background:#1D7A45"></div>RAG Memory</div>
+  <div class="leg"><div class="leg-dot" style="background:#2563eb"></div>Business Ops</div>
+  <div class="leg"><div class="leg-dot" style="background:#0d9488"></div>Personal</div>
+  <div class="leg"><div class="leg-dot" style="background:#7c3aed"></div>AI Workers</div>
+  <div class="leg"><div class="leg-dot" style="background:#d97706"></div>BCBT External</div>
+  <div class="leg"><div class="leg-dot" style="background:#dc2626"></div>Sales & CRM</div>
+</div>
+
+<div id="total">
+  <div class="tot-n" id="tot-chunks">—</div>
+  <div class="tot-l">chunks in brain</div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W,H,cx,cy;
+let hoveredNode = null;
+let animFrame = 0;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  cx = W/2; cy = H/2;
+}
+resize();
+window.addEventListener('resize',resize);
+
+// ── FULL BUSINESS BRAIN ──────────────────────────────────────
+const NODES = [
+  // RING 1 — RAG MEMORY (inner, 6 nodes)
+  { id:'brain369',  ring:1, label:'369 Brain',    sub:'Memory · Decisions · SOPs',   icon:'🧠', cat:'rag',      chunks:3312, live:true  },
+  { id:'mongodb',   ring:1, label:'MongoDB',      sub:'Students · Applications',     icon:'🗄', cat:'rag',      chunks:6066, live:true  },
+  { id:'portal-db', ring:1, label:'Portal Code',  sub:'ERP · 78 files · 1359 chunks',icon:'💻', cat:'rag',      chunks:1359, live:true  },
+  { id:'obsidian',  ring:1, label:'Obsidian',     sub:'Personal Notes · 22 files',   icon:'📝', cat:'rag',      chunks:151,  live:true  },
+  { id:'pdf-vault', ring:1, label:'PDF Vault',    sub:'Uploaded Documents',          icon:'📄', cat:'rag',      chunks:0,    soon:true  },
+  { id:'gmail-rag', ring:1, label:'Gmail RAG',    sub:'Emails indexed',              icon:'📧', cat:'rag',      chunks:0,    connected:false },
+
+  // RING 2 — BUSINESS OPS (middle, 8 nodes)
+  { id:'portal',    ring:2, label:'DeAssists Portal', sub:'Student Applications · CRM',  icon:'🌐', cat:'biz', live:true  },
+  { id:'crm',       ring:2, label:'CRM / Sales',      sub:'Lead Flow · Conversion',      icon:'📊', cat:'biz', soon:true  },
+  { id:'call-center',ring:2,label:'Call Center',      sub:'Lead Calls · WhatsApp',       icon:'📞', cat:'biz', soon:true  },
+  { id:'finance',   ring:2, label:'Finance',          sub:'Revenue · Payments',          icon:'💶', cat:'biz', soon:true  },
+  { id:'dropbox',   ring:2, label:'Dropbox',          sub:'CORTEX-369 · Staff Files',    icon:'📦', cat:'biz', blocked:true },
+  { id:'staff-ops', ring:2, label:'Staff Ops',        sub:'Team · Roles · Tasks',        icon:'👥', cat:'biz', soon:true  },
+  { id:'mobile-app',ring:2, label:'Mobile App',       sub:'Student App · In Dev',        icon:'📱', cat:'biz', soon:true  },
+  { id:'website',   ring:2, label:'Website',          sub:'deassists.com · Live',        icon:'🖥', cat:'biz', live:true  },
+
+  // RING 2 — PERSONAL (4 nodes, personal side)
+  { id:'gmail',     ring:2, label:'Gmail',            sub:'info@deassists.com',          icon:'📧', cat:'personal', connected:true  },
+  { id:'whatsapp',  ring:2, label:'WhatsApp',         sub:'Business · Personal',         icon:'💬', cat:'personal', soon:true },
+  { id:'calendar',  ring:2, label:'Calendar',         sub:'Google Calendar',             icon:'📅', cat:'personal', soon:true },
+  { id:'gdrive',    ring:2, label:'Google Drive',     sub:'CEO Documents',               icon:'📁', cat:'personal', soon:true },
+
+  // RING 3 — AI WORKERS (outer)
+  { id:'eagle',     ring:3, label:'EAGLE Builder',   sub:'Builds Software · Gate 2',    icon:'🏗', cat:'ai', live:true  },
+  { id:'guardian',  ring:3, label:'Guardian',        sub:'Tests All · 11/11 pass',      icon:'🛡', cat:'ai', live:true  },
+  { id:'learner',   ring:3, label:'Self-Improve',    sub:'5 patterns · 6 fixes',        icon:'🧬', cat:'ai', live:true  },
+  { id:'hermes-r',  ring:3, label:'Hermes Router',   sub:'Routes Tasks · Planned',      icon:'🪽', cat:'ai', soon:true  },
+  { id:'claude',    ring:3, label:'Claude AI',        sub:'Primary Intelligence',        icon:'🤖', cat:'ai', live:true  },
+  { id:'ollama',    ring:3, label:'Ollama Local',    sub:'Private AI · Coming',         icon:'🦙', cat:'ai', soon:true  },
+
+  // RING 3 — BCBT EXTERNAL (outer, separate cluster)
+  { id:'bcbt-core', ring:3, label:'BCBT',            sub:'External Org · We Manage',    icon:'🏢', cat:'bcbt', connected:true },
+  { id:'bcbt-docs', ring:3, label:'BCBT Docs',       sub:'SOPs · Fee Sheets',           icon:'📄', cat:'bcbt', soon:true },
+  { id:'bcbt-students',ring:3,label:'Students',      sub:'Enrollments · Visa',          icon:'🎓', cat:'bcbt', soon:true },
+  { id:'bcbt-finance',ring:3,label:'Commissions',    sub:'Private · Local Only',        icon:'💰', cat:'bcbt', private:true },
+
+  // RING 3 — SALES & COMMS
+  { id:'telegram',  ring:3, label:'Telegram Bot',   sub:'Remote Control · Phase 3',    icon:'📡', cat:'sales', soon:true },
+  { id:'leads',     ring:3, label:'Lead System',    sub:'Course Finder · Incoming',    icon:'🎯', cat:'sales', live:true  },
+  { id:'partners',  ring:3, label:'Partners',       sub:'Universities · Providers',    icon:'🤝', cat:'sales', soon:true  },
+  { id:'visa',      ring:3, label:'Visa & Blocked', sub:'Student Services',            icon:'✈️', cat:'sales', soon:true  },
+];
+
+const CAT_COLOR = {
+  rag:     '#1D7A45',
+  biz:     '#2563eb',
+  personal:'#0d9488',
+  ai:      '#7c3aed',
+  bcbt:    '#d97706',
+  sales:   '#dc2626',
+};
+
+const RING_R = { 1: 0.18, 2: 0.34, 3: 0.50 };
+
+// Assign 360° positions
+function layoutNodes(){
+  const byRing = {};
+  NODES.forEach(n=>{ (byRing[n.ring]=byRing[n.ring]||[]).push(n); });
+  Object.entries(byRing).forEach(([ring,nodes])=>{
+    const R = Math.min(W,H) * RING_R[ring];
+    nodes.forEach((n,i)=>{
+      const a = (i/nodes.length)*Math.PI*2 - Math.PI/2;
+      n.x = cx + Math.cos(a)*R;
+      n.y = cy + Math.sin(a)*R;
+      n.angle = a;
+      n.r = ring===1?20:ring===2?16:14;
+      if(n.live||n.connected) n.r += 3;
+    });
+  });
+}
+
+function isConnected(n){
+  return n.live || n.connected || (n.chunks&&n.chunks>0);
+}
+
+function drawFrame(){
+  animFrame++;
+  const t = animFrame/60;
+  ctx.clearRect(0,0,W,H);
+
+  // Background radial gradient
+  const bg = ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*0.7);
+  bg.addColorStop(0,'#0f2318');
+  bg.addColorStop(1,'#060f09');
+  ctx.fillStyle=bg;
+  ctx.fillRect(0,0,W,H);
+
+  // Ring guide circles
+  [1,2,3].forEach(r=>{
+    const R = Math.min(W,H)*RING_R[r];
+    ctx.beginPath();
+    ctx.arc(cx,cy,R,0,Math.PI*2);
+    ctx.strokeStyle='rgba(29,122,69,.06)';
+    ctx.lineWidth=1;
+    ctx.setLineDash([3,6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // ── CONNECTION LINES ─────────────────────
+  NODES.forEach(n=>{
+    const conn = isConnected(n);
+    // Line to center
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(n.x,n.y);
+    ctx.strokeStyle = conn ? CAT_COLOR[n.cat]+'30' : 'rgba(255,255,255,.04)';
+    ctx.lineWidth = conn ? 1 : 0.5;
+    ctx.setLineDash(conn?[]:[4,6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Animated pulse dot on connected lines
+    if(conn){
+      const pt = (t*0.3 + NODES.indexOf(n)*0.07)%1;
+      const px = cx+(n.x-cx)*pt;
+      const py = cy+(n.y-cy)*pt;
+      ctx.beginPath();
+      ctx.arc(px,py,2.5,0,Math.PI*2);
+      ctx.fillStyle = CAT_COLOR[n.cat]+'cc';
+      ctx.fill();
+    }
+  });
+
+  // ── NODES ────────────────────────────────
+  NODES.forEach(n=>{
+    const conn = isConnected(n);
+    const isHov = hoveredNode===n;
+    const r = isHov ? n.r+4 : n.r;
+
+    // Glow for connected
+    if(conn){
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,r+6,0,Math.PI*2);
+      ctx.fillStyle = CAT_COLOR[n.cat]+'18';
+      ctx.fill();
+    }
+
+    // Node fill
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,r,0,Math.PI*2);
+    ctx.fillStyle = conn ? CAT_COLOR[n.cat]+'35' : 'rgba(255,255,255,.04)';
+    ctx.fill();
+    ctx.strokeStyle = conn ? CAT_COLOR[n.cat] : 'rgba(255,255,255,.12)';
+    ctx.lineWidth = isHov ? 2 : 1.5;
+    ctx.stroke();
+
+    // Private badge
+    if(n.private){
+      ctx.beginPath();
+      ctx.arc(n.x+r-3,n.y-r+3,4,0,Math.PI*2);
+      ctx.fillStyle='#ef4444';
+      ctx.fill();
+    }
+
+    // Icon
+    ctx.font = r>17?'13px serif':'10px serif';
+    ctx.textAlign='center';
+    ctx.fillText(n.icon,n.x,n.y+(r>17?5:4));
+
+    // Label — position away from center
+    const labelR = r+14;
+    const lx = n.x + Math.cos(n.angle)*labelR;
+    const ly = n.y + Math.sin(n.angle)*labelR;
+
+    ctx.fillStyle = conn ? '#e8e8e8' : 'rgba(255,255,255,.25)';
+    ctx.font = `${conn?'bold ':''}9px Courier Prime,monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(n.label, lx, ly);
+
+    if(n.chunks&&n.chunks>0){
+      ctx.fillStyle = CAT_COLOR[n.cat]+'aa';
+      ctx.font='7px Courier Prime,monospace';
+      ctx.fillText((n.chunks>999?(n.chunks/1000).toFixed(1)+'k':n.chunks)+' ch', lx, ly+10);
+    } else if(n.blocked){
+      ctx.fillStyle='#f59e0b88';
+      ctx.font='7px Courier Prime,monospace';
+      ctx.fillText('blocked',lx,ly+10);
+    } else if(n.soon){
+      ctx.fillStyle='rgba(255,255,255,.15)';
+      ctx.font='7px Courier Prime,monospace';
+      ctx.fillText('soon',lx,ly+10);
+    } else if(n.live){
+      ctx.fillStyle='#22c55e88';
+      ctx.font='7px Courier Prime,monospace';
+      ctx.fillText('● live',lx,ly+10);
+    }
+  });
+
+  // ── CENTER NODE ───────────────────────────
+  const pulse = Math.sin(t*2)*0.12+0.18;
+  const cR = Math.min(W,H)*0.085;
+
+  // Outer pulse rings
+  [1.6,1.3,1.1].forEach((m,i)=>{
+    ctx.beginPath();
+    ctx.arc(cx,cy,cR*m,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(34,197,94,${pulse/(i+1)})`;
+    ctx.lineWidth=6-i*1.5;
+    ctx.stroke();
+  });
+
+  // Center fill
+  const cgrad = ctx.createRadialGradient(cx,cy,0,cx,cy,cR);
+  cgrad.addColorStop(0,'#3aaa6a');
+  cgrad.addColorStop(0.6,'#1D7A45');
+  cgrad.addColorStop(1,'#0f4d28');
+  ctx.beginPath();
+  ctx.arc(cx,cy,cR,0,Math.PI*2);
+  ctx.fillStyle=cgrad;
+  ctx.fill();
+  ctx.strokeStyle='#22c55e';
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  // Center text
+  ctx.textAlign='center';
+  ctx.fillStyle='#ffffff';
+  ctx.font=`bold ${Math.round(cR*0.28)}px Barlow Condensed,sans-serif`;
+  ctx.fillText('SHON', cx, cy-cR*0.18);
+  ctx.font=`bold ${Math.round(cR*0.22)}px Barlow Condensed,sans-serif`;
+  ctx.fillStyle='rgba(255,255,255,.85)';
+  ctx.fillText('369 BRAIN', cx, cy+cR*0.08);
+  ctx.font=`${Math.round(cR*0.14)}px Courier Prime,monospace`;
+  ctx.fillStyle='rgba(255,255,255,.45)';
+  ctx.fillText('RAG · LIVE', cx, cy+cR*0.3);
+
+  requestAnimationFrame(drawFrame);
+}
+
+// ── TOOLTIP ──────────────────────────────────
+const tt = document.getElementById('tooltip');
+canvas.addEventListener('mousemove',e=>{
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX-rect.left;
+  const my = e.clientY-rect.top;
+  let found = null;
+  NODES.forEach(n=>{
+    const d = Math.hypot(mx-n.x,my-n.y);
+    if(d<n.r+8) found=n;
+  });
+  hoveredNode=found;
+  if(found){
+    document.getElementById('tt-title').textContent=found.label;
+    document.getElementById('tt-sub').textContent=found.sub;
+    const stat = found.chunks>0?`${found.chunks.toLocaleString()} chunks in RAG`
+      :found.live?'● Live and running'
+      :found.blocked?'⚠ Blocked — needs fix'
+      :found.private?'🔒 Private — local only'
+      :'○ Coming soon';
+    document.getElementById('tt-stat').textContent=stat;
+    tt.style.display='block';
+    tt.style.left=(e.clientX+16)+'px';
+    tt.style.top=(e.clientY-10)+'px';
+  } else {
+    tt.style.display='none';
+  }
+});
+canvas.addEventListener('mouseleave',()=>{ tt.style.display='none'; hoveredNode=null; });
+
+// ── LOAD REAL DATA ────────────────────────────
+fetch('/api/rag/status').then(r=>r.json()).then(d=>{
+  const src = d.sources||{};
+  const total = Object.values(src).reduce((a,s)=>a+(s.chunks||0),0);
+  document.getElementById('tot-chunks').textContent=total.toLocaleString();
+  const map={brain369:'brain',mongodb:'mongodb','portal-db':'portal','obsidian':'notes','pdf-vault':'pdf','gmail-rag':'gmail'};
+  NODES.forEach(n=>{
+    if(map[n.id]&&src[map[n.id]]){
+      n.chunks=src[map[n.id]].chunks||0;
+      if(n.chunks>0)n.live=true;
+    }
+  });
+}).catch(()=>{});
+
+layoutNodes();
+requestAnimationFrame(drawFrame);
+</script>
+</body>
+</html>
