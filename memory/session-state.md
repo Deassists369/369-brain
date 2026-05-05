@@ -33,7 +33,7 @@ LAST UPDATED: 5 May 2026 (late) — Item 1 (Approval Signal Bridge) shipped: har
 - Step 4B — Guardian wired in `guardian-bridge.js`: `_emitTestStart`/`_emitTestComplete` helpers, `subscribeToEagleBus()`, `runTests(trigger)` async signature, test-mode hooks; 6/6 PASS
 - Step 4C — Self-Improvement wired: `_isEagle` → `_harnessAgent` dispatcher in logger.js, `readEpisodesSince` in inputs.js, watermark cursor (`working_memory['self-improvement']['last_episode_seq']`), own-event filter; 7/7 PASS
 - Step 4D — Cross-agent integration test 7/7 PASS; 35 test runs per regression cycle (7 suites × 5 runs)
-- Item 4 commit: **`<HASH-PLACEHOLDER>`** (this commit)
+- Item 4 commit: **`0fe34d2`**
 
 ### Bug ledger (post Item 4)
 
