@@ -682,13 +682,196 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
         <div class="cd-bar"><div class="cd-fill" id="cdBar" style="width:0%"></div></div>
         <div class="cd-t">Full portal live · Sep 2026</div>
       </div>
-      <div class="card">
-        <div class="ch"><div class="ct">🚦 System health</div></div>
-        <div class="hr-row"><div class="light lg"></div><div><div class="hr-n">Portal build</div><div class="hr-d">No errors · clean</div></div></div>
-        <div class="hr-row"><div class="light lg"></div><div><div class="hr-n">AI Builder worker</div><div class="hr-d">Running · pid 61500 · polling every 5s</div></div></div>
-        <div class="hr-row"><div class="light la"></div><div><div class="hr-n">Latha review queue</div><div class="hr-d">Items waiting for her review</div></div></div>
-        <div class="hr-row"><div class="light ll"></div><div><div class="hr-n">Night tests</div><div class="hr-d">Guardian runs at 2am · setting up</div></div></div>
-        <div class="hr-row"><div class="light lt"></div><div><div class="hr-n">RAG Intelligence</div><div class="hr-d">2 sources connected</div></div></div>
+      <div style="margin-bottom:12px">
+
+        <!-- Story box -->
+        <div style="padding:11px 14px;background:var(--gx);border-radius:8px;margin-bottom:10px;border-left:3px solid var(--g)">
+          <div style="font-size:9px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.12em;font-family:var(--font-mono);margin-bottom:4px">Since you last checked</div>
+          <div id="worker-story" style="font-size:12px;color:var(--t2);line-height:1.55">Checking what your AI team did...</div>
+        </div>
+
+        <!-- Section header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.15em;font-family:var(--font-mono)">IT Workers · AI Team</div>
+          <div style="font-size:8px;color:var(--t3);font-family:var(--font-mono)" id="workers-updated"></div>
+        </div>
+
+        <!-- W-01 EAGLE Builder -->
+        <div onclick="showWorker('eagle')" style="cursor:pointer;padding:11px 12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;margin-bottom:6px;transition:border-color .15s" onmouseover="this.style.borderColor='#2563eb'" onmouseout="this.style.borderColor='var(--bd)'">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+            <div style="width:32px;height:32px;background:#eff6ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🏗</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:5px">
+                <span style="font-size:12px;font-weight:700;color:var(--t1)">EAGLE Builder</span>
+                <span style="font-size:9px;font-family:var(--font-mono);color:var(--t3);background:var(--card);border:1px solid var(--bd);padding:1px 5px;border-radius:4px">W-01</span>
+              </div>
+              <div style="font-size:10px;color:var(--t3);margin-top:1px">Builds and ships your software</div>
+            </div>
+            <div style="width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+            <div style="text-align:center;padding:5px 4px;background:var(--gx);border-radius:6px">
+              <div style="font-size:17px;font-weight:700;color:var(--g);font-family:var(--font-mono);line-height:1" id="w01-total">—</div>
+              <div style="font-size:8px;color:var(--t3);text-transform:uppercase;margin-top:2px">Tickets</div>
+            </div>
+            <div style="text-align:center;padding:5px 4px;background:var(--gx);border-radius:6px">
+              <div style="font-size:17px;font-weight:700;color:var(--g);font-family:var(--font-mono);line-height:1" id="w01-done">—</div>
+              <div style="font-size:8px;color:var(--t3);text-transform:uppercase;margin-top:2px">Done</div>
+            </div>
+            <div style="text-align:center;padding:5px 4px;background:#fef3c7;border-radius:6px">
+              <div style="font-size:17px;font-weight:700;color:#d97706;font-family:var(--font-mono);line-height:1" id="w01-approval">—</div>
+              <div style="font-size:8px;color:#d97706;text-transform:uppercase;margin-top:2px">Need You</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- W-02 Guardian -->
+        <div onclick="showWorker('guardian')" style="cursor:pointer;padding:11px 12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;margin-bottom:6px;transition:border-color .15s" onmouseover="this.style.borderColor='#dc2626'" onmouseout="this.style.borderColor='var(--bd)'">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+            <div style="width:32px;height:32px;background:#fef2f2;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🛡</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:5px">
+                <span style="font-size:12px;font-weight:700;color:var(--t1)">Guardian</span>
+                <span style="font-size:9px;font-family:var(--font-mono);color:var(--t3);background:var(--card);border:1px solid var(--bd);padding:1px 5px;border-radius:4px">W-02</span>
+              </div>
+              <div style="font-size:10px;color:var(--t3);margin-top:1px">Tests everything every night at 2am</div>
+            </div>
+            <div style="width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+            <div style="text-align:center;padding:5px 4px;background:var(--gx);border-radius:6px">
+              <div style="font-size:17px;font-weight:700;color:var(--g);font-family:var(--font-mono);line-height:1" id="w02-passed">—</div>
+              <div style="font-size:8px;color:var(--t3);text-transform:uppercase;margin-top:2px">Passed</div>
+            </div>
+            <div style="text-align:center;padding:5px 4px;background:#fef2f2;border-radius:6px">
+              <div style="font-size:17px;font-weight:700;color:#dc2626;font-family:var(--font-mono);line-height:1" id="w02-failed">—</div>
+              <div style="font-size:8px;color:#dc2626;text-transform:uppercase;margin-top:2px">Failed</div>
+            </div>
+            <div style="text-align:center;padding:5px 4px;background:var(--card);border:1px solid var(--bd);border-radius:6px">
+              <div style="font-size:11px;font-weight:700;color:var(--t2);font-family:var(--font-mono);line-height:1" id="w02-next">2am</div>
+              <div style="font-size:8px;color:var(--t3);text-transform:uppercase;margin-top:2px">Next Run</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- W-03 Self-Improvement -->
+        <div onclick="showWorker('learner')" style="cursor:pointer;padding:11px 12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;margin-bottom:6px;transition:border-color .15s" onmouseover="this.style.borderColor='#7c3aed'" onmouseout="this.style.borderColor='var(--bd)'">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+            <div style="width:32px;height:32px;background:#f5f3ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🧬</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:5px">
+                <span style="font-size:12px;font-weight:700;color:var(--t1)">Self-Improvement</span>
+                <span style="font-size:9px;font-family:var(--font-mono);color:var(--t3);background:var(--card);border:1px solid var(--bd);padding:1px 5px;border-radius:4px">W-03</span>
+              </div>
+              <div style="font-size:10px;color:var(--t3);margin-top:1px">Learns from history · makes everything smarter</div>
+            </div>
+            <div style="width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+            <div style="text-align:center;padding:5px 4px;background:#f5f3ff;border-radius:6px">
+              <div style="font-size:17px;font-weight:700;color:#7c3aed;font-family:var(--font-mono);line-height:1" id="w03-patterns">—</div>
+              <div style="font-size:8px;color:#7c3aed;text-transform:uppercase;margin-top:2px">Patterns</div>
+            </div>
+            <div style="text-align:center;padding:5px 4px;background:#f5f3ff;border-radius:6px">
+              <div style="font-size:17px;font-weight:700;color:#7c3aed;font-family:var(--font-mono);line-height:1" id="w03-fixes">—</div>
+              <div style="font-size:8px;color:#7c3aed;text-transform:uppercase;margin-top:2px">Fixes</div>
+            </div>
+            <div style="text-align:center;padding:5px 4px;background:var(--card);border:1px solid var(--bd);border-radius:6px">
+              <div style="font-size:11px;font-weight:700;color:var(--t2);font-family:var(--font-mono);line-height:1" id="w03-next">Weekly</div>
+              <div style="font-size:8px;color:var(--t3);text-transform:uppercase;margin-top:2px">Next Run</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- W-04 RAG Intelligence -->
+        <div onclick="showWorker('rag')" style="cursor:pointer;padding:11px 12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;margin-bottom:6px;transition:border-color .15s" onmouseover="this.style.borderColor='#0d9488'" onmouseout="this.style.borderColor='var(--bd)'">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+            <div style="width:32px;height:32px;background:#f0fdfa;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🔮</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:5px">
+                <span style="font-size:12px;font-weight:700;color:var(--t1)">RAG Intelligence</span>
+                <span style="font-size:9px;font-family:var(--font-mono);color:var(--t3);background:var(--card);border:1px solid var(--bd);padding:1px 5px;border-radius:4px">W-04</span>
+              </div>
+              <div style="font-size:10px;color:var(--t3);margin-top:1px">Your business memory · knows everything</div>
+            </div>
+            <div style="width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+            <div style="text-align:center;padding:5px 4px;background:#f0fdfa;border-radius:6px">
+              <div style="font-size:17px;font-weight:700;color:#0d9488;font-family:var(--font-mono);line-height:1" id="w04-chunks">—</div>
+              <div style="font-size:8px;color:#0d9488;text-transform:uppercase;margin-top:2px">Knowledge</div>
+            </div>
+            <div style="text-align:center;padding:5px 4px;background:#f0fdfa;border-radius:6px">
+              <div style="font-size:17px;font-weight:700;color:#0d9488;font-family:var(--font-mono);line-height:1" id="w04-sources">—</div>
+              <div style="font-size:8px;color:#0d9488;text-transform:uppercase;margin-top:2px">Sources</div>
+            </div>
+            <div style="text-align:center;padding:5px 4px;background:var(--card);border:1px solid var(--bd);border-radius:6px">
+              <div style="font-size:11px;font-weight:700;color:var(--t2);font-family:var(--font-mono);line-height:1">10 min</div>
+              <div style="font-size:8px;color:var(--t3);text-transform:uppercase;margin-top:2px">Refreshes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- W-05 Hermes Agent — planned -->
+        <div onclick="showWorker('hermes')" style="cursor:pointer;padding:11px 12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;margin-bottom:10px;opacity:.65;transition:all .15s" onmouseover="this.style.borderColor='#7c3aed';this.style.opacity='1'" onmouseout="this.style.borderColor='var(--bd)';this.style.opacity='.65'">
+          <div style="display:flex;align-items:center;gap:9px">
+            <div style="width:32px;height:32px;background:#f5f3ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🪽</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:5px">
+                <span style="font-size:12px;font-weight:700;color:var(--t1)">Hermes Agent</span>
+                <span style="font-size:9px;font-family:var(--font-mono);color:var(--t3);background:var(--card);border:1px solid var(--bd);padding:1px 5px;border-radius:4px">W-05</span>
+              </div>
+              <div style="font-size:10px;color:var(--t3);margin-top:1px">Routes all intelligence · sits beside you</div>
+            </div>
+            <span style="font-size:9px;font-family:var(--font-mono);color:#9ca3af;background:#f3f4f6;padding:2px 7px;border-radius:4px;flex-shrink:0">Coming soon</span>
+          </div>
+        </div>
+
+        <!-- The Chain -->
+        <div style="padding:12px;background:var(--card);border:1px solid var(--bd);border-radius:10px">
+          <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;font-family:var(--font-mono)">How they work together</div>
+          <div style="display:flex;align-items:flex-start;gap:3px;flex-wrap:wrap">
+            <div style="text-align:center">
+              <div style="font-size:10px;padding:4px 7px;background:var(--gx);border:1px solid var(--gxx);border-radius:5px;color:var(--g);font-weight:700;white-space:nowrap">You</div>
+              <div style="font-size:7px;color:var(--t3);margin-top:3px;white-space:nowrap">creates ticket</div>
+            </div>
+            <div style="color:var(--t3);padding:4px 1px;font-size:12px">→</div>
+            <div style="text-align:center">
+              <div style="font-size:10px;padding:4px 7px;background:#eff6ff;border:1px solid #93c5fd;border-radius:5px;color:#2563eb;font-weight:700;white-space:nowrap">🏗 W-01</div>
+              <div style="font-size:7px;color:var(--t3);margin-top:3px;white-space:nowrap">builds code</div>
+            </div>
+            <div style="color:var(--t3);padding:4px 1px;font-size:12px">→</div>
+            <div style="text-align:center">
+              <div style="font-size:10px;padding:4px 7px;background:#fef2f2;border:1px solid #fca5a5;border-radius:5px;color:#dc2626;font-weight:700;white-space:nowrap">🛡 W-02</div>
+              <div style="font-size:7px;color:var(--t3);margin-top:3px;white-space:nowrap">tests it</div>
+            </div>
+            <div style="color:var(--t3);padding:4px 1px;font-size:12px">→</div>
+            <div style="text-align:center">
+              <div style="font-size:10px;padding:4px 7px;background:#f5f3ff;border:1px solid #c4b5fd;border-radius:5px;color:#7c3aed;font-weight:700;white-space:nowrap">🧬 W-03</div>
+              <div style="font-size:7px;color:var(--t3);margin-top:3px;white-space:nowrap">learns</div>
+            </div>
+            <div style="color:var(--t3);padding:4px 1px;font-size:12px">→</div>
+            <div style="text-align:center">
+              <div style="font-size:10px;padding:4px 7px;background:#f0fdfa;border:1px solid #5eead4;border-radius:5px;color:#0d9488;font-weight:700;white-space:nowrap">🔮 W-04</div>
+              <div style="font-size:7px;color:var(--t3);margin-top:3px;white-space:nowrap">gets smarter</div>
+            </div>
+            <div style="color:var(--t3);padding:4px 1px;font-size:12px">→</div>
+            <div style="text-align:center">
+              <div style="font-size:10px;padding:4px 7px;background:var(--gx);border:1px solid var(--gxx);border-radius:5px;color:var(--g);font-weight:700;white-space:nowrap">Better</div>
+              <div style="font-size:7px;color:var(--t3);margin-top:3px;white-space:nowrap">next build</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="system-health-card">
+        <div class="ch">
+          <div class="ct">🚦 System health</div>
+          <div style="font-size:9px;color:var(--t3);font-family:var(--font-mono)" id="health-updated"></div>
+        </div>
+        <div id="system-health-rows">
+          <div class="hr-row"><div class="light la"></div><div><div class="hr-n">Loading live status...</div><div class="hr-d">Checking all workers</div></div></div>
+        </div>
       </div>
       <div class="card">
         <div class="ch"><div class="ct">⚡ Builder actions</div></div>
@@ -1927,11 +2110,274 @@ loadGuardian();
 loadOverview();
 loadConnections();
 loadUserEmail();
+loadWorkerStats();
 setInterval(loadAll,30000);
 setInterval(loadSources,60000);
 setInterval(loadGuardian,120000);
 setInterval(loadOverview,60000);
 setInterval(loadConnections,120000);
+setInterval(loadWorkerStats,30000);
+
+const WORKERS={
+  eagle:{
+    number:'W-01',name:'EAGLE Builder',icon:'🏗',color:'#2563eb',bg:'#eff6ff',
+    process:'Running in the background · checks your build queue every 30 seconds',
+    status:'live',
+    tagline:'I read your tickets, write the code, and hand it to Latha for review.',
+    what:'EAGLE Builder is your software developer. He reads tasks from the build queue, studies your existing codebase first so he understands how everything works, then writes the code. He never ships anything without your approval.',
+    duties:[
+      'Watches the build queue every 30 seconds for new tasks',
+      'Reads the existing portal code before writing anything new — so he fits in with what already exists',
+      'Asks you for approval before writing the final code (Gate 1)',
+      'Hands completed code to Latha for human review (Gate 2)',
+      'Waits for Guardian to confirm the code works before moving on'
+    ],
+    gate:'Gate 1 — You must approve before he writes code',
+    ai:'Claude Sonnet 4',
+    sources:['369-brain','Portal Code','Obsidian Notes'],
+    skills:['TypeScript · NestJS','Reads existing patterns','Design previews','Ticket management'],
+    connects:'Guardian (W-02) tests everything he builds · Self-Improvement (W-03) learns from his history',
+    learn:'Think of EAGLE as a developer who never sleeps. He reads your task list, checks how your existing system works, writes the code — but always asks you before doing anything important. Every build makes the next one smarter because RAG remembers everything.'
+  },
+  guardian:{
+    number:'W-02',name:'Guardian',icon:'🛡',color:'#dc2626',bg:'#fef2f2',
+    process:'Running in the background · tests your portal every night at 2am',
+    status:'live',
+    tagline:'Every night I test your entire system so you wake up knowing it works.',
+    what:'Guardian is your quality checker. Every night at 2am he logs into your portal as all 11 different user types — from Super Admin to Org Staff — and checks that everything works. If something breaks, you know before your staff or students do.',
+    duties:[
+      'Runs full automated tests every night at 2am while you sleep',
+      'Tests all 11 user role types can log in successfully',
+      'Checks the portal loads at the correct address',
+      'Checks the backend API is responding correctly',
+      'Writes a pass/fail report you can read in Mission Vault',
+      'Watches EAGLE builds and auto-tests after every code merge'
+    ],
+    gate:'Gate 0 — Automatic · runs without any approval needed',
+    ai:'No AI — pure automated testing using Playwright',
+    sources:['Portal (live test target)','Test results log'],
+    skills:['Automated browser testing','11 user role simulation','API health checking','Nightly reporting'],
+    connects:'Self-Improvement (W-03) reads his test history every week to find patterns',
+    learn:'Think of Guardian as a night security guard who tests every door and window every night and leaves you a report by morning. He never gets tired, never forgets a check, and never calls in sick. If something is broken, he is always the first to know.'
+  },
+  learner:{
+    number:'W-03',name:'Self-Improvement',icon:'🧬',color:'#7c3aed',bg:'#f5f3ff',
+    process:'Running in the background · analyses history every week',
+    status:'live',
+    tagline:'I study everything that happened and find ways to make the whole system smarter.',
+    what:'Self-Improvement reads the entire history of what your AI team did — every build, every test result, every question asked to RAG — and finds patterns. Then it proposes specific improvements for you to review and approve.',
+    duties:[
+      'Reads all build history from the past week',
+      'Reads all Guardian test results and finds failure patterns',
+      'Identifies what questions get asked most often in RAG',
+      'Finds inefficiencies — tasks taking too long, repeated errors',
+      'Writes clear improvement proposals with evidence',
+      'Presents findings for your review and approval (Gate 1)'
+    ],
+    gate:'Gate 1 — You review and approve each proposed improvement',
+    ai:'Claude Sonnet 4',
+    sources:['Build history','Guardian test logs','RAG query logs','369-brain'],
+    skills:['Pattern recognition','Root cause analysis','Improvement proposals','Weekly reporting'],
+    connects:'RAG (W-04) gets smarter from approved improvements · EAGLE (W-01) builds better next time',
+    learn:'Think of Self-Improvement as a business analyst who reviews everything your team did each week and comes to you with a clear report: here is what went wrong, here is why, and here is exactly how we fix it. Over time the whole system gets smarter without you doing anything.'
+  },
+  rag:{
+    number:'W-04',name:'RAG Intelligence',icon:'🔮',color:'#0d9488',bg:'#f0fdfa',
+    process:'Always running · refreshes business memory automatically every 10 minutes',
+    status:'live',
+    tagline:'I remember everything about your business so every other worker starts informed.',
+    what:'RAG Intelligence is the memory of your entire operation. It reads all your documents, notes, decisions, emails, and database and makes them searchable. Every other worker reads from RAG before doing anything — so nothing is ever done from scratch.',
+    duties:[
+      'Indexes all business knowledge into searchable pieces of information',
+      'Automatically refreshes every 10 minutes — always up to date',
+      'Answers your questions about the business using real data',
+      'Gives EAGLE full context before every build — he reads existing patterns',
+      'Gives Self-Improvement the history it needs to analyse',
+      'Enforces privacy rules — student personal data never goes to cloud AI'
+    ],
+    gate:'Gate 0 — Automatic · always running · no approval needed',
+    ai:'Claude Sonnet 4 for answering your questions',
+    sources:['369-brain decisions','Obsidian Notes','MongoDB Students','Portal Code','PDF Uploads','Gmail'],
+    skills:['Semantic search across all knowledge','Multi-source indexing','Privacy enforcement','Auto-refresh every 10 min','Knowledge mapping'],
+    connects:'Everything — all workers read from RAG before acting',
+    learn:'Think of RAG as your company library and librarian combined. Every document, every decision, every email is stored, organised and searchable. When any worker needs to know something about your business, they ask RAG first. This is what makes your AI team context-aware instead of generic.'
+  },
+  hermes:{
+    number:'W-05',name:'Hermes Agent',icon:'🪽',color:'#7c3aed',bg:'#f5f3ff',
+    process:'Not yet installed — planned as Gate 1 approval worker',
+    status:'planned',
+    tagline:'I will sit beside you as the gatekeeper — reviewing every AI action before it happens.',
+    what:'Hermes Agent will be the most important worker in the system. Before any AI takes any action, Hermes reviews it first. Is the data private? Does it contradict a past decision? What is the risk level? Only then does it present you with one clear decision — approve or reject with a single tap.',
+    duties:[
+      'Reviews every proposed action before you see it — filters noise',
+      'Checks if data is private and blocks it from going to cloud AI automatically',
+      'Checks if any action contradicts a past decision stored in RAG',
+      'Assigns risk level to every proposed action: low, medium, high, or blocked',
+      'Presents you with one clear decision — approve or reject',
+      'Runs entirely on your Mac Mini — your data never leaves your building',
+      'Controls Telegram and WhatsApp so you can manage everything remotely'
+    ],
+    gate:'Gate 1 — He IS the Gate 1 reviewer · sits between all workers and you',
+    ai:'Hermes Agent framework + local private AI models',
+    sources:['All sources','RAG decisions history','AI routing rules registry'],
+    skills:['Task routing and classification','Privacy rule enforcement','Risk assessment','Telegram and WhatsApp control','Scheduled automations in plain language','Sub-agent delegation'],
+    connects:'Everything — routes between all workers, all AI models, and you',
+    learn:'Think of Hermes as your chief of staff who filters everything before it reaches you. Instead of 50 AI decisions a day, you get 5 — only the ones that genuinely need your judgment. Everything else he handles, routes, or blocks automatically. This is what makes the system scale without overwhelming you.'
+  }
+};
+
+function showWorker(id){
+  const w=WORKERS[id];
+  if(!w) return;
+  const dot=w.status==='live'
+    ?'<span style="color:#22c55e;font-size:11px;font-family:var(--font-mono)">● Live</span>'
+    :'<span style="color:#9ca3af;font-size:11px;font-family:var(--font-mono)">○ Coming Soon</span>';
+  document.getElementById('worker-modal-content').innerHTML=`
+    <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:20px">
+      <div style="width:52px;height:52px;background:${w.bg};border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${w.icon}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--t3);background:var(--card);border:1px solid var(--bd);padding:1px 6px;border-radius:4px">${w.number}</span>
+          ${dot}
+        </div>
+        <div style="font-size:22px;font-weight:800;color:var(--t1);font-family:var(--font-display);line-height:1.1;margin-bottom:3px">${w.name}</div>
+        <div style="font-size:10px;color:var(--t3);font-family:var(--font-mono)">${w.process}</div>
+      </div>
+    </div>
+    <div style="padding:12px 14px;background:${w.bg};border-radius:8px;margin-bottom:16px;border-left:3px solid ${w.color}">
+      <div style="font-size:13px;color:${w.color};font-style:italic">"${w.tagline}"</div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--font-mono);margin-bottom:6px">What I do</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.6">${w.what}</div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--font-mono);margin-bottom:8px">My duties</div>
+      ${w.duties.map((d,i)=>`
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--bd)">
+          <span style="font-family:var(--font-mono);font-size:10px;color:${w.color};font-weight:700;flex-shrink:0;min-width:18px">${String(i+1).padStart(2,'0')}</span>
+          <span style="font-size:12px;color:var(--t2);line-height:1.5">${d}</span>
+        </div>`).join('')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      <div style="padding:10px 12px;background:var(--card);border:1px solid var(--bd);border-radius:8px">
+        <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;font-family:var(--font-mono);margin-bottom:4px">Safety Gate</div>
+        <div style="font-size:11px;color:var(--t1);line-height:1.4">${w.gate}</div>
+      </div>
+      <div style="padding:10px 12px;background:var(--card);border:1px solid var(--bd);border-radius:8px">
+        <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;font-family:var(--font-mono);margin-bottom:4px">AI Used</div>
+        <div style="font-size:11px;color:var(--t1);line-height:1.4">${w.ai}</div>
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--font-mono);margin-bottom:6px">Skills</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">${w.skills.map(s=>`<span style="font-size:10px;padding:3px 9px;background:${w.bg};color:${w.color};border-radius:999px;font-weight:600">${s}</span>`).join('')}</div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--font-mono);margin-bottom:6px">Connects to</div>
+      <div style="font-size:12px;color:var(--t2);padding:8px 12px;background:var(--card);border:1px solid var(--bd);border-radius:8px;line-height:1.5">→ ${w.connects}</div>
+    </div>
+    <div style="padding:14px;background:var(--gx);border:1px solid var(--gxx);border-radius:8px">
+      <div style="font-size:9px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.12em;font-family:var(--font-mono);margin-bottom:6px">💡 In simple terms</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.65">${w.learn}</div>
+    </div>
+  `;
+  const m=document.getElementById('worker-modal');
+  m.style.display='flex';
+  m.onclick=e=>{if(e.target===m)closeWorker();};
+}
+
+function closeWorker(){document.getElementById('worker-modal').style.display='none';}
+
+function loadWorkerStats(){
+  const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+
+  fetch('/api/data').then(r=>r.json()).then(d=>{
+    const open=d.ticketsOpen||[];
+    const awaiting=d.ticketsAwaiting||[];
+    const complete=d.ticketsComplete||[];
+    const total=open.length+awaiting.length+complete.length;
+    const done=complete.length;
+    const needsYou=awaiting.length;
+    el('w01-total',total);
+    el('w01-done',done);
+    el('w01-approval',needsYou);
+    const story=document.getElementById('worker-story');
+    if(story) story.textContent=`Your AI team has ${done} completed build${done===1?'':'s'}, ${needsYou} decision${needsYou===1?'':'s'} waiting for you.`;
+    el('workers-updated','Updated '+new Date().toLocaleTimeString());
+  }).catch(()=>{});
+
+  fetch('/api/guardian/status').then(r=>r.json()).then(d=>{
+    const s=d.summary||{};
+    el('w02-passed',s.passed??d.passed??0);
+    el('w02-failed',s.failed??d.failed??0);
+    const now=new Date();
+    const next=new Date();
+    next.setDate(next.getDate()+(now.getHours()>=2?1:0));
+    next.setHours(2,0,0,0);
+    const hrs=Math.max(0,Math.round((next-now)/3600000));
+    el('w02-next',hrs+'h');
+    const story=document.getElementById('worker-story');
+    if(story&&s.passed!==undefined){
+      const done=parseInt(document.getElementById('w01-done')?.textContent)||0;
+      const needsYou=parseInt(document.getElementById('w01-approval')?.textContent)||0;
+      story.textContent=`Your AI team has ${done} completed build${done===1?'':'s'}, ${needsYou} decision${needsYou===1?'':'s'} waiting for you, and Guardian tested ${s.passed+s.failed} scenarios — ${s.passed} passed, ${s.failed} failed.`;
+    }
+  }).catch(()=>{});
+
+  fetch('/api/self-improvement/status').then(r=>r.json()).then(d=>{
+    el('w03-patterns',d.patterns||0);
+    el('w03-fixes',d.fixes?.total||0);
+    el('w03-next',d.next_run||'Weekly');
+  }).catch(()=>{});
+
+  fetch('/api/rag/status').then(r=>r.json()).then(d=>{
+    const sources=d.sources||{};
+    const total=Object.values(sources).reduce((a,s)=>a+(s.chunks||0),0);
+    const connected=Object.values(sources).filter(s=>(s.chunks||0)>0).length;
+    el('w04-chunks',total>999?(total/1000).toFixed(1)+'k':total);
+    el('w04-sources',connected+' live');
+  }).catch(()=>{});
+
+  fetch('/api/connections').then(r=>r.json()).then(d=>{
+    const rows=document.getElementById('system-health-rows');
+    const upd=document.getElementById('health-updated');
+    if(upd) upd.textContent=new Date().toLocaleTimeString();
+    if(!rows) return;
+    const harnesses=d.harnesses||[];
+    const sources=d.sources||[];
+    const srcLive=sources.filter(s=>s.chunks>0).length;
+    const awaiting=parseInt(document.getElementById('w01-approval')?.textContent)||0;
+    rows.innerHTML=harnesses.map(h=>`
+      <div class="hr-row">
+        <div class="light ${h.status==='online'?'lg':'lr'}"></div>
+        <div>
+          <div class="hr-n">${h.label}</div>
+          <div class="hr-d">${h.status==='online'?'Running · '+h.memory_mb+'MB used':'Stopped'}</div>
+        </div>
+      </div>`).join('')+`
+      <div class="hr-row">
+        <div class="light ${srcLive>0?'lg':'la'}"></div>
+        <div>
+          <div class="hr-n">RAG Sources</div>
+          <div class="hr-d">${srcLive} source${srcLive===1?'':'s'} connected and indexed</div>
+        </div>
+      </div>
+      <div class="hr-row">
+        <div class="light ${awaiting>0?'la':'lg'}"></div>
+        <div>
+          <div class="hr-n">Latha review queue</div>
+          <div class="hr-d">${awaiting} ticket${awaiting===1?'':'s'} awaiting approval</div>
+        </div>
+      </div>`;
+  }).catch(()=>{});
+}
 </script>
+<div id="worker-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:28px;width:540px;max-width:94vw;max-height:88vh;overflow-y:auto;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.15)">
+    <button onclick="closeWorker()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;color:var(--t3);cursor:pointer;line-height:1">✕</button>
+    <div id="worker-modal-content"></div>
+  </div>
+</div>
 </body>
 </html>
