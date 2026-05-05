@@ -35,6 +35,7 @@ try {
   const r = mem.emit({ kind: 'test.start', agent: 'tester', feature: tag, status: 'running' });
   assert(r && typeof r.id === 'string' && r.id.length > 0, 'expected truthy id');
   assert(r && typeof r.ts === 'number' && r.ts > 0, 'expected truthy ts');
+  assert(r && typeof r.seq === 'number' && r.seq > 0, 'expected truthy seq');
   insertedIds.push(r.id);
   record('T1 emit basic', true);
 } catch (e) { record('T1 emit basic', false, e.message); }
@@ -104,6 +105,29 @@ try {
   assert(got === null, `expected null, got ${JSON.stringify(got)}`);
   record('T7 getWorking missing → null', true);
 } catch (e) { record('T7 getWorking missing → null', false, e.message); }
+
+// T9 — query with sinceSeq filter (must run BEFORE T8's close)
+try {
+  // Insert 3, capture seqs.
+  const firstThree = [];
+  for (let i = 0; i < 3; i++) {
+    firstThree.push(mem.emit({ kind: 'test.seq', agent: 'tester', feature: tag, status: `seq-${i}` }));
+    insertedIds.push(firstThree[i].id);
+  }
+  // Insert 2 more — these are the ones we expect back from sinceSeq.
+  const lastTwo = [];
+  for (let i = 0; i < 2; i++) {
+    lastTwo.push(mem.emit({ kind: 'test.seq', agent: 'tester', feature: tag, status: `seq-${i + 3}` }));
+    insertedIds.push(lastTwo[i].id);
+  }
+  const cursorSeq = firstThree[2].seq; // seq of the 3rd insert
+  const rows = mem.query({ feature: tag, sinceSeq: cursorSeq, order: 'seq ASC' });
+  assert(rows.length === 2, `expected 2 rows after sinceSeq=${cursorSeq}, got ${rows.length}`);
+  assert(rows[0].seq === lastTwo[0].seq, `[0].seq = ${rows[0].seq}, expected ${lastTwo[0].seq}`);
+  assert(rows[1].seq === lastTwo[1].seq, `[1].seq = ${rows[1].seq}, expected ${lastTwo[1].seq}`);
+  assert(rows[0].seq < rows[1].seq, `expected ASC seq ordering`);
+  record('T9 query with sinceSeq', true);
+} catch (e) { record('T9 query with sinceSeq', false, e.message); }
 
 // T8 — close() and verify subsequent emit throws (per JSDoc'd contract)
 try {

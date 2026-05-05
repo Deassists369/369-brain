@@ -8,6 +8,72 @@ const EAGLE_LOG = path.join(BRAIN, 'intelligence', 'harness-runs', 'eagle-harnes
 const TEST_RUNS = path.join(BRAIN, 'intelligence', 'test-runs');
 const LEARNING = path.join(BRAIN, 'intelligence', 'learning-log.md');
 
+// ---------- Step 4B: lazy router/bus singletons + safe-emit helpers ----------
+// Mirror of harness/core/logger.js. File writes stay authoritative; mem.emit
+// and bus.emit run AFTER existing writes succeed and never propagate errors.
+let _memSingleton = null;
+let _busSingleton = null;
+function _mem() {
+  if (!_memSingleton) {
+    const { MemoryRouter } = require('./memory/router');
+    _memSingleton = new MemoryRouter();
+  }
+  return _memSingleton;
+}
+function _bus() {
+  if (!_busSingleton) {
+    const { EventBus } = require('./memory/event-bus');
+    _busSingleton = new EventBus();
+  }
+  return _busSingleton;
+}
+function _safeEmitEpisode(payload) {
+  try { _mem().emit(payload); }
+  catch (e) {
+    console.error('[guardian] mem.emit failed (file writes still succeeded):',
+      e && e.message ? e.message : e);
+  }
+}
+function _safeEmitBus(topic, publisher, payload) {
+  try { _bus().emit(topic, publisher, payload); }
+  catch (e) {
+    console.error('[guardian] bus.emit failed:',
+      e && e.message ? e.message : e);
+  }
+}
+function _emitTestStart(runId, trigger, startTs) {
+  const source = (trigger && trigger.source) || 'manual';
+  _safeEmitEpisode({
+    kind: 'guardian.test.start',
+    agent: 'guardian',
+    run_id: runId,
+    status: 'running',
+    summary: `Guardian test run started (trigger: ${source})`,
+    payload: { trigger, started_at: startTs },
+  });
+  _safeEmitBus('guardian.test.start', 'guardian', {
+    run_id: runId,
+    trigger,
+  });
+}
+function _emitTestComplete(runId, result) {
+  const status = (result && result.summary && result.summary.failed === 0) ? 'passed' : 'failed';
+  _safeEmitEpisode({
+    kind: 'guardian.test.complete',
+    agent: 'guardian',
+    run_id: runId,
+    status,
+    summary: `Tests ${status}: ${(result.summary && result.summary.passed) || 0} passed, ${(result.summary && result.summary.failed) || 0} failed`,
+    payload: result,
+  });
+  _safeEmitBus('guardian.test.complete', 'guardian', {
+    run_id: runId,
+    status,
+    passed: (result.summary && result.summary.passed) || 0,
+    failed: (result.summary && result.summary.failed) || 0,
+  });
+}
+
 let lastProcessedId = null;
 let isRunning = false;
 
@@ -45,12 +111,15 @@ function writeLearningEntry(result, prev) {
   console.log('[Guardian] Learning entry written');
 }
 
-function runTests(reason = 'manual_or_initial', eagleEntry = null) {
+async function runTests(trigger = null) {
   if (isRunning) return;
   isRunning = true;
-  const startTime = Date.now();
+  const runId = `guardian-${Date.now()}`;
+  const startTs = Date.now();
   const runDate = new Date().toISOString().split('T')[0];
-  console.log(`[Guardian] Running tests — ${runDate} — reason: ${reason}`);
+  const source = (trigger && trigger.source) || 'manual';
+  console.log(`[Guardian] Running tests — ${runDate} — source: ${source} — run_id: ${runId}`);
+  _emitTestStart(runId, trigger, startTs);
 
   try {
     let output = '';
@@ -110,16 +179,19 @@ function runTests(reason = 'manual_or_initial', eagleEntry = null) {
     }
 
     const result = {
-      run_id: `guardian-${Date.now()}`,
+      run_id: runId,
       run_date: runDate,
       run_time: new Date().toISOString(),
-      duration_ms: Date.now() - startTime,
+      duration_ms: Date.now() - startTs,
       exit_code: exitCode,
       trigger: {
-        reason,
-        eagle_run_id:   eagleEntry?.run_id   || null,
-        eagle_feature:  eagleEntry?.feature  || null,
-        eagle_status:   eagleEntry?.status   || null,
+        // legacy fields kept for dashboard back-compat
+        reason: source,
+        // new structured field
+        source,
+        eagle_run_id: (trigger && trigger.eagle_run_id) || null,
+        eagle_feature: (trigger && trigger.feature) || null,
+        eagle_status: null,
       },
       summary: { total: passed+failed+skipped, passed, failed, skipped },
       status: failed === 0 ? 'passing' : 'failing',
@@ -139,7 +211,7 @@ function runTests(reason = 'manual_or_initial', eagleEntry = null) {
     // daily markdown — append friendly
     fs.writeFileSync(path.join(TEST_RUNS,`${runDate}.md`),
 `# Guardian Test Run — ${runDate}
-Triggered by: ${reason}
+Triggered by: ${source}
 EAGLE build: ${result.trigger.eagle_feature || 'n/a'}
 Status: ${result.status.toUpperCase()}
 
@@ -167,11 +239,40 @@ ${output.slice(-1000)}
       if (fs.existsSync(yf)) prev = JSON.parse(fs.readFileSync(yf,'utf8'));
     } catch {}
 
+    _emitTestComplete(runId, result);
+
     writeLearningEntry(result, prev);
     console.log(`[Guardian] Done: ${passed}p ${failed}f ${skipped}s — ${result.status}`);
 
   } finally {
     isRunning = false;
+  }
+}
+
+// Test-mode override hook for the bus-triggered runTests call. In production
+// this points at the real runTests; tests can swap it via _setTestsRunner.
+let _testsRunner = runTests;
+
+function subscribeToEagleBus() {
+  try {
+    _bus().subscribe('guardian', 'eagle.run.complete', (event) => {
+      console.log(
+        `[guardian] EAGLE run complete heard via bus: run_id=${event.payload.run_id}, ` +
+        `feature=${event.payload.feature}. Triggering tests in 5s.`
+      );
+      setTimeout(() => {
+        _testsRunner({
+          source: 'bus.eagle.run.complete',
+          eagle_run_id: event.payload.run_id,
+          feature: event.payload.feature,
+        }).catch((err) => {
+          console.error('[guardian] bus-triggered test run failed:', err);
+        });
+      }, 5000);
+    });
+    console.log('[guardian] subscribed to eagle.run.complete on bus');
+  } catch (e) {
+    console.error('[guardian] bus subscription failed:', e && e.message ? e.message : e);
   }
 }
 
@@ -184,7 +285,7 @@ function watchEagle() {
     if (shouldRunTests(e)) {
       console.log(`[Guardian] EAGLE completed: ${e.feature} (${e.status})`);
       lastProcessedId = e.run_id;
-      runTests('eagle_completed', e);
+      runTests({ source: 'watchEagle.poll', eagle_run_id: e.run_id, feature: e.feature });
     }
   }, 30000);
 }
@@ -196,23 +297,36 @@ function scheduleDailyRun() {
   const ms = next - now;
   setTimeout(() => {
     console.log('[Guardian] Running scheduled 2am tests');
-    runTests('scheduled_2am');
-    setInterval(() => runTests('scheduled_2am'), 86400000);
+    runTests({ source: 'scheduled' });
+    setInterval(() => runTests({ source: 'scheduled' }), 86400000);
   }, ms);
   console.log(`[Guardian] Daily run in ${(ms/3600000).toFixed(1)} hours`);
 }
 
-console.log('[Guardian] Starting...');
-watchEagle();
-scheduleDailyRun();
+if (process.env.GUARDIAN_TEST_MODE !== '1') {
+  console.log('[Guardian] Starting...');
+  watchEagle();
+  subscribeToEagleBus();
+  scheduleDailyRun();
 
-// Only run initial suite if no previous results exist
-setTimeout(() => {
-  const latest = path.join(TEST_RUNS, 'latest.json');
-  if (!fs.existsSync(latest)) {
-    console.log('[Guardian] No previous results — running initial suite');
-    runTests('initial_startup');
-  } else {
-    console.log('[Guardian] latest.json exists — skipping initial run');
-  }
-}, 20000);
+  // Only run initial suite if no previous results exist
+  setTimeout(() => {
+    const latest = path.join(TEST_RUNS, 'latest.json');
+    if (!fs.existsSync(latest)) {
+      console.log('[Guardian] No previous results — running initial suite');
+      runTests({ source: 'startup' });
+    } else {
+      console.log('[Guardian] latest.json exists — skipping initial run');
+    }
+  }, 20000);
+}
+
+// Test-mode hooks. ABSENT in production — production module.exports stays {}.
+if (process.env.GUARDIAN_TEST_MODE === '1') {
+  module.exports._mem = _mem;
+  module.exports._bus = _bus;
+  module.exports.subscribeToEagleBus = subscribeToEagleBus;
+  module.exports._emitTestStart = _emitTestStart;
+  module.exports._emitTestComplete = _emitTestComplete;
+  module.exports._setTestsRunner = (fn) => { _testsRunner = fn; };
+}

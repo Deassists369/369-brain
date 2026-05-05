@@ -12,7 +12,11 @@
 
 -- BEGIN episodes
 -- episodes.db — append-only history of what each agent did
+-- `seq` is the monotonic cursor key. Self-Improvement uses `seq` as its
+-- watermark across runs (one cursor for "everything I have ingested").
+-- Same B-006 lesson as event_log: UUID lex order is not chronological.
 CREATE TABLE IF NOT EXISTS episodes (
+  seq INTEGER NOT NULL UNIQUE,    -- monotonic counter (B-006 lesson applied)
   id TEXT PRIMARY KEY,
   ts INTEGER NOT NULL,            -- unix timestamp ms
   kind TEXT NOT NULL,             -- e.g. 'eagle.build.complete'
@@ -23,6 +27,7 @@ CREATE TABLE IF NOT EXISTS episodes (
   summary TEXT,
   payload TEXT                    -- JSON blob
 );
+CREATE INDEX IF NOT EXISTS idx_episodes_seq ON episodes(seq);
 CREATE INDEX IF NOT EXISTS idx_episodes_ts ON episodes(ts);
 CREATE INDEX IF NOT EXISTS idx_episodes_agent ON episodes(agent);
 CREATE INDEX IF NOT EXISTS idx_episodes_kind ON episodes(kind);

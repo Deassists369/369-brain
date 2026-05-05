@@ -2087,4 +2087,67 @@ Cleanup verified — all 4 tables empty after the loop (`episodes:0 event_log:0 
 - **Item 4 — Episodic Ingestion** — wire `eagle` (harness/eagle/eagle-harness.js) and `guardian` (guardian-bridge.js) to write through `MemoryRouter` instead of (or alongside) their current JSONL writes. First target: replace eagle's `Phase complete` log lines with `mem.emit({ kind: 'eagle.phase.complete', ... })` + bus event on `eagle.build.complete.<feature>`.
 - **Multi-process seq safety** — current `MAX(seq) + 1` inside a transaction is single-process safe; under multi-process emits to the same db the `UNIQUE` constraint catches collisions but doesn't auto-retry. If eagle and guardian ever run in separate processes both writing event_log, add a retry-on-UNIQUE-violation loop in `EventBus.emit()`.
 
+---
+
+## 5 May 2026 (deep session) — Item 4: Episodic Ingestion
+
+**Branch:** main (369-brain)
+
+### What was done
+
+Wired all three harnesses (eagle, guardian, self-improvement) to write through the new MemoryRouter + EventBus alongside their existing JSONL/file outputs. JSONL stays authoritative — dual-writes happen *after* file writes succeed and never propagate errors.
+
+- **Step 4-Pre** — Added monotonic `seq INTEGER NOT NULL UNIQUE` column to `episodes` table (mirroring B-006's fix on `event_log`). Router gained `sinceSeq` filter and `'seq ASC'` / `'seq DESC'` ordering. test-router added T9 covering sinceSeq pagination. **Episodes return shape changed: `{seq, id, ts}` (was `{id, ts}`)**.
+- **Step 4A** — `harness/core/logger.js` extended with lazy MemoryRouter/EventBus singletons + `_safeEmitEpisode/Bus` helpers + `_isEagle` gate. `startRun` / `updateRun` / `logPhase` / `logApproval` now dual-write episodes for `harnessName === 'eagle-harness'`. Bus emits on run-status transitions, approvals, and failed phases. New smoke test `test-eagle-wiring.js` 7/7 PASS.
+- **Step 4B** — `guardian-bridge.js` extended with same lazy singleton pattern; `runTests` signature changed `(reason, eagleEntry)` → `(trigger)` and made `async`; `_emitTestStart`/`_emitTestComplete` extracted; `subscribeToEagleBus()` registers an in-process callback on `eagle.run.complete` with 5s setTimeout debounce + `isRunning` guard; `_testsRunner` indirection hook for tests. Boot block guarded behind `GUARDIAN_TEST_MODE` env. Test-mode exports for `_mem`/`_bus`/`_emitTestStart`/`_emitTestComplete`/`_setTestsRunner`/`subscribeToEagleBus`. New smoke test `test-guardian-wiring.js` 6/6 PASS.
+- **Step 4C** — `_isEagle` → `_harnessAgent` dispatcher in logger.js (HARNESS_AGENTS map: `eagle-harness` → `eagle`, `self-improvement-harness` → `self-improvement`). New `inputs.readEpisodesSince(mem, lastSeq)` filters self-improvement's own events out at the inputs layer. `self-improvement-harness.js` reads watermark from `working_memory['self-improvement']['last_episode_seq']`, calls `readEpisodesSince` in Phase 2, advances watermark JUST BEFORE final `logger.updateRun(complete)` (only on success). New smoke test `test-self-improvement-wiring.js` 7/7 PASS.
+- **Step 4D** — Cross-agent integration test exercises the full chain in a single process. Required `LOGGER_TEST_MODE=1` test hooks (`_setMemSingleton` / `_setBusSingleton`) so logger.js and guardian-bridge.js share their bus singleton — needed because in production they're separate PM2 processes with separate in-memory bus instances (B-007). New test `test-cross-agent-integration.js` 7/7 PASS.
+
+### Bugs caught and resolved this session
+
+- **#B-007** — *DOCUMENTED, deferred*. EventBus subscribers are in-process only. Guardian's in-memory `subscribe('eagle.run.complete', ...)` never fires across processes. The 30s `watchEagle` JSONL poll is the cross-process channel today. Future: Guardian-side poller that calls `bus.replay()`, OR a process-level singleton for EventBus.
+- **#B-008** — *RESOLVED in this commit*. `guardian-bridge.js:214` referenced `${reason}` after Step 4B renamed the variable to `source`. Threw `ReferenceError` on every real `runTests` invocation, silently breaking the daily-markdown and learning-log writes (latest.json was fine — written before line 214). One-line fix. Surfaced by Step 4D testing when production guardian polled the cross-agent test's eagle JSONL entry.
+
+### Production-state restoration (from B-008 fallout)
+
+Production guardian PM2 polled the cross-agent test's eagle-harness.jsonl entry and ran a real `npx playwright test` against the live portal (passed 13/13). It then crashed on the .md write due to B-008. Recovery actions:
+- Restored `intelligence/test-runs/latest.json` from `guardian-1777984771029.json` (the previous good run).
+- Removed orphan `intelligence/test-runs/guardian-1778010540010.json`.
+- Cleared the leaked episode + bus events from the dbs.
+- Pushed the .md fix into guardian-bridge.js so the next legitimate run writes correctly.
+
+### Operating note for the regression suite
+
+When running `for i in 1..5; node memory/test-X.js`, **stop guardian PM2 first**: `pm2 stop guardian`. Restart with `pm2 restart guardian` after. The cross-agent test writes to production eagle-harness.jsonl as part of exercising the eagle path; production guardian's poller can pick this up and trigger a real playwright run. The test's defensive cleanup deletes leaked episodes from the dbs but cannot undo dashboard-state side effects.
+
+### Verification
+
+- 7 test suites × 5 runs = **35 test runs per regression cycle**, all green
+- Cleanup invariant holds: `episodes=0, event_log=0, cursors=0, working_memory=0` after the loop (with guardian stopped)
+- Production exports unchanged: logger.js `[startRun, updateRun, logPhase, logApproval, getRun, listRuns, RUNS_DIR]`, guardian-bridge.js `[]` (script with empty exports as before); test-mode adds optional hooks under env-gated branches.
+
+### Files touched
+
+| File | Change |
+|------|--------|
+| `harness/core/logger.js` | +90 lines net — singletons, `_harnessAgent` dispatcher, 4 dual-write hooks, test-mode exports |
+| `guardian-bridge.js` | +90 lines net — singletons, `_emitTestStart/Complete` helpers, `runTests(trigger)` async, `subscribeToEagleBus`, `_testsRunner` indirection, boot guard, test-mode exports, **B-008 fix** |
+| `harness/self-improvement/inputs.js` | +18 lines — `readEpisodesSince` export |
+| `harness/self-improvement/self-improvement-harness.js` | +20 lines — MemoryRouter import, watermark cursor, dual-read, advance on success |
+| `memory/router.js` | sinceSeq filter, `'seq ASC/DESC'` order, `seq` in return shape |
+| `memory/db/schema.sql` | episodes seq column + idx_episodes_seq index |
+| `memory/test-router.js` | T9 + seq assertion in T1 |
+| `memory/test-eagle-wiring.js` | NEW (~110 lines) |
+| `memory/test-guardian-wiring.js` | NEW (~150 lines) |
+| `memory/test-self-improvement-wiring.js` | NEW (~155 lines) |
+| `memory/test-cross-agent-integration.js` | NEW (~225 lines) |
+| `memory/db/episodes.db` | regenerated with seq column |
+| `memory/db/events.db` | regenerated empty (carries seq from Step 2D) |
+| `memory/db/working.db` | regenerated empty |
+
+### Carry-forward
+
+- **#B-007** — design a cross-process bus delivery mechanism (Guardian replay-poller or process-level singleton). Schedule when Guardian needs to react faster than 30s.
+- **Item 5 — Mode 3 Resume** — pick up an EAGLE Mode 3 stage after operator approval following a failed run. Today rejects/fails are terminal.
+
 

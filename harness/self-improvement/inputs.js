@@ -174,6 +174,25 @@ function gatherInputs({ root = BRAIN_ROOT, runsLimit = null } = {}) {
   };
 }
 
+/**
+ * Step 4C: read new episodes from MemoryRouter since a watermark seq.
+ * Filters out self-improvement's OWN events to prevent recursive learning.
+ *
+ * @param {{ query: function }} mem MemoryRouter instance
+ * @param {number} lastSeq cursor watermark (0 reads everything)
+ * @param {{ limit?: number }} [opts] limit defaults to 5000 (safety cap)
+ * @returns {Array<object>} episodes ordered ASC by seq
+ */
+function readEpisodesSince(mem, lastSeq, opts = {}) {
+  const limit = opts.limit || 5000;
+  const all = mem.query({
+    sinceSeq: lastSeq || 0,
+    order: 'seq ASC',
+    limit,
+  });
+  return all.filter((ep) => ep.agent !== 'self-improvement');
+}
+
 module.exports = {
   BRAIN_ROOT,
   SOP_FILES,
@@ -181,6 +200,7 @@ module.exports = {
   brainPath,
   readSops,
   readHarnessRuns,
+  readEpisodesSince,
   readTickets,
   readCodebaseSummary,
   gatherInputs,

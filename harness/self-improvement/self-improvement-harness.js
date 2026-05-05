@@ -34,6 +34,7 @@ const inputs = require('./inputs');
 const analyzer = require('./analyzer');
 const reportWriter = require('./report-writer');
 const learningMind = require('./learning-mind-writer');
+const { MemoryRouter } = require('../../memory/router');
 
 const HARNESS_NAME = 'self-improvement-harness';
 const FEATURE_NAME = 'self-improvement-harness-v1';
@@ -147,6 +148,12 @@ async function main(argv) {
   const runId = run.run_id;
   process.stdout.write(`[self-improvement] run_id=${runId}\n`);
 
+  // ---- watermark cursor (Step 4C) ----
+  const mem = new MemoryRouter();
+  const cursorBefore = mem.getWorking('self-improvement', 'last_episode_seq') || 0;
+  process.stdout.write(`[SI] cursor before run: seq=${cursorBefore}\n`);
+  let newEpisodes = [];
+
   try {
     // Phase 1: read SOPs
     startPhase(runId, 'read-sops');
@@ -170,6 +177,14 @@ async function main(argv) {
     const harnessRuns = inputs.readHarnessRuns({ root: BRAIN_ROOT, limit: args.limitRuns });
     completePhase(runId, 'read-harness-runs', `${harnessRuns.length} entries`);
 
+    // Phase 2b (Step 4C): dual-read from episodes.db since watermark.
+    // Self-Improvement's own events are filtered out at the inputs layer.
+    newEpisodes = inputs.readEpisodesSince(mem, cursorBefore, { limit: 5000 });
+    process.stdout.write(`[SI] new episodes since cursor: ${newEpisodes.length}\n`);
+    if (newEpisodes.length === 5000) {
+      process.stdout.write(`[SI] WARNING: hit limit; watermark may not catch up this run\n`);
+    }
+
     // Phase 3: read tickets
     startPhase(runId, 'read-tickets');
     const tickets = inputs.readTickets({ root: BRAIN_ROOT });
@@ -179,7 +194,7 @@ async function main(argv) {
     // Phase 4: build prompt
     startPhase(runId, 'build-prompt');
     const codebase = inputs.readCodebaseSummary({ root: BRAIN_ROOT });
-    const bundle = { sops, harnessRuns, tickets, codebase };
+    const bundle = { sops, harnessRuns, tickets, codebase, newEpisodes };
     const runNumber = reportWriter.nextRunNumber({ date: new Date() });
     const prompt = analyzer.buildPrompt({ inputs: bundle, runNumber });
     completePhase(runId, 'build-prompt', `${Buffer.byteLength(prompt, 'utf8')} bytes, run_number=${runNumber}`);
@@ -272,6 +287,16 @@ async function main(argv) {
       completePhase(runId, 'append-learning-mind', `+${lmInfo.appendedBytes} bytes`);
     }
 
+    // ---- advance watermark (Step 4C) — only on success ----
+    if (newEpisodes.length > 0) {
+      const maxSeq = newEpisodes.reduce((m, ep) => Math.max(m, ep.seq), cursorBefore);
+      mem.setWorking('self-improvement', 'last_episode_seq', maxSeq);
+      process.stdout.write(`[SI] cursor advanced: seq=${cursorBefore} → ${maxSeq}\n`);
+    } else {
+      process.stdout.write(`[SI] cursor unchanged (no new episodes since seq ${cursorBefore})\n`);
+    }
+    try { mem.close(); } catch { /* swallow */ }
+
     // Final update — status complete with summary meta.
     logger.updateRun(HARNESS_NAME, runId, {
       status: 'complete',
@@ -279,6 +304,7 @@ async function main(argv) {
         ...run.meta,
         sop_files_read: sops.length,
         harness_runs_read: harnessRuns.length,
+        new_episodes_processed: newEpisodes.length,
         tickets_read: ticketCount,
         patterns_found: analysis.patterns.length,
         proposed_fixes: analysis.proposedFixes.length,
