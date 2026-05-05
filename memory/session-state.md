@@ -56,7 +56,7 @@ LAST UPDATED: 5 May 2026 (late) — Item 1 (Approval Signal Bridge) shipped: har
 - Step 5B — `resume <feature>` stdin command added to `parseCommand` + switch (fire-and-forget); new resume branch in `processSignalFile` between approve and unknown (priority: not approved → approved → resume → unknown); banner help text updated; `HARNESS_WORKER_TEST_MODE=1` exposes `processSignalFile` / `parseCommand` / `APPROVALS_DIR` / `PROCESSED_DIR` / `_resetProcessedSignals`
 - Step 5C — `recoverOrphanedRuns()` added to eagle-harness; called once on worker boot between banner and `pollOpenTickets`; marks any `executing` run as `failed` with `recoverable=true|false` flag, sets `orphaned_at`, force-clears `awaiting`, emits `orphan-detected` phase episode + `eagle.run.failed` via dispatcher
 - Step 5D — Cross-agent crash-resume integration test 7/7 PASS proving the full chain: pre-crash → orphan detected → resume signal → bridge dispatches → state flips → episodes auditable in seq order
-- Item 5 commit: **`<HASH-PLACEHOLDER>`** (this commit)
+- Item 5 commit: **`c5c20d2`**
 
 ### Test infrastructure (after Item 5)
 
