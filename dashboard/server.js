@@ -615,9 +615,24 @@ const server = http.createServer(async (req, res) => {
           files: ragStatus.sources.pdf.files,
           description: 'Uploaded PDF documents — indexed into vault'
         });
+      let gmailConnected = false;
+      try {
+        gmailConnected = fs.readdirSync(path.join(BRAIN,'integrations'))
+          .some(f => f.startsWith('.gmail-token-') && f.endsWith('.json'));
+      } catch {}
+      if (gmailConnected) {
+        sources.push({
+          id: 'gmail',
+          label: '📧 Gmail',
+          connected: true,
+          chunks: ragStatus.sources?.gmail?.chunks || 0,
+          files: ragStatus.sources?.gmail?.files || 0,
+          description: 'Connected Gmail accounts — indexed into vault'
+        });
+      }
       const comingSoon = [
         {id:'dropbox',label:'📦 Dropbox',reason:'App scope blocked — fix in console'},
-        {id:'gmail',label:'📧 Gmail',reason:'Not yet connected'},
+        ...(gmailConnected ? [] : [{id:'gmail',label:'📧 Gmail',reason:'Not yet connected'}]),
         {id:'whatsapp',label:'📱 WhatsApp',reason:'Phase 3'},
         {id:'hermes',label:'🤖 Hermes',reason:'Phase 2 — install Ollama first'},
       ];
