@@ -1964,4 +1964,66 @@ Marathon brain-only build session. 13 commits pushed to main, all on the dashboa
 - `harness/eagle/eagle-harness.js` carve-out, `dashboard/rag-engine.js` MongoDB tweaks, harness JSONL cleanup all still uncommitted
 - Latha portal review (4 fixes, permission.helper.ts, sidebar audit) still pending
 
+---
+
+## 5 May 2026 (late) — Item 1: Approval Signal Bridge
+
+**Branch:** main (369-brain)
+
+### What was done
+
+Added the approval signal bridge to `harness-worker.js` — closes the UI→worker gap that's been carried since the dashboard `/api/approve` endpoint began writing `.signal` files.
+
+- **Lines added:** 76 (`harness-worker.js`: 197 → 273)
+- **New functions:** `processSignalFile(filename)`, `startApprovalBridge()`
+- **New constants:** `APPROVALS_DIR`, `PROCESSED_DIR`, `SIGNAL_WRITE_DELAY_MS`, `processedSignals` Set (debounce)
+- **Hook point:** single `startApprovalBridge()` call in `main()` after `setInterval(pollOpenTickets, ...)`
+
+### How dispatch works
+
+1. `fs.watch` on `~/deassists-workspace/369-brain/approvals/`
+2. On new `.signal`: wait 200ms for write, read content, strip `.signal` from filename for ticket name
+3. Dispatch — reusing the EXACT handlers the stdin parser uses:
+   - `^not approved` → `handleReject(ticket)`
+   - `^approved` → look up latest run via `logger.listRuns(eagle.HARNESS_NAME)`; if last phase matches `/mode1/i` → `handleApprovedMode1`, else `handleApprovedMode2`
+4. Move signal file to `approvals/processed/`
+5. All steps logged with `[Bridge]` prefix
+
+### Verification
+
+Verified by 4 stale signals already sitting in the folder from prior sessions, processed correctly on the first PM2 restart that picked up the new code:
+
+| Signal | Content | Dispatch | Handler response |
+|--------|---------|----------|------------------|
+| `bcbt-fee-calculator.signal` | `not approved bcbt-fee-calculator` | reject | `no waiting run to reject` (correct — stale) |
+| `harness-eagle-stage-marker-contract-followups.signal` | `approved …-followups` | approveMode1 | `no run waiting for mode1 review` (correct — stale) |
+| `harness-eagle-stage-marker-contract.signal` | `approved …-marker-contract` | approveMode2 (phase=eagle-mode2) | `no run waiting for mode2 approval` (correct — stale) |
+| `self-improvement-harness-v1.signal` | `approved self-improvement-harness-v1` | approveMode1 (phase=eagle-mode1) | `no run waiting for mode1 review` (correct — already complete) |
+
+All 4 archived to `approvals/processed/`. The "no waiting run" responses are the correct outcome — those tickets had no active gate at the requested phase, so the existing handler logic guarded them safely (no garbage approvals fired).
+
+### Bugs uncovered while shipping Item 1
+
+- **#B-002** — `dashboard/server.js:247` references `RUNS/eagle-harness.jsonl`, actual file is at `intelligence/harness-runs/eagle-harness.jsonl`. The `/api/approve` JSONL update block silently no-ops; explains why some `running` records never closed.
+- **#B-003** — `eagle.startTicket()` runs sync (~150s for `/data-check` + `/eagle-mode1`), blocking the event loop; the bridge appears to "do nothing" for up to 150s after PM2 restart if there's an open ticket. Functionally correct, latency surprise.
+- **#B-004** — `dropbox-sync` PM2 process has been hitting expired-token 401s every minute since ~17:27 today; CORTEX-369 Dropbox app is disabled in console. Parked.
+
+### Side fix during the session
+
+Earlier today, mission-control-369 was crash-looping with 40 restarts in 2h — root cause was `Cannot find module 'googleapis'` from `integrations/gmail-sync.js`. The package was installed at `dashboard/node_modules` but `gmail-sync.js` lives in `integrations/`, so Node's parent-directory walk never found it. Installed `googleapis` at the 369-brain root which is where Node's resolver lands when walking up from `integrations/`. Restart cleared the loop; new error log entries stopped, restart counter held, Gmail sync resumed (`[Gmail] Indexed 0 new messages` confirms healthy round-trip).
+
+### Files touched
+
+| File | Change |
+|------|--------|
+| `harness-worker.js` | +76 lines — bridge implementation |
+| `memory/session-state.md` | New session block + Bug Ledger (#B-002, #B-003, #B-004) |
+| `memory/activity-log.md` | This entry |
+
+### Carry-forward
+
+- `#B-002` server.js path mismatch — fix is one-line, but want to confirm whether `RUNS` constant has other call sites before changing
+- `#B-003` event-loop block — defer until eagle phases are made async; not user-visible enough to prioritize
+- `#B-004` Dropbox token — parked until Shon needs Dropbox ingestion live
+
 

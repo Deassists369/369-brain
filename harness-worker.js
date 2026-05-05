@@ -14,9 +14,13 @@ const logger = require('./harness/core/logger');
 
 const BRAIN_ROOT = path.join(process.env.HOME, 'deassists-workspace', '369-brain');
 const POLL_INTERVAL_MS = 5000;
+const APPROVALS_DIR = path.join(BRAIN_ROOT, 'approvals');
+const PROCESSED_DIR = path.join(APPROVALS_DIR, 'processed');
+const SIGNAL_WRITE_DELAY_MS = 200;
 
 const seen = new Set();   // ticket names already started
 const inFlight = new Set(); // ticket names currently being processed
+const processedSignals = new Set(); // signals currently being handled (debounce fs.watch)
 
 function banner() {
   const lines = [
@@ -116,6 +120,78 @@ function handleReject(ticketName) {
   console.log(`[worker] rejected ${gate} for ${ticketName} (run ${res.runId})`);
 }
 
+/* ── Approval Signal Bridge ───────────────────────────────────
+   Watches approvals/*.signal files written by the dashboard
+   /api/approve endpoint and dispatches to the SAME handlers used
+   by the stdin parser (handleApprovedMode1 / handleApprovedMode2 /
+   handleReject).
+*/
+async function processSignalFile(filename) {
+  if (!filename || !filename.endsWith('.signal')) return;
+  if (processedSignals.has(filename)) return;
+  processedSignals.add(filename);
+
+  const fullPath = path.join(APPROVALS_DIR, filename);
+  const ticket = filename.replace(/\.signal$/, '');
+
+  try {
+    await new Promise((r) => setTimeout(r, SIGNAL_WRITE_DELAY_MS));
+    if (!fs.existsSync(fullPath)) return;
+
+    const content = fs.readFileSync(fullPath, 'utf8').trim();
+    console.log(`[Bridge] signal received: ${filename} → "${content}"`);
+
+    if (/^not\s+approved/i.test(content)) {
+      console.log(`[Bridge] dispatching reject for ${ticket}`);
+      handleReject(ticket);
+    } else if (/^approved/i.test(content)) {
+      const runs = logger.listRuns(eagle.HARNESS_NAME).filter((r) => r.feature === ticket);
+      const latest = runs[runs.length - 1];
+      const lastPhase =
+        latest && Array.isArray(latest.phases) && latest.phases.length
+          ? latest.phases[latest.phases.length - 1].phase || ''
+          : '';
+
+      if (/mode1/i.test(lastPhase)) {
+        console.log(`[Bridge] dispatching approveMode1 for ${ticket} (phase=${lastPhase})`);
+        await handleApprovedMode1(ticket);
+      } else {
+        console.log(`[Bridge] dispatching approveMode2 for ${ticket} (phase=${lastPhase || 'unknown'})`);
+        await handleApprovedMode2(ticket);
+      }
+    } else {
+      console.log(`[Bridge] unrecognized signal content for ${ticket}: "${content}" — archiving without dispatch`);
+    }
+
+    if (fs.existsSync(fullPath)) {
+      fs.renameSync(fullPath, path.join(PROCESSED_DIR, filename));
+      console.log(`[Bridge] archived ${filename} → processed/`);
+    }
+  } catch (e) {
+    console.error(`[Bridge] failed processing ${filename}: ${e.message || e}`);
+  } finally {
+    setTimeout(() => processedSignals.delete(filename), 1000);
+  }
+}
+
+function startApprovalBridge() {
+  if (!fs.existsSync(APPROVALS_DIR)) fs.mkdirSync(APPROVALS_DIR, { recursive: true });
+  if (!fs.existsSync(PROCESSED_DIR)) fs.mkdirSync(PROCESSED_DIR, { recursive: true });
+  console.log(`[Bridge] watching ${APPROVALS_DIR}`);
+
+  const existing = fs.readdirSync(APPROVALS_DIR).filter((f) => f.endsWith('.signal'));
+  if (existing.length) {
+    console.log(`[Bridge] found ${existing.length} pending signal(s) on startup — processing`);
+    for (const f of existing) processSignalFile(f);
+  }
+
+  fs.watch(APPROVALS_DIR, (eventType, filename) => {
+    if (!filename || !filename.endsWith('.signal')) return;
+    if (!fs.existsSync(path.join(APPROVALS_DIR, filename))) return;
+    processSignalFile(filename);
+  });
+}
+
 function handleStatus() {
   const runs = logger.listRuns(eagle.HARNESS_NAME);
   if (!runs.length) {
@@ -150,6 +226,7 @@ async function main() {
   banner();
   pollOpenTickets();
   const interval = setInterval(pollOpenTickets, POLL_INTERVAL_MS);
+  startApprovalBridge();
 
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: false });
   rl.on('line', async (line) => {

@@ -1,4 +1,20 @@
-LAST UPDATED: 5 May 2026 — Mission Vault complete foundation: Guardian (13 tests · 11 user roles), Connections tab (10 AI models · 11 rules · 2 hard blocks · Hermes Agent), PDF upload pipeline (multipart + pdf-parse + RAG source 5), Gmail OAuth (auth-start/callback/accounts + gmail-sync.js + RAG source 6), login gate (server-side, token-based), logout flow (nav dropdown → POST /api/logout), Nous Research design system v2.0. 13 commits pushed to main.
+LAST UPDATED: 5 May 2026 (late) — Item 1 (Approval Signal Bridge) shipped: harness-worker.js now watches `approvals/*.signal` and dispatches to the same handlers as the stdin parser, closing the UI→worker gap that's been carried for 2 sessions. Earlier today: Mission Vault complete foundation — Guardian (13 tests · 11 user roles), Connections tab (10 AI models · 11 rules · 2 hard blocks · Hermes Agent), PDF upload pipeline (multipart + pdf-parse + RAG source 5), Gmail OAuth (auth-start/callback/accounts + gmail-sync.js + RAG source 6), login gate (server-side, token-based), logout flow (nav dropdown → POST /api/logout), Nous Research design system v2.0. 13 commits pushed to main.
+
+## SESSION 5 May 2026 (late) — Item 1: Approval Signal Bridge + Bug Ledger
+
+### Items shipped
+- **Item 1 — Approval Signal Bridge** → ✅ **DONE**
+  Added `startApprovalBridge()` and `processSignalFile()` to `harness-worker.js` (+76 lines, 197 → 273). Watches `~/deassists-workspace/369-brain/approvals/` via `fs.watch`, creates `approvals/processed/` archive dir on first boot, processes any leftover `.signal` files on startup, dispatches to the same `handleApprovedMode1` / `handleApprovedMode2` / `handleReject` functions used by the stdin parser. Phase decision uses `logger.listRuns()` → most recent phase entry; `mode1` → approveMode1, else approveMode2. Verified by 4 stale signals already in the folder being processed correctly on PM2 restart (1 reject, 3 approves dispatched and archived). Closes the UI→worker gap that has been carried since the dashboard `/api/approve` endpoint started writing signal files.
+
+### Bugs logged
+- **Bug #B-002 — `server.js` path mismatch** (severity: MEDIUM, owner: open)
+  `dashboard/server.js` line 247 references `RUNS/eagle-harness.jsonl`, but the actual JSONL file lives at `intelligence/harness-runs/eagle-harness.jsonl`. Result: `/api/approve`'s JSONL status update block silently no-ops because `fs.existsSync(jPath)` returns false. Symptom: stale `running` records (e.g. `github-actions-ci` run `bc961e2e44d9cfa4` stuck at `running` for 2+ days even though the worker emitted a recovery record). Fix: either point `RUNS` to `intelligence/harness-runs/` or remove the dead update block.
+- **Bug #B-003 — `pollOpenTickets` blocks event loop for ~150s** (severity: LOW, owner: open)
+  `eagle.startTicket()` runs synchronously through `/data-check` (~50s) and `/eagle-mode1` (~95s) before yielding. Because `pollOpenTickets()` awaits `startTicketSafe()`, the entire main loop is blocked during ticket pickup — meaning `setInterval`, the approval bridge, and stdin handlers all queue but don't fire. Symptom: bridge logs (and any `.signal` processing) appear delayed by up to ~150s after PM2 restart when there's an unprocessed open ticket. Workaround: wait it out. Real fix: move `eagle.startTicket()` work into a child process or make its phases truly async.
+- **Bug #B-004 — `dropbox-sync` token expired** (severity: MEDIUM — parked)
+  PM2 process `dropbox-sync` has been logging `Dropbox files/list_folder 401: expired_access_token` once per minute since ~17:27 today (3+ hours). Root cause is the **CORTEX-369 Dropbox app** state — tokens were cycled three times in a prior session; first two failed with `missing_scope/files.metadata.read`, third hit `app is currently disabled`. Carry-over: re-enable the app in console (Settings → Status → Enable; Permissions → tick `files.metadata.read` + `files.content.read` → Submit; Settings → Generate fresh token). Parked until Shon prioritizes Dropbox ingestion.
+
+
 
 ## SESSION 5 May 2026 — Mission Vault foundations: Guardian, Connections, Gmail, Login, Logout
 
