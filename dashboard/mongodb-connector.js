@@ -71,7 +71,7 @@ async function syncMongoDB() {
       const name = col.name;
       if (name.startsWith('system.')) continue;
       try {
-        const docs = await db.collection(name).find({}).limit(1000).toArray();
+        const docs = await db.collection(name).find({}).limit(5000).toArray();
         const colChunks = docs.flatMap(d => studentToChunks(d, name));
         chunks.push(...colChunks);
         stats[name] = { documents: docs.length, chunks: colChunks.length };
