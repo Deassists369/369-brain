@@ -520,7 +520,6 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
     </div>
     <div class="desk-tabs">
       <button class="dtab on" onclick="sw(0)" id="t0"><span class="td" style="background:var(--g)"></span>Overview</button>
-      <a href="/brain-map" target="_blank" style="display:flex;align-items:center;gap:4px;padding:6px 10px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:#1D7A45;text-decoration:none;border:1px solid rgba(29,122,69,.3);border-radius:4px;margin-right:8px;text-transform:uppercase">🧠 Brain Map</a>
       <button class="dtab" onclick="sw(1)" id="t1"><span class="td" style="background:var(--blue)"></span>Build Intelligence</button>
       <button class="dtab" onclick="sw(2)" id="t2"><span class="td" style="background:var(--amber)"></span>Document Intelligence</button>
       <button class="dtab" onclick="sw(3)" id="t3"><span class="td" style="background:var(--teal)"></span>RAG Intelligence</button>
@@ -941,6 +940,74 @@ body{min-height:100vh;overscroll-behavior:none;font-family:var(--font-ui)}
       <button class="perm-btn perm-priv" id="permPriv" onclick="setMode('private')">🔒 Private</button>
       <button class="perm-btn perm-demo off" id="permDemo" onclick="setMode('demo')">🌍 Demo</button>
     </div>
+  </div>
+
+  <!-- BRAIN MAP CARD -->
+  <div onclick="window.open('/brain-map','_blank')" style="cursor:pointer;margin-bottom:16px;padding:20px 24px;background:linear-gradient(135deg,#0a1a0f 0%,#0f2318 50%,#0d1f14 100%);border:1px solid rgba(29,122,69,.3);border-radius:12px;display:flex;align-items:center;gap:20px;transition:all .2s;position:relative;overflow:hidden" onmouseover="this.style.borderColor='rgba(34,197,94,.6)';this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='rgba(29,122,69,.3)';this.style.transform='translateY(0)'">
+
+    <!-- Animated background glow -->
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(29,122,69,.15),transparent 60%);pointer-events:none"></div>
+
+    <!-- Brain SVG illustration -->
+    <div style="flex-shrink:0;width:80px;height:80px;position:relative">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:80px">
+        <!-- Outer glow -->
+        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(34,197,94,.15)" stroke-width="8"/>
+        <circle cx="50" cy="50" r="36" fill="none" stroke="rgba(34,197,94,.1)" stroke-width="6"/>
+        <!-- Brain outline -->
+        <path d="M50,20 Q62,18 68,28 Q76,24 78,34 Q86,36 84,46 Q90,52 84,60 Q86,70 76,72 Q72,82 62,80 Q56,88 50,84 Q44,88 38,80 Q28,82 24,72 Q14,70 16,60 Q10,52 16,46 Q14,36 22,34 Q24,24 32,28 Q38,18 50,20Z" fill="none" stroke="#22c55e" stroke-width="1.5" opacity=".8"/>
+        <!-- Brain folds left -->
+        <path d="M32,38 Q28,46 32,54 Q30,62 36,66" fill="none" stroke="#22c55e" stroke-width="1" opacity=".6"/>
+        <path d="M38,30 Q34,38 38,46" fill="none" stroke="#22c55e" stroke-width="1" opacity=".5"/>
+        <!-- Brain folds right -->
+        <path d="M68,38 Q72,46 68,54 Q70,62 64,66" fill="none" stroke="#22c55e" stroke-width="1" opacity=".6"/>
+        <path d="M62,30 Q66,38 62,46" fill="none" stroke="#22c55e" stroke-width="1" opacity=".5"/>
+        <!-- Center divide -->
+        <path d="M50,22 L50,82" fill="none" stroke="#22c55e" stroke-width="1" opacity=".3" stroke-dasharray="3,3"/>
+        <!-- Horizontal folds -->
+        <path d="M30,50 Q40,46 50,50 Q60,54 70,50" fill="none" stroke="#22c55e" stroke-width="1" opacity=".5"/>
+        <path d="M28,60 Q38,56 50,60 Q62,64 72,60" fill="none" stroke="#22c55e" stroke-width="1" opacity=".4"/>
+        <!-- Node dots -->
+        <circle cx="50" cy="50" r="4" fill="#22c55e" opacity=".9"/>
+        <circle cx="34" cy="44" r="2.5" fill="#22c55e" opacity=".7"/>
+        <circle cx="66" cy="44" r="2.5" fill="#22c55e" opacity=".7"/>
+        <circle cx="38" cy="62" r="2" fill="#22c55e" opacity=".6"/>
+        <circle cx="62" cy="62" r="2" fill="#22c55e" opacity=".6"/>
+        <circle cx="50" cy="34" r="2" fill="#22c55e" opacity=".6"/>
+        <circle cx="50" cy="70" r="2" fill="#22c55e" opacity=".6"/>
+        <!-- Connection lines -->
+        <line x1="50" y1="50" x2="34" y2="44" stroke="#22c55e" stroke-width=".8" opacity=".4"/>
+        <line x1="50" y1="50" x2="66" y2="44" stroke="#22c55e" stroke-width=".8" opacity=".4"/>
+        <line x1="50" y1="50" x2="38" y2="62" stroke="#22c55e" stroke-width=".8" opacity=".4"/>
+        <line x1="50" y1="50" x2="62" y2="62" stroke="#22c55e" stroke-width=".8" opacity=".4"/>
+        <line x1="50" y1="50" x2="50" y2="34" stroke="#22c55e" stroke-width=".8" opacity=".4"/>
+        <line x1="50" y1="50" x2="50" y2="70" stroke="#22c55e" stroke-width=".8" opacity=".4"/>
+        <!-- Pulse ring animation -->
+        <circle cx="50" cy="50" r="4" fill="none" stroke="#22c55e" stroke-width="1.5" opacity=".6">
+          <animate attributeName="r" values="4;14;4" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".6;0;.6" dur="3s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+    </div>
+
+    <!-- Text content -->
+    <div style="flex:1;min-width:0;position:relative;z-index:1">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#e8f4ed;letter-spacing:.02em">369 Brain Map</div>
+        <div style="font-size:9px;font-family:'Courier Prime',monospace;color:#22c55e;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);padding:2px 7px;border-radius:4px;letter-spacing:.1em">LIVE</div>
+      </div>
+      <div style="font-size:12px;color:rgba(232,244,237,.6);margin-bottom:10px;line-height:1.4">360° view of your entire business brain — every connection, every source, every AI worker mapped in real time</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:9px;padding:2px 8px;background:rgba(29,122,69,.2);color:#7dd8a0;border-radius:999px;font-family:'Courier Prime',monospace">30 nodes</span>
+        <span style="font-size:9px;padding:2px 8px;background:rgba(29,122,69,.2);color:#7dd8a0;border-radius:999px;font-family:'Courier Prime',monospace">6 clusters</span>
+        <span style="font-size:9px;padding:2px 8px;background:rgba(29,122,69,.2);color:#7dd8a0;border-radius:999px;font-family:'Courier Prime',monospace">Live RAG data</span>
+        <span style="font-size:9px;padding:2px 8px;background:rgba(29,122,69,.2);color:#7dd8a0;border-radius:999px;font-family:'Courier Prime',monospace">Animated</span>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;color:#22c55e;font-size:16px;position:relative;z-index:1">→</div>
+
   </div>
 
   <div class="g-rag">
