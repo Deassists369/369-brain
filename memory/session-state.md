@@ -22,7 +22,7 @@ LAST UPDATED: 5 May 2026 (late) — Item 1 (Approval Signal Bridge) shipped: har
 
 - **Item 2 — SQLite Memory Foundation** → ✅ **DONE**
 - Step 2A — SQLite foundation, additive-only schema policy → committed at **`639990c`**
-- Step 2B+2C+2D — MemoryRouter + EventBus + integration test + B-006 cursor fix → committed at **`<HASH-PLACEHOLDER>`** (this commit)
+- Step 2B+2C+2D — MemoryRouter + EventBus + integration test + B-006 cursor fix → committed at **`8edcfb7`**
 - All 22 tests pass (8 router + 8 bus + 6 integration), 5x regression run green
 
 ### Next task
