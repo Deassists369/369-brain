@@ -13,6 +13,20 @@ LAST UPDATED: 5 May 2026 (late) — Item 1 (Approval Signal Bridge) shipped: har
   `eagle.startTicket()` runs synchronously through `/data-check` (~50s) and `/eagle-mode1` (~95s) before yielding. Because `pollOpenTickets()` awaits `startTicketSafe()`, the entire main loop is blocked during ticket pickup — meaning `setInterval`, the approval bridge, and stdin handlers all queue but don't fire. Symptom: bridge logs (and any `.signal` processing) appear delayed by up to ~150s after PM2 restart when there's an unprocessed open ticket. Workaround: wait it out. Real fix: move `eagle.startTicket()` work into a child process or make its phases truly async.
 - **Bug #B-004 — `dropbox-sync` token expired** (severity: MEDIUM — parked)
   PM2 process `dropbox-sync` has been logging `Dropbox files/list_folder 401: expired_access_token` once per minute since ~17:27 today (3+ hours). Root cause is the **CORTEX-369 Dropbox app** state — tokens were cycled three times in a prior session; first two failed with `missing_scope/files.metadata.read`, third hit `app is currently disabled`. Carry-over: re-enable the app in console (Settings → Status → Enable; Permissions → tick `files.metadata.read` + `files.content.read` → Submit; Settings → Generate fresh token). Parked until Shon prioritizes Dropbox ingestion.
+- **Bug #B-005 — `init-db.js` is idempotent but not migration-aware** (severity: MEDIUM, **RESOLVED** 5 May 2026 — Step 2B planning)
+  RESOLVED — additive-only policy chosen, documented in `memory/db/schema.sql` header. New columns and tables are allowed; renames and drops require an explicit migration that does not yet exist. Migration system (numbered files + `schema_version` table) to be introduced when the first non-additive change is needed. Original concern preserved below for context: init-db.js's `IF NOT EXISTS` statements would silently leave a live db on the old shape after a column rename or drop, so the policy is the cheap guardrail until migrations are warranted.
+- **Bug #B-006 — EventBus cursor non-deterministic under timestamp collisions** (severity: HIGH, **RESOLVED** 5 May 2026 — Step 2D)
+  Root cause: cursor advance and replay query used `(ts, id)` lexicographic comparison. UUID ids have no chronological ordering, so when 2+ events shared a millisecond, `replay()` returned 0/1/2 events nondeterministically. Step 2C unit tests passed by luck on the first run; failed on the regression run after Step 2D. Fix: added monotonic `seq INTEGER NOT NULL UNIQUE` column to `event_log`. Cursor now tracks `last_seq` only. Schema change is additive (per B-005 policy). Pre-production .db files were wiped and re-initialized — zero data lost. Lesson: re-run regression tests after every step. Tests that pass once may pass by luck.
+
+### Item 2 status
+
+- **Item 2 — SQLite Memory Foundation** → ✅ **DONE**
+- Step 2A — SQLite foundation, additive-only schema policy → committed at **`639990c`**
+- Step 2B+2C+2D — MemoryRouter + EventBus + integration test + B-006 cursor fix → committed at **`<HASH-PLACEHOLDER>`** (this commit)
+- All 22 tests pass (8 router + 8 bus + 6 integration), 5x regression run green
+
+### Next task
+- **Item 4 — Episodic Ingestion** — wire EAGLE + Guardian to write through the new MemoryRouter / EventBus instead of (or alongside) their current JSONL files. First scope target: replace `eagle.startTicket` / `Phase complete` log lines with `mem.emit({ kind: 'eagle.phase.complete', ... })` + a bus event on `eagle.build.complete.<feature>`.
 
 
 

@@ -2026,4 +2026,65 @@ Earlier today, mission-control-369 was crash-looping with 40 restarts in 2h — 
 - `#B-003` event-loop block — defer until eagle phases are made async; not user-visible enough to prioritize
 - `#B-004` Dropbox token — parked until Shon needs Dropbox ingestion live
 
+---
+
+## 5 May 2026 (late session) — Item 2: SQLite Memory Foundation
+
+**Branch:** main (369-brain)
+
+### What was done
+
+Built the persistent memory layer that future agents will route every read/write through. Three SQLite databases (episodes, events, working) plus two thin abstractions: `MemoryRouter` for episodes + working memory, `EventBus` for durable pub/sub.
+
+- **Step 2A** — SQLite foundation: 3 dbs initialized via `init-db.js`, additive-only schema policy chosen and documented in the `schema.sql` header (resolves Bug #B-005). Each db opens with WAL journaling, foreign keys ON. Commit: `639990c`.
+- **Step 2B** — `MemoryRouter` class (5 public methods: `emit`, `query`, `setWorking`, `getWorking`, `close`). Lazy db open, prepared-statement cache by SQL text, JSON auto-stringify/parse. 8 unit tests pass, with full row cleanup on exit.
+- **Step 2C** — `EventBus` class (5 public methods: `emit`, `subscribe` with unsub fn, `replay`, `close`). Live in-process subscribers fire synchronously inside `emit()`; subscriber errors are caught so a bad listener can't block delivery. 8 unit tests pass.
+- **Step 2D** — Integration test models eagle → guardian → self-improvement (live + replay). 6 tests pass. **First regression run uncovered Bug #B-006**: the cursor used `(ts, id)` lexicographic comparison and UUID ids have no chronological ordering — when 2+ events shared a millisecond, replay returned 0/1/2 events nondeterministically. Schema change applied (additive): added monotonic `seq INTEGER NOT NULL UNIQUE` column to `event_log`, plus `last_seq` to `cursors`. Replay query rewritten to `WHERE seq > ?`. Pre-production .db files wiped and re-initialized.
+
+### Determinism check
+
+After the seq fix, the full suite was run **5 times back-to-back** (router + bus + integration). All 5 runs green:
+
+```
+RUN 1 — 22/22 pass
+RUN 2 — 22/22 pass
+RUN 3 — 22/22 pass
+RUN 4 — 22/22 pass
+RUN 5 — 22/22 pass
+```
+
+Cleanup verified — all 4 tables empty after the loop (`episodes:0 event_log:0 cursors:0 working_memory:0`).
+
+### Bugs caught and resolved this session
+
+- **#B-005 (RESOLVED)** — `init-db.js` idempotent but not migration-aware. Fix: additive-only policy in `schema.sql` header. Migration system deferred until first non-additive change is forced.
+- **#B-006 (RESOLVED)** — EventBus cursor non-deterministic under ms collisions. Fix: monotonic `seq` column, cursor tracks `last_seq` only, `last_event_id` and `last_ts` kept for forensic value but no longer consulted.
+
+### Files touched
+
+| File | Change |
+|------|--------|
+| `memory/router.js` | NEW (173 lines) — MemoryRouter |
+| `memory/event-bus.js` | NEW (181 lines) — EventBus with seq cursor |
+| `memory/test-router.js` | NEW (153 lines) — 8 unit tests |
+| `memory/test-event-bus.js` | NEW (168 lines) — 8 unit tests |
+| `memory/test-integration.js` | NEW (155 lines) — 6 end-to-end tests |
+| `memory/db/schema.sql` | additive-only header + `seq` column + `last_seq` cursor |
+| `memory/db/init-db.js` | (unchanged from Step 2A) |
+| `memory/db/episodes.db` | regenerated empty after wipe |
+| `memory/db/events.db` | regenerated empty with new schema |
+| `memory/db/working.db` | regenerated empty |
+| `memory/session-state.md` | Item 2 → DONE; B-005 + B-006 logged + RESOLVED |
+| `memory/activity-log.md` | This entry |
+
+### Commits
+
+- **Step 2A** — `639990c` (already pushed)
+- **Step 2B + 2C + 2D + B-006 fix** — bundled into the next commit (this one)
+
+### Carry-forward
+
+- **Item 4 — Episodic Ingestion** — wire `eagle` (harness/eagle/eagle-harness.js) and `guardian` (guardian-bridge.js) to write through `MemoryRouter` instead of (or alongside) their current JSONL writes. First target: replace eagle's `Phase complete` log lines with `mem.emit({ kind: 'eagle.phase.complete', ... })` + bus event on `eagle.build.complete.<feature>`.
+- **Multi-process seq safety** — current `MAX(seq) + 1` inside a transaction is single-process safe; under multi-process emits to the same db the `UNIQUE` constraint catches collisions but doesn't auto-retry. If eagle and guardian ever run in separate processes both writing event_log, add a retry-on-UNIQUE-violation loop in `EventBus.emit()`.
+
 
